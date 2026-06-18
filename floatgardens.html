@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>floatGardens — Cultivo hidropónico de café en Bogotá</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDE6D3;
+    --paper-deep:#E3DBC4;
+    --grid-line:#D6CEB6;
+    --ink:#2A3550;
+    --ink-soft:#6B7290;
+    --night:#222226;
+    --night-deep:#1A1A1D;
+    --lime:#A6F23A;
+    --lime-dim:#8AD12E;
+    --lavender:#C4A8E8;
+    --lavender-dim:#A98BD0;
+    --sky:#A8D4F2;
+    --cream:#F7F3E8;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    font-family:'Archivo', sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+
+  /* === Grid paper background === */
+  .grid-bg{
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size:34px 34px;
+    background-color:var(--paper);
+  }
+
+  /* === Placeholder system (sketch style) === */
+  .img-wrap{ position:relative; width:100%; height:100%; display:block; }
+  .img-slot{
+    display:block;
+    width:100%; height:100%;
+    object-fit:cover;
+    background:
+      repeating-linear-gradient(45deg, rgba(42,53,80,.05) 0 10px, transparent 10px 20px),
+      var(--paper-deep);
+    border:1.5px dashed var(--ink-soft);
+    border-radius:4px;
+    min-height:160px;
+  }
+  .img-wrap .img-tag{
+    position:absolute;
+    bottom:10px; left:10px; right:10px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:.64rem;
+    color:var(--ink-soft);
+    background:rgba(247,243,232,.9);
+    padding:5px 9px;
+    border:1px solid var(--grid-line);
+    border-radius:4px;
+    pointer-events:none;
+    text-align:center;
+    letter-spacing:.03em;
+  }
+  .img-wrap .img-tag b{ color:var(--ink); }
+
+  /* === Header === */
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:1.3rem 5vw;
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(34,34,38,.95);
+    color:var(--cream);
+    border-bottom:2px solid var(--lime);
+  }
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:1.2rem;
+    letter-spacing:.02em;
+  }
+  .logo .mark{
+    width:14px; height:14px;
+    border-radius:3px;
+    background:var(--sky);
+    flex-shrink:0;
+  }
+  .logo .f{ color:var(--lime); }
+  .logo .g{ color:var(--lavender); }
+
+  .nav-links{
+    display:flex;
+    gap:2.2rem;
+  }
+  .nav-links a{
+    font-size:.8rem;
+    font-weight:600;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:#A8A8B0;
+    position:relative;
+    padding-bottom:6px;
+    transition:color .2s;
+  }
+  .nav-links a:hover, .nav-links a.active{ color:var(--cream); }
+  .nav-links a.active::after{
+    content:'';
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:2px;
+    background:var(--lime);
+  }
+  @media (max-width:880px){ .nav-links{ display:none; } }
+
+  .btn{
+    font-family:'Archivo', sans-serif;
+    font-weight:700;
+    font-size:.74rem;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    padding:.85rem 1.7rem;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:.5rem;
+    border:1.5px solid var(--ink);
+    border-radius:2px;
+    background:var(--lime);
+    color:var(--night-deep);
+    transition:all .2s ease;
+  }
+  .btn:hover{ background:var(--lavender); border-color:var(--lavender-dim); }
+  .btn-outline{
+    background:transparent;
+    color:var(--ink);
+    border-color:var(--ink-soft);
+  }
+  .btn-outline:hover{ background:var(--ink); color:var(--cream); border-color:var(--ink); }
+  .btn-dark{
+    background:var(--night);
+    color:var(--lime);
+    border-color:var(--night);
+  }
+  .btn-dark:hover{ background:var(--lavender); color:var(--night-deep); border-color:var(--lavender); }
+  .btn:focus-visible{ outline:3px solid var(--lavender); outline-offset:3px; }
+
+  header .btn{
+    background:var(--lime);
+    border-color:var(--lime);
+    color:var(--night-deep);
+  }
+  header .btn:hover{ background:var(--lavender); border-color:var(--lavender); }
+
+  /* === Marquee === */
+  .mq-wrap{ overflow:hidden; border-bottom:1px solid var(--grid-line); }
+  .mq-track{
+    display:flex;
+    gap:1.2rem;
+    white-space:nowrap;
+    padding:.55rem 0;
+    font-family:'JetBrains Mono', monospace;
+    font-size:.7rem;
+    letter-spacing:.05em;
+    color:var(--ink-soft);
+    animation:scrollmq 40s linear infinite;
+    width:max-content;
+  }
+  .mh{ color:var(--ink); font-weight:700; }
+  .mc{ color:var(--lavender-dim); font-weight:700; }
+  @keyframes scrollmq{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+  @media (prefers-reduced-motion: reduce){ .mq-track{ animation:none; } }
+
+  /* === Hero === */
+  .hero{
+    display:grid;
+    grid-template-columns:1fr 1.15fr;
+    gap:4vw;
+    align-items:center;
+    padding:5vw 5vw 6vw;
+    min-height:74vh;
+  }
+  @media (max-width:980px){
+    .hero{ grid-template-columns:1fr; min-height:auto; gap:2.5rem; }
+  }
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:.74rem;
+    letter-spacing:.12em;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    margin-bottom:1.4rem;
+    display:flex; align-items:center; gap:.6rem;
+  }
+  .eyebrow::before{ content:''; width:26px; height:1px; background:var(--ink-soft); }
+  .eyebrow .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--lime-dim);
+    display:inline-block;
+    animation:pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.3;} }
+  @media (prefers-reduced-motion: reduce){ .eyebrow .dot{ animation:none; } }
+
+  .hero h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:clamp(2.6rem, 7vw, 5rem);
+    line-height:1.04;
+    letter-spacing:-.01em;
+    text-transform:uppercase;
+    color:var(--ink);
+  }
+  .hero h1 .l2{
+    color:var(--paper);
+    background:var(--ink);
+    padding:0 .2em;
+    box-shadow: 6px 6px 0 var(--lime);
+    display:inline-block;
+  }
+
+  .hero-sub{
+    margin-top:1.8rem;
+    max-width:42ch;
+    color:var(--ink-soft);
+    font-size:1.02rem;
+    line-height:1.6;
+  }
+  .hero-actions{
+    margin-top:2.2rem;
+    display:flex;
+    gap:1rem;
+    flex-wrap:wrap;
+  }
+  .hero-meta{
+    margin-top:2.4rem;
+    font-family:'JetBrains Mono', monospace;
+    font-size:.78rem;
+    color:var(--ink);
+    letter-spacing:.05em;
+    border-left:2px solid var(--lavender);
+    padding-left:.8rem;
+  }
+  .hero-meta b{ color:var(--ink); background:var(--lime); padding:0 .2em; }
+
+  .hero-visual{ position:relative; }
+  .hero-visual .img-slot{ aspect-ratio:1/1; border-radius:4px; }
+  .hero-visual .float-annot{
+    position:absolute;
+    font-family:'JetBrains Mono', monospace;
+    font-size:.66rem;
+    color:var(--ink-soft);
+    line-height:1.4;
+  }
+  .hero-visual .a1{ top:-1.6rem; right:1rem; text-align:right; }
+  .hero-visual .a2{ bottom:-1.6rem; left:1rem; }
+  @media (max-width:700px){ .hero-visual .float-annot{ display:none; } }
+
+  /* === Section structure === */
+  .phase-label{
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    padding:0 5vw;
+    margin:5rem 0 2rem;
+  }
+  .phase-label .num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:.75rem;
+    color:var(--ink);
+    border:1.5px solid var(--ink);
+    padding:.3rem .65rem;
+    letter-spacing:.05em;
+    border-radius:2px;
+    font-weight:700;
+    background:var(--cream);
+  }
+  .phase-label .ttl{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:1.4rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+  }
+  .phase-label .rule{ flex:1; height:1px; background:var(--grid-line); border-top:1px dashed var(--ink-soft); }
+  .phase-label .sub{
+    font-family:'JetBrains Mono', monospace;
+    font-size:.7rem;
+    color:var(--ink-soft);
+  }
+
+  .sp{ padding:0 5vw 1rem; }
+  .sec-h2{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:clamp(1.6rem, 3.5vw, 2.4rem);
+    text-transform:uppercase;
+    margin-bottom:.8rem;
+    letter-spacing:.02em;
+  }
+  .sec-desc{
+    max-width:62ch;
+    color:var(--ink-soft);
+    font-size:.96rem;
+    line-height:1.65;
+    margin-bottom:2.6rem;
+  }
+
+  /* === FASE 01: módulo de terraza (sketch con cotas) === */
+  .module-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:3vw;
+    align-items:center;
+    padding:0 5vw 5rem;
+  }
+  @media (max-width:980px){ .module-grid{ grid-template-columns:1fr; gap:2.5rem; } }
+
+  .sketch-frame{
+    position:relative;
+    border:1.5px solid var(--ink);
+    border-radius:6px;
+    padding:1.2rem;
+    background:var(--cream);
+  }
+  .sketch-frame .img-slot{ aspect-ratio:4/3; }
+  .sketch-frame .fig-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:.7rem;
+    color:var(--ink-soft);
+    margin-bottom:.8rem;
+    letter-spacing:.05em;
+  }
+
+  /* cota arrows */
+  .cota{
+    position:absolute;
+    font-family:'JetBrains Mono', monospace;
+    font-size:.7rem;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    gap:.3rem;
+  }
+  .cota-h{ top:.4rem; left:30%; }
+  .cota-h::before, .cota-h::after{ content:'↔'; color:var(--ink-soft); }
+  .cota-v{
+    top:50%; left:-2.4rem;
+    transform:rotate(-90deg) translateX(50%);
+    transform-origin:left center;
+  }
+  .cota-badge{
+    background:var(--lime);
+    padding:.1rem .4rem;
+    border-radius:2px;
+    font-weight:700;
+    color:var(--night-deep);
+  }
+  @media (max-width:700px){ .cota-v{ display:none; } }
+
+  .specs-list{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1px;
+    background:var(--grid-line);
+    border:1.5px solid var(--ink);
+    margin-top:2rem;
+  }
+  .spec-cell{
+    background:var(--cream);
+    padding:1.1rem 1.2rem;
+  }
+  .spec-cell .l{
+    font-size:.66rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:.3rem;
+  }
+  .spec-cell .v{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700;
+    font-size:1.15rem;
+    color:var(--ink);
+  }
+  .spec-cell .v span{ font-size:.78rem; color:var(--ink-soft); font-weight:400; margin-left:.2rem; }
+  @media (max-width:520px){ .specs-list{ grid-template-columns:1fr; } }
+
+  /* === FASE 02: red de nodos — boceto de mapa sobre papel === */
+  .network-section{ padding:0 5vw 5rem; }
+  .network-panel{
+    position:relative;
+    border:1.5px solid var(--ink);
+    border-radius:6px;
+    background:var(--cream);
+    aspect-ratio:16/9;
+    overflow:hidden;
+  }
+  @media (max-width:700px){ .network-panel{ aspect-ratio:4/5; } }
+  .network-panel svg{ width:100%; height:100%; display:block; }
+
+  .node{ fill:var(--lime-dim); stroke:var(--ink); stroke-width:1; }
+  .node-core{ fill:var(--lavender); stroke:var(--ink); stroke-width:1.5; }
+  .node-pulse{ fill:none; stroke:var(--lime-dim); stroke-width:1.5; opacity:.5; }
+  .conn-line{
+    stroke:var(--ink-soft);
+    stroke-width:1;
+    stroke-dasharray:3 4;
+    fill:none;
+  }
+  @media (prefers-reduced-motion: no-preference){
+    .node-pulse{ animation:nodepulse 2.4s ease-out infinite; transform-origin:center; }
+    @keyframes nodepulse{ 0%{ r:6; opacity:.6; } 100%{ r:22; opacity:0; } }
+  }
+
+  .network-overlay{
+    position:absolute;
+    top:1.5rem; left:1.5rem;
+    font-family:'JetBrains Mono', monospace;
+    font-size:.72rem;
+    color:var(--ink-soft);
+    line-height:1.6;
+    background:rgba(247,243,232,.85);
+    padding:.6rem .8rem;
+    border:1px solid var(--grid-line);
+    border-radius:4px;
+  }
+  .network-overlay b{ color:var(--ink); font-size:1.6rem; display:block; font-weight:700; }
+
+  .network-stats{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:1px;
+    background:var(--grid-line);
+    border:1.5px solid var(--ink);
+    border-top:none;
+  }
+  .network-stats .cell{
+    background:var(--cream);
+    padding:1.2rem 1rem;
+    text-align:center;
+  }
+  .network-stats .v{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700;
+    font-size:1.4rem;
+    color:var(--ink);
+  }
+  .network-stats .l{
+    font-size:.66rem;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-top:.3rem;
+  }
+  @media (max-width:700px){ .network-stats{ grid-template-columns:repeat(2,1fr); } }
+
+  /* === FASE 03: bodega / vertical farm (sketch con niveles) === */
+  .farm-strip{
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    border-top:1px solid var(--grid-line);
+    border-bottom:1px solid var(--grid-line);
+  }
+  @media (max-width:980px){ .farm-strip{ grid-template-columns:1fr; } }
+  .farm-strip > div{ padding:3rem 5vw; }
+  .farm-strip > div:first-child{ border-right:1px solid var(--grid-line); }
+  @media (max-width:980px){ .farm-strip > div:first-child{ border-right:none; border-bottom:1px solid var(--grid-line); } }
+  .farm-visual .img-slot{ aspect-ratio:3/4; }
+
+  .farm-layers{
+    display:flex;
+    flex-direction:column;
+    gap:.6rem;
+    margin-top:1.6rem;
+  }
+  .farm-layer{
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    border:1.5px solid var(--ink);
+    border-radius:4px;
+    padding:.8rem 1rem;
+    background:var(--cream);
+  }
+  .farm-layer .lvl{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700;
+    font-size:.78rem;
+    color:var(--night-deep);
+    background:var(--lavender);
+    padding:.15rem .4rem;
+    border-radius:2px;
+    width:3.6em;
+    text-align:center;
+  }
+  .farm-layer .desc{ font-size:.85rem; color:var(--ink-soft); }
+
+  /* === CÓMO PARTICIPAR === */
+  .steps{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:1.4rem;
+    padding:0 5vw 5rem;
+  }
+  @media (max-width:980px){ .steps{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:560px){ .steps{ grid-template-columns:1fr; } }
+  .step-card{
+    border:1.5px solid var(--ink);
+    border-radius:6px;
+    padding:1.6rem;
+    background:var(--cream);
+  }
+  .step-card .step-num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:.78rem;
+    color:var(--night-deep);
+    background:var(--lime);
+    display:inline-block;
+    padding:.15rem .5rem;
+    border-radius:2px;
+    font-weight:700;
+    margin-bottom:.8rem;
+  }
+  .step-card h3{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:1.05rem;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    margin-bottom:.5rem;
+  }
+  .step-card p{ font-size:.85rem; color:var(--ink-soft); line-height:1.5; }
+
+  /* === CTA final (panel oscuro de marca) === */
+  .cta-final{
+    margin:0 5vw 5rem;
+    border-radius:8px;
+    background:linear-gradient(135deg, #2C2C32 0%, var(--night-deep) 60%, #26262C 100%);
+    color:var(--cream);
+    padding:3.5rem 5vw;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+    border:1.5px solid var(--ink);
+  }
+  .cta-final h2{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:clamp(1.8rem, 4.5vw, 3rem);
+    text-transform:uppercase;
+    margin-bottom:1rem;
+  }
+  .cta-final h2 span{ color:var(--lime); }
+  .cta-final p{
+    color:#B8B8C0;
+    max-width:50ch;
+    margin:0 auto 2rem;
+    font-size:.95rem;
+    line-height:1.6;
+  }
+
+  /* === Footer === */
+  footer{
+    background:var(--night-deep);
+    color:#9494A0;
+    padding:2.4rem 5vw;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:1.5rem;
+  }
+  footer .logo .f{ color:var(--lime); }
+  footer .logo .g{ color:var(--lavender); }
+  footer .meta{
+    font-family:'JetBrains Mono', monospace;
+    font-size:.7rem;
+    letter-spacing:.05em;
+    text-align:right;
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg">
+
+  <!-- ===================== HEADER ===================== -->
+  <header>
+    <div class="logo">
+      <span class="mark"></span>
+      <span class="f">float</span><span class="g">Gardens</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#inicio" class="active">Inicio</a>
+      <a href="#modulo">Tu terraza</a>
+      <a href="#red">La red</a>
+      <a href="#bodega">Vertical farm</a>
+      <a href="#unete">Únete</a>
+    </nav>
+    <a href="#unete" class="btn">Únete a la red</a>
+  </header>
+
+  <!-- Marquee -->
+  <div class="mq-wrap">
+    <div class="mq-track">
+      <span class="mh">· Gesha </span><span>· Castillo Naranjal</span><span class="mc"> · SCA 87+ · </span><span>Hidroponía vertical</span><span class="mh"> · Bourbon Rosado · </span><span>Riego por goteo</span><span class="mc"> · Monitoreo remoto · </span><span>Red de terrazas Bogotá</span><span class="mh"> · 14 nodos · </span>
+      <span class="mh">· Gesha </span><span>· Castillo Naranjal</span><span class="mc"> · SCA 87+ · </span><span>Hidroponía vertical</span><span class="mh"> · Bourbon Rosado · </span><span>Riego por goteo</span><span class="mc"> · Monitoreo remoto · </span><span>Red de terrazas Bogotá</span><span class="mh"> · 14 nodos · </span>
+    </div>
+  </div>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero" id="inicio">
+    <div class="hero-copy">
+      <div class="eyebrow"><span class="dot"></span>Cultivo hidropónico · Bogotá, 2.600 msnm</div>
+      <h1>
+        Café de especialidad,<br>
+        <span class="l2">cultivado en el aire.</span>
+      </h1>
+      <p class="hero-sub">
+        floatGardens conecta terrazas de vecinos en Bogotá para cultivar café de especialidad en sistemas hidropónicos modulares. Cada terraza es un nodo; juntas, son el primer paso hacia una granja vertical urbana.
+      </p>
+      <div class="hero-actions">
+        <a href="#modulo" class="btn">Ver el módulo</a>
+        <a href="#red" class="btn btn-outline">Explorar la red</a>
+      </div>
+      <div class="hero-meta">
+        <b>00</b> nodos activos · fase de diseño · primeras instalaciones piloto en curso
+      </div>
+    </div>
+    <div class="hero-visual">
+      <span class="float-annot a1">Ø 2.5m · módulo flotante<br>ajuste ± 1mm</span>
+      <span class="img-wrap">
+        <img class="img-slot" src="images/hero-planta-glow.png" alt="">
+        <span class="img-tag"><b>images/hero-planta-glow.png</b> — boceto técnico estilo "cerezas structure": planta de café con cotas a mano (2.5m, ángulos, 0.3m), tinta azul oscuro sobre papel beige, con acentos lima/lavanda resaltando frutos o nodos clave</span>
+      </span>
+      <span class="float-annot a2">Sistema cerrado · −85% agua</span>
+    </div>
+  </section>
+
+  <!-- ===================== FASE 01: TU TERRAZA ===================== -->
+  <div class="phase-label" id="modulo">
+    <span class="num">FASE 01</span>
+    <span class="ttl">Tu terraza</span>
+    <span class="rule"></span>
+    <span class="sub">FIG. 01 — EL MÓDULO INDIVIDUAL</span>
+  </div>
+
+  <div class="sp">
+    <h2 class="sec-h2">Un módulo, un nodo de la red</h2>
+    <p class="sec-desc">
+      Cada módulo hidropónico ocupa el espacio de una mesa de terraza. Funciona con riego por goteo en circuito cerrado, luz LED de espectro completo, y monitoreo remoto de nutrientes vía la app de floatGardens.
+    </p>
+  </div>
+
+  <div class="module-grid">
+    <div class="sketch-frame">
+      <div class="fig-label">FIG. 01.1 — MÓDULO DE TERRAZA, VISTA ISOMÉTRICA</div>
+      <div class="cota cota-h"><span class="cota-badge">1.2 m</span></div>
+      <div class="cota cota-v"><span class="cota-badge">0.8 m</span></div>
+      <span class="img-wrap">
+        <img class="img-slot" src="images/modulo-terraza.png" alt="">
+        <span class="img-tag"><b>images/modulo-terraza.png</b> — boceto técnico del módulo hidropónico en una terraza, estilo "cerezas structure": tinta azul sobre papel, cotas a mano (1.2m × 0.8m), plantas jóvenes con acentos lima en los frutos, vista de Bogotá esbozada de fondo</span>
+      </span>
+    </div>
+    <div>
+      <h2 class="sec-h2" style="font-size:1.4rem;">Especificaciones del módulo</h2>
+      <p class="sec-desc" style="margin-bottom:0;">
+        Diseñado para instalarse sin obra civil, alimentado por un punto de toma de agua y un enchufe estándar.
+      </p>
+      <div class="specs-list">
+        <div class="spec-cell"><div class="l">Huella</div><div class="v">1.2<span>× 0.8 m</span></div></div>
+        <div class="spec-cell"><div class="l">Plantas por módulo</div><div class="v">12<span>unidades</span></div></div>
+        <div class="spec-cell"><div class="l">Consumo de agua</div><div class="v">−85<span>% vs. suelo</span></div></div>
+        <div class="spec-cell"><div class="l">Peso instalado</div><div class="v">68<span>kg</span></div></div>
+        <div class="spec-cell"><div class="l">Monitoreo</div><div class="v">Remoto<span>app</span></div></div>
+        <div class="spec-cell"><div class="l">Tiempo a primera cosecha</div><div class="v">~24<span>meses</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== FASE 02: LA RED ===================== -->
+  <div class="phase-label" id="red">
+    <span class="num">FASE 02</span>
+    <span class="ttl">La red</span>
+    <span class="rule"></span>
+    <span class="sub">FIG. 02 — TERRAZAS CONECTADAS EN BOGOTÁ</span>
+  </div>
+
+  <div class="sp">
+    <h2 class="sec-h2">Una red distribuida de microcultivos</h2>
+    <p class="sec-desc">
+      Cada terraza que se une aparece como un nodo en el mapa. La red comparte logística de insumos, asistencia técnica y, eventualmente, el café cosechado se procesa de forma conjunta.
+    </p>
+  </div>
+
+  <div class="network-section">
+    <div class="network-panel">
+      <div class="network-overlay">
+        <b>14</b>
+        nodos en fase piloto<br>
+        Chapinero · Usaquén · Teusaquillo
+      </div>
+      <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" aria-label="Mapa esquemático de nodos floatGardens en Bogotá">
+        <path class="conn-line" d="M180,120 C260,180 320,160 400,220"/>
+        <path class="conn-line" d="M400,220 C460,260 520,240 600,300"/>
+        <path class="conn-line" d="M400,220 C380,300 340,340 300,380"/>
+        <path class="conn-line" d="M180,120 C220,200 260,260 300,380"/>
+        <path class="conn-line" d="M600,300 C640,260 680,200 700,140"/>
+        <path class="conn-line" d="M400,220 C440,180 500,160 560,150"/>
+        <path class="conn-line" d="M300,380 C360,400 460,400 520,380"/>
+        <path class="conn-line" d="M520,380 C560,350 580,320 600,300"/>
+
+        <g><circle class="node-pulse" cx="180" cy="120" r="6"/><circle class="node" cx="180" cy="120" r="5"/></g>
+        <g><circle class="node-pulse" cx="400" cy="220" r="6" style="animation-delay:.4s"/><circle class="node-core" cx="400" cy="220" r="8"/></g>
+        <g><circle class="node-pulse" cx="600" cy="300" r="6" style="animation-delay:.8s"/><circle class="node" cx="600" cy="300" r="5"/></g>
+        <g><circle class="node-pulse" cx="300" cy="380" r="6" style="animation-delay:1.2s"/><circle class="node" cx="300" cy="380" r="5"/></g>
+        <g><circle class="node-pulse" cx="700" cy="140" r="6" style="animation-delay:1.6s"/><circle class="node" cx="700" cy="140" r="5"/></g>
+        <g><circle class="node-pulse" cx="560" cy="150" r="6" style="animation-delay:2s"/><circle class="node" cx="560" cy="150" r="5"/></g>
+        <g><circle class="node-pulse" cx="520" cy="380" r="6" style="animation-delay:.6s"/><circle class="node" cx="520" cy="380" r="5"/></g>
+      </svg>
+    </div>
+    <div class="network-stats">
+      <div class="cell"><div class="v">14</div><div class="l">Terrazas activas</div></div>
+      <div class="cell"><div class="v">168</div><div class="l">Módulos instalados</div></div>
+      <div class="cell"><div class="v">3</div><div class="l">Localidades</div></div>
+      <div class="cell"><div class="v">2.016</div><div class="l">Plantas en la red</div></div>
+    </div>
+  </div>
+
+  <!-- ===================== FASE 03: BODEGA / VERTICAL FARM ===================== -->
+  <div class="phase-label" id="bodega">
+    <span class="num">FASE 03</span>
+    <span class="ttl">La bodega</span>
+    <span class="rule"></span>
+    <span class="sub">FIG. 03 — VERTICAL FARM, VISIÓN A FUTURO</span>
+  </div>
+
+  <section class="farm-strip">
+    <div class="farm-visual sketch-frame" style="margin:0;">
+      <div class="fig-label">FIG. 03.1 — CORTE ARQUITECTÓNICO, BODEGA VERTICAL</div>
+      <span class="img-wrap">
+        <img class="img-slot" src="images/bodega-vertical-farm.png" alt="">
+        <span class="img-tag"><b>images/bodega-vertical-farm.png</b> — boceto técnico estilo "cerezas structure": corte arquitectónico de bodega convertida en granja vertical, niveles acotados a mano, tinta azul sobre papel, acentos lima/lavanda marcando zonas de cultivo</span>
+      </span>
+    </div>
+    <div>
+      <div class="eyebrow" style="margin-bottom:1rem;">Próxima etapa de la red</div>
+      <h2 class="sec-h2" style="font-size:1.6rem;">De las terrazas a la bodega</h2>
+      <p class="sec-desc" style="margin-bottom:0;">
+        Cuando la red alcance suficiente escala, los módulos de terraza alimentan plántulas y datos de cultivo para una bodega central: una granja vertical de varios niveles dedicada a café de especialidad, con control climático total y trazabilidad por nivel.
+      </p>
+      <div class="farm-layers">
+        <div class="farm-layer"><span class="lvl">NV. 04</span><span class="desc">Vivero — germinación y plántulas para nuevas terrazas</span></div>
+        <div class="farm-layer"><span class="lvl">NV. 03</span><span class="desc">Crecimiento — plantas jóvenes, 2–3 años</span></div>
+        <div class="farm-layer"><span class="lvl">NV. 02</span><span class="desc">Producción — plantas en floración y fructificación</span></div>
+        <div class="farm-layer"><span class="lvl">NV. 01</span><span class="desc">Procesamiento — beneficio, secado y catación</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CÓMO PARTICIPAR ===================== -->
+  <div class="phase-label" id="unete">
+    <span class="num">FASE 00</span>
+    <span class="ttl">Cómo participar</span>
+    <span class="rule"></span>
+    <span class="sub">PUNTO DE ENTRADA A LA RED</span>
+  </div>
+
+  <div class="steps">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <h3>Postula tu terraza</h3>
+      <p>Mínimo 2 m² con al menos 4 horas de luz directa al día. Evaluamos exposición, acceso a agua y estructura.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <h3>Recibe tu módulo</h3>
+      <p>Instalamos el sistema hidropónico completo, sin obra civil, con guía de mantenimiento incluida.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <h3>Cultiva en red</h3>
+      <p>Monitoreo remoto, soporte técnico compartido y acceso a insumos a precio de red entre todos los nodos.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">04</div>
+      <h3>Cosecha colectiva</h3>
+      <p>El café de toda la red se procesa en conjunto. Cada terraza recibe parte de la cosecha y reconocimiento en la trazabilidad.</p>
+    </div>
+  </div>
+
+  <!-- ===================== CTA FINAL ===================== -->
+  <div class="cta-final">
+    <h2>Tu terraza puede ser el <span>nodo 15</span></h2>
+    <p>floatGardens está en fase piloto en Bogotá. Si tienes una terraza con buena luz y quieres ser parte de la primera red de café hidropónico colaborativo de la ciudad, escríbenos.</p>
+    <a href="#" class="btn">Postular mi terraza</a>
+  </div>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer>
+    <div class="logo">
+      <span class="mark"></span>
+      <span class="f">float</span><span class="g">Gardens</span>
+    </div>
+    <div class="meta">
+      floatGardens — Cultivo hidropónico colaborativo · Bogotá<br>
+      Una iniciativa hermana de acero.press · © 2026
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACERO — IA para el agro colombiano</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Archivo:wght@400;500;600;700;800&family=Permanent+Marker&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EDE6D3;
+  --grid-line:#D6CEB6;
+  --ink:#2A3550;
+  --ink-soft:#6B7290;
+  --cream:#F7F3E8;
+  --near-black:#1E1E24;
+  --t0:#0D0D12;
+  --t1:#1A0A2E;
+  --t2:#3D0066;
+  --t3:#7B00FF;
+  --t4:#C800A1;
+  --t5:#FF4500;
+  --t6:#FF8C00;
+  --t7:#FFD700;
+  --magenta-bright:#FF4FA3;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Archivo',sans-serif;
+  background:var(--near-black);
+  color:#fff;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none;}
+
+/* ===================== HEADER ===================== */
+header{
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1.1rem 5vw;
+  background:rgba(30,30,36,.6);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  transition:background .3s;
+}
+header.scrolled{ background:rgba(14,14,18,.92); }
+.logo-unit{
+    display:flex;
+    align-items:center;
+}
+
+.logo-acero{
+    height:48px;      /* ajusta según tu diseño */
+    width:auto;
+    display:block;
+    object-fit:contain;
+     border-radius:8px;
+}
+.logo-press{
+  font-family:'Permanent Marker',cursive;
+  color:var(--magenta-bright); font-size:1.25rem;
+  transform:rotate(-6deg); margin-left:-.5rem;
+  text-shadow:0 0 12px rgba(255,79,163,.5);
+}
+.nav-links{ display:flex; gap:2rem; }
+.nav-links a{
+  font-size:.78rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+  color:rgba(255,255,255,.65); transition:color .2s;
+}
+.nav-links a:hover{ color:#fff; }
+@media(max-width:900px){.nav-links{display:none;}}
+.btn-explora{
+  font-family:'Archivo',sans-serif; font-weight:700; font-size:.72rem;
+  letter-spacing:.14em; text-transform:uppercase;
+  padding:.7rem 1.5rem; border:none; border-radius:3px; cursor:pointer;
+  background:linear-gradient(135deg,var(--t5),var(--t6),var(--t7));
+  color:var(--near-black); transition:opacity .2s;
+}
+.btn-explora:hover{opacity:.85;}
+
+/* ===================== TESLA-STYLE FULL-SCREEN SECTIONS ===================== */
+.fullscreen{
+  position:relative;
+  width:100%; height:100vh;
+  min-height:600px;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:space-between;
+  overflow:hidden;
+  text-align:center;
+}
+
+/* Media layer (image or video fills the section) */
+.fs-media{
+  position:absolute; inset:0; z-index:0;
+}
+.fs-media img,
+.fs-media video{
+  width:100%; height:100%;
+  object-fit:cover; object-position:center;
+}
+
+/* Sketch/blueprint placeholder when no real image */
+.fs-placeholder{
+  width:100%; height:100%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:.75rem;
+  background:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+    #EDE6D3;
+  background-size:32px 32px, 32px 32px, auto;
+}
+.fs-placeholder .ph-icon{ font-size:2.2rem; }
+.fs-placeholder .ph-label{
+  font-family:'JetBrains Mono',monospace; font-size:.72rem;
+  color:var(--ink-soft); letter-spacing:.04em; text-align:center;
+  max-width:380px; line-height:1.5;
+}
+.fs-placeholder .ph-file{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem; font-weight:700;
+  color:var(--ink); background:rgba(255,255,255,.7);
+  padding:.3rem .7rem; border-radius:3px; border:1px dashed var(--ink-soft);
+}
+
+/* gradient overlay so text is always readable */
+.fs-overlay{
+  position:absolute; inset:0; z-index:1;
+  background:linear-gradient(
+    to bottom,
+    rgba(14,14,18,.1) 0%,
+    rgba(14,14,18,.15) 40%,
+    rgba(14,14,18,.6) 70%,
+    rgba(14,14,18,.85) 100%
+  );
+}
+.fs-overlay.light{
+  background:linear-gradient(
+    to bottom,
+    rgba(237,230,211,.0) 0%,
+    rgba(237,230,211,.2) 50%,
+    rgba(237,230,211,.8) 80%,
+    rgba(237,230,211,1) 100%
+  );
+}
+
+/* Content anchored to top */
+.fs-top{
+  position:relative; z-index:2;
+  padding-top:clamp(5rem,12vh,8rem);
+}
+.fs-eyebrow{
+  font-family:'JetBrains Mono',monospace; font-size:.72rem;
+  letter-spacing:.15em; text-transform:uppercase;
+  color:rgba(255,255,255,.6); margin-bottom:.6rem;
+  display:flex; align-items:center; justify-content:center; gap:.5rem;
+}
+.fs-eyebrow .dot{
+  width:6px; height:6px; border-radius:50%;
+  background:var(--t6); box-shadow:0 0 8px var(--t6);
+  animation:pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+@media(prefers-reduced-motion:reduce){.dot{animation:none;}}
+
+.fs-title{
+  font-family:'Space Grotesk',sans-serif; font-weight:700;
+  font-size:clamp(2.2rem,5.5vw,4rem);
+  letter-spacing:-.01em; text-transform:uppercase;
+  color:#fff; line-height:1.05;
+}
+.fs-title .thermal{
+  background:linear-gradient(90deg,var(--t5),var(--t6),var(--t7));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.fs-sub{
+  margin-top:.7rem; font-size:.95rem;
+  color:rgba(255,255,255,.65); max-width:44ch; margin-left:auto; margin-right:auto;
+}
+
+/* Content anchored to bottom */
+.fs-bottom{
+  position:relative; z-index:2;
+  padding-bottom:clamp(2.5rem,6vh,4rem);
+  display:flex; flex-direction:column; align-items:center; gap:1rem;
+}
+.fs-actions{ display:flex; gap:.75rem; flex-wrap:wrap; justify-content:center; }
+
+.btn-fs-primary{
+  font-family:'Archivo',sans-serif; font-weight:700; font-size:.74rem;
+  letter-spacing:.14em; text-transform:uppercase;
+  padding:.9rem 2rem; border-radius:3px; cursor:pointer; border:none;
+  background:rgba(255,255,255,.15);
+  backdrop-filter:blur(8px);
+  color:#fff; border:1.5px solid rgba(255,255,255,.35);
+  transition:all .2s;
+}
+.btn-fs-primary:hover{ background:rgba(255,255,255,.25); }
+.btn-fs-thermal{
+  background:linear-gradient(135deg,var(--t5),var(--t6),var(--t7));
+  color:var(--near-black); border:none;
+}
+.btn-fs-thermal:hover{ opacity:.85; }
+
+/* Annotation strip over image */
+.fs-annot{
+  position:absolute; z-index:2;
+  font-family:'JetBrains Mono',monospace; font-size:.64rem;
+  color:rgba(255,255,255,.5); letter-spacing:.04em; line-height:1.5;
+}
+.fs-annot.top-left{ top:calc(5rem + 56px); left:5vw; text-align:left; }
+.fs-annot.top-right{ top:calc(5rem + 56px); right:5vw; text-align:right; }
+@media(max-width:700px){.fs-annot{display:none;}}
+
+/* HUD widget */
+.hud{
+  position:absolute; top:calc(5rem + 60px); right:5vw; z-index:3;
+  background:rgba(14,14,18,.7); backdrop-filter:blur(8px);
+  border:1px solid rgba(123,0,255,.4); border-radius:6px;
+  padding:.75rem 1rem; min-width:126px;
+  box-shadow:0 0 14px rgba(123,0,255,.2);
+}
+.hud-lbl{ font-family:'JetBrains Mono',monospace; font-size:.58rem; color:rgba(255,255,255,.4); letter-spacing:.08em; text-transform:uppercase; }
+.hud-val{
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.5rem;
+  background:linear-gradient(90deg,var(--t5),var(--t7));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.hud-bar{ margin-top:.4rem; height:5px; border-radius:3px; position:relative;
+  background:linear-gradient(90deg,var(--t0),var(--t1),var(--t2),var(--t3),var(--t4),var(--t5),var(--t6),var(--t7)); }
+.hud-needle{ position:absolute; top:-3px; left:62%; width:2px; height:11px; background:#fff; border-radius:1px; box-shadow:0 0 4px #fff; }
+@media(max-width:700px){.hud{display:none;}}
+
+/* Scroll hint */
+.scroll-hint{
+  font-family:'JetBrains Mono',monospace; font-size:.65rem;
+  color:rgba(255,255,255,.4); letter-spacing:.1em; text-transform:uppercase;
+  display:flex; flex-direction:column; align-items:center; gap:.4rem;
+}
+.scroll-hint::after{
+  content:''; width:1px; height:28px;
+  background:linear-gradient(to bottom, rgba(255,255,255,.3), transparent);
+}
+
+/* Marquee */
+.mq-wrap{ overflow:hidden; background:var(--near-black); border-top:1px solid rgba(255,255,255,.06); border-bottom:1px solid rgba(255,255,255,.06); }
+.mq-track{
+  display:flex; gap:1.4rem; white-space:nowrap; padding:.55rem 0;
+  font-family:'JetBrains Mono',monospace; font-size:.7rem; letter-spacing:.05em;
+  color:rgba(255,255,255,.35); animation:scrollmq 42s linear infinite; width:max-content;
+}
+.mh{ color:rgba(255,255,255,.8); font-weight:700; }
+.mc{
+  background:linear-gradient(90deg,var(--t5),var(--t7));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; font-weight:700;
+}
+@keyframes scrollmq{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+@media(prefers-reduced-motion:reduce){.mq-track{animation:none;}}
+
+/* ===================== FEATURE ROWS (alternating image+text, blueprint style) ===================== */
+.feature-row{
+  display:grid; grid-template-columns:1fr 1fr;
+  min-height:520px;
+  background:var(--paper);
+}
+.feature-row.reverse .fr-media{ order:2; }
+.feature-row.reverse .fr-copy{ order:1; }
+@media(max-width:900px){
+  .feature-row,.feature-row.reverse{ grid-template-columns:1fr; }
+  .feature-row.reverse .fr-media,.feature-row.reverse .fr-copy{ order:unset; }
+}
+
+.fr-media{
+  position:relative; overflow:hidden; min-height:360px;
+  background:linear-gradient(var(--grid-line) 1px, transparent 1px),
+             linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+             #EDE6D3;
+  background-size:32px 32px, 32px 32px, auto;
+}
+.fr-media img,.fr-media video{
+  width:100%; height:100%; object-fit:cover; display:block;
+}
+.fr-media-placeholder{
+  width:100%; height:100%; min-height:360px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.6rem;
+}
+.fr-media-placeholder .ph-icon{ font-size:2rem; }
+.fr-media-placeholder .ph-label{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem;
+  color:var(--ink-soft); letter-spacing:.04em; text-align:center;
+  max-width:300px; line-height:1.5;
+}
+.fr-media-placeholder .ph-file{
+  font-family:'JetBrains Mono',monospace; font-size:.64rem; font-weight:700;
+  color:var(--ink); background:rgba(255,255,255,.7);
+  padding:.25rem .65rem; border-radius:3px; border:1px dashed var(--ink-soft);
+}
+.fr-annot{
+  position:absolute; font-family:'JetBrains Mono',monospace; font-size:.64rem;
+  color:var(--ink-soft); line-height:1.4;
+}
+.fr-annot.tl{ top:1rem; left:1rem; }
+.fr-annot.br{ bottom:1rem; right:1rem; text-align:right; }
+
+.fr-copy{
+  display:flex; flex-direction:column; justify-content:center;
+  padding:3.5rem 4vw;
+  background:var(--paper);
+}
+.fr-eyebrow{
+  font-family:'JetBrains Mono',monospace; font-size:.7rem;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft);
+  margin-bottom:1.2rem; display:flex; align-items:center; gap:.5rem;
+}
+.fr-eyebrow::before{ content:''; width:22px; height:1px; background:var(--ink-soft); }
+.fr-title{
+  font-family:'Space Grotesk',sans-serif; font-weight:700;
+  font-size:clamp(1.8rem,3.5vw,2.8rem); text-transform:uppercase;
+  color:var(--ink); line-height:1.08; margin-bottom:1rem;
+}
+.fr-title .th{ background:linear-gradient(90deg,var(--t5),var(--t7)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.fr-body{ font-size:.96rem; color:var(--ink-soft); line-height:1.65; max-width:38ch; margin-bottom:1.8rem; }
+.btn-ink{
+  display:inline-flex; align-items:center; gap:.5rem;
+  font-family:'Archivo',sans-serif; font-weight:700; font-size:.74rem;
+  letter-spacing:.14em; text-transform:uppercase;
+  padding:.85rem 1.7rem; border:2px solid var(--ink); border-radius:10px 3px 10px 3px;
+  background:transparent; color:var(--ink); cursor:pointer; transition:all .2s;
+  box-shadow:2px 3px 0 0 rgba(42,53,80,.15);
+}
+.btn-ink:hover{ background:var(--ink); color:var(--cream); transform:translate(-1px,-2px); }
+
+/* ===================== CAFÉ — CINEMATOGRÁFICO ===================== */
+.cafe-section{ background:var(--near-black); padding:0; }
+
+.cafe-header{
+  padding:5rem 5vw 3rem;
+  display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:1.5rem;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.cafe-header-left .eyebrow-cafe{
+  font-family:'JetBrains Mono',monospace; font-size:.72rem;
+  letter-spacing:.15em; text-transform:uppercase;
+  background:linear-gradient(90deg,var(--t5),var(--t7));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  margin-bottom:.8rem;
+}
+.cafe-header-left h2{
+  font-family:'Space Grotesk',sans-serif; font-weight:700;
+  font-size:clamp(2rem,5vw,3.5rem); text-transform:uppercase;
+  color:#fff; line-height:1.02;
+}
+.cafe-header-left h2 em{ font-style:normal; color:rgba(255,255,255,.35); }
+.cafe-header-right{
+  font-family:'JetBrains Mono',monospace; font-size:.72rem;
+  color:rgba(255,255,255,.35); letter-spacing:.04em; text-align:right; line-height:1.8;
+}
+
+/* Thermal divider bar */
+.thermal-bar{
+  height:3px;
+  background:linear-gradient(90deg,var(--t0),var(--t1),var(--t2),var(--t3),var(--t4),var(--t5),var(--t6),var(--t7),#fff);
+}
+
+/* ---- FEATURED COFFEE (hero card, full width) ---- */
+.cafe-featured{
+  display:grid; grid-template-columns:1.1fr 1fr;
+  min-height:580px; border-bottom:1px solid rgba(255,255,255,.07);
+}
+@media(max-width:900px){ .cafe-featured{ grid-template-columns:1fr; } }
+
+.cf-media{ position:relative; overflow:hidden; min-height:400px; }
+.cf-media img,.cf-media video{ width:100%; height:100%; object-fit:cover; display:block; }
+.cf-media-placeholder{
+  width:100%; height:100%; min-height:400px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.7rem;
+  background:
+    repeating-linear-gradient(45deg,rgba(42,53,80,.08) 0 10px,transparent 10px 20px),
+    #1A1A24;
+  border:1.5px dashed rgba(255,255,255,.15);
+}
+.cf-media-placeholder .ph-icon{ font-size:2.4rem; }
+.cf-media-placeholder .ph-label{ font-family:'JetBrains Mono',monospace; font-size:.7rem; color:rgba(255,255,255,.4); letter-spacing:.04em; text-align:center; max-width:340px; line-height:1.5; }
+.cf-media-placeholder .ph-file{ font-family:'JetBrains Mono',monospace; font-size:.64rem; font-weight:700; color:var(--t7); background:rgba(255,255,255,.06); padding:.3rem .7rem; border-radius:3px; border:1px dashed rgba(255,215,0,.3); }
+
+.cf-badge{
+  position:absolute; top:1.4rem; left:1.4rem;
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.68rem;
+  letter-spacing:.08em; text-transform:uppercase;
+  padding:.35rem .8rem; border-radius:2px;
+  background:linear-gradient(90deg,var(--t4),var(--t5)); color:#fff;
+}
+
+.cf-body{
+  padding:3rem 3.5vw;
+  display:flex; flex-direction:column; justify-content:center;
+  border-left:1px solid rgba(255,255,255,.06);
+}
+@media(max-width:900px){ .cf-body{ border-left:none; border-top:1px solid rgba(255,255,255,.07); } }
+
+.cf-variety{
+  font-family:'JetBrains Mono',monospace; font-size:.7rem;
+  color:rgba(255,255,255,.4); letter-spacing:.1em; text-transform:uppercase; margin-bottom:.5rem;
+}
+.cf-name{
+  font-family:'Space Grotesk',sans-serif; font-weight:700;
+  font-size:clamp(1.8rem,4vw,2.8rem); color:#fff; text-transform:uppercase;
+  line-height:1.05; margin-bottom:1.4rem;
+}
+.cf-meta-grid{
+  display:grid; grid-template-columns:1fr 1fr; gap:1px;
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.06);
+  margin-bottom:1.6rem;
+}
+.cf-meta-cell{ background:var(--near-black); padding:.7rem .9rem; }
+.cf-meta-cell .ml{ font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.35); margin-bottom:.2rem; }
+.cf-meta-cell .mv{ font-family:'JetBrains Mono',monospace; font-size:.88rem; color:#fff; font-weight:600; }
+
+/* Score display */
+.cf-score-row{ display:flex; align-items:baseline; gap:.6rem; margin-bottom:.5rem; }
+.cf-score{
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:3.2rem;
+  background:linear-gradient(90deg,var(--t5),var(--t6),var(--t7));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  line-height:1;
+}
+.cf-score-label{ font-size:.72rem; color:rgba(255,255,255,.4); letter-spacing:.06em; text-transform:uppercase; }
+.cf-thermal-bar{
+  height:7px; border-radius:2px; margin-bottom:1.4rem; position:relative;
+  background:linear-gradient(90deg,var(--t0),var(--t1),var(--t2),var(--t3),var(--t4),var(--t5),var(--t6),var(--t7));
+}
+.cf-needle{ position:absolute; top:-4px; width:2px; height:15px; background:#fff; border-radius:1px; box-shadow:0 0 5px rgba(255,215,0,.7); }
+.cf-notes{ font-size:.9rem; color:rgba(255,255,255,.55); line-height:1.6; margin-bottom:2rem; font-style:italic; }
+.cf-price-row{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+.cf-price{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.6rem; color:#fff; }
+.btn-buy{
+  font-family:'Archivo',sans-serif; font-weight:700; font-size:.74rem;
+  letter-spacing:.14em; text-transform:uppercase;
+  padding:.85rem 1.8rem; border:none; border-radius:3px; cursor:pointer;
+  background:linear-gradient(135deg,var(--t5),var(--t6),var(--t7));
+  color:var(--near-black); transition:opacity .2s;
+}
+.btn-buy:hover{ opacity:.85; }
+.btn-buy-ghost{
+  background:rgba(255,255,255,.07); color:#fff;
+  border:1.5px solid rgba(255,255,255,.2);
+  backdrop-filter:blur(4px);
+}
+.btn-buy-ghost:hover{ background:rgba(255,255,255,.14); }
+
+/* ---- COFFEE GRID (secondary items) ---- */
+.cafe-grid{
+  display:grid; grid-template-columns:repeat(3,1fr);
+  border-top:1px solid rgba(255,255,255,.07);
+}
+@media(max-width:900px){ .cafe-grid{ grid-template-columns:1fr 1fr; } }
+@media(max-width:560px){ .cafe-grid{ grid-template-columns:1fr; } }
+
+.cg-card{
+  border-right:1px solid rgba(255,255,255,.07);
+  display:flex; flex-direction:column;
+}
+.cg-card:last-child{ border-right:none; }
+@media(max-width:900px){
+  .cg-card:nth-child(2n){ border-right:none; }
+  .cg-card{ border-bottom:1px solid rgba(255,255,255,.07); }
+}
+
+.cg-media{ aspect-ratio:4/3; position:relative; overflow:hidden; }
+.cg-media img,.cg-media video{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s ease; }
+.cg-card:hover .cg-media img{ transform:scale(1.04); }
+.cg-media-placeholder{
+  width:100%; height:100%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.5rem;
+  background:
+    repeating-linear-gradient(45deg,rgba(42,53,80,.08) 0 10px,transparent 10px 20px),
+    #1A1A24;
+  border:1.5px dashed rgba(255,255,255,.1);
+}
+.cg-media-placeholder .ph-icon{ font-size:1.6rem; }
+.cg-media-placeholder .ph-label{ font-family:'JetBrains Mono',monospace; font-size:.63rem; color:rgba(255,255,255,.35); letter-spacing:.03em; text-align:center; max-width:240px; line-height:1.5; }
+.cg-media-placeholder .ph-file{ font-family:'JetBrains Mono',monospace; font-size:.6rem; font-weight:700; color:var(--t7); background:rgba(255,255,255,.05); padding:.2rem .55rem; border-radius:2px; border:1px dashed rgba(255,215,0,.25); }
+
+.cg-score-stripe{
+  height:4px;
+  background:linear-gradient(90deg,var(--t0),var(--t2),var(--t4),var(--t5),var(--t6),var(--t7));
+  position:relative;
+}
+.cg-score-stripe .cn{ position:absolute; top:-3px; width:2px; height:10px; background:#fff; border-radius:1px; box-shadow:0 0 4px rgba(255,215,0,.5); }
+
+.cg-body{ padding:1.4rem 1.4rem 1.8rem; flex:1; display:flex; flex-direction:column; }
+.cg-variety{ font-family:'JetBrains Mono',monospace; font-size:.64rem; color:rgba(255,255,255,.35); letter-spacing:.08em; text-transform:uppercase; margin-bottom:.3rem; }
+.cg-name{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.15rem; text-transform:uppercase; color:#fff; margin-bottom:.7rem; }
+.cg-origin{ font-size:.82rem; color:rgba(255,255,255,.45); margin-bottom:.8rem; }
+.cg-score-badge{
+  display:inline-flex; align-items:baseline; gap:.3rem; margin-bottom:.8rem;
+}
+.cg-score-num{
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.5rem;
+  background:linear-gradient(90deg,var(--t5),var(--t7));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.cg-score-unit{ font-size:.62rem; color:rgba(255,255,255,.3); letter-spacing:.06em; text-transform:uppercase; }
+.cg-notes{ font-size:.8rem; color:rgba(255,255,255,.45); line-height:1.55; margin-bottom:1rem; font-style:italic; flex:1; }
+.cg-footer{ display:flex; align-items:center; justify-content:space-between; margin-top:auto; padding-top:.8rem; border-top:1px solid rgba(255,255,255,.06); }
+.cg-price{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1rem; color:#fff; }
+.btn-cg{
+  font-family:'Archivo',sans-serif; font-weight:700; font-size:.68rem;
+  letter-spacing:.12em; text-transform:uppercase;
+  padding:.6rem 1.2rem; border:1.5px solid rgba(255,255,255,.2);
+  border-radius:2px; background:transparent; color:#fff; cursor:pointer; transition:all .2s;
+}
+.btn-cg:hover{ background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.4); }
+
+/* ===================== PROJECTS STRIP ===================== */
+.projects-section{ background:var(--paper); }
+.projects-grid{ display:grid; grid-template-columns:1fr 1fr; }
+@media(max-width:760px){ .projects-grid{ grid-template-columns:1fr; } }
+
+.pj-card{
+  position:relative; min-height:520px; overflow:hidden;
+  display:flex; flex-direction:column; align-items:center; justify-content:space-between;
+  text-align:center;
+}
+.pj-media{ position:absolute; inset:0; }
+.pj-media img,.pj-media video{ width:100%; height:100%; object-fit:cover; display:block; }
+.pj-placeholder{
+  width:100%; height:100%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.6rem;
+}
+.pj-placeholder.dark{
+  background:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px), #EDE6D3;
+  background-size:32px 32px, 32px 32px, auto;
+}
+.pj-placeholder.darker{
+  background:
+    repeating-linear-gradient(45deg,rgba(42,53,80,.12) 0 10px,transparent 10px 20px), #1E1E24;
+}
+.pj-placeholder .ph-icon{ font-size:2rem; }
+.pj-placeholder .ph-label{ font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.04em; text-align:center; max-width:300px; line-height:1.5; }
+.pj-placeholder.dark .ph-label{ color:var(--ink-soft); }
+.pj-placeholder.darker .ph-label{ color:rgba(255,255,255,.4); }
+.pj-placeholder .ph-file{ font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:700; padding:.25rem .6rem; border-radius:3px; }
+.pj-placeholder.dark .ph-file{ color:var(--ink); background:rgba(255,255,255,.6); border:1px dashed var(--ink-soft); }
+.pj-placeholder.darker .ph-file{ color:var(--t7); background:rgba(255,255,255,.05); border:1px dashed rgba(255,215,0,.25); }
+
+.pj-overlay{ position:absolute; inset:0; background:linear-gradient(to bottom,transparent 30%,rgba(14,14,18,.8) 100%); }
+.pj-overlay.light-ov{ background:linear-gradient(to bottom,transparent 30%,rgba(237,230,211,.9) 100%); }
+
+.pj-top{ position:relative; z-index:2; padding-top:3rem; }
+.pj-bottom{ position:relative; z-index:2; padding:0 2rem 3rem; width:100%; }
+.pj-name{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(1.6rem,3.5vw,2.4rem); text-transform:uppercase; margin-bottom:.5rem; }
+.pj-desc{ font-size:.88rem; margin-bottom:1.4rem; max-width:36ch; margin-left:auto; margin-right:auto; }
+
+/* ===================== VALUES / THERMAL ===================== */
+.thermal-section{
+  padding:6rem 5vw; background:var(--near-black); position:relative; overflow:hidden;
+}
+.thermal-section::before{
+  content:''; position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse at 20% 50%,rgba(123,0,255,.3) 0%,transparent 60%),
+    radial-gradient(ellipse at 70% 30%,rgba(255,69,0,.2) 0%,transparent 50%),
+    radial-gradient(ellipse at 90% 80%,rgba(255,215,0,.12) 0%,transparent 40%);
+  pointer-events:none;
+}
+.ts-header{ text-align:center; margin-bottom:4rem; position:relative; z-index:1; }
+.ts-header h2{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(1.8rem,4vw,3rem); text-transform:uppercase; color:#fff; margin-bottom:.5rem; }
+.ts-header p{ color:rgba(255,255,255,.45); font-size:.96rem; max-width:50ch; margin:0 auto; }
+.ts-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(255,255,255,.07); position:relative; z-index:1; }
+@media(max-width:900px){ .ts-grid{ grid-template-columns:1fr; } }
+.ts-card{ background:rgba(255,255,255,.03); padding:2.5rem 2rem; }
+.ts-num{
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:2.8rem;
+  background:linear-gradient(90deg,var(--t5),var(--t6),var(--t7));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  margin-bottom:.4rem; line-height:1;
+}
+.ts-lbl{ font-family:'JetBrains Mono',monospace; font-size:.68rem; color:rgba(255,255,255,.4); letter-spacing:.1em; text-transform:uppercase; margin-bottom:.8rem; }
+.ts-desc{ font-size:.88rem; color:rgba(255,255,255,.6); line-height:1.55; }
+.ts-bar{ margin-top:1.2rem; height:4px; border-radius:2px; background:linear-gradient(90deg,var(--t0),var(--t1),var(--t2),var(--t3),var(--t4),var(--t5),var(--t6),var(--t7)); }
+
+/* ===================== B2B ===================== */
+.b2b-section{ background:var(--paper); padding:5rem 5vw; }
+.section-label{
+  display:flex; align-items:center; gap:1rem; margin-bottom:2rem;
+}
+.section-label .num{
+  font-family:'JetBrains Mono',monospace; font-size:.75rem; font-weight:700;
+  color:var(--cream); background:var(--ink); padding:.3rem .65rem; border-radius:2px; letter-spacing:.05em;
+}
+.section-label .num.thermal-num{
+  background:linear-gradient(135deg,var(--t2),var(--t4),var(--t5)); color:var(--t7);
+}
+.section-label .ttl{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.4rem; text-transform:uppercase; letter-spacing:.06em; }
+.section-label .rule{ flex:1; height:1px; background:var(--grid-line); border-top:1px dashed var(--ink-soft); }
+.section-label .sub{ font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--ink-soft); }
+
+.sec-lbl{ font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--ink-soft); margin-bottom:.5rem; }
+.sec-h2{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(1.6rem,3.5vw,2.2rem); text-transform:uppercase; margin-bottom:.7rem; }
+.sec-desc{ max-width:60ch; color:var(--ink-soft); font-size:.94rem; line-height:1.65; margin-bottom:2.2rem; }
+
+.b2b-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--grid-line); border:2px solid var(--ink); }
+@media(max-width:900px){ .b2b-grid{ grid-template-columns:1fr 1fr; } }
+@media(max-width:520px){ .b2b-grid{ grid-template-columns:1fr; } }
+.b2b-card{ background:var(--cream); padding:1.6rem 1.3rem; }
+.b2b-ico{ font-size:1.5rem; margin-bottom:.6rem; }
+.b2b-title{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:.95rem; text-transform:uppercase; letter-spacing:.04em; margin-bottom:.4rem; color:var(--ink); }
+.b2b-d{ font-size:.82rem; color:var(--ink-soft); line-height:1.5; }
+
+/* ===================== BLOG ===================== */
+.blog-section{ background:var(--near-black); padding:5rem 5vw; }
+.blog-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.07); }
+@media(max-width:900px){ .blog-grid{ grid-template-columns:1fr 1fr; } }
+@media(max-width:560px){ .blog-grid{ grid-template-columns:1fr; } }
+.blog-card{ background:rgba(255,255,255,.03); padding:1.6rem; }
+.blog-tag{ display:inline-block; font-family:'JetBrains Mono',monospace; font-size:.64rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:.2rem .6rem; border-radius:2px; margin-bottom:.7rem; background:linear-gradient(90deg,var(--t5),var(--t6)); color:var(--near-black); }
+.blog-title{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:.95rem; line-height:1.4; margin-bottom:.6rem; color:#fff; }
+.blog-ex{ font-size:.8rem; color:rgba(255,255,255,.4); line-height:1.55; }
+
+/* ===================== FOOTER ===================== */
+footer{
+  background:var(--near-black); border-top:1px solid rgba(255,255,255,.08);
+  padding:3rem 5vw;
+}
+.footer-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:2rem; margin-bottom:2rem; }
+@media(max-width:900px){ .footer-grid{ grid-template-columns:1fr; } }
+.footer-col .f-label{ font-family:'JetBrains Mono',monospace; font-size:.68rem; color:rgba(255,255,255,.3); letter-spacing:.08em; text-transform:uppercase; margin-bottom:.6rem; }
+.footer-col h4{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:.9rem; text-transform:uppercase; letter-spacing:.06em; color:#fff; margin-bottom:.4rem; }
+.footer-col p{ font-size:.82rem; color:rgba(255,255,255,.4); line-height:1.55; }
+.footer-col a{ color:rgba(255,255,255,.5); text-decoration:underline; text-underline-offset:3px; }
+.footer-bottom{ border-top:1px solid rgba(255,255,255,.07); padding-top:1.4rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+.footer-bottom .meta{ font-family:'JetBrains Mono',monospace; font-size:.68rem; color:rgba(255,255,255,.3); letter-spacing:.04em; }
+.footer-tbar{ width:140px; height:4px; border-radius:2px; background:linear-gradient(90deg,var(--t0),var(--t2),var(--t4),var(--t5),var(--t6),var(--t7)); }
+
+
+</style>
+</head>
+<body>
+
+<div class="spiral" id="spiral" aria-hidden="true"></div>
+
+<div class="page">
+
+<!-- ========== HEADER ========== -->
+<header id="main-header">
+  <div class="logo-unit">
+    <img src="images/logo.png" alt="ACERO.press" class="logo-acero">
+   <span class="logo-press">.press</span>
+</div>
+    
+  
+  <nav class="nav-links">
+    <a href="#inicio">Inicio</a>
+    <a href="#tecnologia">Tecnología</a>
+    <a href="#cafe">Café</a>
+    <a href="#proyectos">Proyectos</a>
+    <a href="#b2b">B2B</a>
+    <a href="#blog">Blog</a>
+  </nav>
+  <a href="#cafe" class="btn-explora">EXPLORA →</a>
+</header>
+
+<!-- ========== HERO FULLSCREEN (video/imagen) ========== -->
+<section class="fullscreen" id="inicio">
+  <div class="fs-media">
+    <!-- 🎬 CAMPO DE VIDEO: reemplaza el placeholder con tu video -->
+     <video autoplay muted loop playsinline src="images/hero_main1.mp4"></video> 
+        
+    
+
+    <div class="fs-placeholder">
+      <span class="ph-icon">🎬</span>
+      <div class="ph-label"> imagen de referencia ACERO</div>
+      <span class="ph-file">images/hero-main.mp4 · 1920×1080 · autoplay / muted / loop</span>
+    </div>
+  </div>
+  <div class="fs-overlay"></div>
+
+  <!-- HUD temperatura -->
+  <div class="hud">
+    <div class="hud-lbl">Temperatura óptima</div>
+    <div class="hud-val" id="hero-temp">92.5°C</div>
+    <div class="hud-lbl" style="margin-top:.3rem;">Bogotá · 2.600 msnm</div>
+    <div class="hud-bar"><div class="hud-needle"></div></div>
+  </div>
+
+  <!-- Anotaciones técnicas esquinas -->
+   <div>
+
+   </div>
+   <div>
+
+   </div>
+  <div class="fs-annot top-left">Activo · Bogotá 2.600 msnm<br>R≈15mm · 60° · ajuste de molienda<br>Ø 4.5cm · base cilíndrica</div>
+
+  <div class="fs-top">
+    <div class="fs-eyebrow"><span class="dot"></span> Specialty Coffee · </div>
+    
+    <div class="fs-title">
+
+      Precisión.<br>Pureza.<br><span class="thermal">Futuro.</span>
+    </div>
+    
+  </div>
+
+  <div class="fs-bottom">
+    <div class="fs-actions">
+      <a href="#cafe" class="btn-fs-primary btn-fs-thermal">Ver catálogo</a>
+      <a href="#proyectos" class="btn-fs-primary">Nuestros proyectos</a>
+    </div>
+    <div class="scroll-hint">Explora</div>
+  </div>
+</section>
+
+<!-- Marquee -->
+<div class="mq-wrap">
+  <div class="mq-track">
+    <span class="mh">· Gesha · </span><span>Castillo N</span><span class="mc"> · SCA 87+ · </span><span>Huila · Nariño · Cauca</span><span class="mh"> · Agro · </span><span>Bourbon Rosado</span><span class="mc"> · Proceso Lavado · </span><span>Trazabilidad Completa</span><span class="mh"> · 92.5°C · AeroPress · floatGardens · </span><span>Pink Bourbon</span><span class="mc"> · Origen Único · </span>
+    <span class="mh">· Gesha · </span><span>Castillo </span><span class="mc"> · SCA 87+ · </span><span>Huila · Nariño · Cauca</span><span class="mh"> ·  Agro · </span><span>Bourbon Rosado</span><span class="mc"> · Proceso Lavado · </span><span>Trazabilidad Completa</span><span class="mh"> · 92.5°C · AeroPress · floatGardens · </span><span>Pink Bourbon</span><span class="mc"> · Origen Único · </span>
+  </div>
+</div>
+
+<!-- ========== TECNOLOGÍA — FEATURE ROW 1 ========== -->
+<div id="tecnologia"></div>
+<div class="feature-row">
+  <div class="fr-media">
+    <!-- 🖼️ CAMPO DE IMAGEN / VIDEO -->
+     <img src="images/pack.png" alt=""> 
+    <!-- <video autoplay muted loop playsinline src="images/cerezas-cromo.mp4"></video> -->
+    <div class="fr-media-placeholder">
+      <span class="ph-icon">🖼️</span>
+      <div class="ph-label">
+         Structure — racimo de cerezas de café , boceto técnico con cotas (2.5m, Ø0.3m, ángulos 60°), ondas de fondo, acentos  naranja/ámbar</div>
+      <span class="ph-file"> · 1200×900 · o .mp4</span>
+    </div>
+    <span class="fr-annot tl">FIG. 02.1 — COLD BREW<br>CAN S STRUCTURE</span>
+    <span class="fr-annot br">2.5m · Ø 0.3m · 2.95°<br>ajuste de tolerancias</span>
+  </div>
+  <div class="fr-copy">
+    <div class="fr-eyebrow">FIG. 02.1 — ESTRUCTURA</div>
+    <div class="fr-title">COLD<br>BREW<br>CAN S<span class="th"></span></div>
+    <p class="fr-body">Inteligencia artificial aplicada a marcas de cafe. Trazabilidad desde la cereza hasta la taza,  análisis del fruto.</p>
+    <a href="#proyectos" class="btn-ink">Explorar →</a>
+  </div>
+</div>
+
+<!-- FEATURE ROW 2 — invertida -->
+<div class="feature-row reverse">
+  <div class="fr-media">
+    <!-- 🎬 CAMPO DE VIDEO -->
+    <video autoplay muted loop playsinline src="images/aeropress.mp4"></video>
+    <div class="fr-media-placeholder">
+      <span class="ph-icon">🎬</span>
+      <div class="ph-label">Video / imagen del corte técnico AeroPress Go — cámara compacta, cotas en azul, fondo papel beige grillado, ondas </div>
+      <span class="ph-file">images/aeropress-diagram.mp4 · 1200×900</span>
+    </div>
+    <span class="fr-annot tl">FIG. 02.2 — AEROPRESS GO™<br>Ø Base = 9.5cm · H = 13.5cm</span>
+    <span class="fr-annot br">Filtro papel Go Ø55mm<br>Sello silicona R=1.5mm</span>
+  </div>
+  <div class="fr-copy">
+    <div class="fr-eyebrow">FIG. 02.2 — PROCESO</div>
+    <div class="fr-title">Diseño<br>de<br><span class="th">Experiencia</span></div>
+    <p class="fr-body">Diseño a medida de cada extracción.  AeroPress , 92.5°C, documentado taza a taza desde Bogotá a 2.600 msnm. Tolerancias: ±0.5mm.</p>
+    <a href="press.html" class="btn-ink">Ver acero.press →</a>
+  </div>
+</div>
+
+<!-- FEATURE ROW 3 — granos -->
+<div class="feature-row">
+  <div class="fr-media">
+    <!-- 🖼️ CAMPO DE IMAGEN -->
+    <video autoplay muted loop playsinline src="images/roast.mp4"></video>
+    <div class="fr-media-placeholder">
+      <span class="ph-icon">🖼️</span>
+      <div class="ph-label">Granos de café isométricos , boceto tinta azul, termografía infrarroja superpuesta (naranja/amarillo en la grieta del grano), fondo papel beige</div>
+      <span class="ph-file">images/granos-termicos.jpg · 1200×900</span>
+    </div>
+    <span class="fr-annot tl">FIG. 02.3 — TUESTE<br>THERMAL PROFILE </span>
+    <span class="fr-annot br">9m × 4.5m × 3.5m<br>Loring roaster machine </span>
+  </div>
+  <div class="fr-copy">
+    <div class="fr-eyebrow">FIG. 02.3 — TUESTE</div>
+    <div class="fr-title">Energía<br>en cada<br><span class="th">detalle</span></div>
+    <p class="fr-body">Tueste calibrado por curva térmica, no por tiempo. Cada lote ajusta temperatura y flujo de aire para sostener el perfil aromático. </p>
+    <a href="#cafe" class="btn-ink">Ver catálogo →</a>
+  </div>
+</div>
+
+<!-- ========== CAFÉ — SECCIÓN CINEMATOGRÁFICA ========== -->
+<section class="cafe-section" id="cafe">
+
+  <div class="thermal-bar"></div>
+
+  <div class="cafe-header">
+    <div class="cafe-header-left">
+      <div class="eyebrow-cafe">// Catálogo de especialidad · Profile</div>
+      <h2>Café de<br>especialidad <em>colombiano</em></h2>
+    </div>
+    <div class="cafe-header-right">
+      FIG. 04 — CATÁLOGO<br>
+      Puntaje SCA · Q-Grader certificado<br>
+      Trazabilidad completa · Origen único<br>
+      Bogotá · Huila · Nariño · Cauca
+    </div>
+  </div>
+
+  <!-- FEATURED — Acero Gesha (el más destacado, ocupa toda la anchura) -->
+  <div class="cafe-featured">
+    <div class="cf-media">
+      <!-- 🖼️ IMAGEN DESTACADA DEL CAFÉ -->
+     <video autoplay muted loop playsinline src="images/domingo.mp4"> 
+      <div class="cf-media-placeholder">
+        <span class="ph-icon">🖼️</span>
+        <div class="ph-label">Fotografía de producto del  Gesha — taza blanca sobre fondo oscuro con vapor, granos Gesha en primer plano, luz lateral cálida/termal, estilo editorial de alta gama</div>
+        <span class="ph-file">images/cafe-gesha.jpg · 1600×1000 · portrait / landscape</span>
+      </div>
+      <div class="cf-badge">★ Destacado · SCA 91.5</div>
+    </div>
+    <div class="cf-body">
+      <div class="cf-variety">Gesha · Proceso Lavado · Origen único</div>
+      <div class="cf-name">DOMINGO<br>TORRES</div>
+      <div class="cf-meta-grid">
+        <div class="cf-meta-cell"><div class="ml">Origen</div><div class="mv">SANTANDER, Colombia</div></div>
+        <div class="cf-meta-cell"><div class="ml">Altitud</div><div class="mv">1.850 msnm</div></div>
+        <div class="cf-meta-cell"><div class="ml">Proceso</div><div class="mv">Lavado 36h</div></div>
+        <div class="cf-meta-cell"><div class="ml">Tueste</div><div class="mv">Claro · 196°C</div></div>
+      </div>
+      <div class="cf-score-row">
+        <div class="cf-score">91.5</div>
+        <div class="cf-score-label">Puntos SCA<br>Q-Grader<br>certificado</div>
+      </div>
+      <div class="cf-thermal-bar"><div class="cf-needle" style="left:85%"></div></div>
+      <p class="cf-notes">"Jasmine, bergamota, melocotón blanco, acidez de uva verde. Final prolongado con mineralidad."</p>
+      <div class="cf-price-row">
+        <div class="cf-price">$38.000 / 200g</div>
+        <div style="display:flex;gap:.7rem;flex-wrap:wrap;">
+          <button class="btn-buy">Pedir ahora →</button>
+          <button class="btn-buy btn-buy-ghost">Ver detalles</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULLSCREEN intermediaria — imagen ambiental de café -->
+  <div class="fullscreen" style="height:55vh; min-height:340px;">
+    <div class="fs-media">
+      <!-- 🖼️ IMAGEN / VIDEO AMBIENTAL entre productos -->
+     <video autoplay muted loop playsinline src="images/montain.png"></video> 
+      <div class="fs-placeholder" style="background:#1A1A24;">
+        <span class="ph-icon">🎬</span>
+        <div class="ph-label" style="color:rgba(255,255,255,.4);">Video / imagen ambiental — manos preparando AeroPress, vapor del café, proceso en cámara lenta, estética termal o blueprint</div>
+        <span class="ph-file" style="color:var(--t7);background:rgba(255,255,255,.05);border:1px dashed rgba(255,215,0,.25);">images/cafe-ambiente.mp4 · 1920×1080 · autoplay / muted</span>
+      </div>
+    </div>
+    <div class="fs-overlay" style="background:linear-gradient(to bottom,rgba(14,14,18,.4),rgba(14,14,18,.7));"></div>
+    <div class="fs-top" style="padding-top:0; display:flex; align-items:center; height:100%; justify-content:center; flex-direction:column; gap:.5rem;">
+      <div class="fs-eyebrow"><span class="dot"></span> Más variedades disponibles</div>
+      <div class="fs-title" style="font-size:clamp(1.4rem,3vw,2.2rem);">Cada lote, una historia.</div>
+    </div>
+  </div>
+
+  <!-- GRID DE CAFÉS SECUNDARIOS -->
+  <div class="cafe-grid">
+
+    <!-- Castillo  -->
+    <div class="cg-card">
+      <div class="cg-media">
+        <!-- 🖼️ IMAGEN PRODUCTO -->
+         <img src="images/castillo.png" alt="Castillo Negro">
+        <div class="cg-media-placeholder">
+          <span class="ph-icon">🖼️</span>
+          <div class="ph-label">Fotografía del Castillo Negro — granos naturales, tonos oscuros, humo, fondo negro</div>
+          <span class="ph-file">images/cafe-castillo.jpg · 800×600</span>
+        </div>
+      </div>
+      <div class="cg-score-stripe"><div class="cn" style="left:63%"></div></div>
+      <div class="cg-body">
+        <div class="cg-variety">Castillo Naranjal · Natural</div>
+        <div class="cg-name">Castillo Negro</div>
+        <div class="cg-origin">Nariño, Colombia · 2.100 msnm · Natural 21 días</div>
+        <div class="cg-score-badge">
+          <span class="cg-score-num">88.0</span>
+          <span class="cg-score-unit">pts SCA</span>
+        </div>
+        <p class="cg-notes">"Panela, mora, chocolate oscuro 70%, cuerpo denso. Ideal para prensa francesa y espresso."</p>
+        <div class="cg-footer">
+          <span class="cg-price">$28.000 / 200g</span>
+          <button class="btn-cg">Pedir</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bourbon Rosado -->
+    <div class="cg-card">
+      <div class="cg-media">
+        <!-- 🖼️ IMAGEN PRODUCTO -->
+         <img src="images/rosado.png" alt="Bourbon Rosado"> 
+        <div class="cg-media-placeholder">
+          <span class="ph-icon">🖼️</span>
+          <div class="ph-label">Fotografía del Bourbon Rosado — cerezas rosadas en rama, luz cálida, bokeh, fondo jardín</div>
+          <span class="ph-file">images/cafe-bourbon.jpg · 800×600</span>
+        </div>
+      </div>
+      <div class="cg-score-stripe"><div class="cn" style="left:72%"></div></div>
+      <div class="cg-body">
+        <div class="cg-variety">Pink Bourbon · Honey</div>
+        <div class="cg-name">Bourbon Rosado</div>
+        <div class="cg-origin">Huila — Acevedo · 1.780 msnm · Honey 30% mucílago</div>
+        <div class="cg-score-badge">
+          <span class="cg-score-num">89.5</span>
+          <span class="cg-score-unit">pts SCA</span>
+        </div>
+        <p class="cg-notes">"Frambuesa fresca, durazno, caramelo, acidez brillante. Perfecto para V60 y AeroPress."</p>
+        <div class="cg-footer">
+          <span class="cg-price">$32.000 / 200g</span>
+          <button class="btn-cg">Pedir</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Typica Origen -->
+    <div class="cg-card">
+      <div class="cg-media">
+        <!-- 🖼️ IMAGEN PRODUCTO -->
+        <img src="images/typica.png" alt="Typica Origen">  
+        <div class="cg-media-placeholder">
+          <span class="ph-icon">🖼️</span>
+          <div class="ph-label">Fotografía del Typica Origen — taza blanca minimalista, vapor, luz lateral fría, fondo gris piedra</div>
+          <span class="ph-file">images/cafe-typica.jpg · 800×600</span>
+        </div>
+      </div>
+      <div class="cg-score-stripe"><div class="cn" style="left:55%"></div></div>
+      <div class="cg-body">
+        <div class="cg-variety">Typica · Lavado</div>
+        <div class="cg-name">Typica Origen</div>
+        <div class="cg-origin">Cauca — Inzá · 1.950 msnm · Lavado doble ferm.</div>
+        <div class="cg-score-badge">
+          <span class="cg-score-num">87.0</span>
+          <span class="cg-score-unit">pts SCA</span>
+        </div>
+        <p class="cg-notes">"Limón Meyer, manzana verde, té negro, cuerpo ligero sedoso. Variedad patrimonio colombiano."</p>
+        <div class="cg-footer">
+          <span class="cg-price">$26.000 / 200g</span>
+          <button class="btn-cg">Pedir</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="thermal-bar"></div>
+</section>
+
+<!-- ========== PROYECTOS ========== -->
+<section class="projects-section" id="proyectos">
+  <div class="projects-grid">
+
+    <!-- floatGardens -->
+    <div class="pj-card">
+      <div class="pj-media">
+        <!-- 🖼️ IMAGEN / VIDEO FLOATGARDENS -->
+       <img src="images/cerezas.png" alt="floatGardens"> 
+        <div class="pj-placeholder dark">
+          <span class="ph-icon">🖼️</span>
+          <div class="ph-label" style="color:var(--ink-soft);">Imagen floatGardens — boceto técnico de planta en módulo hidropónico flotante, logo superpuesto, acentos lima/lavanda, tinta azul sobre papel beige</div>
+          <span class="ph-file" style="color:var(--ink);background:rgba(255,255,255,.6);border:1px dashed var(--ink-soft);">images/float-gardens-hero.jpg · 960×1040</span>
+        </div>
+      </div>
+      <div class="pj-overlay light-ov"></div>
+      <div class="pj-top">
+        <div class="fs-eyebrow" style="color:rgba(42,53,80,.6);">FASE 01 ACTIVA</div>
+      </div>
+      <div class="pj-bottom">
+        <div class="pj-name" style="color:var(--ink);">
+          <span style="color:#A6F23A;">float</span><span style="color:#C4A8E8;">Gardens</span>
+        </div>
+        <div class="pj-desc" style="color:var(--ink-soft);">Red de terrazas hidropónicas en Bogotá. 14 nodos activos, 3 localidades, visión de granja vertical.</div>
+        <a href="floatgardens.html" class="btn-ink" style="margin:0 auto;">Explorar →</a>
+      </div>
+    </div>
+
+    <!-- acero.press -->
+    <div class="pj-card">
+      <div class="pj-media">
+        <!-- 🎬 VIDEO / IMAGEN ACERO.PRESS -->
+       <video autoplay muted loop playsinline src="images/hero_main.mp4"></video>
+        <div class="pj-placeholder darker">
+          <span class="ph-icon">🎬</span>
+          <div class="ph-label" style="color:rgba(255,255,255,.4);">Video o imagen de acero.press — manos preparando AeroPress, cuaderno de campo abierto con bocetos técnicos y el logo ACERO/PRESS grafiteado, tazas de café</div>
+          <span class="ph-file" style="color:var(--t7);background:rgba(255,255,255,.05);border:1px dashed rgba(255,215,0,.25);">images/aceropress-feed.mp4 · 960×1040</span>
+        </div>
+      </div>
+      <div class="pj-overlay"></div>
+      <div class="pj-top">
+        <div class="fs-eyebrow">RETO ACTIVO · 12.847 / 50.000</div>
+      </div>
+      <div class="pj-bottom">
+        <div class="logo-unit">
+    <img src="images/logo.png" alt="ACERO.press" class="logo-acero">
+   <span class="logo-press">.press</span>
+</div>
+        <div class="pj-desc" style="color:rgba(255,255,255,.6);">Diario público del reto 50.000 tazas en AeroPress. Feed, odómetro y sync con Instagram.</div>
+        <a href="index.html" class="btn-fs-primary">Ver feed →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== THERMAL STATS ========== -->
+<section class="thermal-section">
+  <div class="ts-header">
+    <h2>Perfil <span style="background:linear-gradient(90deg,var(--t5),var(--t7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">termal</span> activo</h2>
+    <p>Métricas en tiempo real del ecosistema ACERO: temperatura, nodos de cultivo y tazas documentadas.</p>
+  </div>
+  <div class="ts-grid">
+    <div class="ts-card">
+      <div class="ts-num">92.5°</div>
+      <div class="ts-lbl">Temperatura de extracción activa</div>
+      <p class="ts-desc">AeroPress calibrado para extracción óptima en Bogotá (2.600 msnm). Monitoreo continuo.</p>
+      <div class="ts-bar"></div>
+    </div>
+    <div class="ts-card">
+      <div class="ts-num">12.847</div>
+      <div class="ts-lbl">Tazas documentadas · acero.press</div>
+      <p class="ts-desc">Reto activo: 50.000 tazas en AeroPress. Cada preparación fotografiada y sincronizada con Instagram.</p>
+      <div class="ts-bar"></div>
+    </div>
+    <div class="ts-card">
+      <div class="ts-num">14</div>
+      <div class="ts-lbl">Nodos activos · floatGardens</div>
+      <p class="ts-desc">Red de terrazas hidropónicas. Chapinero · Usaquén · Teusaquillo. 2.016 plantas conectadas.</p>
+      <div class="ts-bar"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== B2B ========== -->
+<section class="b2b-section" id="b2b">
+  <div class="section-label">
+    <span class="num">05</span>
+    <span class="ttl">B2B</span>
+    <span class="rule"></span>
+    <span class="sub">FIG. 05 — PROGRAMA COMERCIAL</span>
+  </div>
+  <div class="sec-lbl">// Para empresas y profesionales</div>
+  <h2 class="sec-h2">Alianzas comerciales</h2>
+  <p class="sec-desc">Programa comercial para restaurantes, hoteles, oficinas y baristas que necesitan trazabilidad completa y consistencia en cada entrega.</p>
+  <div class="b2b-grid">
+    <div class="b2b-card"><div class="b2b-ico">🍽</div><div class="b2b-title">Restaurantes</div><div class="b2b-d">Variedades curadas para carta de café. Ficha técnica, capacitación y entregas semanales.</div></div>
+    <div class="b2b-card"><div class="b2b-ico">🏨</div><div class="b2b-title">Hoteles</div><div class="b2b-d">Amenities con café de especialidad. Storytelling del productor para el huésped.</div></div>
+    <div class="b2b-card"><div class="b2b-ico">🏢</div><div class="b2b-title">Oficinas</div><div class="b2b-d">Café de especialidad como beneficio corporativo. Entregas quincenales y variedad rotativa.</div></div>
+    <div class="b2b-card"><div class="b2b-ico">☕</div><div class="b2b-title">Baristas</div><div class="b2b-d">Acceso directo a lotes especiales. Especificaciones técnicas completas y precios de tostador.</div></div>
+  </div>
+</section>
+
+<!-- ========== BLOG ========== -->
+<section class="blog-section" id="blog">
+  <div class="section-label" style="margin-bottom:2rem;">
+    <span class="num thermal-num">06</span>
+    <span class="ttl" style="color:#fff;">Blog</span>
+    <span class="rule" style="border-color:rgba(255,255,255,.15);background:rgba(255,255,255,.08);"></span>
+    <span class="sub">FIG. 06 — CONTENIDO TÉCNICO</span>
+  </div>
+  <div class="sec-lbl">// Contenido técnico · jobs to be done</div>
+  <h2 class="sec-h2" style="color:#fff;">Conocimiento</h2>
+  <p class="sec-desc">Respuestas precisas a preguntas reales sobre café de especialidad colombiano. Contenido estructurado para humanos y para LLMs.</p>
+  <div class="blog-grid">
+    <div class="blog-card"><div class="blog-tag">Variedades</div><div class="blog-title">¿Qué diferencia a la variedad Gesha del resto del café colombiano?</div><div class="blog-ex">La Gesha tiene un perfil aromático único por su contenido de linalool. Puntajes SCA entre 88 y 93 puntos en altitudes sobre 1.700 msnm.</div></div>
+    <div class="blog-card"><div class="blog-tag">Procesos</div><div class="blog-title">Lavado vs Natural vs Honey: cómo el proceso cambia el sabor del café</div><div class="blog-ex">El proceso lavado elimina el 100% del mucílago antes del secado, produciendo acidez limpia. El natural retiene el fruto completo.</div></div>
+    <div class="blog-card"><div class="blog-tag">Preparación</div><div class="blog-title">Cómo preparar correctamente un Pink Bourbon en V60</div><div class="blog-ex">Relación 1:15, temperatura 94°C, molienda media. Bloom de 30ml por 30 segundos. Vertidos en 3 etapas. Tiempo total: 3 minutos 15 segundos.</div></div>
+    <div class="blog-card"><div class="blog-tag">Origen</div><div class="blog-title">Por qué Nariño produce el Castillo con mayor acidez de Colombia</div><div class="blog-ex">A 2.100 msnm y con temperaturas nocturnas de 10–12°C, el grano desarrolla mayor densidad celular y retiene más ácido málico y cítrico.</div></div>
+    <div class="blog-card"><div class="blog-tag">Evaluación</div><div class="blog-title">Qué significa el puntaje SCA y cómo identificar un café de especialidad</div><div class="blog-ex">La SCA define como especialidad cualquier lote que supere 80 puntos. A partir de 85 se considera excepcional; sobre 90, sobresaliente.</div></div>
+    <div class="blog-card"><div class="blog-tag">Trazabilidad</div><div class="blog-title">Cómo leer la ficha técnica de un café de origen único</div><div class="blog-ex">Variedad botánica, municipio, altitud, proceso, temperatura de tueste, puntaje SCA y nombre del productor. Si falta alguno, no es trazabilidad real.</div></div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer id="contacto">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="f-label">FIG. 07.1 — IDENTIDAD</div>
+      <h4>ACERO — Specialty Coffee</h4>
+      <p>Startup de IA aplicada al agro colombiano. Material: 304 Stainless Steel. Finish: Brushed Chrome. Tolerancias: ±0.5mm.</p>
+    </div>
+    <div class="footer-col">
+      <div class="f-label">FIG. 07.2 — ECOSISTEMA</div>
+      <h4>Proyectos activos</h4>
+      <p><a href="floatgardens.html">floatGardens</a> · Red hidropónica<br><a href="index.html">acero.press</a> · Diario 50k tazas</p>
+    </div>
+    <div class="footer-col">
+      <div class="f-label">FIG. 07.3 — SPECS</div>
+      <h4>Thermal Profile: 304 SS</h4>
+      <p>Packaging specs — layered storage & logistics data. Brand identification sistema activo.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="meta">ACERO SPECIALTY COFFEE © 2026 — Todos los derechos reservados</span>
+    <div class="footer-tbar"></div>
+    <div class="logo-unit">
+    <img src="images/logo.png" alt="ACERO.press" class="logo-acero">
+   <span class="logo-press">.press</span>
+</div>
+  </div>
+</footer>
+
+</div><!-- /page -->
+
+<script>
+// Spiral binding
+const spiral = document.getElementById('spiral');
+if(spiral){
+  const count = Math.ceil(document.body.scrollHeight/36)+4;
+  for(let i=0;i<count;i++){
+    const r=document.createElement('div');
+    r.className='spiral-ring';
+    r.style.top=(i*36+8)+'px';
+    spiral.appendChild(r);
+  }
+}
+
+// Header scroll effect
+const hdr = document.getElementById('main-header');
+window.addEventListener('scroll',()=>{
+  hdr.classList.toggle('scrolled', window.scrollY > 60);
+},{ passive:true });
+
+// HUD temperatura animada
+const tempEl = document.getElementById('hero-temp');
+if(tempEl){
+  setInterval(()=>{
+    const v = (92.5 + (Math.random()-.5)*.4).toFixed(1);
+    tempEl.textContent = v + '°C';
+  },1800);
+}
+</script>
+</body>
+</html>

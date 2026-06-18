@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>acero.press — 50.000 tazas · Field Notebook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Archivo:wght@400;500;600;700;800&family=Permanent+Marker&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EDE6D3;
+  --paper-deep:#E3DBC4;
+  --grid:#D6CEB6;
+  --ink:#2A3550;
+  --ink-soft:#6B7290;
+  --cream:#F7F3E8;
+  --near-black:#1A1A1E;
+  --magenta:#E0388A;
+  --hot:#FF4FA3;
+  --ig:#E1306C;
+  --tk:#010101;
+  --yt:#FF0000;
+  --yt-dark:#0F0F0F;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Archivo',sans-serif;
+  background:var(--near-black);
+  color:#fff;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none;}
+
+/* ── Spiral ── */
+.spiral{position:fixed;left:0;top:0;bottom:0;width:44px;z-index:200;background:linear-gradient(90deg,rgba(0,0,0,.1),transparent);pointer-events:none;}
+.spiral-ring{position:absolute;left:7px;width:29px;height:29px;border:2px solid rgba(255,255,255,.1);border-radius:50%;background:transparent;}
+@media(max-width:700px){.spiral{display:none;}}
+.page{margin-left:44px;}
+@media(max-width:700px){.page{margin-left:0;}}
+
+/* ── HEADER ── */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.1rem 5vw;
+  background:rgba(26,26,30,.55);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  transition:background .3s;
+}
+header.scrolled{background:rgba(14,14,18,.94);}
+
+.logo-unit{display:flex;align-items:center;gap:.4rem;}
+.logo-acero{
+  border:2px solid rgba(255,255,255,.2);border-radius:8px;
+  background:repeating-linear-gradient(45deg,rgba(42,53,80,.5) 0 6px,rgba(42,53,80,.2) 6px 12px);
+  padding:.28rem .9rem;
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;
+  letter-spacing:.22em;color:#fff;
+}
+.logo-press{
+  font-family:'Permanent Marker',cursive;color:var(--hot);font-size:1.25rem;
+  transform:rotate(-6deg);margin-left:-.1rem;
+  text-shadow:0 0 14px rgba(255,79,163,.5);
+}
+.nav-links{display:flex;gap:2rem;}
+.nav-links a{font-size:.76rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);transition:color .2s;}
+.nav-links a:hover,.nav-links a.active{color:#fff;}
+.nav-links a.active{position:relative;}
+.nav-links a.active::after{content:'';position:absolute;left:0;right:0;bottom:-4px;height:2px;background:var(--hot);}
+@media(max-width:900px){.nav-links{display:none;}}
+.btn-new{
+  font-family:'Archivo',sans-serif;font-weight:700;font-size:.7rem;
+  letter-spacing:.14em;text-transform:uppercase;
+  padding:.65rem 1.3rem;border:none;border-radius:3px;cursor:pointer;
+  background:var(--hot);color:#fff;
+  box-shadow:0 0 14px rgba(255,79,163,.4);
+  transition:opacity .2s;
+}
+.btn-new:hover{opacity:.85;}
+
+/* ── MARQUEE ── */
+.mq-wrap{overflow:hidden;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.06);}
+.mq-track{
+  display:flex;gap:1.4rem;white-space:nowrap;padding:.5rem 0;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.05em;
+  color:rgba(255,255,255,.3);animation:scrollmq 44s linear infinite;width:max-content;
+}
+.mh{color:rgba(255,255,255,.75);font-weight:700;}
+.mc{color:var(--hot);font-weight:700;}
+@keyframes scrollmq{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+@media(prefers-reduced-motion:reduce){.mq-track{animation:none;}}
+
+/* ══════════════════════════════════════════
+   FULLSCREEN TESLA-STYLE SECTION
+══════════════════════════════════════════ */
+.fullscreen{
+  position:relative;width:100%;height:100vh;min-height:600px;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:space-between;
+  overflow:hidden;text-align:center;
+}
+.fullscreen.short{height:70vh;min-height:420px;}
+.fullscreen.tall{height:110vh;}
+
+/* Media layer */
+.fs-media{position:absolute;inset:0;z-index:0;}
+.fs-media img,.fs-media video{width:100%;height:100%;object-fit:cover;object-position:center;}
+
+/* Blueprint placeholder */
+.ph-blueprint{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;
+  background:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px),
+    var(--paper);
+  background-size:32px 32px,32px 32px,auto;
+}
+.ph-dark{
+  background:
+    repeating-linear-gradient(45deg,rgba(42,53,80,.09) 0 10px,transparent 10px 20px),
+    #18181E !important;
+}
+.ph-icon{font-size:2rem;}
+.ph-lbl{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--ink-soft);letter-spacing:.04em;text-align:center;max-width:380px;line-height:1.5;}
+.ph-dark .ph-lbl{color:rgba(255,255,255,.35);}
+.ph-file{
+  font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;
+  padding:.28rem .7rem;border-radius:3px;
+  color:var(--ink);background:rgba(255,255,255,.65);border:1px dashed var(--ink-soft);
+}
+.ph-dark .ph-file{color:var(--hot);background:rgba(255,255,255,.05);border:1px dashed rgba(255,79,163,.35);}
+
+/* Overlays */
+.fs-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(to bottom,rgba(20,20,24,.08) 0%,rgba(20,20,24,.18) 40%,rgba(20,20,24,.65) 72%,rgba(20,20,24,.88) 100%);}
+.fs-overlay.paper-ov{background:linear-gradient(to bottom,rgba(237,230,211,0) 0%,rgba(237,230,211,.15) 50%,rgba(237,230,211,.85) 80%,rgba(237,230,211,1) 100%);}
+
+/* Content zones */
+.fs-top{position:relative;z-index:2;padding-top:clamp(5.5rem,13vh,9rem);}
+.fs-bottom{position:relative;z-index:2;padding-bottom:clamp(2.5rem,6vh,4rem);display:flex;flex-direction:column;align-items:center;gap:1rem;}
+
+.fs-eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(255,255,255,.55);margin-bottom:.7rem;
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+}
+.fs-eyebrow .live-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--hot);
+  box-shadow:0 0 10px var(--hot);animation:livepulse 1.6s ease-in-out infinite;
+}
+@keyframes livepulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.85);}}
+@media(prefers-reduced-motion:reduce){.live-dot{animation:none;}}
+
+.fs-h1{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:clamp(2.4rem,6vw,4.6rem);text-transform:uppercase;
+  color:#fff;line-height:1.02;letter-spacing:-.01em;
+}
+.fs-h1 .hot{color:var(--hot);}
+.fs-h1 .press-tag{
+  font-family:'Permanent Marker',cursive;color:var(--hot);
+  font-size:.75em;transform:rotate(-4deg);display:inline-block;
+  text-shadow:0 0 18px rgba(255,79,163,.55);
+}
+.fs-sub{margin-top:.8rem;font-size:.95rem;color:rgba(255,255,255,.55);max-width:46ch;margin-left:auto;margin-right:auto;}
+
+.fs-actions{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;}
+.btn-glass{
+  font-family:'Archivo',sans-serif;font-weight:700;font-size:.72rem;
+  letter-spacing:.14em;text-transform:uppercase;
+  padding:.88rem 2rem;border-radius:3px;cursor:pointer;
+  background:rgba(255,255,255,.12);backdrop-filter:blur(8px);
+  color:#fff;border:1.5px solid rgba(255,255,255,.3);transition:all .2s;
+}
+.btn-glass:hover{background:rgba(255,255,255,.22);}
+.btn-glass.hot{background:var(--hot);border-color:var(--hot);box-shadow:0 0 20px rgba(255,79,163,.4);}
+.btn-glass.hot:hover{opacity:.85;}
+
+.scroll-hint{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:.4rem;}
+.scroll-hint::after{content:'';width:1px;height:28px;background:linear-gradient(to bottom,rgba(255,255,255,.25),transparent);}
+
+/* Float annotations */
+.fs-annot{position:absolute;z-index:2;font-family:'JetBrains Mono',monospace;font-size:.62rem;color:rgba(255,255,255,.4);letter-spacing:.04em;line-height:1.5;}
+.fs-annot.tl{top:calc(5.5rem + 56px);left:5vw;text-align:left;}
+.fs-annot.tr{top:calc(5.5rem + 56px);right:5vw;text-align:right;}
+@media(max-width:700px){.fs-annot{display:none;}}
+
+/* ── Odometer in hero ── */
+.hero-odo{
+  position:absolute;bottom:clamp(6rem,14vh,9rem);z-index:2;
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap;justify-content:center;
+}
+.odo{
+  display:flex;gap:.28rem;
+  background:rgba(20,20,24,.7);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,79,163,.3);border-radius:6px;
+  padding:.65rem .85rem;
+  box-shadow:0 0 18px rgba(255,79,163,.15);
+}
+.odo .d{
+  font-family:'JetBrains Mono',monospace;font-weight:700;
+  font-size:clamp(1.4rem,4vw,2.2rem);color:#fff;
+  background:#2A2A32;border-radius:3px;width:1.3ch;text-align:center;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.6);
+}
+.odo-sep{font-family:'JetBrains Mono',monospace;font-size:clamp(1.4rem,4vw,2.2rem);color:var(--hot);font-weight:700;align-self:center;}
+.odo-target{font-family:'JetBrains Mono',monospace;font-size:clamp(1.1rem,3vw,1.7rem);color:rgba(255,255,255,.4);font-weight:700;}
+.odo-lbl{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:rgba(255,255,255,.35);letter-spacing:.08em;text-transform:uppercase;}
+
+/* ── Seg bar ── */
+.seg-bar{display:flex;gap:3px;width:min(420px,90vw);}
+.seg-bar .seg{flex:1;height:10px;background:rgba(255,255,255,.1);border-radius:1px;}
+.seg-bar .seg.on{background:var(--hot);}
+
+/* ══════════════════════════════════════════
+   FEED SECTION  (Instagram/TikTok/YouTube)
+══════════════════════════════════════════ */
+.feed-section{background:var(--near-black);}
+
+/* ── Section header ── */
+.sec-hdr{
+  display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;
+  padding:4.5rem 5vw 2.5rem;border-bottom:1px solid rgba(255,255,255,.06);
+}
+.sec-hdr-left .eyebrow{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.6rem;}
+.sec-hdr-left h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(1.8rem,4.5vw,3.2rem);text-transform:uppercase;color:#fff;line-height:1.02;}
+.sec-hdr-left h2 .hot{color:var(--hot);}
+.sec-hdr-right{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:rgba(255,255,255,.3);letter-spacing:.04em;line-height:1.9;text-align:right;}
+
+/* Platform tabs */
+.platform-tabs{
+  display:flex;gap:0;padding:0 5vw;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.pt-tab{
+  font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.85rem 1.8rem;cursor:pointer;border:none;background:transparent;
+  color:rgba(255,255,255,.35);border-bottom:2px solid transparent;
+  transition:all .2s;
+}
+.pt-tab:hover{color:rgba(255,255,255,.65);}
+.pt-tab.active-ig{color:var(--ig);border-bottom-color:var(--ig);}
+.pt-tab.active-tk{color:#69C9D0;border-bottom-color:#69C9D0;}
+.pt-tab.active-yt{color:var(--yt);border-bottom-color:var(--yt);}
+
+/* ── FEATURED POST (fullscreen card) ── */
+.featured-post{
+  display:grid;grid-template-columns:1.05fr 1fr;
+  min-height:640px;border-bottom:1px solid rgba(255,255,255,.06);
+}
+@media(max-width:900px){.featured-post{grid-template-columns:1fr;}}
+
+.fp-media{position:relative;overflow:hidden;min-height:480px;}
+.fp-media img,.fp-media video{width:100%;height:100%;object-fit:cover;display:block;}
+.fp-media-ph{
+  width:100%;height:100%;min-height:480px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem;
+}
+.fp-platform-badge{
+  position:absolute;top:1.4rem;left:1.4rem;z-index:3;
+  display:flex;align-items:center;gap:.5rem;
+  font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.7rem;letter-spacing:.08em;
+  padding:.35rem .8rem;border-radius:20px;
+}
+.badge-ig{background:linear-gradient(45deg,#F58529,#DD2A7B,#8134AF);color:#fff;}
+.badge-tk{background:#010101;color:#69C9D0;border:1px solid #69C9D0;}
+.badge-yt{background:var(--yt);color:#fff;}
+.fp-cup-num{
+  position:absolute;bottom:1.4rem;left:1.4rem;z-index:3;
+  font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.1rem;
+  color:var(--hot);text-shadow:0 0 10px rgba(255,79,163,.5);
+}
+
+.fp-body{
+  padding:2.8rem 3.5vw;
+  display:flex;flex-direction:column;justify-content:center;
+  border-left:1px solid rgba(255,255,255,.06);
+  background:rgba(255,255,255,.02);
+}
+@media(max-width:900px){.fp-body{border-left:none;border-top:1px solid rgba(255,255,255,.06);}}
+.fp-platform{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.4rem;}
+.fp-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(1.4rem,3vw,2rem);color:#fff;text-transform:uppercase;line-height:1.08;margin-bottom:1rem;}
+.fp-meta-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.2rem;}
+.fp-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;padding:.25rem .65rem;border-radius:20px;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);}
+.fp-tag.hot-tag{border-color:rgba(255,79,163,.4);color:var(--hot);}
+.fp-caption{font-size:.9rem;color:rgba(255,255,255,.55);line-height:1.65;margin-bottom:1.4rem;}
+.fp-recipe{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  border-radius:6px;padding:1rem 1.2rem;margin-bottom:1.6rem;
+  display:grid;grid-template-columns:1fr 1fr;gap:.5rem 1.2rem;
+}
+.fp-recipe .rl{font-family:'JetBrains Mono',monospace;font-size:.64rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;}
+.fp-recipe .rv{font-family:'JetBrains Mono',monospace;font-size:.88rem;color:#fff;font-weight:700;}
+.fp-stats{display:flex;gap:1.5rem;margin-bottom:1.8rem;}
+.fp-stat .n{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.2rem;color:#fff;}
+.fp-stat .l{font-size:.66rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.06em;}
+.fp-links{display:flex;gap:.75rem;flex-wrap:wrap;}
+.btn-platform{
+  font-family:'Archivo',sans-serif;font-weight:700;font-size:.7rem;
+  letter-spacing:.12em;text-transform:uppercase;
+  padding:.75rem 1.4rem;border-radius:3px;cursor:pointer;border:none;transition:opacity .2s;
+}
+.btn-platform:hover{opacity:.8;}
+.btn-ig{background:linear-gradient(45deg,#F58529,#DD2A7B,#8134AF);color:#fff;}
+.btn-tk{background:#010101;color:#69C9D0;border:1px solid #69C9D0;}
+.btn-yt{background:var(--yt);color:#fff;}
+.btn-ghost{background:transparent;color:rgba(255,255,255,.5);border:1.5px solid rgba(255,255,255,.15);}
+
+/* ── PLATFORM FULLSCREEN PANELS ── */
+/* Instagram */
+.ig-fullscreen{
+  position:relative;width:100%;min-height:100vh;
+  background:#050505;display:flex;flex-direction:column;
+}
+.ig-hero{
+  position:relative;height:65vh;min-height:400px;overflow:hidden;
+  display:flex;align-items:flex-end;
+}
+.ig-hero .fs-media{position:absolute;inset:0;}
+.ig-hero .fs-media img,.ig-hero .fs-media video{width:100%;height:100%;object-fit:cover;}
+.ig-hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 30%,rgba(5,5,5,.9) 100%);}
+.ig-hero-content{position:relative;z-index:2;padding:2rem 5vw;width:100%;}
+.ig-hero-content .platform-label{
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  margin-bottom:.5rem;
+  background:linear-gradient(45deg,#F58529,#DD2A7B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.ig-hero-content h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(1.8rem,4vw,3rem);color:#fff;text-transform:uppercase;margin-bottom:.5rem;}
+.ig-hero-content p{font-size:.9rem;color:rgba(255,255,255,.5);max-width:44ch;}
+
+/* IG grid */
+.ig-grid-section{padding:2rem 5vw 4rem;}
+.ig-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  grid-template-rows:auto;
+  gap:.5rem;
+}
+@media(max-width:700px){.ig-grid{grid-template-columns:repeat(2,1fr);}}
+.ig-post{position:relative;overflow:hidden;cursor:pointer;}
+.ig-post .ig-media{aspect-ratio:1/1;position:relative;overflow:hidden;}
+.ig-post.large{grid-column:span 2;grid-row:span 2;}
+.ig-post.large .ig-media{aspect-ratio:unset;height:100%;}
+.ig-post .ig-media img,.ig-post .ig-media video{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease;}
+.ig-post:hover .ig-media img,.ig-post:hover .ig-media video{transform:scale(1.05);}
+.ig-media-ph{
+  width:100%;height:100%;min-height:200px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;
+  background:repeating-linear-gradient(45deg,rgba(42,53,80,.1) 0 10px,transparent 10px 20px),#1A1A22;
+  border:1px solid rgba(255,255,255,.08);
+}
+.ig-media-ph .ph-icon{font-size:1.6rem;}
+.ig-media-ph .ph-lbl-sm{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:rgba(255,255,255,.3);text-align:center;max-width:180px;line-height:1.4;letter-spacing:.03em;}
+.ig-media-ph .ph-file-sm{font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;color:var(--hot);background:rgba(255,255,255,.04);padding:.18rem .5rem;border-radius:2px;border:1px dashed rgba(255,79,163,.25);}
+.ig-post-overlay{position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .3s;}
+.ig-post:hover .ig-post-overlay{background:rgba(0,0,0,.35);}
+.ig-post-info{position:absolute;bottom:0;left:0;right:0;padding:.8rem;background:linear-gradient(to top,rgba(0,0,0,.7),transparent);transform:translateY(100%);transition:transform .3s ease;}
+.ig-post:hover .ig-post-info{transform:translateY(0);}
+.ig-post-num{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.72rem;color:var(--hot);}
+.ig-post-cap{font-size:.78rem;color:#fff;margin-top:.2rem;line-height:1.3;}
+
+/* ── TikTok panel ── */
+.tk-section{
+  background:var(--tk);padding:5rem 5vw;
+  border-top:1px solid rgba(105,201,208,.15);
+}
+.tk-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;margin-bottom:3rem;}
+.tk-header h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(1.6rem,4vw,2.8rem);text-transform:uppercase;}
+.tk-header h2 .cyan{color:#69C9D0;}
+.tk-header h2 .pink{color:#EE1D52;}
+.tk-lbl{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);}
+
+.tk-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;}
+@media(max-width:900px){.tk-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:480px){.tk-grid{grid-template-columns:1fr 1fr;}}
+
+.tk-card{position:relative;overflow:hidden;border-radius:4px;cursor:pointer;}
+.tk-card .tk-media{aspect-ratio:9/16;position:relative;overflow:hidden;}
+.tk-card .tk-media img,.tk-card .tk-media video{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;}
+.tk-card:hover .tk-media img,.tk-card:hover .tk-media video{transform:scale(1.04);}
+.tk-media-ph{
+  width:100%;height:100%;min-height:260px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;
+  background:repeating-linear-gradient(135deg,rgba(105,201,208,.06) 0 10px,transparent 10px 20px),#111;
+  border:1px solid rgba(105,201,208,.15);
+}
+.tk-media-ph .ph-icon{font-size:1.8rem;}
+.tk-media-ph .ph-lbl-sm{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:rgba(105,201,208,.5);text-align:center;max-width:160px;line-height:1.4;}
+.tk-media-ph .ph-file-sm{font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:700;color:#69C9D0;background:rgba(105,201,208,.06);padding:.16rem .45rem;border-radius:2px;border:1px dashed rgba(105,201,208,.25);}
+.tk-card-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.75) 0%,transparent 50%);}
+.tk-card-info{position:absolute;bottom:0;left:0;right:0;padding:.85rem .75rem;}
+.tk-card-num{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.7rem;color:#69C9D0;}
+.tk-card-views{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:rgba(255,255,255,.45);margin-top:.2rem;}
+.tk-card-title{font-size:.78rem;color:#fff;margin-top:.25rem;line-height:1.3;font-weight:600;}
+
+/* TikTok sound tag */
+.tk-sound{display:flex;align-items:center;gap:.5rem;margin-top:.25rem;}
+.tk-sound .note{font-size:.75rem;animation:spin 3s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+@media(prefers-reduced-motion:reduce){.note{animation:none;}}
+.tk-sound span{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:rgba(255,255,255,.4);}
+
+/* ── YouTube panel ── */
+.yt-section{background:var(--yt-dark);padding:5rem 5vw;border-top:1px solid rgba(255,0,0,.15);}
+.yt-header{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;margin-bottom:3rem;}
+.yt-header h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(1.6rem,4vw,2.8rem);text-transform:uppercase;color:#fff;}
+.yt-header h2 .red{color:var(--yt);}
+.yt-subs{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:rgba(255,255,255,.35);letter-spacing:.06em;}
+
+/* Featured YT video (16:9 wide) */
+.yt-featured{
+  position:relative;aspect-ratio:16/9;border-radius:6px;overflow:hidden;margin-bottom:2rem;cursor:pointer;
+  max-height:520px;
+}
+.yt-featured img,.yt-featured video{width:100%;height:100%;object-fit:cover;display:block;}
+.yt-featured-ph{
+  width:100%;height:100%;min-height:280px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem;
+  background:repeating-linear-gradient(45deg,rgba(255,0,0,.06) 0 10px,transparent 10px 20px),#111;
+  border:1px solid rgba(255,0,0,.2);border-radius:6px;
+}
+.yt-featured-ph .ph-icon{font-size:2.5rem;}
+.yt-featured-ph .ph-lbl{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:rgba(255,255,255,.3);text-align:center;max-width:380px;line-height:1.5;}
+.yt-featured-ph .ph-file{font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;color:var(--yt);background:rgba(255,0,0,.07);padding:.3rem .7rem;border-radius:3px;border:1px dashed rgba(255,0,0,.3);}
+.yt-play-btn{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3;
+  width:72px;height:72px;border-radius:50%;
+  background:rgba(255,0,0,.85);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:transform .2s,background .2s;
+}
+.yt-play-btn:hover{transform:translate(-50%,-50%) scale(1.1);background:var(--yt);}
+.yt-play-btn svg{width:28px;height:28px;fill:#fff;margin-left:4px;}
+.yt-featured-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(15,15,15,.8) 0%,transparent 50%);}
+.yt-featured-info{position:absolute;bottom:1.4rem;left:1.6rem;right:1.6rem;z-index:2;}
+.yt-featured-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(1rem,2.5vw,1.5rem);color:#fff;margin-bottom:.4rem;}
+.yt-featured-meta{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:rgba(255,255,255,.4);display:flex;gap:1rem;}
+
+/* YT video grid */
+.yt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+@media(max-width:900px){.yt-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:480px){.yt-grid{grid-template-columns:1fr;}}
+.yt-card{cursor:pointer;}
+.yt-card .yt-thumb{aspect-ratio:16/9;position:relative;overflow:hidden;border-radius:4px;margin-bottom:.75rem;}
+.yt-card .yt-thumb img,.yt-card .yt-thumb video{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s;}
+.yt-card:hover .yt-thumb img{transform:scale(1.04);}
+.yt-thumb-ph{
+  width:100%;height:100%;min-height:140px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;
+  background:repeating-linear-gradient(45deg,rgba(255,0,0,.05) 0 10px,transparent 10px 20px),#1A1A1A;
+  border:1px solid rgba(255,0,0,.15);border-radius:4px;
+}
+.yt-thumb-ph .ph-icon{font-size:1.4rem;}
+.yt-thumb-ph .ph-lbl-sm{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:rgba(255,255,255,.3);text-align:center;max-width:200px;line-height:1.4;}
+.yt-thumb-ph .ph-file-sm{font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:700;color:var(--yt);background:rgba(255,0,0,.06);padding:.15rem .45rem;border-radius:2px;border:1px dashed rgba(255,0,0,.25);}
+.yt-duration{position:absolute;bottom:.4rem;right:.5rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;background:rgba(0,0,0,.8);color:#fff;padding:.1rem .35rem;border-radius:2px;}
+.yt-card-title{font-size:.88rem;color:#fff;font-weight:600;line-height:1.35;margin-bottom:.35rem;}
+.yt-card-meta{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:rgba(255,255,255,.35);display:flex;gap:.8rem;}
+
+/* ── MÉTODO (fullscreen over paper) ── */
+.metodo-section{position:relative;}
+.metodo-fullscreen{
+  position:relative;width:100%;height:80vh;min-height:500px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.metodo-fullscreen .fs-media{position:absolute;inset:0;}
+.metodo-fullscreen .fs-overlay{background:linear-gradient(135deg,rgba(237,230,211,.92) 0%,rgba(237,230,211,.7) 50%,rgba(237,230,211,.5) 100%);}
+.metodo-content{position:relative;z-index:2;padding:4rem 5vw;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:4vw;align-items:center;}
+@media(max-width:900px){.metodo-content{grid-template-columns:1fr;}}
+.metodo-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(2rem,5vw,3.5rem);text-transform:uppercase;color:var(--ink);line-height:1.04;margin-bottom:1.2rem;}
+.metodo-title .press-stamp{font-family:'Permanent Marker',cursive;color:var(--hot);font-size:.75em;transform:rotate(-3deg);display:inline-block;}
+.metodo-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.12em;color:var(--ink-soft);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;}
+.metodo-eyebrow::before{content:'';width:22px;height:1px;background:var(--ink-soft);}
+.steps-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--grid);border:2px solid var(--ink);
+}
+@media(max-width:700px){.steps-grid{grid-template-columns:repeat(2,1fr);}}
+.step-cell{background:var(--cream);padding:1.1rem;}
+.step-n{
+  width:1.6rem;height:1.6rem;border-radius:50%;
+  background:var(--ink);color:var(--cream);
+  font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.78rem;
+  display:flex;align-items:center;justify-content:center;margin-bottom:.5rem;
+}
+.step-cell h4{font-family:'Space Grotesk',sans-serif;font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.3rem;color:var(--ink);}
+.step-cell p{font-size:.74rem;color:var(--ink-soft);line-height:1.4;}
+.step-cell .jp{font-size:.62rem;color:#9b6a6a;margin-top:.25rem;}
+.specs-row{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--grid);border:2px solid var(--ink);border-top:none;
+}
+@media(max-width:700px){.specs-row{grid-template-columns:repeat(2,1fr);}}
+.spec-cell{background:var(--paper);padding:.9rem 1rem;}
+.spec-cell .sl{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:.2rem;}
+.spec-cell .sv{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.05rem;color:var(--ink);}
+.spec-cell .su{font-size:.68rem;color:var(--ink-soft);margin-left:.15rem;}
+
+/* ── STATS BAR ── */
+.stats-bar{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:rgba(255,255,255,.06);
+}
+@media(max-width:700px){.stats-bar{grid-template-columns:repeat(2,1fr);}}
+.stat-cell{background:rgba(255,255,255,.02);padding:1.8rem 1.5rem;text-align:center;}
+.stat-v{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.8rem;color:#fff;}
+.stat-v.hot{color:var(--hot);}
+.stat-l{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:.3rem;}
+
+/* ── FOOTER ── */
+footer{background:var(--near-black);border-top:1px solid rgba(255,255,255,.07);padding:3rem 5vw;}
+.footer-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;margin-bottom:2rem;}
+@media(max-width:900px){.footer-grid{grid-template-columns:1fr;}}
+.f-lbl{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:rgba(255,255,255,.25);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.55rem;}
+.f-h4{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.88rem;text-transform:uppercase;color:#fff;margin-bottom:.4rem;}
+.f-p{font-size:.8rem;color:rgba(255,255,255,.35);line-height:1.55;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.06);padding-top:1.4rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.footer-bottom .meta{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:rgba(255,255,255,.25);}
+</style>
+</head>
+<body>
+
+<div class="spiral" id="spiral" aria-hidden="true"></div>
+<div class="page">
+
+<!-- ═══════ HEADER ═══════ -->
+<header id="hdr">
+  <div class="logo-unit">
+    <span class="logo-acero">ACERO</span>
+    <span class="logo-press">.press</span>
+  </div>
+  <nav class="nav-links">
+    <a href="#inicio" class="active">Inicio</a>
+    <a href="#feed">Feed</a>
+    <a href="#instagram">Instagram</a>
+    <a href="#tiktok">TikTok</a>
+    <a href="#youtube">YouTube</a>
+    <a href="#metodo">Método</a>
+  </nav>
+  <button class="btn-new">+ Nueva entrada</button>
+</header>
+
+<!-- ═══════ HERO — FULLSCREEN ═══════ -->
+<section class="fullscreen" id="inicio">
+  <div class="fs-media">
+    <!-- 🎬 VIDEO HERO PRINCIPAL -->
+    <video autoplay muted loop playsinline src="images/hero_main1.mp4"></video> 
+    <!-- 🖼️ O IMAGEN: <img src="images/hero-aeropress.jpg" alt=""> -->
+    <div class="ph-blueprint ph-dark">
+      <span class="ph-icon">🎬</span>
+      <div class="ph-lbl">Video de fondo — manos preparando AeroPress, vapor del café, luz lateral cálida, cuaderno de campo con bocetos abierto al lado, toma cinematográfica lenta</div>
+      <span class="ph-file">images/hero-aeropress.mp4 · 1920×1080 · autoplay muted loop</span>
+    </div>
+  </div>
+  <div class="fs-overlay"></div>
+
+  <div class="fs-annot tl">
+    FIG. 01 — FIELD NOTEBOOK<br>
+    Bogotá · 2.600 msnm · AeroPress Go™<br>
+    Ø Base = 9.5cm · H = 13.5cm
+  </div>
+  <div class="fs-annot tr">
+    Reto activo · #aceropress50k<br>
+    抽出 / extracción<br>
+    反転式 / inversión
+  </div>
+
+  <div class="fs-top">
+    <div class="fs-eyebrow"><span class="live-dot"></span> Reto activo · Bogotá, 2.600 msnm</div>
+    <div class="fs-h1">
+      50.000 tazas.<br>
+      Una <span class="press-tag">.press</span><br>
+      <span class="hot">Cada día.</span>
+    </div>
+    <div class="fs-sub">Diario de campo público del reto más largo en AeroPress. Documentado en Instagram, TikTok y YouTube.</div>
+  </div>
+
+  <!-- odómetro flotante -->
+  <div class="hero-odo">
+    <div>
+      <div class="odo-lbl" style="margin-bottom:.4rem;">Tazas preparadas</div>
+      <div style="display:flex;align-items:center;gap:.8rem;">
+        <div class="odo">
+          <span class="d">0</span><span class="d">1</span><span class="d">2</span>
+          <span class="d">8</span><span class="d">4</span><span class="d">7</span>
+        </div>
+        <span class="odo-sep">/</span>
+        <span class="odo-target">50.000</span>
+      </div>
+      <div class="seg-bar" id="segBar" style="margin-top:.6rem;"></div>
+    </div>
+  </div>
+
+  <div class="fs-bottom" style="padding-bottom:2rem;">
+    <div class="fs-actions">
+      <a href="#feed" class="btn-glass hot">Ver el feed</a>
+      <a href="#metodo" class="btn-glass">El método</a>
+    </div>
+    <div class="scroll-hint">Explora</div>
+  </div>
+</section>
+
+<!-- Marquee -->
+<div class="mq-wrap">
+  <div class="mq-track">
+    <span class="mh">· Taza #012.847 </span><span>· Etiopía Yirgacheffe</span><span class="mc"> · 1:15 · 92°C </span><span>· Colombia Huila</span><span class="mh"> · 抽出 / extracción </span><span>· Brasil Cerrado</span><span class="mc"> · #aceropress50k </span><span>· Bourbon Rosado</span><span class="mh"> · 372 días restantes · </span><span>AeroPress Go™</span><span class="mc"> · Pink Bourbon · </span>
+    <span class="mh">· Taza #012.847 </span><span>· Etiopía Yirgacheffe</span><span class="mc"> · 1:15 · 92°C </span><span>· Colombia Huila</span><span class="mh"> · 抽出 / extracción </span><span>· Brasil Cerrado</span><span class="mc"> · #aceropress50k </span><span>· Bourbon Rosado</span><span class="mh"> · 372 días restantes · </span><span>AeroPress Go™</span><span class="mc"> · Pink Bourbon · </span>
+  </div>
+</div>
+
+<!-- Stats rápidas -->
+<div class="stats-bar">
+  <div class="stat-cell"><div class="stat-v hot">12.847</div><div class="stat-l">Tazas preparadas</div></div>
+  <div class="stat-cell"><div class="stat-v">128</div><div class="stat-l">Días en curso</div></div>
+  <div class="stat-cell"><div class="stat-v">~100</div><div class="stat-l">Promedio diario</div></div>
+  <div class="stat-cell"><div class="stat-v">372</div><div class="stat-l">Días restantes</div></div>
+</div>
+
+<!-- ═══════ FEED — ÚLTIMA PUBLICACIÓN DESTACADA ═══════ -->
+<section class="feed-section" id="feed">
+
+  <div class="sec-hdr">
+    <div class="sec-hdr-left">
+      <div class="eyebrow">FIG. 02 — DIARIO DEL RETO</div>
+      <h2>El <span class="hot">feed</span></h2>
+    </div>
+    <div class="sec-hdr-right">
+      Publicaciones simultáneas<br>
+      Instagram · TikTok · YouTube<br>
+      #aceropress50k
+    </div>
+  </div>
+
+  <!-- FEATURED POST — última publicación -->
+  <div class="featured-post">
+    <div class="fp-media">
+      <!-- 🖼️/🎬 IMAGEN O VIDEO DEL POST MÁS RECIENTE -->
+      <!-- <video autoplay muted loop playsinline src="images/post-latest.mp4"></video> -->
+      <!-- <img src="images/post-latest.jpg" alt=""> -->
+      <div class="ph-blueprint ph-dark fp-media-ph">
+        <span class="ph-icon">🎬</span>
+        <div class="ph-lbl">Video o foto de la última taza — encuadre cuadrado estilo Instagram, manos sobre la prensa, vapor, luz lateral cálida, cuaderno con anotaciones de fondo</div>
+        <span class="ph-file">images/post-latest.mp4 · 1080×1080 · o .jpg</span>
+      </div>
+      <div class="fp-platform-badge badge-ig">📸 Instagram · @aceropress50k</div>
+      <div class="fp-cup-num">#012.847</div>
+    </div>
+
+    <div class="fp-body">
+      <div class="fp-platform">Última publicación · Hoy, 7:32 a.m.</div>
+      <div class="fp-title">Etiopía Yirgacheffe<br>1:15 · 92°C · inversión</div>
+      <div class="fp-meta-row">
+        <span class="fp-tag hot-tag">#aceropress50k</span>
+        <span class="fp-tag">#aeropress</span>
+        <span class="fp-tag">#cafedeespecialidad</span>
+      </div>
+      <p class="fp-caption">
+        Taza #012.847. Etiopía Yirgacheffe proceso lavado, tueste claro de 6 días. Molienda media-fina. La acidez brillante de uva verde que te despierta antes del café.
+        <br><br>
+        <span style="color:#9b6a6a;font-size:.82rem;">エチオピア イルガチェフェ · 反転式抽出 · 92°C</span>
+      </p>
+      <div class="fp-recipe">
+        <div><div class="rl">Ratio</div><div class="rv">1 : 15</div></div>
+        <div><div class="rl">Temperatura</div><div class="rv">92°C</div></div>
+        <div><div class="rl">Dosis</div><div class="rv">18g</div></div>
+        <div><div class="rl">Tiempo</div><div class="rv">1:45 min</div></div>
+        <div><div class="rl">Método</div><div class="rv">Inversión</div></div>
+        <div><div class="rl">Filtro</div><div class="rv">Papel Go</div></div>
+      </div>
+      <div class="fp-stats">
+        <div class="fp-stat"><div class="n">4.2K</div><div class="l">Me gusta IG</div></div>
+        <div class="fp-stat"><div class="n">89K</div><div class="l">Vistas TK</div></div>
+        <div class="fp-stat"><div class="n">12K</div><div class="l">Vistas YT</div></div>
+      </div>
+      <div class="fp-links">
+        <a href="#instagram" class="btn-platform btn-ig">Instagram →</a>
+        <a href="#tiktok" class="btn-platform btn-tk">TikTok →</a>
+        <a href="#youtube" class="btn-platform btn-yt">YouTube →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULLSCREEN BREAK — imagen ambiental entre secciones -->
+  <div class="fullscreen short">
+    <div class="fs-media">
+      <!-- 🖼️ IMAGEN AMBIENTAL -->
+      <!-- <img src="images/ambient-coffee.jpg" alt=""> -->
+      <div class="ph-blueprint ph-dark" style="height:100%;">
+        <span class="ph-icon">🖼️</span>
+        <div class="ph-lbl" style="color:rgba(255,255,255,.35);">Imagen ambiental — cuaderno de campo abierto con bocetos técnicos del AeroPress, pluma de tinta, taza de café al lado, luz natural</div>
+        <span class="ph-file" style="color:var(--hot);background:rgba(255,255,255,.04);border:1px dashed rgba(255,79,163,.3);">images/ambient-coffee.jpg · 1920×800</span>
+      </div>
+    </div>
+    <div class="fs-overlay" style="background:linear-gradient(to bottom,rgba(14,14,18,.5),rgba(14,14,18,.8));"></div>
+    <div class="fs-top" style="padding-top:0;display:flex;align-items:center;height:100%;justify-content:center;flex-direction:column;gap:.5rem;">
+      <div class="fs-eyebrow"><span class="live-dot"></span> Publicando en 3 plataformas simultáneamente</div>
+      <div class="fs-h1" style="font-size:clamp(1.4rem,3.5vw,2.4rem);">Instagram · TikTok · YouTube</div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════ INSTAGRAM — FULLSCREEN PANEL ═══════ -->
+<section class="ig-fullscreen" id="instagram">
+
+  <!-- Hero de Instagram -->
+  <div class="ig-hero">
+    <div class="fs-media">
+      <!-- 🖼️ IMAGEN HERO INSTAGRAM -->
+      <!-- <img src="images/ig-hero.jpg" alt=""> -->
+      <div class="ph-blueprint ph-dark" style="height:100%;">
+        <span class="ph-icon">📷</span>
+        <div class="ph-lbl" style="color:rgba(255,255,255,.35);">Imagen hero Instagram — composición cuadrada, manos y AeroPress, paleta beige/blueprint del cuaderno de campo</div>
+        <span class="ph-file" style="color:#E1306C;background:rgba(225,48,108,.05);border:1px dashed rgba(225,48,108,.3);">images/ig-hero.jpg · 1080×1080</span>
+      </div>
+    </div>
+    <div class="ig-hero-overlay"></div>
+    <div class="ig-hero-content">
+      <div class="platform-label">Instagram · @aceropress50k</div>
+      <h2>El diario visual<br>del reto</h2>
+      <p>Cada taza documentada: foto o video, receta exacta, número de orden. 12.847 publicaciones activas.</p>
+    </div>
+  </div>
+
+  <!-- Grid de posts -->
+  <div class="ig-grid-section">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:.8rem;">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase;">// Últimas publicaciones</span>
+      <a href="https://instagram.com" target="_blank" class="btn-platform btn-ig" style="font-size:.66rem;padding:.55rem 1.1rem;">Ver perfil completo →</a>
+    </div>
+
+    <div class="ig-grid">
+
+      <!-- Post grande destacado -->
+      <div class="ig-post large">
+        <div class="ig-media">
+          <!-- 🖼️ POST IG GRANDE (ocupa 2×2) -->
+          <!-- <img src="images/ig-post-featured.jpg" alt=""> -->
+          <div class="ig-media-ph" style="min-height:400px;">
+            <span class="ph-icon">🖼️</span>
+            <div class="ph-lbl-sm">Post destacado grande — foto de taza #012.847, composición cuadrada, formato 2×2</div>
+            <span class="ph-file-sm">images/ig-post-featured.jpg · 1080×1080</span>
+          </div>
+        </div>
+        <div class="ig-post-overlay"></div>
+        <div class="ig-post-info">
+          <div class="ig-post-num">#012.847</div>
+          <div class="ig-post-cap">Etiopía Yirgacheffe · 92°C · inversión</div>
+        </div>
+      </div>
+
+      <!-- Posts pequeños -->
+      <div class="ig-post">
+        <div class="ig-media">
+          <!-- <img src="images/ig-post-01.jpg" alt=""> -->
+          <div class="ig-media-ph">
+            <span class="ph-icon">☕</span>
+            <div class="ph-lbl-sm">Taza #012.846 · video corto</div>
+            <span class="ph-file-sm">images/ig-post-01.jpg</span>
+          </div>
+        </div>
+        <div class="ig-post-overlay"></div>
+        <div class="ig-post-info"><div class="ig-post-num">#012.846</div><div class="ig-post-cap">1:14 · tueste oscuro</div></div>
+      </div>
+
+      <div class="ig-post">
+        <div class="ig-media">
+          <!-- <img src="images/ig-post-02.jpg" alt=""> -->
+          <div class="ig-media-ph">
+            <span class="ph-icon">🌿</span>
+            <div class="ph-lbl-sm">Taza #012.845 · Colombia Huila</div>
+            <span class="ph-file-sm">images/ig-post-02.jpg</span>
+          </div>
+        </div>
+        <div class="ig-post-overlay"></div>
+        <div class="ig-post-info"><div class="ig-post-num">#012.845</div><div class="ig-post-cap">Colombia Huila · clásico</div></div>
+      </div>
+
+      <div class="ig-post">
+        <div class="ig-media">
+          <!-- <img src="images/ig-post-03.jpg" alt=""> -->
+          <div class="ig-media-ph">
+            <span class="ph-icon">📦</span>
+            <div class="ph-lbl-sm">Taza #012.844 · nuevo saco Huila</div>
+            <span class="ph-file-sm">images/ig-post-03.jpg</span>
+          </div>
+        </div>
+        <div class="ig-post-overlay"></div>
+        <div class="ig-post-info"><div class="ig-post-num">#012.844</div><div class="ig-post-cap">Nuevo lote Huila · 5 días</div></div>
+      </div>
+
+      <div class="ig-post">
+        <div class="ig-media">
+          <!-- <video autoplay muted loop playsinline src="images/ig-reel-01.mp4"></video> -->
+          <div class="ig-media-ph">
+            <span class="ph-icon">🎬</span>
+            <div class="ph-lbl-sm">Reel — sesión 5 tazas · time-lapse</div>
+            <span class="ph-file-sm">images/ig-reel-01.mp4</span>
+          </div>
+        </div>
+        <div class="ig-post-overlay"></div>
+        <div class="ig-post-info"><div class="ig-post-num">#012.843</div><div class="ig-post-cap">5 tazas · curvas de extracción</div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ TIKTOK — PANEL ═══════ -->
+<section class="tk-section" id="tiktok">
+
+  <div class="tk-header">
+    <div>
+      <div class="tk-lbl">FIG. 03.2 — TIKTOK</div>
+      <h2 class="tk-header"><span class="cyan">Tik</span><span class="pink">Tok</span> · @aceropress50k</h2>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;color:#69C9D0;">89K</div>
+      <div class="tk-lbl">vistas promedio · video</div>
+    </div>
+  </div>
+
+  <!-- Hero video TikTok (fullscreen corto) -->
+  <div class="fullscreen short" style="margin-bottom:2rem;">
+    <div class="fs-media">
+      <!-- 🎬 VIDEO TIKTOK DESTACADO (puede ser 9:16 letterboxed o 16:9) -->
+      <!-- <video autoplay muted loop playsinline src="images/tk-featured.mp4"></video> -->
+      <div class="ph-blueprint ph-dark" style="height:100%;">
+        <span class="ph-icon">🎬</span>
+        <div class="ph-lbl" style="color:rgba(105,201,208,.5);">Video TikTok destacado — formato vertical 9:16 o 16:9 con letterbox, preparación de AeroPress en cámara lenta, texto superpuesto con la receta, música de tendencia</div>
+        <span class="ph-file" style="color:#69C9D0;background:rgba(105,201,208,.06);border:1px dashed rgba(105,201,208,.25);">images/tk-featured.mp4 · 1080×1920 · 9:16</span>
+      </div>
+    </div>
+    <div class="fs-overlay" style="background:linear-gradient(to bottom,rgba(1,1,1,.4),rgba(1,1,1,.75));"></div>
+    <div class="fs-top" style="padding-top:0;display:flex;align-items:center;height:100%;flex-direction:column;justify-content:center;gap:.5rem;">
+      <div class="fs-eyebrow" style="color:rgba(105,201,208,.7);"><span class="live-dot" style="background:#69C9D0;box-shadow:0 0 10px #69C9D0;"></span> Video viral · 312K vistas</div>
+      <div class="fs-h1" style="font-size:clamp(1.4rem,3.5vw,2.4rem);">"La receta perfecta de AeroPress<br>en 60 segundos"</div>
+    </div>
+  </div>
+
+  <div class="tk-grid">
+
+    <div class="tk-card">
+      <div class="tk-media">
+        <!-- <video autoplay muted loop playsinline src="images/tk-01.mp4"></video> -->
+        <div class="tk-media-ph">
+          <span class="ph-icon">🎬</span>
+          <div class="ph-lbl-sm">TikTok #1 — receta en 60s, cámara lenta, texto overlay</div>
+          <span class="ph-file-sm">images/tk-01.mp4 · 9:16</span>
+        </div>
+      </div>
+      <div class="tk-card-overlay"></div>
+      <div class="tk-card-info">
+        <div class="tk-card-num">#012.847</div>
+        <div class="tk-card-views">312K vistas</div>
+        <div class="tk-card-title">Receta AeroPress en 60s</div>
+        <div class="tk-sound"><span class="note">♪</span><span>sonido original</span></div>
+      </div>
+    </div>
+
+    <div class="tk-card">
+      <div class="tk-media">
+        <!-- <video autoplay muted loop playsinline src="images/tk-02.mp4"></video> -->
+        <div class="tk-media-ph">
+          <span class="ph-icon">☕</span>
+          <div class="ph-lbl-sm">TikTok #2 — ratio 1:14 tueste oscuro, comparación</div>
+          <span class="ph-file-sm">images/tk-02.mp4 · 9:16</span>
+        </div>
+      </div>
+      <div class="tk-card-overlay"></div>
+      <div class="tk-card-info">
+        <div class="tk-card-num">#012.846</div>
+        <div class="tk-card-views">89K vistas</div>
+        <div class="tk-card-title">1:14 vs 1:15 ¿cuál gana?</div>
+        <div class="tk-sound"><span class="note">♪</span><span>trending sound</span></div>
+      </div>
+    </div>
+
+    <div class="tk-card">
+      <div class="tk-media">
+        <!-- <video autoplay muted loop playsinline src="images/tk-03.mp4"></video> -->
+        <div class="tk-media-ph">
+          <span class="ph-icon">🌿</span>
+          <div class="ph-lbl-sm">TikTok #3 — Colombia Huila, unboxing del lote</div>
+          <span class="ph-file-sm">images/tk-03.mp4 · 9:16</span>
+        </div>
+      </div>
+      <div class="tk-card-overlay"></div>
+      <div class="tk-card-info">
+        <div class="tk-card-num">#012.845</div>
+        <div class="tk-card-views">54K vistas</div>
+        <div class="tk-card-title">Unboxing Huila · tueste 5 días</div>
+        <div class="tk-sound"><span class="note">♪</span><span>sonido original</span></div>
+      </div>
+    </div>
+
+    <div class="tk-card">
+      <div class="tk-media">
+        <!-- <video autoplay muted loop playsinline src="images/tk-04.mp4"></video> -->
+        <div class="tk-media-ph">
+          <span class="ph-icon">⏱</span>
+          <div class="ph-lbl-sm">TikTok #4 — time-lapse 5 tazas seguidas, comparación extracción</div>
+          <span class="ph-file-sm">images/tk-04.mp4 · 9:16</span>
+        </div>
+      </div>
+      <div class="tk-card-overlay"></div>
+      <div class="tk-card-info">
+        <div class="tk-card-num">#012.843</div>
+        <div class="tk-card-views">127K vistas</div>
+        <div class="tk-card-title">5 tazas · curvas de extracción</div>
+        <div class="tk-sound"><span class="note">♪</span><span>lofi coffee</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════ YOUTUBE — PANEL ═══════ -->
+<section class="yt-section" id="youtube">
+
+  <div class="yt-header">
+    <div>
+      <div class="yt-subs" style="margin-bottom:.5rem;">FIG. 03.3 — YOUTUBE</div>
+      <h2>YouTube · <span class="red">@aceropress50k</span></h2>
+    </div>
+    <div class="yt-subs" style="text-align:right;">
+      2.4K suscriptores<br>
+      Videos largos · tutoriales · detrás de cámaras
+    </div>
+  </div>
+
+  <!-- Video destacado YT -->
+  <div class="yt-featured" style="position:relative;">
+    <!-- 🖼️ THUMBNAIL DEL VIDEO DESTACADO -->
+    <!-- <img src="images/yt-featured-thumb.jpg" alt=""> -->
+    <div class="yt-featured-ph">
+      <span class="ph-icon">▶️</span>
+      <div class="ph-lbl">Thumbnail del video destacado de YouTube — título en pantalla grande, imagen del AeroPress con vapor, fondo del cuaderno de campo con bocetos</div>
+      <span class="ph-file">images/yt-featured-thumb.jpg · 1280×720 · thumbnail 16:9</span>
+    </div>
+    <div class="yt-featured-overlay"></div>
+    <div class="yt-play-btn">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </div>
+    <div class="yt-featured-info">
+      <div class="yt-featured-title">El reto de las 50.000 tazas — Episodio 128 · Etiopía Yirgacheffe y la receta perfecta de inversión</div>
+      <div class="yt-featured-meta"><span>12K vistas</span><span>Hace 1 día</span><span>14:32</span></div>
+    </div>
+    <div class="yt-duration" style="top:auto;bottom:1rem;right:1rem;">14:32</div>
+  </div>
+
+  <!-- Grid videos YT -->
+  <div class="yt-grid">
+
+    <div class="yt-card">
+      <div class="yt-thumb">
+        <!-- <img src="images/yt-thumb-01.jpg" alt=""> -->
+        <div class="yt-thumb-ph">
+          <span class="ph-icon">🎬</span>
+          <div class="ph-lbl-sm">Thumbnail YT #1 — tutorial ratio 1:14 vs 1:15, composición con ambas tazas, texto grande</div>
+          <span class="ph-file-sm">images/yt-thumb-01.jpg · 1280×720</span>
+        </div>
+        <span class="yt-duration">8:47</span>
+      </div>
+      <div class="yt-card-title">Ratio 1:14 vs 1:15 · El experimento definitivo</div>
+      <div class="yt-card-meta"><span>6.2K vistas</span><span>Hace 2 días</span></div>
+    </div>
+
+    <div class="yt-card">
+      <div class="yt-thumb">
+        <!-- <img src="images/yt-thumb-02.jpg" alt=""> -->
+        <div class="yt-thumb-ph">
+          <span class="ph-icon">🌿</span>
+          <div class="ph-lbl-sm">Thumbnail YT #2 — unboxing Huila, saco de café, manos con los granos</div>
+          <span class="ph-file-sm">images/yt-thumb-02.jpg · 1280×720</span>
+        </div>
+        <span class="yt-duration">11:22</span>
+      </div>
+      <div class="yt-card-title">Unboxing Colombia Huila · Tueste día 5</div>
+      <div class="yt-card-meta"><span>4.8K vistas</span><span>Hace 3 días</span></div>
+    </div>
+
+    <div class="yt-card">
+      <div class="yt-thumb">
+        <!-- <img src="images/yt-thumb-03.jpg" alt=""> -->
+        <div class="yt-thumb-ph">
+          <span class="ph-icon">⏱</span>
+          <div class="ph-lbl-sm">Thumbnail YT #3 — 5 tazas comparación, fila de tazas en cuaderno de campo</div>
+          <span class="ph-file-sm">images/yt-thumb-03.jpg · 1280×720</span>
+        </div>
+        <span class="yt-duration">18:05</span>
+      </div>
+      <div class="yt-card-title">Comparativa 5 orígenes · El video más largo del reto</div>
+      <div class="yt-card-meta"><span>9.1K vistas</span><span>Hace 5 días</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════ MÉTODO — FULLSCREEN SOBRE IMAGEN ═══════ -->
+<section class="metodo-section" id="metodo">
+  <div class="metodo-fullscreen">
+    <div class="fs-media">
+      <!-- 🖼️ IMAGEN DE FONDO MÉTODO — el cuaderno de campo abierto -->
+      <!-- <img src="images/metodo-bg.jpg" alt=""> -->
+      <div class="ph-blueprint" style="height:100%;">
+        <span class="ph-icon">📋</span>
+        <div class="ph-lbl">Imagen de fondo — cuaderno de campo abierto con el diagrama AeroPress GO™ completo, bocetos técnicos, cotas a mano, tinta azul sobre papel beige, luz natural lateral</div>
+        <span class="ph-file">images/metodo-bg.jpg · 1920×1080 · landscape</span>
+      </div>
+    </div>
+    <div class="fs-overlay paper-ov"></div>
+    <div class="metodo-content">
+      <div>
+        <div class="metodo-eyebrow">FIG. 03 — GUÍA DEFINITIVA</div>
+        <div class="metodo-title">
+          La receta<br>de<br>control<br>
+          <span class="press-stamp">.press</span>
+        </div>
+        <p style="color:var(--ink-soft);font-size:.9rem;line-height:1.6;max-width:34ch;">
+          Punto de partida para cada taza del reto. Cada entrada del feed registra las variaciones probadas sobre esta base.
+          <br><br>
+          <span style="color:#9b6a6a;font-size:.8rem;">基本レシピ — 抽出ステップガイド</span>
+        </p>
+      </div>
+      <div>
+        <div class="steps-grid">
+          <div class="step-cell"><div class="step-n">1</div><h4>Calentar</h4><p>92°C (+/-2°)</p><div class="jp">お湯 92°C</div></div>
+          <div class="step-cell"><div class="step-n">2</div><h4>Moler</h4><p>18g · media</p><div class="jp">挽く 18g</div></div>
+          <div class="step-cell"><div class="step-n">3</div><h4>Armar</h4><p>Modo inversión</p><div class="jp">反転式に組立</div></div>
+          <div class="step-cell"><div class="step-n">4</div><h4>Verter</h4><p>270ml · 1:15</p><div class="jp">注湯 270ml</div></div>
+          <div class="step-cell"><div class="step-n">5</div><h4>Agitar</h4><p>10s (+/-1s)</p><div class="jp">撹拌 10秒</div></div>
+          <div class="step-cell"><div class="step-n">6</div><h4>Esperar</h4><p>1:45 min total</p><div class="jp">待機 1分45秒</div></div>
+          <div class="step-cell"><div class="step-n">7</div><h4>Prensar</h4><p>~10s manual</p><div class="jp">プレス 10秒</div></div>
+          <div class="step-cell"><div class="step-n">8</div><h4>Publicar</h4><p>IG · TK · YT</p><div class="jp">記録して投稿</div></div>
+        </div>
+        <div class="specs-row">
+          <div class="spec-cell"><div class="sl">Ratio</div><div class="sv">1<span class="su">: 15</span></div></div>
+          <div class="spec-cell"><div class="sl">Temperatura</div><div class="sv">92<span class="su">°C</span></div></div>
+          <div class="spec-cell"><div class="sl">Tiempo</div><div class="sv">1:45<span class="su">min</span></div></div>
+          <div class="spec-cell"><div class="sl">Filtro</div><div class="sv">Papel<span class="su">Go</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="f-lbl">FIG. 06.1 — IDENTIDAD</div>
+      <div class="f-h4">acero.press</div>
+      <p class="f-p">Diario de campo del reto 50.000 tazas en AeroPress. Field Notebook Edition. Bogotá, 2.600 msnm.</p>
+    </div>
+    <div>
+      <div class="f-lbl">FIG. 06.2 — PLATAFORMAS</div>
+      <div class="f-h4">Síguenos</div>
+      <p class="f-p">Instagram · TikTok · YouTube<br>@aceropress50k · #aceropress50k</p>
+    </div>
+    <div>
+      <div class="f-lbl">FIG. 06.3 — SPECS</div>
+      <div class="f-h4">Material: AeroPress Go™</div>
+      <p class="f-p">Tolerancias: ±1 taza. Publicación diaria. Sync Instagram cada 30 min.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="meta">acero.press — 012.847 / 050.000 · © 2026 · Field Notebook Ed.</span>
+    <div class="logo-unit">
+      <span class="logo-acero" style="font-size:.75rem;padding:.22rem .75rem;">ACERO</span>
+      <span class="logo-press" style="font-size:.9rem;">.press</span>
+    </div>
+  </div>
+</footer>
+
+</div><!-- /page -->
+
+<script>
+// Spiral
+const sp = document.getElementById('spiral');
+if(sp){
+  const h = document.body.scrollHeight;
+  for(let i=0;i<Math.ceil(h/36)+4;i++){
+    const r=document.createElement('div');
+    r.className='spiral-ring';
+    r.style.top=(i*36+8)+'px';
+    sp.appendChild(r);
+  }
+}
+// Header scroll
+const hdr=document.getElementById('hdr');
+window.addEventListener('scroll',()=>{hdr.classList.toggle('scrolled',scrollY>60);},{passive:true});
+// Seg bar
+const bar=document.getElementById('segBar');
+if(bar){
+  for(let i=0;i<40;i++){
+    const s=document.createElement('div');
+    s.className='seg'+(i<10?' on':'');
+    bar.appendChild(s);
+  }
+}
+</script>
+</body>
+</html>
