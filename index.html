@@ -25,7 +25,6 @@
   --t7:#FFD700;
   --magenta-bright:#ff0000;
 }
-
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{
@@ -36,7 +35,6 @@ body{
   overflow-x:hidden;
 }
 a{color:inherit;text-decoration:none;}
-
 /* ===================== HEADER ===================== */
 header{
   position:fixed; top:0; left:0; right:0; z-index:100;
@@ -52,7 +50,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
     display:flex;
     align-items:center;
 }
-
 .logo-acero{
     height:48px;      /* ajusta según tu diseño */
     width:auto;
@@ -81,7 +78,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
   color:var(--near-black); transition:opacity .2s;
 }
 .btn-explora:hover{opacity:.85;}
-
 /* ===================== TESLA-STYLE FULL-SCREEN SECTIONS ===================== */
 .fullscreen{
   position:relative;
@@ -92,7 +88,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
   overflow:hidden;
   text-align:center;
 }
-
 /* Media layer (image or video fills the section) */
 .fs-media{
   position:absolute; inset:0; z-index:0;
@@ -102,7 +97,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
   width:100%; height:100%;
   object-fit:cover; object-position:center;
 }
-
 /* Sketch/blueprint placeholder when no real image */
 .fs-placeholder{
   width:100%; height:100%;
@@ -125,7 +119,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
   color:var(--ink); background:rgba(255,255,255,.7);
   padding:.3rem .7rem; border-radius:3px; border:1px dashed var(--ink-soft);
 }
-
 /* gradient overlay so text is always readable */
 .fs-overlay{
   position:absolute; inset:0; z-index:1;
@@ -146,7 +139,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
     rgba(237,230,211,1) 100%
   );
 }
-
 /* Content anchored to top */
 .fs-top{
   position:relative; z-index:2;
@@ -165,7 +157,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
 }
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
 @media(prefers-reduced-motion:reduce){.dot{animation:none;}}
-
 .fs-title{
   font-family:'Space Grotesk',sans-serif; font-weight:700;
   font-size:clamp(2.2rem,5.5vw,4rem);
@@ -180,7 +171,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
   margin-top:.7rem; font-size:.95rem;
   color:rgba(255,255,255,.65); max-width:44ch; margin-left:auto; margin-right:auto;
 }
-
 /* Content anchored to bottom */
 .fs-bottom{
   position:relative; z-index:2;
@@ -188,7 +178,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
   display:flex; flex-direction:column; align-items:center; gap:1rem;
 }
 .fs-actions{ display:flex; gap:.75rem; flex-wrap:wrap; justify-content:center; }
-
 .btn-fs-primary{
   font-family:'Archivo',sans-serif; font-weight:700; font-size:.74rem;
   letter-spacing:.14em; text-transform:uppercase;
@@ -204,7 +193,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
   color:var(--near-black); border:none;
 }
 .btn-fs-thermal:hover{ opacity:.85; }
-
 /* Annotation strip over image */
 .fs-annot{
   position:absolute; z-index:2;
@@ -214,7 +202,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
 .fs-annot.top-left{ top:calc(5rem + 56px); left:5vw; text-align:left; }
 .fs-annot.top-right{ top:calc(5rem + 56px); right:5vw; text-align:right; }
 @media(max-width:700px){.fs-annot{display:none;}}
-
 /* HUD widget */
 .hud{
   position:absolute; top:calc(5rem + 60px); right:5vw; z-index:3;
@@ -233,7 +220,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
   background:linear-gradient(90deg,var(--t0),var(--t1),var(--t2),var(--t3),var(--t4),var(--t5),var(--t6),var(--t7)); }
 .hud-needle{ position:absolute; top:-3px; left:62%; width:2px; height:11px; background:#fff; border-radius:1px; box-shadow:0 0 4px #fff; }
 @media(max-width:700px){.hud{display:none;}}
-
 /* Scroll hint */
 .scroll-hint{
   font-family:'JetBrains Mono',monospace; font-size:.65rem;
@@ -244,7 +230,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
   content:''; width:1px; height:28px;
   background:linear-gradient(to bottom, rgba(255,255,255,.3), transparent);
 }
-
 /* Marquee */
 .mq-wrap{ overflow:hidden; background:var(--near-black); border-top:1px solid rgba(255,255,255,.06); border-bottom:1px solid rgba(255,255,255,.06); }
 .mq-track{
@@ -259,7 +244,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
 }
 @keyframes scrollmq{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 @media(prefers-reduced-motion:reduce){.mq-track{animation:none;}}
-
 /* ===================== FEATURE ROWS (alternating image+text, blueprint style) ===================== */
 .feature-row{
   display:grid; grid-template-columns:1fr 1fr;
@@ -272,7 +256,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
   .feature-row,.feature-row.reverse{ grid-template-columns:1fr; }
   .feature-row.reverse .fr-media,.feature-row.reverse .fr-copy{ order:unset; }
 }
-
 .fr-media{
   position:relative; overflow:hidden; min-height:360px;
   background:linear-gradient(var(--grid-line) 1px, transparent 1px),
@@ -304,7 +287,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
 }
 .fr-annot.tl{ top:1rem; left:1rem; }
 .fr-annot.br{ bottom:1rem; right:1rem; text-align:right; }
-
 .fr-copy{
   display:flex; flex-direction:column; justify-content:center;
   padding:3.5rem 4vw;
@@ -332,10 +314,8 @@ header.scrolled{ background:rgba(14,14,18,.92); }
   box-shadow:2px 3px 0 0 rgba(42,53,80,.15);
 }
 .btn-ink:hover{ background:var(--ink); color:var(--cream); transform:translate(-1px,-2px); }
-
 /* ===================== CAFÉ — CINEMATOGRÁFICO ===================== */
 .cafe-section{ background:var(--near-black); padding:0; }
-
 .cafe-header{
   padding:5rem 5vw 3rem;
   display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:1.5rem;
@@ -358,20 +338,17 @@ header.scrolled{ background:rgba(14,14,18,.92); }
   font-family:'JetBrains Mono',monospace; font-size:.72rem;
   color:rgba(255,255,255,.35); letter-spacing:.04em; text-align:right; line-height:1.8;
 }
-
 /* Thermal divider bar */
 .thermal-bar{
   height:3px;
   background:linear-gradient(90deg,var(--t0),var(--t1),var(--t2),var(--t3),var(--t4),var(--t5),var(--t6),var(--t7),#fff);
 }
-
 /* ---- FEATURED COFFEE (hero card, full width) ---- */
 .cafe-featured{
   display:grid; grid-template-columns:1.1fr 1fr;
   min-height:580px; border-bottom:1px solid rgba(255,255,255,.07);
 }
 @media(max-width:900px){ .cafe-featured{ grid-template-columns:1fr; } }
-
 .cf-media{ position:relative; overflow:hidden; min-height:400px; }
 .cf-media img,.cf-media video{ width:100%; height:100%; object-fit:cover; display:block; }
 .cf-media-placeholder{
@@ -385,7 +362,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
 .cf-media-placeholder .ph-icon{ font-size:2.4rem; }
 .cf-media-placeholder .ph-label{ font-family:'JetBrains Mono',monospace; font-size:.7rem; color:rgba(255,255,255,.4); letter-spacing:.04em; text-align:center; max-width:340px; line-height:1.5; }
 .cf-media-placeholder .ph-file{ font-family:'JetBrains Mono',monospace; font-size:.64rem; font-weight:700; color:var(--t7); background:rgba(255,255,255,.06); padding:.3rem .7rem; border-radius:3px; border:1px dashed rgba(255,215,0,.3); }
-
 .cf-badge{
   position:absolute; top:1.4rem; left:1.4rem;
   font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.68rem;
@@ -393,14 +369,12 @@ header.scrolled{ background:rgba(14,14,18,.92); }
   padding:.35rem .8rem; border-radius:2px;
   background:linear-gradient(90deg,var(--t4),var(--t5)); color:#fff;
 }
-
 .cf-body{
   padding:3rem 3.5vw;
   display:flex; flex-direction:column; justify-content:center;
   border-left:1px solid rgba(255,255,255,.06);
 }
 @media(max-width:900px){ .cf-body{ border-left:none; border-top:1px solid rgba(255,255,255,.07); } }
-
 .cf-variety{
   font-family:'JetBrains Mono',monospace; font-size:.7rem;
   color:rgba(255,255,255,.4); letter-spacing:.1em; text-transform:uppercase; margin-bottom:.5rem;
@@ -418,7 +392,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
 .cf-meta-cell{ background:var(--near-black); padding:.7rem .9rem; }
 .cf-meta-cell .ml{ font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.35); margin-bottom:.2rem; }
 .cf-meta-cell .mv{ font-family:'JetBrains Mono',monospace; font-size:.88rem; color:#fff; font-weight:600; }
-
 /* Score display */
 .cf-score-row{ display:flex; align-items:baseline; gap:.6rem; margin-bottom:.5rem; }
 .cf-score{
@@ -450,7 +423,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
   backdrop-filter:blur(4px);
 }
 .btn-buy-ghost:hover{ background:rgba(255,255,255,.14); }
-
 /* ---- COFFEE GRID (secondary items) ---- */
 .cafe-grid{
   display:grid; grid-template-columns:repeat(3,1fr);
@@ -458,7 +430,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
 }
 @media(max-width:900px){ .cafe-grid{ grid-template-columns:1fr 1fr; } }
 @media(max-width:560px){ .cafe-grid{ grid-template-columns:1fr; } }
-
 .cg-card{
   border-right:1px solid rgba(255,255,255,.07);
   display:flex; flex-direction:column;
@@ -468,7 +439,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
   .cg-card:nth-child(2n){ border-right:none; }
   .cg-card{ border-bottom:1px solid rgba(255,255,255,.07); }
 }
-
 .cg-media{ aspect-ratio:4/3; position:relative; overflow:hidden; }
 .cg-media img,.cg-media video{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s ease; }
 .cg-card:hover .cg-media img{ transform:scale(1.04); }
@@ -483,14 +453,12 @@ header.scrolled{ background:rgba(14,14,18,.92); }
 .cg-media-placeholder .ph-icon{ font-size:1.6rem; }
 .cg-media-placeholder .ph-label{ font-family:'JetBrains Mono',monospace; font-size:.63rem; color:rgba(255,255,255,.35); letter-spacing:.03em; text-align:center; max-width:240px; line-height:1.5; }
 .cg-media-placeholder .ph-file{ font-family:'JetBrains Mono',monospace; font-size:.6rem; font-weight:700; color:var(--t7); background:rgba(255,255,255,.05); padding:.2rem .55rem; border-radius:2px; border:1px dashed rgba(255,215,0,.25); }
-
 .cg-score-stripe{
   height:4px;
   background:linear-gradient(90deg,var(--t0),var(--t2),var(--t4),var(--t5),var(--t6),var(--t7));
   position:relative;
 }
 .cg-score-stripe .cn{ position:absolute; top:-3px; width:2px; height:10px; background:#fff; border-radius:1px; box-shadow:0 0 4px rgba(255,215,0,.5); }
-
 .cg-body{ padding:1.4rem 1.4rem 1.8rem; flex:1; display:flex; flex-direction:column; }
 .cg-variety{ font-family:'JetBrains Mono',monospace; font-size:.64rem; color:rgba(255,255,255,.35); letter-spacing:.08em; text-transform:uppercase; margin-bottom:.3rem; }
 .cg-name{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.15rem; text-transform:uppercase; color:#fff; margin-bottom:.7rem; }
@@ -514,12 +482,10 @@ header.scrolled{ background:rgba(14,14,18,.92); }
   border-radius:2px; background:transparent; color:#fff; cursor:pointer; transition:all .2s;
 }
 .btn-cg:hover{ background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.4); }
-
 /* ===================== PROJECTS STRIP ===================== */
 .projects-section{ background:var(--paper); }
 .projects-grid{ display:grid; grid-template-columns:1fr 1fr; }
 @media(max-width:760px){ .projects-grid{ grid-template-columns:1fr; } }
-
 .pj-card{
   position:relative; min-height:520px; overflow:hidden;
   display:flex; flex-direction:column; align-items:center; justify-content:space-between;
@@ -548,15 +514,12 @@ header.scrolled{ background:rgba(14,14,18,.92); }
 .pj-placeholder .ph-file{ font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:700; padding:.25rem .6rem; border-radius:3px; }
 .pj-placeholder.dark .ph-file{ color:var(--ink); background:rgba(255,255,255,.6); border:1px dashed var(--ink-soft); }
 .pj-placeholder.darker .ph-file{ color:var(--t7); background:rgba(255,255,255,.05); border:1px dashed rgba(255,215,0,.25); }
-
 .pj-overlay{ position:absolute; inset:0; background:linear-gradient(to bottom,transparent 30%,rgba(14,14,18,.8) 100%); }
 .pj-overlay.light-ov{ background:linear-gradient(to bottom,transparent 30%,rgba(237,230,211,.9) 100%); }
-
 .pj-top{ position:relative; z-index:2; padding-top:3rem; }
 .pj-bottom{ position:relative; z-index:2; padding:0 2rem 3rem; width:100%; }
 .pj-name{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(1.6rem,3.5vw,2.4rem); text-transform:uppercase; margin-bottom:.5rem; }
 .pj-desc{ font-size:.88rem; margin-bottom:1.4rem; max-width:36ch; margin-left:auto; margin-right:auto; }
-
 /* ===================== VALUES / THERMAL ===================== */
 .thermal-section{
   padding:6rem 5vw; background:var(--near-black); position:relative; overflow:hidden;
@@ -584,7 +547,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
 .ts-lbl{ font-family:'JetBrains Mono',monospace; font-size:.68rem; color:rgba(255,255,255,.4); letter-spacing:.1em; text-transform:uppercase; margin-bottom:.8rem; }
 .ts-desc{ font-size:.88rem; color:rgba(255,255,255,.6); line-height:1.55; }
 .ts-bar{ margin-top:1.2rem; height:4px; border-radius:2px; background:linear-gradient(90deg,var(--t0),var(--t1),var(--t2),var(--t3),var(--t4),var(--t5),var(--t6),var(--t7)); }
-
 /* ===================== B2B ===================== */
 .b2b-section{ background:var(--paper); padding:5rem 5vw; }
 .section-label{
@@ -600,11 +562,9 @@ header.scrolled{ background:rgba(14,14,18,.92); }
 .section-label .ttl{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.4rem; text-transform:uppercase; letter-spacing:.06em; }
 .section-label .rule{ flex:1; height:1px; background:var(--grid-line); border-top:1px dashed var(--ink-soft); }
 .section-label .sub{ font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--ink-soft); }
-
 .sec-lbl{ font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--ink-soft); margin-bottom:.5rem; }
 .sec-h2{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(1.6rem,3.5vw,2.2rem); text-transform:uppercase; margin-bottom:.7rem; }
 .sec-desc{ max-width:60ch; color:var(--ink-soft); font-size:.94rem; line-height:1.65; margin-bottom:2.2rem; }
-
 .b2b-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--grid-line); border:2px solid var(--ink); }
 @media(max-width:900px){ .b2b-grid{ grid-template-columns:1fr 1fr; } }
 @media(max-width:520px){ .b2b-grid{ grid-template-columns:1fr; } }
@@ -612,7 +572,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
 .b2b-ico{ font-size:1.5rem; margin-bottom:.6rem; }
 .b2b-title{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:.95rem; text-transform:uppercase; letter-spacing:.04em; margin-bottom:.4rem; color:var(--ink); }
 .b2b-d{ font-size:.82rem; color:var(--ink-soft); line-height:1.5; }
-
 /* ===================== BLOG ===================== */
 .blog-section{ background:var(--near-black); padding:5rem 5vw; }
 .blog-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.07); }
@@ -622,7 +581,6 @@ header.scrolled{ background:rgba(14,14,18,.92); }
 .blog-tag{ display:inline-block; font-family:'JetBrains Mono',monospace; font-size:.64rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:.2rem .6rem; border-radius:2px; margin-bottom:.7rem; background:linear-gradient(90deg,var(--t5),var(--t6)); color:var(--near-black); }
 .blog-title{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:.95rem; line-height:1.4; margin-bottom:.6rem; color:#fff; }
 .blog-ex{ font-size:.8rem; color:rgba(255,255,255,.4); line-height:1.55; }
-
 /* ===================== FOOTER ===================== */
 footer{
   background:var(--near-black); border-top:1px solid rgba(255,255,255,.08);
@@ -637,16 +595,32 @@ footer{
 .footer-bottom{ border-top:1px solid rgba(255,255,255,.07); padding-top:1.4rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
 .footer-bottom .meta{ font-family:'JetBrains Mono',monospace; font-size:.68rem; color:rgba(255,255,255,.3); letter-spacing:.04em; }
 .footer-tbar{ width:140px; height:4px; border-radius:2px; background:linear-gradient(90deg,var(--t0),var(--t2),var(--t4),var(--t5),var(--t6),var(--t7)); }
-
-
+/* ===================== WHATSAPP FLOAT BUTTON ===================== */
+.wa-float{
+  position:fixed; bottom:24px; right:24px; z-index:300;
+  width:58px; height:58px; border-radius:50%;
+  background:#25D366; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 18px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.08);
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.wa-float:hover{ transform:scale(1.08); box-shadow:0 6px 26px rgba(0,0,0,.5); }
+.wa-float svg{ width:30px; height:30px; position:relative; z-index:2; }
+.wa-float-pulse{
+  position:absolute; inset:0; border-radius:50%;
+  background:#25D366; opacity:.55; z-index:1;
+  animation:wa-pulse 2.2s ease-out infinite;
+}
+@keyframes wa-pulse{
+  0%{ transform:scale(1); opacity:.55; }
+  100%{ transform:scale(1.9); opacity:0; }
+}
+@media(prefers-reduced-motion:reduce){ .wa-float-pulse{ animation:none; } }
+@media(max-width:700px){ .wa-float{ width:52px; height:52px; bottom:18px; right:18px; } .wa-float svg{ width:26px; height:26px; } }
 </style>
 </head>
 <body>
-
 <div class="spiral" id="spiral" aria-hidden="true"></div>
-
 <div class="page">
-
 <!-- ========== HEADER ========== -->
 <header id="main-header">
   <div class="logo-unit">
@@ -665,7 +639,6 @@ footer{
   </nav>
   <a href="#cafe" class="btn-explora">EXPLORA →</a>
 </header>
-
 <!-- ========== HERO FULLSCREEN (video/imagen) ========== -->
 <section class="fullscreen" id="inicio">
   <div class="fs-media">
@@ -673,7 +646,6 @@ footer{
      <video autoplay muted loop playsinline src="images/hero_main1.mp4"></video> 
         
     
-
     <div class="fs-placeholder">
       <span class="ph-icon">🎬</span>
       <div class="ph-label"> imagen de referencia ACERO</div>
@@ -681,7 +653,6 @@ footer{
     </div>
   </div>
   <div class="fs-overlay"></div>
-
   <!-- HUD temperatura -->
   <div class="hud">
     <div class="hud-lbl">Temperatura óptima</div>
@@ -689,26 +660,20 @@ footer{
     <div class="hud-lbl" style="margin-top:.3rem;">Bogotá · 2.600 msnm</div>
     <div class="hud-bar"><div class="hud-needle"></div></div>
   </div>
-
   <!-- Anotaciones técnicas esquinas -->
    <div>
-
    </div>
    <div>
-
    </div>
   <div class="fs-annot top-left">Activo · Bogotá 2.600 msnm<br>R≈15mm · 60° · ajuste de molienda<br>Ø 4.5cm · base cilíndrica</div>
-
   <div class="fs-top">
     <div class="fs-eyebrow"><span class="dot"></span> Specialty Coffee · </div>
     
     <div class="fs-title">
-
       Precisión.<br>Pureza.<br><span class="thermal">Futuro.</span>
     </div>
     
   </div>
-
   <div class="fs-bottom">
     <div class="fs-actions">
       <a href="#cafe" class="btn-fs-primary btn-fs-thermal">Ver catálogo</a>
@@ -717,7 +682,6 @@ footer{
     <div class="scroll-hint">Explora</div>
   </div>
 </section>
-
 <!-- Marquee -->
 <div class="mq-wrap">
   <div class="mq-track">
@@ -725,7 +689,6 @@ footer{
     <span class="mh">· Gesha · </span><span>Castillo </span><span class="mc"> · SCA 87+ · </span><span>Huila · Nariño · Cauca</span><span class="mh"> ·  Agro · </span><span>Bourbon Rosado</span><span class="mc"> · Proceso Lavado · </span><span>Trazabilidad Completa</span><span class="mh"> · 92.5°C · AeroPress · floatGardens · </span><span>Pink Bourbon</span><span class="mc"> · Origen Único · </span>
   </div>
 </div>
-
 <!-- ========== TECNOLOGÍA — FEATURE ROW 1 ========== -->
 <div id="tecnologia"></div>
 <div class="feature-row">
@@ -749,7 +712,6 @@ footer{
     <a href="#proyectos" class="btn-ink">Explorar →</a>
   </div>
 </div>
-
 <!-- FEATURE ROW 2 — invertida -->
 <div class="feature-row reverse">
   <div class="fr-media">
@@ -770,7 +732,6 @@ footer{
     <a href="press.html" class="btn-ink">Ver acero.press →</a>
   </div>
 </div>
-
 <!-- FEATURE ROW 3 — granos -->
 <div class="feature-row">
   <div class="fr-media">
@@ -791,12 +752,9 @@ footer{
     <a href="#cafe" class="btn-ink">Ver catálogo →</a>
   </div>
 </div>
-
 <!-- ========== CAFÉ — SECCIÓN CINEMATOGRÁFICA ========== -->
 <section class="cafe-section" id="cafe">
-
   <div class="thermal-bar"></div>
-
   <div class="cafe-header">
     <div class="cafe-header-left">
       <div class="eyebrow-cafe">// Catálogo de especialidad · Profile</div>
@@ -809,7 +767,6 @@ footer{
       Bogotá · Huila · Nariño · Cauca
     </div>
   </div>
-
   <!-- FEATURED — Acero Gesha (el más destacado, ocupa toda la anchura) -->
   <div class="cafe-featured">
     <div class="cf-media">
@@ -840,13 +797,12 @@ footer{
       <div class="cf-price-row">
         <div class="cf-price">$38.000 / 200g</div>
         <div style="display:flex;gap:.7rem;flex-wrap:wrap;">
-          <button class="btn-buy">Pedir ahora →</button>
+          <button class="btn-buy" data-wa-msg="Hola! Quiero pedir el café DOMINGO TORRES (Gesha · 91.5 pts SCA) - 200g - $38.000">Pedir ahora →</button>
           <button class="btn-buy btn-buy-ghost">Ver detalles</button>
         </div>
       </div>
     </div>
   </div>
-
   <!-- FULLSCREEN intermediaria — imagen ambiental de café -->
   <div class="fullscreen" style="height:55vh; min-height:340px;">
     <div class="fs-media">
@@ -864,10 +820,8 @@ footer{
       <div class="fs-title" style="font-size:clamp(1.4rem,3vw,2.2rem);">Cada lote, una historia.</div>
     </div>
   </div>
-
   <!-- GRID DE CAFÉS SECUNDARIOS -->
   <div class="cafe-grid">
-
     <!-- Castillo  -->
     <div class="cg-card">
       <div class="cg-media">
@@ -891,11 +845,10 @@ footer{
         <p class="cg-notes">"Panela, mora, chocolate oscuro 70%, cuerpo denso. Ideal para prensa francesa y espresso."</p>
         <div class="cg-footer">
           <span class="cg-price">$28.000 / 200g</span>
-          <button class="btn-cg">Pedir</button>
+          <button class="btn-cg" data-wa-msg="Hola! Quiero pedir el café CASTILLO NEGRO (88.0 pts SCA) - 200g - $28.000">Pedir</button>
         </div>
       </div>
     </div>
-
     <!-- Bourbon Rosado -->
     <div class="cg-card">
       <div class="cg-media">
@@ -919,11 +872,10 @@ footer{
         <p class="cg-notes">"Frambuesa fresca, durazno, caramelo, acidez brillante. Perfecto para V60 y AeroPress."</p>
         <div class="cg-footer">
           <span class="cg-price">$32.000 / 200g</span>
-          <button class="btn-cg">Pedir</button>
+          <button class="btn-cg" data-wa-msg="Hola! Quiero pedir el café BOURBON ROSADO (89.5 pts SCA) - 200g - $32.000">Pedir</button>
         </div>
       </div>
     </div>
-
     <!-- Typica Origen -->
     <div class="cg-card">
       <div class="cg-media">
@@ -947,19 +899,16 @@ footer{
         <p class="cg-notes">"Limón Meyer, manzana verde, té negro, cuerpo ligero sedoso. Variedad patrimonio colombiano."</p>
         <div class="cg-footer">
           <span class="cg-price">$26.000 / 200g</span>
-          <button class="btn-cg">Pedir</button>
+          <button class="btn-cg" data-wa-msg="Hola! Quiero pedir el café TYPICA ORIGEN (87.0 pts SCA) - 200g - $26.000">Pedir</button>
         </div>
       </div>
     </div>
-
   </div>
   <div class="thermal-bar"></div>
 </section>
-
 <!-- ========== PROYECTOS ========== -->
 <section class="projects-section" id="proyectos">
   <div class="projects-grid">
-
     <!-- floatGardens -->
     <div class="pj-card">
       <div class="pj-media">
@@ -983,7 +932,6 @@ footer{
         <a href="floatgardens.html" class="btn-ink" style="margin:0 auto;">Explorar →</a>
       </div>
     </div>
-
     <!-- acero.press -->
     <div class="pj-card">
       <div class="pj-media">
@@ -1008,10 +956,8 @@ footer{
         <a href="press.html" class="btn-fs-primary">Ver feed →</a>
       </div>
     </div>
-
   </div>
 </section>
-
 <!-- ========== THERMAL STATS ========== -->
 <section class="thermal-section">
   <div class="ts-header">
@@ -1039,7 +985,6 @@ footer{
     </div>
   </div>
 </section>
-
 <!-- ========== B2B ========== -->
 <section class="b2b-section" id="b2b">
   <div class="section-label">
@@ -1058,7 +1003,6 @@ footer{
     <div class="b2b-card"><div class="b2b-ico">☕</div><div class="b2b-title">Baristas</div><div class="b2b-d">Acceso directo a lotes especiales. Especificaciones técnicas completas y precios de tostador.</div></div>
   </div>
 </section>
-
 <!-- ========== BLOG ========== -->
 <section class="blog-section" id="blog">
   <div class="section-label" style="margin-bottom:2rem;">
@@ -1079,7 +1023,6 @@ footer{
     <div class="blog-card"><div class="blog-tag">Trazabilidad</div><div class="blog-title">Cómo leer la ficha técnica de un café de origen único</div><div class="blog-ex">Variedad botánica, municipio, altitud, proceso, temperatura de tueste, puntaje SCA y nombre del productor. Si falta alguno, no es trazabilidad real.</div></div>
   </div>
 </section>
-
 <!-- ========== FOOTER ========== -->
 <footer id="contacto">
   <div class="footer-grid">
@@ -1108,10 +1051,40 @@ footer{
 </div>
   </div>
 </footer>
-
 </div><!-- /page -->
-
+<!-- ========== BOTÓN FLOTANTE DE WHATSAPP ========== -->
+<a href="#" id="wa-float-btn" class="wa-float" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+  <span class="wa-float-pulse"></span>
+  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" fill="white">
+    <path d="M16.04 4C9.37 4 3.98 9.36 3.98 15.99c0 2.27.63 4.4 1.73 6.23L4 28l6.02-1.58a12.1 12.1 0 0 0 6.02 1.59h.01c6.67 0 12.06-5.36 12.06-11.99C28.1 9.36 22.71 4 16.04 4zm0 21.94h-.01a9.9 9.9 0 0 1-5.06-1.39l-.36-.21-3.58.94.96-3.5-.24-.36a9.86 9.86 0 0 1-1.52-5.27c0-5.49 4.49-9.96 10.02-9.96 5.52 0 10.01 4.47 10.01 9.96 0 5.5-4.49 9.95-10.02 9.95zm5.48-7.45c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.47-.89-.79-1.49-1.76-1.66-2.06-.17-.3-.02-.46.13-.61.14-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.06 2.87 1.21 3.07.15.2 2.09 3.2 5.08 4.48.71.31 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.08 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.13-.27-.2-.57-.35z"/>
+  </svg>
+</a>
 <script>
+/* ============================================================
+   ⚠️ CONFIGURACIÓN WHATSAPP — EDITA AQUÍ TU NÚMERO ⚠️
+   Formato: código de país + número, SIN espacios, SIN "+" ni "00"
+   Ejemplo Colombia: "573001234567"
+   ============================================================ */
+const WHATSAPP_NUMBER = "TU_NUMERO_AQUI";
+
+function buildWhatsAppLink(message){
+  const text = encodeURIComponent(message || "Hola! Quiero más información sobre los cafés ACERO.");
+  return `https://wa.me/${+573152125327}?text=${text}`;
+}
+
+// Botón flotante
+const waFloatBtn = document.getElementById('wa-float-btn');
+if(waFloatBtn){
+  waFloatBtn.href = buildWhatsAppLink("Hola! Quiero información sobre los cafés ACERO.");
+}
+
+// Todos los botones "Pedir" / "Pedir ahora" del catálogo de café
+document.querySelectorAll('[data-wa-msg]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    window.open(buildWhatsAppLink(btn.getAttribute('data-wa-msg')), '_blank', 'noopener');
+  });
+});
+
 // Spiral binding
 const spiral = document.getElementById('spiral');
 if(spiral){
@@ -1123,13 +1096,11 @@ if(spiral){
     spiral.appendChild(r);
   }
 }
-
 // Header scroll effect
 const hdr = document.getElementById('main-header');
 window.addEventListener('scroll',()=>{
   hdr.classList.toggle('scrolled', window.scrollY > 60);
 },{ passive:true });
-
 // HUD temperatura animada
 const tempEl = document.getElementById('hero-temp');
 if(tempEl){
