@@ -8,13 +8,15 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Archivo:wght@400;500;600;700;800&family=Permanent+Marker&display=swap" rel="stylesheet">
 <style>
+/* ===================== ROOT / TOKENS ===================== */
 :root{
   --paper:#EDE6D3;
+  --paper-deep:#E3DBC4;
   --grid-line:#D6CEB6;
   --ink:#2A3550;
   --ink-soft:#6B7290;
   --cream:#F7F3E8;
-  --near-black:#1E1E24;
+  --near-black:#1A1A1E;
   --t0:#0D0D12;
   --t1:#1A0A2E;
   --t2:#3D0066;
@@ -23,7 +25,14 @@
   --t5:#FF4500;
   --t6:#FF8C00;
   --t7:#FFD700;
-  --magenta-bright:#ff0000;
+  --hot:#E8181C;
+  --hot-glow:rgba(232,24,28,.55);
+  --hot-soft:rgba(232,24,28,.15);
+  --hot-border:rgba(232,24,28,.35);
+  --ig:#E1306C;
+  --tk:#010101;
+  --yt:#FF0000;
+  --yt-dark:#0F0F0F;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -35,600 +44,717 @@ body{
   overflow-x:hidden;
 }
 a{color:inherit;text-decoration:none;}
+
 /* ===================== HEADER ===================== */
 header{
-  position:fixed; top:0; left:0; right:0; z-index:100;
-  display:flex; align-items:center; justify-content:space-between;
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
   padding:1.1rem 5vw;
-  background:rgba(30,30,36,.6);
-  backdrop-filter:blur(14px);
+  background:rgba(26,26,30,.55);
+  backdrop-filter:blur(16px);
   border-bottom:1px solid rgba(255,255,255,.06);
   transition:background .3s;
 }
-header.scrolled{ background:rgba(14,14,18,.92); }
-.logo-unit{
-    display:flex;
-    align-items:center;
-}
-.logo-acero{
-    height:48px;      /* ajusta según tu diseño */
-    width:auto;
-    display:block;
-    object-fit:contain;
-     border-radius:8px;
-}
+header.scrolled{background:rgba(12,12,16,.96);}
+.logo-unit{display:flex;align-items:center;gap:.4rem;}
+.logo-acero{height:48px;width:auto;display:block;object-fit:contain;border-radius:8px;}
+.logo-acero1{height:48px;width:auto;display:block;object-fit:contain;border-radius:8px;}
 .logo-press{
   font-family:'Permanent Marker',cursive;
-  color:var(--magenta-bright); font-size:1.25rem;
-  transform:rotate(-6deg); margin-left:-.5rem;
-  text-shadow:0 0 12px rgba(255, 0, 0, 0.914);
+  color:var(--hot);font-size:1.25rem;
+  transform:rotate(-6deg);margin-left:-.1rem;
+  text-shadow:0 0 16px var(--hot-glow),0 0 32px rgba(232,24,28,.25);
 }
-.nav-links{ display:flex; gap:2rem; }
+.nav-links{display:flex;gap:2rem;}
 .nav-links a{
-  font-size:.78rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
-  color:rgba(255,255,255,.65); transition:color .2s;
+  font-size:.78rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,255,255,.65);transition:color .2s;
 }
-.nav-links a:hover{ color:#fff; }
+.nav-links a:hover{color:#fff;}
 @media(max-width:900px){.nav-links{display:none;}}
 .btn-explora{
-  font-family:'Archivo',sans-serif; font-weight:700; font-size:.72rem;
-  letter-spacing:.14em; text-transform:uppercase;
-  padding:.7rem 1.5rem; border:none; border-radius:3px; cursor:pointer;
+  font-family:'Archivo',sans-serif;font-weight:700;font-size:.72rem;
+  letter-spacing:.14em;text-transform:uppercase;
+  padding:.7rem 1.5rem;border:none;border-radius:3px;cursor:pointer;
   background:linear-gradient(135deg,var(--t5),var(--t6),var(--t7));
-  color:var(--near-black); transition:opacity .2s;
+  color:var(--near-black);transition:opacity .2s;
 }
 .btn-explora:hover{opacity:.85;}
-/* ===================== TESLA-STYLE FULL-SCREEN SECTIONS ===================== */
-.fullscreen{
-  position:relative;
-  width:100%; height:100vh;
-  min-height:600px;
-  display:flex; flex-direction:column;
-  align-items:center; justify-content:space-between;
-  overflow:hidden;
-  text-align:center;
-}
-/* Media layer (image or video fills the section) */
-.fs-media{
-  position:absolute; inset:0; z-index:0;
-}
-.fs-media img,
-.fs-media video{
-  width:100%; height:100%;
-  object-fit:cover; object-position:center;
-}
-/* Sketch/blueprint placeholder when no real image */
-.fs-placeholder{
-  width:100%; height:100%;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:.75rem;
-  background:
-    linear-gradient(var(--grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
-    #EDE6D3;
-  background-size:32px 32px, 32px 32px, auto;
-}
-.fs-placeholder .ph-icon{ font-size:2.2rem; }
-.fs-placeholder .ph-label{
-  font-family:'JetBrains Mono',monospace; font-size:.72rem;
-  color:var(--ink-soft); letter-spacing:.04em; text-align:center;
-  max-width:380px; line-height:1.5;
-}
-.fs-placeholder .ph-file{
-  font-family:'JetBrains Mono',monospace; font-size:.66rem; font-weight:700;
-  color:var(--ink); background:rgba(255,255,255,.7);
-  padding:.3rem .7rem; border-radius:3px; border:1px dashed var(--ink-soft);
-}
-/* gradient overlay so text is always readable */
+
+/* ===================== SHARED COMPONENTS ===================== */
 .fs-overlay{
-  position:absolute; inset:0; z-index:1;
-  background:linear-gradient(
-    to bottom,
-    rgba(14,14,18,.1) 0%,
-    rgba(14,14,18,.15) 40%,
-    rgba(14,14,18,.6) 70%,
-    rgba(14,14,18,.85) 100%
-  );
+  position:absolute;inset:0;z-index:1;
+  background:linear-gradient(to bottom,rgba(14,14,18,.1) 0%,rgba(14,14,18,.15) 40%,rgba(14,14,18,.6) 70%,rgba(14,14,18,.85) 100%);
 }
-.fs-overlay.light{
-  background:linear-gradient(
-    to bottom,
-    rgba(237,230,211,.0) 0%,
-    rgba(237,230,211,.2) 50%,
-    rgba(237,230,211,.8) 80%,
-    rgba(237,230,211,1) 100%
-  );
-}
-/* Content anchored to top */
-.fs-top{
-  position:relative; z-index:2;
-  padding-top:clamp(5rem,12vh,8rem);
+.fs-top{position:relative;z-index:2;padding-top:clamp(5.5rem,13vh,9rem);}
+.fs-bottom{
+  position:relative;z-index:2;
+  padding-bottom:clamp(2.5rem,6vh,4rem);
+  display:flex;flex-direction:column;align-items:center;gap:1.4rem;
 }
 .fs-eyebrow{
-  font-family:'JetBrains Mono',monospace; font-size:.72rem;
-  letter-spacing:.15em; text-transform:uppercase;
-  color:rgba(255,255,255,.6); margin-bottom:.6rem;
-  display:flex; align-items:center; justify-content:center; gap:.5rem;
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;
+  letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(255,255,255,.55);margin-bottom:.7rem;
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
 }
-.fs-eyebrow .dot{
-  width:6px; height:6px; border-radius:50%;
-  background:var(--t6); box-shadow:0 0 8px var(--t6);
-  animation:pulse 1.8s ease-in-out infinite;
+.fs-eyebrow .live-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--hot);box-shadow:0 0 10px var(--hot);
+  animation:livepulse 1.6s ease-in-out infinite;
 }
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
-@media(prefers-reduced-motion:reduce){.dot{animation:none;}}
-.fs-title{
-  font-family:'Space Grotesk',sans-serif; font-weight:700;
-  font-size:clamp(2.2rem,5.5vw,4rem);
-  letter-spacing:-.01em; text-transform:uppercase;
-  color:#fff; line-height:1.05;
+@keyframes livepulse{0%,100%{opacity:1;box-shadow:0 0 10px var(--hot);}50%{opacity:.4;box-shadow:0 0 4px var(--hot);}}
+.fs-h1{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:clamp(2.4rem,6vw,4.6rem);text-transform:uppercase;
+  color:#fff;line-height:1.02;letter-spacing:-.01em;
 }
-.fs-title .thermal{
-  background:linear-gradient(90deg,var(--t5),var(--t6),var(--t7));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+.fs-h1 .hot{color:var(--hot);}
+.press-tag{
+  font-family:'Permanent Marker',cursive;color:var(--hot);
+  font-size:.75em;transform:rotate(-4deg);display:inline-block;
+  text-shadow:0 0 18px var(--hot-glow);
 }
 .fs-sub{
-  margin-top:.7rem; font-size:.95rem;
-  color:rgba(255,255,255,.65); max-width:44ch; margin-left:auto; margin-right:auto;
+  margin-top:.8rem;font-size:.95rem;
+  color:rgba(255,255,255,.55);max-width:46ch;
+  margin-left:auto;margin-right:auto;
 }
-/* Content anchored to bottom */
-.fs-bottom{
-  position:relative; z-index:2;
-  padding-bottom:clamp(2.5rem,6vh,4rem);
-  display:flex; flex-direction:column; align-items:center; gap:1rem;
+.fs-actions{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;}
+.btn-glass{
+  font-family:'Archivo',sans-serif;font-weight:700;font-size:.72rem;
+  letter-spacing:.14em;text-transform:uppercase;
+  padding:.88rem 2rem;border-radius:3px;cursor:pointer;
+  background:rgba(255,255,255,.12);backdrop-filter:blur(8px);
+  color:#fff;border:1.5px solid rgba(255,255,255,.3);transition:all .2s;
 }
-.fs-actions{ display:flex; gap:.75rem; flex-wrap:wrap; justify-content:center; }
-.btn-fs-primary{
-  font-family:'Archivo',sans-serif; font-weight:700; font-size:.74rem;
-  letter-spacing:.14em; text-transform:uppercase;
-  padding:.9rem 2rem; border-radius:3px; cursor:pointer; border:none;
-  background:rgba(255,255,255,.15);
-  backdrop-filter:blur(8px);
-  color:#fff; border:1.5px solid rgba(255,255,255,.35);
-  transition:all .2s;
-}
-.btn-fs-primary:hover{ background:rgba(255,255,255,.25); }
-.btn-fs-thermal{
-  background:linear-gradient(135deg,var(--t5),var(--t6),var(--t7));
-  color:var(--near-black); border:none;
-}
-.btn-fs-thermal:hover{ opacity:.85; }
-/* Annotation strip over image */
-.fs-annot{
-  position:absolute; z-index:2;
-  font-family:'JetBrains Mono',monospace; font-size:.64rem;
-  color:rgba(255,255,255,.5); letter-spacing:.04em; line-height:1.5;
-}
-.fs-annot.top-left{ top:calc(5rem + 56px); left:5vw; text-align:left; }
-.fs-annot.top-right{ top:calc(5rem + 56px); right:5vw; text-align:right; }
-@media(max-width:700px){.fs-annot{display:none;}}
-/* HUD widget */
-.hud{
-  position:absolute; top:calc(5rem + 60px); right:5vw; z-index:3;
-  background:rgba(14,14,18,.7); backdrop-filter:blur(8px);
-  border:1px solid rgba(123,0,255,.4); border-radius:6px;
-  padding:.75rem 1rem; min-width:126px;
-  box-shadow:0 0 14px rgba(123,0,255,.2);
-}
-.hud-lbl{ font-family:'JetBrains Mono',monospace; font-size:.58rem; color:rgba(255,255,255,.4); letter-spacing:.08em; text-transform:uppercase; }
-.hud-val{
-  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.5rem;
-  background:linear-gradient(90deg,var(--t5),var(--t7));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-}
-.hud-bar{ margin-top:.4rem; height:5px; border-radius:3px; position:relative;
-  background:linear-gradient(90deg,var(--t0),var(--t1),var(--t2),var(--t3),var(--t4),var(--t5),var(--t6),var(--t7)); }
-.hud-needle{ position:absolute; top:-3px; left:62%; width:2px; height:11px; background:#fff; border-radius:1px; box-shadow:0 0 4px #fff; }
-@media(max-width:700px){.hud{display:none;}}
-/* Scroll hint */
+.btn-glass:hover{background:rgba(255,255,255,.22);}
+.btn-glass.hot{background:var(--hot);border-color:var(--hot);box-shadow:0 0 22px var(--hot-glow);}
+.btn-glass.hot:hover{opacity:.85;}
 .scroll-hint{
-  font-family:'JetBrains Mono',monospace; font-size:.65rem;
-  color:rgba(255,255,255,.4); letter-spacing:.1em; text-transform:uppercase;
-  display:flex; flex-direction:column; align-items:center; gap:.4rem;
+  font-family:'JetBrains Mono',monospace;font-size:.62rem;
+  color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase;
+  display:flex;flex-direction:column;align-items:center;gap:.4rem;
 }
-.scroll-hint::after{
-  content:''; width:1px; height:28px;
-  background:linear-gradient(to bottom, rgba(255,255,255,.3), transparent);
+.scroll-hint::after{content:'';width:1px;height:28px;background:linear-gradient(to bottom,rgba(255,255,255,.25),transparent);}
+.fs-annot{
+  position:absolute;z-index:2;
+  font-family:'JetBrains Mono',monospace;font-size:.62rem;
+  color:rgba(255,255,255,.38);letter-spacing:.04em;line-height:1.5;
 }
-/* Marquee */
-.mq-wrap{ overflow:hidden; background:var(--near-black); border-top:1px solid rgba(255,255,255,.06); border-bottom:1px solid rgba(255,255,255,.06); }
-.mq-track{
-  display:flex; gap:1.4rem; white-space:nowrap; padding:.55rem 0;
-  font-family:'JetBrains Mono',monospace; font-size:.7rem; letter-spacing:.05em;
-  color:rgba(255,255,255,.35); animation:scrollmq 42s linear infinite; width:max-content;
+.fs-annot.tl{top:calc(5.5rem + 56px);left:5vw;}
+.fs-annot.tr{top:calc(5.5rem + 56px);right:5vw;text-align:right;}
+@media(max-width:700px){.fs-annot{display:none;}}
+.thermal-bar{height:3px;background:linear-gradient(90deg,var(--t0),var(--t1),var(--t2),var(--t3),var(--t4),var(--t5),var(--t6),var(--t7),#fff);}
+
+/* ===================== FULLSCREEN HERO ===================== */
+.fullscreen{
+  position:relative;width:100%;height:100vh;min-height:600px;
+  display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+  overflow:hidden;text-align:center;
 }
-.mh{ color:rgba(255,255,255,.8); font-weight:700; }
-.mc{
-  background:linear-gradient(90deg,var(--t5),var(--t7));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; font-weight:700;
-}
+.fs-media{position:absolute;inset:0;z-index:0;}
+.fs-media img,.fs-media video{width:100%;height:100%;object-fit:cover;object-position:center;}
+
+/* ODO */
+.hero-odo{position:relative;z-index:2;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;justify-content:center;margin-bottom:.5rem;}
+.odo{display:flex;gap:.28rem;background:rgba(20,20,24,.72);backdrop-filter:blur(10px);border:1px solid var(--hot-border);border-radius:6px;padding:.65rem .85rem;box-shadow:0 0 20px rgba(232,24,28,.12);}
+.odo .d{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:clamp(1.4rem,4vw,2.2rem);color:#fff;background:#2A2A32;border-radius:3px;width:1.3ch;text-align:center;box-shadow:inset 0 1px 3px rgba(0,0,0,.6);}
+.odo-sep{font-family:'JetBrains Mono',monospace;font-size:clamp(1.4rem,4vw,2.2rem);color:var(--hot);font-weight:700;align-self:center;}
+.odo-target{font-family:'JetBrains Mono',monospace;font-size:clamp(1.1rem,3vw,1.7rem);color:rgba(255,255,255,.4);font-weight:700;}
+.odo-lbl{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:rgba(255,255,255,.35);letter-spacing:.08em;text-transform:uppercase;}
+.seg-bar{display:flex;gap:3px;width:min(420px,90vw);}
+.seg-bar .seg{flex:1;height:10px;background:rgba(255,255,255,.09);border-radius:1px;}
+.seg-bar .seg.on{background:var(--hot);}
+
+/* ===================== MARQUEE ===================== */
+.mq-wrap{overflow:hidden;background:var(--near-black);border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);}
+.mq-track{display:flex;gap:1.4rem;white-space:nowrap;padding:.55rem 0;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.05em;color:rgba(255,255,255,.35);animation:scrollmq 42s linear infinite;width:max-content;}
+.mh{color:rgba(255,255,255,.8);font-weight:700;}
+.mc{background:linear-gradient(90deg,var(--t5),var(--t7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}
 @keyframes scrollmq{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-@media(prefers-reduced-motion:reduce){.mq-track{animation:none;}}
-/* ===================== FEATURE ROWS (alternating image+text, blueprint style) ===================== */
-.feature-row{
-  display:grid; grid-template-columns:1fr 1fr;
-  min-height:520px;
-  background:var(--paper);
+@media(prefers-reduced-motion:reduce){.mq-track,.scroll-arrow{animation:none;}}
+
+
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║   SECCIÓN TECNOLOGÍA — SCROLLYTELLING BLUEPRINT + THERMAL  ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+
+/* ── INTRO PANEL: "Tu café, reinventado" ── */
+#tecnologia-intro{
+  position:relative;
+  min-height:100vh;
+  background:var(--near-black);
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:5rem 5vw 4rem;
+  overflow:hidden;
+  border-top:1px solid rgba(255,255,255,.06);
 }
-.feature-row.reverse .fr-media{ order:2; }
-.feature-row.reverse .fr-copy{ order:1; }
-@media(max-width:900px){
-  .feature-row,.feature-row.reverse{ grid-template-columns:1fr; }
-  .feature-row.reverse .fr-media,.feature-row.reverse .fr-copy{ order:unset; }
+
+/* Blueprint grid de fondo */
+#tecnologia-intro::before{
+  content:'';
+  position:absolute;inset:0;
+  background:
+    linear-gradient(rgba(255,200,0,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,200,0,.04) 1px,transparent 1px);
+  background-size:48px 48px;
+  pointer-events:none;
 }
-.fr-media{
-  position:relative; overflow:hidden; min-height:360px;
-  background:linear-gradient(var(--grid-line) 1px, transparent 1px),
-             linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
-             #EDE6D3;
-  background-size:32px 32px, 32px 32px, auto;
+
+/* Número grande decorativo */
+#tecnologia-intro::after{
+  content:'03';
+  position:absolute;
+  bottom:-2rem;right:3vw;
+  font-family:'Space Grotesk',sans-serif;font-weight:800;
+  font-size:clamp(140px,22vw,280px);
+  letter-spacing:-.06em;
+  color:rgba(255,200,0,.03);
+  line-height:1;pointer-events:none;
 }
-.fr-media img,.fr-media video{
-  width:100%; height:100%; object-fit:cover; display:block;
+
+.tec-intro-eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--t6);margin-bottom:1.4rem;
+  display:flex;align-items:center;gap:.6rem;
 }
-.fr-media-placeholder{
-  width:100%; height:100%; min-height:360px;
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.6rem;
+.tec-intro-eyebrow::before{
+  content:'';width:28px;height:1px;background:var(--t6);
 }
-.fr-media-placeholder .ph-icon{ font-size:2rem; }
-.fr-media-placeholder .ph-label{
-  font-family:'JetBrains Mono',monospace; font-size:.68rem;
-  color:var(--ink-soft); letter-spacing:.04em; text-align:center;
-  max-width:300px; line-height:1.5;
+
+.tec-intro-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:800;
+  font-size:clamp(52px,10vw,130px);
+  line-height:.9;letter-spacing:-.04em;
+  color:#fff;margin-bottom:2rem;
 }
-.fr-media-placeholder .ph-file{
-  font-family:'JetBrains Mono',monospace; font-size:.64rem; font-weight:700;
-  color:var(--ink); background:rgba(255,255,255,.7);
-  padding:.25rem .65rem; border-radius:3px; border:1px dashed var(--ink-soft);
+.tec-intro-title .line2{
+  display:block;
+  /* nombre en degradado térmico */
+  background:linear-gradient(90deg,var(--t5),var(--t6),var(--t7));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-.fr-annot{
-  position:absolute; font-family:'JetBrains Mono',monospace; font-size:.64rem;
-  color:var(--ink-soft); line-height:1.4;
+.tec-intro-title .line3{
+  display:block;color:rgba(255,255,255,.18);
 }
-.fr-annot.tl{ top:1rem; left:1rem; }
-.fr-annot.br{ bottom:1rem; right:1rem; text-align:right; }
-.fr-copy{
-  display:flex; flex-direction:column; justify-content:center;
-  padding:3.5rem 4vw;
-  background:var(--paper);
+
+.tec-intro-sub{
+  font-size:15px;color:rgba(255,255,255,.42);
+  font-family:'JetBrains Mono',monospace;letter-spacing:.04em;
+  max-width:480px;line-height:1.7;margin-bottom:2.5rem;
 }
-.fr-eyebrow{
-  font-family:'JetBrains Mono',monospace; font-size:.7rem;
-  letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft);
-  margin-bottom:1.2rem; display:flex; align-items:center; gap:.5rem;
+
+/* Stats rápidos — 4 cifras inline */
+.tec-stats{
+  display:flex;gap:3rem;flex-wrap:wrap;
+  border-top:1px solid rgba(255,255,255,.07);
+  padding-top:2rem;
 }
-.fr-eyebrow::before{ content:''; width:22px; height:1px; background:var(--ink-soft); }
-.fr-title{
-  font-family:'Space Grotesk',sans-serif; font-weight:700;
-  font-size:clamp(1.8rem,3.5vw,2.8rem); text-transform:uppercase;
-  color:var(--ink); line-height:1.08; margin-bottom:1rem;
+.tec-stat-n{
+  display:block;
+  font-family:'JetBrains Mono',monospace;font-weight:700;
+  font-size:1.9rem;
+  background:linear-gradient(90deg,var(--t5),var(--t7));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-.fr-title .th{ background:linear-gradient(90deg,var(--t5),var(--t7)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.fr-body{ font-size:.96rem; color:var(--ink-soft); line-height:1.65; max-width:38ch; margin-bottom:1.8rem; }
-.btn-ink{
-  display:inline-flex; align-items:center; gap:.5rem;
-  font-family:'Archivo',sans-serif; font-weight:700; font-size:.74rem;
-  letter-spacing:.14em; text-transform:uppercase;
-  padding:.85rem 1.7rem; border:2px solid var(--ink); border-radius:10px 3px 10px 3px;
-  background:transparent; color:var(--ink); cursor:pointer; transition:all .2s;
-  box-shadow:2px 3px 0 0 rgba(42,53,80,.15);
+.tec-stat-l{
+  font-family:'JetBrains Mono',monospace;font-size:.62rem;
+  color:rgba(255,255,255,.32);letter-spacing:.1em;text-transform:uppercase;
+  margin-top:3px;
 }
-.btn-ink:hover{ background:var(--ink); color:var(--cream); transform:translate(-1px,-2px); }
-/* ===================== CAFÉ — CINEMATOGRÁFICO ===================== */
-.cafe-section{ background:var(--near-black); padding:0; }
-.cafe-header{
-  padding:5rem 5vw 3rem;
-  display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:1.5rem;
+
+.tec-scroll-cue{
+  position:absolute;bottom:2rem;right:3vw;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.tec-scroll-line{
+  width:1px;height:52px;
+  background:rgba(255,255,255,.1);position:relative;overflow:hidden;
+}
+.tec-scroll-line::after{
+  content:'';position:absolute;top:-100%;left:0;width:100%;height:50%;
+  background:linear-gradient(to bottom,transparent,var(--t6));
+  animation:drip 2.2s infinite;
+}
+@keyframes drip{0%{top:-100%;}100%{top:200%;}}
+.tec-scroll-cue span{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:.14em;color:rgba(255,255,255,.25);
+  writing-mode:vertical-rl;text-transform:uppercase;
+}
+
+/* ── STICKY SCROLL CONTAINER ── */
+.tec-sticky-wrap{
+  position:relative;
+  height:420vh; /* 3 paneles + holgura */
+}
+
+.tec-sticky-inner{
+  position:sticky;top:0;
+  height:100vh;overflow:hidden;
+}
+
+/* ── FONDOS (blueprint oscuro + imagen encima) ── */
+.tec-bg{
+  position:absolute;inset:0;
+  transition:opacity .85s cubic-bezier(.4,0,.2,1);
+}
+
+/* Blueprint base — siempre visible en bg1 */
+.tec-bg-blueprint{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(rgba(255,200,0,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,200,0,.05) 1px,transparent 1px),
+    var(--near-black);
+  background-size:48px 48px,48px 48px,auto;
+}
+
+/* Líneas de cotas animadas sobre blueprint */
+.bp-lines{
+  position:absolute;inset:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+.bp-line{
+  position:absolute;
+  background:rgba(255,200,0,.12);
+}
+.bp-line.h{height:1px;left:0;right:0;}
+.bp-line.v{width:1px;top:0;bottom:0;}
+.bp-dot{
+  position:absolute;
+  width:5px;height:5px;border-radius:50%;
+  background:var(--t6);
+  box-shadow:0 0 8px var(--t6);
+}
+
+.tec-bg img,.tec-bg video{
+  width:100%;height:100%;object-fit:cover;object-position:center;display:block;
+}
+.tec-bg .ph{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  background:var(--near-black);
+}
+.tec-bg .ph span{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.25);letter-spacing:.08em;}
+.tec-bg .ph .ph-ico{font-size:2rem;margin-bottom:.5rem;}
+
+/* Overlay termal sobre foto */
+.tec-photo-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(13,13,18,.3) 0%,rgba(13,13,18,.5) 50%,rgba(13,13,18,.88) 100%);
+}
+
+/* ── PANEL DE COPY (izquierda abajo) ── */
+.tec-copy{
+  position:absolute;
+  bottom:4rem;left:5vw;
+  max-width:500px;
+  opacity:0;
+  transform:translateY(22px);
+  transition:opacity .65s ease,transform .65s ease;
+  pointer-events:none;
+}
+.tec-copy.show{opacity:1;transform:translateY(0);pointer-events:auto;}
+
+.tec-step{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--t6);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.tec-step::before{content:'';width:20px;height:1px;background:var(--t6);}
+
+.tec-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:800;
+  font-size:clamp(36px,6vw,72px);
+  line-height:.92;letter-spacing:-.03em;
+  color:#fff;margin-bottom:14px;
+}
+.tec-title .th-word{
+  display:block;
+  background:linear-gradient(90deg,var(--t5),var(--t6),var(--t7));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+.tec-body{
+  font-size:14px;line-height:1.75;
+  color:rgba(255,255,255,.52);
+  font-family:'JetBrains Mono',monospace;letter-spacing:.02em;
+  margin-bottom:18px;max-width:400px;
+}
+
+.tec-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.tec-tag{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:.08em;text-transform:uppercase;
+  padding:5px 12px;border-radius:1px;
+  border:1px solid rgba(255,140,0,.35);
+  color:rgba(255,200,100,.7);
+  background:rgba(255,140,0,.07);
+}
+
+/* ── TARJETA LATERAL (derecha, panel 2 y 3) ── */
+.tec-side{
+  position:absolute;
+  top:50%;right:5vw;
+  transform:translateY(-50%) translateX(32px);
+  width:clamp(240px,28vw,340px);
+  opacity:0;
+  transition:opacity .7s ease .15s,transform .7s ease .15s;
+  pointer-events:none;
+}
+.tec-side.show{opacity:1;transform:translateY(-50%) translateX(0);pointer-events:auto;}
+
+/* Blueprint corner marks */
+.bp-corner{position:relative;}
+.bp-corner::before,.bp-corner::after{
+  content:'';position:absolute;
+  border-color:var(--t6);border-style:solid;
+  width:14px;height:14px;
+}
+.bp-corner::before{top:-1px;left:-1px;border-width:1px 0 0 1px;}
+.bp-corner::after{bottom:-1px;right:-1px;border-width:0 1px 1px 0;}
+
+/* ── CARTA MENÚ (panel 2) ── */
+.menu-card{
+  background:rgba(20,20,28,.92);
+  border:1px solid rgba(255,140,0,.25);
+  backdrop-filter:blur(12px);
+}
+.menu-header{
+  padding:14px 18px;
+  border-bottom:1px solid rgba(255,140,0,.18);
+  background:rgba(255,140,0,.06);
+}
+.menu-header-logo{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--t6);margin-bottom:2px;
+}
+.menu-header-sub{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.28);}
+
+.menu-section-title{
+  font-family:'JetBrains Mono',monospace;font-size:8px;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(255,255,255,.3);
+  border-bottom:1px solid rgba(255,255,255,.07);
+  padding:10px 18px 5px;
+}
+.menu-item{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:7px 18px;border-bottom:1px solid rgba(255,255,255,.04);
+}
+.menu-item:last-child{border-bottom:none;}
+.mi-left .mi-name{font-size:12px;font-weight:600;color:#fff;}
+.mi-left .mi-desc{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.3);}
+.mi-price{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--t6);flex-shrink:0;margin-left:8px;}
+
+/* Barra térmica al pie de la carta */
+.menu-tbar{height:2px;background:linear-gradient(90deg,var(--t0),var(--t2),var(--t4),var(--t5),var(--t6),var(--t7));}
+
+/* ── ESTÁNDAR ESPRESSO (panel 3) ── */
+.std-card{
+  background:rgba(20,20,28,.92);
+  border:1px solid rgba(255,140,0,.25);
+  backdrop-filter:blur(12px);
+}
+.std-header{
+  padding:12px 16px;
+  background:linear-gradient(90deg,rgba(255,69,0,.15),rgba(255,140,0,.1));
+  border-bottom:1px solid rgba(255,140,0,.2);
+}
+.std-header-title{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--t6);}
+.std-header-sub{font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(255,255,255,.28);}
+.std-table-header{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px;
+  padding:8px 16px 4px;
   border-bottom:1px solid rgba(255,255,255,.07);
 }
-.cafe-header-left .eyebrow-cafe{
-  font-family:'JetBrains Mono',monospace; font-size:.72rem;
-  letter-spacing:.15em; text-transform:uppercase;
-  background:linear-gradient(90deg,var(--t5),var(--t7));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  margin-bottom:.8rem;
+.std-table-header span{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.28);}
+.std-row{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px;
+  padding:7px 16px;border-bottom:1px solid rgba(255,255,255,.04);
+  align-items:center;
 }
-.cafe-header-left h2{
-  font-family:'Space Grotesk',sans-serif; font-weight:700;
-  font-size:clamp(2rem,5vw,3.5rem); text-transform:uppercase;
-  color:#fff; line-height:1.02;
+.std-row:last-of-type{border-bottom:none;}
+.std-name{font-size:12px;font-weight:600;color:#fff;}
+.std-val{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.5);text-align:center;}
+.std-footer{
+  padding:10px 16px;
+  background:rgba(255,140,0,.04);
+  border-top:1px solid rgba(255,140,0,.12);
 }
-.cafe-header-left h2 em{ font-style:normal; color:rgba(255,255,255,.35); }
-.cafe-header-right{
-  font-family:'JetBrains Mono',monospace; font-size:.72rem;
-  color:rgba(255,255,255,.35); letter-spacing:.04em; text-align:right; line-height:1.8;
-}
-/* Thermal divider bar */
-.thermal-bar{
-  height:3px;
-  background:linear-gradient(90deg,var(--t0),var(--t1),var(--t2),var(--t3),var(--t4),var(--t5),var(--t6),var(--t7),#fff);
-}
-/* ---- FEATURED COFFEE (hero card, full width) ---- */
-.cafe-featured{
-  display:grid; grid-template-columns:1.1fr 1fr;
-  min-height:580px; border-bottom:1px solid rgba(255,255,255,.07);
-}
-@media(max-width:900px){ .cafe-featured{ grid-template-columns:1fr; } }
-.cf-media{ position:relative; overflow:hidden; min-height:400px; }
-.cf-media img,.cf-media video{ width:100%; height:100%; object-fit:cover; display:block; }
-.cf-media-placeholder{
-  width:100%; height:100%; min-height:400px;
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.7rem;
-  background:
-    repeating-linear-gradient(45deg,rgba(42,53,80,.08) 0 10px,transparent 10px 20px),
-    #1A1A24;
-  border:1.5px dashed rgba(255,255,255,.15);
-}
-.cf-media-placeholder .ph-icon{ font-size:2.4rem; }
-.cf-media-placeholder .ph-label{ font-family:'JetBrains Mono',monospace; font-size:.7rem; color:rgba(255,255,255,.4); letter-spacing:.04em; text-align:center; max-width:340px; line-height:1.5; }
-.cf-media-placeholder .ph-file{ font-family:'JetBrains Mono',monospace; font-size:.64rem; font-weight:700; color:var(--t7); background:rgba(255,255,255,.06); padding:.3rem .7rem; border-radius:3px; border:1px dashed rgba(255,215,0,.3); }
-.cf-badge{
-  position:absolute; top:1.4rem; left:1.4rem;
-  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.68rem;
-  letter-spacing:.08em; text-transform:uppercase;
-  padding:.35rem .8rem; border-radius:2px;
-  background:linear-gradient(90deg,var(--t4),var(--t5)); color:#fff;
-}
-.cf-body{
-  padding:3rem 3.5vw;
-  display:flex; flex-direction:column; justify-content:center;
-  border-left:1px solid rgba(255,255,255,.06);
-}
-@media(max-width:900px){ .cf-body{ border-left:none; border-top:1px solid rgba(255,255,255,.07); } }
-.cf-variety{
-  font-family:'JetBrains Mono',monospace; font-size:.7rem;
-  color:rgba(255,255,255,.4); letter-spacing:.1em; text-transform:uppercase; margin-bottom:.5rem;
-}
-.cf-name{
-  font-family:'Space Grotesk',sans-serif; font-weight:700;
-  font-size:clamp(1.8rem,4vw,2.8rem); color:#fff; text-transform:uppercase;
-  line-height:1.05; margin-bottom:1.4rem;
-}
-.cf-meta-grid{
-  display:grid; grid-template-columns:1fr 1fr; gap:1px;
-  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.06);
-  margin-bottom:1.6rem;
-}
-.cf-meta-cell{ background:var(--near-black); padding:.7rem .9rem; }
-.cf-meta-cell .ml{ font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.35); margin-bottom:.2rem; }
-.cf-meta-cell .mv{ font-family:'JetBrains Mono',monospace; font-size:.88rem; color:#fff; font-weight:600; }
-/* Score display */
-.cf-score-row{ display:flex; align-items:baseline; gap:.6rem; margin-bottom:.5rem; }
-.cf-score{
-  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:3.2rem;
-  background:linear-gradient(90deg,var(--t5),var(--t6),var(--t7));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  line-height:1;
-}
-.cf-score-label{ font-size:.72rem; color:rgba(255,255,255,.4); letter-spacing:.06em; text-transform:uppercase; }
-.cf-thermal-bar{
-  height:7px; border-radius:2px; margin-bottom:1.4rem; position:relative;
-  background:linear-gradient(90deg,var(--t0),var(--t1),var(--t2),var(--t3),var(--t4),var(--t5),var(--t6),var(--t7));
-}
-.cf-needle{ position:absolute; top:-4px; width:2px; height:15px; background:#fff; border-radius:1px; box-shadow:0 0 5px rgba(255,215,0,.7); }
-.cf-notes{ font-size:.9rem; color:rgba(255,255,255,.55); line-height:1.6; margin-bottom:2rem; font-style:italic; }
-.cf-price-row{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
-.cf-price{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.6rem; color:#fff; }
-.btn-buy{
-  font-family:'Archivo',sans-serif; font-weight:700; font-size:.74rem;
-  letter-spacing:.14em; text-transform:uppercase;
-  padding:.85rem 1.8rem; border:none; border-radius:3px; cursor:pointer;
-  background:linear-gradient(135deg,var(--t5),var(--t6),var(--t7));
-  color:var(--near-black); transition:opacity .2s;
-}
-.btn-buy:hover{ opacity:.85; }
-.btn-buy-ghost{
-  background:rgba(255,255,255,.07); color:#fff;
-  border:1.5px solid rgba(255,255,255,.2);
-  backdrop-filter:blur(4px);
-}
-.btn-buy-ghost:hover{ background:rgba(255,255,255,.14); }
-/* ---- COFFEE GRID (secondary items) ---- */
-.cafe-grid{
-  display:grid; grid-template-columns:repeat(3,1fr);
-  border-top:1px solid rgba(255,255,255,.07);
-}
-@media(max-width:900px){ .cafe-grid{ grid-template-columns:1fr 1fr; } }
-@media(max-width:560px){ .cafe-grid{ grid-template-columns:1fr; } }
-.cg-card{
-  border-right:1px solid rgba(255,255,255,.07);
-  display:flex; flex-direction:column;
-}
-.cg-card:last-child{ border-right:none; }
-@media(max-width:900px){
-  .cg-card:nth-child(2n){ border-right:none; }
-  .cg-card{ border-bottom:1px solid rgba(255,255,255,.07); }
-}
-.cg-media{ aspect-ratio:4/3; position:relative; overflow:hidden; }
-.cg-media img,.cg-media video{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s ease; }
-.cg-card:hover .cg-media img{ transform:scale(1.04); }
-.cg-media-placeholder{
-  width:100%; height:100%;
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.5rem;
-  background:
-    repeating-linear-gradient(45deg,rgba(42,53,80,.08) 0 10px,transparent 10px 20px),
-    #1A1A24;
-  border:1.5px dashed rgba(255,255,255,.1);
-}
-.cg-media-placeholder .ph-icon{ font-size:1.6rem; }
-.cg-media-placeholder .ph-label{ font-family:'JetBrains Mono',monospace; font-size:.63rem; color:rgba(255,255,255,.35); letter-spacing:.03em; text-align:center; max-width:240px; line-height:1.5; }
-.cg-media-placeholder .ph-file{ font-family:'JetBrains Mono',monospace; font-size:.6rem; font-weight:700; color:var(--t7); background:rgba(255,255,255,.05); padding:.2rem .55rem; border-radius:2px; border:1px dashed rgba(255,215,0,.25); }
-.cg-score-stripe{
-  height:4px;
+.std-footer-text{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.06em;color:rgba(255,255,255,.25);}
+.std-micro-bar{
+  margin-top:6px;height:3px;border-radius:1px;
   background:linear-gradient(90deg,var(--t0),var(--t2),var(--t4),var(--t5),var(--t6),var(--t7));
   position:relative;
 }
-.cg-score-stripe .cn{ position:absolute; top:-3px; width:2px; height:10px; background:#fff; border-radius:1px; box-shadow:0 0 4px rgba(255,215,0,.5); }
-.cg-body{ padding:1.4rem 1.4rem 1.8rem; flex:1; display:flex; flex-direction:column; }
-.cg-variety{ font-family:'JetBrains Mono',monospace; font-size:.64rem; color:rgba(255,255,255,.35); letter-spacing:.08em; text-transform:uppercase; margin-bottom:.3rem; }
-.cg-name{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.15rem; text-transform:uppercase; color:#fff; margin-bottom:.7rem; }
-.cg-origin{ font-size:.82rem; color:rgba(255,255,255,.45); margin-bottom:.8rem; }
-.cg-score-badge{
-  display:inline-flex; align-items:baseline; gap:.3rem; margin-bottom:.8rem;
+.std-needle{
+  position:absolute;top:-3px;
+  width:2px;height:9px;
+  background:#fff;border-radius:1px;
+  box-shadow:0 0 5px rgba(255,215,0,.6);
+  left:56%;
 }
-.cg-score-num{
-  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.5rem;
+
+/* ── INDICADOR DE PROGRESO ── */
+.tec-progress{
+  position:absolute;
+  bottom:2rem;left:50%;transform:translateX(-50%);
+  display:flex;gap:8px;z-index:10;
+}
+.tec-pdot{
+  height:2px;border-radius:1px;
+  background:rgba(255,255,255,.18);
+  transition:all .4s ease;
+  width:24px;
+}
+.tec-pdot.on{
   background:linear-gradient(90deg,var(--t5),var(--t7));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  width:44px;
 }
-.cg-score-unit{ font-size:.62rem; color:rgba(255,255,255,.3); letter-spacing:.06em; text-transform:uppercase; }
-.cg-notes{ font-size:.8rem; color:rgba(255,255,255,.45); line-height:1.55; margin-bottom:1rem; font-style:italic; flex:1; }
-.cg-footer{ display:flex; align-items:center; justify-content:space-between; margin-top:auto; padding-top:.8rem; border-top:1px solid rgba(255,255,255,.06); }
-.cg-price{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1rem; color:#fff; }
-.btn-cg{
-  font-family:'Archivo',sans-serif; font-weight:700; font-size:.68rem;
-  letter-spacing:.12em; text-transform:uppercase;
-  padding:.6rem 1.2rem; border:1.5px solid rgba(255,255,255,.2);
-  border-radius:2px; background:transparent; color:#fff; cursor:pointer; transition:all .2s;
-}
-.btn-cg:hover{ background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.4); }
-/* ===================== PROJECTS STRIP ===================== */
-.projects-section{ background:var(--paper); }
-.projects-grid{ display:grid; grid-template-columns:1fr 1fr; }
-@media(max-width:760px){ .projects-grid{ grid-template-columns:1fr; } }
-.pj-card{
-  position:relative; min-height:520px; overflow:hidden;
-  display:flex; flex-direction:column; align-items:center; justify-content:space-between;
-  text-align:center;
-}
-.pj-media{ position:absolute; inset:0; }
-.pj-media img,.pj-media video{ width:100%; height:100%; object-fit:cover; display:block; }
-.pj-placeholder{
-  width:100%; height:100%;
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.6rem;
-}
-.pj-placeholder.dark{
-  background:
-    linear-gradient(var(--grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px), #EDE6D3;
-  background-size:32px 32px, 32px 32px, auto;
-}
-.pj-placeholder.darker{
-  background:
-    repeating-linear-gradient(45deg,rgba(42,53,80,.12) 0 10px,transparent 10px 20px), #1E1E24;
-}
-.pj-placeholder .ph-icon{ font-size:2rem; }
-.pj-placeholder .ph-label{ font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.04em; text-align:center; max-width:300px; line-height:1.5; }
-.pj-placeholder.dark .ph-label{ color:var(--ink-soft); }
-.pj-placeholder.darker .ph-label{ color:rgba(255,255,255,.4); }
-.pj-placeholder .ph-file{ font-family:'JetBrains Mono',monospace; font-size:.62rem; font-weight:700; padding:.25rem .6rem; border-radius:3px; }
-.pj-placeholder.dark .ph-file{ color:var(--ink); background:rgba(255,255,255,.6); border:1px dashed var(--ink-soft); }
-.pj-placeholder.darker .ph-file{ color:var(--t7); background:rgba(255,255,255,.05); border:1px dashed rgba(255,215,0,.25); }
-.pj-overlay{ position:absolute; inset:0; background:linear-gradient(to bottom,transparent 30%,rgba(14,14,18,.8) 100%); }
-.pj-overlay.light-ov{ background:linear-gradient(to bottom,transparent 30%,rgba(237,230,211,.9) 100%); }
-.pj-top{ position:relative; z-index:2; padding-top:3rem; }
-.pj-bottom{ position:relative; z-index:2; padding:0 2rem 3rem; width:100%; }
-.pj-name{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(1.6rem,3.5vw,2.4rem); text-transform:uppercase; margin-bottom:.5rem; }
-.pj-desc{ font-size:.88rem; margin-bottom:1.4rem; max-width:36ch; margin-left:auto; margin-right:auto; }
-/* ===================== VALUES / THERMAL ===================== */
-.thermal-section{
-  padding:6rem 5vw; background:var(--near-black); position:relative; overflow:hidden;
-}
-.thermal-section::before{
-  content:''; position:absolute; inset:0;
-  background:
-    radial-gradient(ellipse at 20% 50%,rgba(123,0,255,.3) 0%,transparent 60%),
-    radial-gradient(ellipse at 70% 30%,rgba(255,69,0,.2) 0%,transparent 50%),
-    radial-gradient(ellipse at 90% 80%,rgba(255,215,0,.12) 0%,transparent 40%);
+
+/* Fig annotations en el viewport */
+.tec-fig-annot{
+  position:absolute;z-index:8;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;
+  color:rgba(255,200,80,.35);letter-spacing:.06em;line-height:1.5;
   pointer-events:none;
 }
-.ts-header{ text-align:center; margin-bottom:4rem; position:relative; z-index:1; }
-.ts-header h2{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(1.8rem,4vw,3rem); text-transform:uppercase; color:#fff; margin-bottom:.5rem; }
-.ts-header p{ color:rgba(255,255,255,.45); font-size:.96rem; max-width:50ch; margin:0 auto; }
-.ts-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(255,255,255,.07); position:relative; z-index:1; }
-@media(max-width:900px){ .ts-grid{ grid-template-columns:1fr; } }
-.ts-card{ background:rgba(255,255,255,.03); padding:2.5rem 2rem; }
-.ts-num{
-  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:2.8rem;
+.tec-fig-annot.tl{top:5.5rem;left:5vw;}
+.tec-fig-annot.tr{top:5.5rem;right:5vw;text-align:right;}
+@media(max-width:700px){.tec-fig-annot,.tec-side{display:none;}}
+
+/* ── OUTRO ── */
+#tecnologia-outro{
+  background:var(--near-black);
+  padding:6rem 5vw;
+  text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:1.5rem;
+  border-top:1px solid rgba(255,255,255,.06);
+  position:relative;overflow:hidden;
+}
+#tecnologia-outro::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 30% 60%,rgba(255,69,0,.08) 0%,transparent 55%),
+    radial-gradient(ellipse at 70% 40%,rgba(255,215,0,.05) 0%,transparent 50%);
+  pointer-events:none;
+}
+.outro-eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;
+  letter-spacing:.2em;text-transform:uppercase;
+  background:linear-gradient(90deg,var(--t5),var(--t7));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.outro-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:800;
+  font-size:clamp(32px,6vw,68px);
+  line-height:.95;letter-spacing:-.03em;color:#fff;
+  max-width:700px;
+}
+.outro-title .th{
   background:linear-gradient(90deg,var(--t5),var(--t6),var(--t7));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  margin-bottom:.4rem; line-height:1;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-.ts-lbl{ font-family:'JetBrains Mono',monospace; font-size:.68rem; color:rgba(255,255,255,.4); letter-spacing:.1em; text-transform:uppercase; margin-bottom:.8rem; }
-.ts-desc{ font-size:.88rem; color:rgba(255,255,255,.6); line-height:1.55; }
-.ts-bar{ margin-top:1.2rem; height:4px; border-radius:2px; background:linear-gradient(90deg,var(--t0),var(--t1),var(--t2),var(--t3),var(--t4),var(--t5),var(--t6),var(--t7)); }
+.outro-body{
+  font-size:14px;color:rgba(255,255,255,.38);
+  font-family:'JetBrains Mono',monospace;letter-spacing:.03em;
+  max-width:420px;line-height:1.7;
+}
+.btn-outro{
+  font-family:'JetBrains Mono',monospace;font-weight:700;
+  font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+  padding:14px 28px;border:none;border-radius:2px;cursor:pointer;
+  background:linear-gradient(135deg,var(--t5),var(--t6),var(--t7));
+  color:var(--near-black);transition:opacity .2s;
+}
+.btn-outro:hover{opacity:.85;}
+
+
+/* ===================== FEATURE ROWS (secciones originales) ===================== */
+.feature-row{
+  display:grid;grid-template-columns:1fr 1fr;
+  min-height:520px;background:var(--paper);
+}
+.feature-row.reverse .fr-media{order:2;}
+.feature-row.reverse .fr-copy{order:1;}
+@media(max-width:900px){
+  .feature-row,.feature-row.reverse{grid-template-columns:1fr;}
+  .feature-row.reverse .fr-media,.feature-row.reverse .fr-copy{order:unset;}
+}
+.fr-media{
+  position:relative;overflow:hidden;min-height:360px;
+  background:
+    linear-gradient(var(--grid-line) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid-line) 1px,transparent 1px),#EDE6D3;
+  background-size:32px 32px,32px 32px,auto;
+}
+.fr-media img,.fr-media video{width:100%;height:100%;object-fit:cover;display:block;}
+.fr-media-placeholder{width:100%;height:100%;min-height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;}
+.fr-media-placeholder .ph-icon{font-size:2rem;}
+.fr-media-placeholder .ph-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--ink-soft);letter-spacing:.04em;text-align:center;max-width:300px;line-height:1.5;}
+.fr-media-placeholder .ph-file{font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;color:var(--ink);background:rgba(255,255,255,.7);padding:.25rem .65rem;border-radius:3px;border:1px dashed var(--ink-soft);}
+.fr-annot{position:absolute;font-family:'JetBrains Mono',monospace;font-size:.64rem;color:var(--ink-soft);line-height:1.4;}
+.fr-annot.tl{top:1rem;left:1rem;}
+.fr-annot.br{bottom:1rem;right:1rem;text-align:right;}
+.fr-copy{display:flex;flex-direction:column;justify-content:center;padding:3.5rem 4vw;background:var(--paper);}
+.fr-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem;}
+.fr-eyebrow::before{content:'';width:22px;height:1px;background:var(--ink-soft);}
+.fr-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(1.8rem,3.5vw,2.8rem);text-transform:uppercase;color:var(--ink);line-height:1.08;margin-bottom:1rem;}
+.fr-title .th{background:linear-gradient(90deg,var(--t5),var(--t7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.fr-body{font-size:.96rem;color:var(--ink-soft);line-height:1.65;max-width:38ch;margin-bottom:1.8rem;}
+.btn-ink{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:'Archivo',sans-serif;font-weight:700;font-size:.74rem;
+  letter-spacing:.14em;text-transform:uppercase;
+  padding:.85rem 1.7rem;border:2px solid var(--ink);border-radius:10px 3px 10px 3px;
+  background:transparent;color:var(--ink);cursor:pointer;transition:all .2s;
+  box-shadow:2px 3px 0 0 rgba(42,53,80,.15);
+}
+.btn-ink:hover{background:var(--ink);color:var(--cream);transform:translate(-1px,-2px);}
+
+/* ===================== CAFÉ ===================== */
+.cafe-section{background:var(--near-black);padding:0;}
+.cafe-header{padding:5rem 5vw 3rem;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;border-bottom:1px solid rgba(255,255,255,.07);}
+.cafe-header-left .eyebrow-cafe{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;background:linear-gradient(90deg,var(--t5),var(--t7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.8rem;}
+.cafe-header-left h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(2rem,5vw,3.5rem);text-transform:uppercase;color:#fff;line-height:1.02;}
+.cafe-header-left h2 em{font-style:normal;color:rgba(255,255,255,.35);}
+.cafe-header-right{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:rgba(255,255,255,.35);letter-spacing:.04em;text-align:right;line-height:1.8;}
+
+.cafe-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid rgba(255,255,255,.07);}
+@media(max-width:900px){.cafe-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:560px){.cafe-grid{grid-template-columns:1fr;}}
+.cg-card{border-right:1px solid rgba(255,255,255,.07);display:flex;flex-direction:column;}
+.cg-card:last-child{border-right:none;}
+@media(max-width:900px){.cg-card:nth-child(2n){border-right:none;}.cg-card{border-bottom:1px solid rgba(255,255,255,.07);}}
+.cg-media{aspect-ratio:4/3;position:relative;overflow:hidden;}
+.cg-media img,.cg-media video{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease;}
+.cg-card:hover .cg-media img{transform:scale(1.04);}
+.cg-media-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;background:repeating-linear-gradient(45deg,rgba(42,53,80,.08) 0 10px,transparent 10px 20px),#1A1A24;border:1.5px dashed rgba(255,255,255,.1);}
+.cg-media-placeholder .ph-icon{font-size:1.6rem;}
+.cg-media-placeholder .ph-label{font-family:'JetBrains Mono',monospace;font-size:.63rem;color:rgba(255,255,255,.35);letter-spacing:.03em;text-align:center;max-width:240px;line-height:1.5;}
+.cg-media-placeholder .ph-file{font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;color:var(--t7);background:rgba(255,255,255,.05);padding:.2rem .55rem;border-radius:2px;border:1px dashed rgba(255,215,0,.25);}
+.cg-score-stripe{height:4px;background:linear-gradient(90deg,var(--t0),var(--t2),var(--t4),var(--t5),var(--t6),var(--t7));position:relative;}
+.cg-score-stripe .cn{position:absolute;top:-3px;width:2px;height:10px;background:#fff;border-radius:1px;box-shadow:0 0 4px rgba(255,215,0,.5);}
+.cg-body{padding:1.4rem 1.4rem 1.8rem;flex:1;display:flex;flex-direction:column;}
+.cg-variety{font-family:'JetBrains Mono',monospace;font-size:.64rem;color:rgba(255,255,255,.35);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem;}
+.cg-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.15rem;text-transform:uppercase;color:#fff;margin-bottom:.7rem;}
+.cg-origin{font-size:.82rem;color:rgba(255,255,255,.45);margin-bottom:.8rem;}
+.cg-score-badge{display:inline-flex;align-items:baseline;gap:.3rem;margin-bottom:.8rem;}
+.cg-score-num{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.5rem;background:linear-gradient(90deg,var(--t5),var(--t7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.cg-score-unit{font-size:.62rem;color:rgba(255,255,255,.3);letter-spacing:.06em;text-transform:uppercase;}
+.cg-notes{font-size:.8rem;color:rgba(255,255,255,.45);line-height:1.55;margin-bottom:1rem;font-style:italic;flex:1;}
+.cg-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:.8rem;border-top:1px solid rgba(255,255,255,.06);}
+.cg-price{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1rem;color:#fff;}
+.btn-cg{font-family:'Archivo',sans-serif;font-weight:700;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;padding:.6rem 1.2rem;border:1.5px solid rgba(255,255,255,.2);border-radius:2px;background:transparent;color:#fff;cursor:pointer;transition:all .2s;}
+.btn-cg:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.4);}
+
+/* ===================== PROJECTS ===================== */
+.projects-section{background:var(--paper);}
+.projects-grid{display:grid;grid-template-columns:1fr 1fr;}
+@media(max-width:760px){.projects-grid{grid-template-columns:1fr;}}
+.pj-card{position:relative;min-height:520px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;}
+.pj-media{position:absolute;inset:0;}
+.pj-media img,.pj-media video{width:100%;height:100%;object-fit:cover;display:block;}
+.pj-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;}
+.pj-placeholder.dark{background:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px),#EDE6D3;background-size:32px 32px,32px 32px,auto;}
+.pj-placeholder.darker{background:repeating-linear-gradient(45deg,rgba(42,53,80,.12) 0 10px,transparent 10px 20px),#1E1E24;}
+.pj-placeholder .ph-icon{font-size:2rem;}
+.pj-placeholder .ph-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.04em;text-align:center;max-width:300px;line-height:1.5;}
+.pj-placeholder.dark .ph-label{color:var(--ink-soft);}
+.pj-placeholder.darker .ph-label{color:rgba(255,255,255,.4);}
+.pj-placeholder .ph-file{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;padding:.25rem .6rem;border-radius:3px;}
+.pj-placeholder.dark .ph-file{color:var(--ink);background:rgba(255,255,255,.6);border:1px dashed var(--ink-soft);}
+.pj-placeholder.darker .ph-file{color:var(--t7);background:rgba(255,255,255,.05);border:1px dashed rgba(255,215,0,.25);}
+.pj-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 30%,rgba(14,14,18,.8) 100%);}
+.pj-overlay.light-ov{background:linear-gradient(to bottom,transparent 30%,rgba(237,230,211,.9) 100%);}
+.pj-top{position:relative;z-index:2;padding-top:3rem;}
+.pj-bottom{position:relative;z-index:2;padding:0 2rem 3rem;width:100%;}
+.pj-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(1.6rem,3.5vw,2.4rem);text-transform:uppercase;margin-bottom:.5rem;}
+.pj-desc{font-size:.88rem;margin-bottom:1.4rem;max-width:36ch;margin-left:auto;margin-right:auto;}
+
+/* ===================== THERMAL STATS ===================== */
+.thermal-section{padding:6rem 5vw;background:var(--near-black);position:relative;overflow:hidden;}
+.thermal-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(123,0,255,.3) 0%,transparent 60%),radial-gradient(ellipse at 70% 30%,rgba(255,69,0,.2) 0%,transparent 50%),radial-gradient(ellipse at 90% 80%,rgba(255,215,0,.12) 0%,transparent 40%);pointer-events:none;}
+.ts-header{text-align:center;margin-bottom:4rem;position:relative;z-index:1;}
+.ts-header h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(1.8rem,4vw,3rem);text-transform:uppercase;color:#fff;margin-bottom:.5rem;}
+.ts-header p{color:rgba(255,255,255,.45);font-size:.96rem;max-width:50ch;margin:0 auto;}
+.ts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.07);position:relative;z-index:1;}
+@media(max-width:900px){.ts-grid{grid-template-columns:1fr;}}
+.ts-card{background:rgba(255,255,255,.03);padding:2.5rem 2rem;}
+.ts-num{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:2.8rem;background:linear-gradient(90deg,var(--t5),var(--t6),var(--t7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.4rem;line-height:1;}
+.ts-lbl{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem;}
+.ts-desc{font-size:.88rem;color:rgba(255,255,255,.6);line-height:1.55;}
+.ts-bar{margin-top:1.2rem;height:4px;border-radius:2px;background:linear-gradient(90deg,var(--t0),var(--t1),var(--t2),var(--t3),var(--t4),var(--t5),var(--t6),var(--t7));}
+
 /* ===================== B2B ===================== */
-.b2b-section{ background:var(--paper); padding:5rem 5vw; }
-.section-label{
-  display:flex; align-items:center; gap:1rem; margin-bottom:2rem;
-}
-.section-label .num{
-  font-family:'JetBrains Mono',monospace; font-size:.75rem; font-weight:700;
-  color:var(--cream); background:var(--ink); padding:.3rem .65rem; border-radius:2px; letter-spacing:.05em;
-}
-.section-label .num.thermal-num{
-  background:linear-gradient(135deg,var(--t2),var(--t4),var(--t5)); color:var(--t7);
-}
-.section-label .ttl{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.4rem; text-transform:uppercase; letter-spacing:.06em; }
-.section-label .rule{ flex:1; height:1px; background:var(--grid-line); border-top:1px dashed var(--ink-soft); }
-.section-label .sub{ font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--ink-soft); }
-.sec-lbl{ font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--ink-soft); margin-bottom:.5rem; }
-.sec-h2{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(1.6rem,3.5vw,2.2rem); text-transform:uppercase; margin-bottom:.7rem; }
-.sec-desc{ max-width:60ch; color:var(--ink-soft); font-size:.94rem; line-height:1.65; margin-bottom:2.2rem; }
-.b2b-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--grid-line); border:2px solid var(--ink); }
-@media(max-width:900px){ .b2b-grid{ grid-template-columns:1fr 1fr; } }
-@media(max-width:520px){ .b2b-grid{ grid-template-columns:1fr; } }
-.b2b-card{ background:var(--cream); padding:1.6rem 1.3rem; }
-.b2b-ico{ font-size:1.5rem; margin-bottom:.6rem; }
-.b2b-title{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:.95rem; text-transform:uppercase; letter-spacing:.04em; margin-bottom:.4rem; color:var(--ink); }
-.b2b-d{ font-size:.82rem; color:var(--ink-soft); line-height:1.5; }
+.b2b-section{background:var(--paper);padding:5rem 5vw;}
+.section-label{display:flex;align-items:center;gap:1rem;margin-bottom:2rem;}
+.section-label .num{font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;color:var(--cream);background:var(--ink);padding:.3rem .65rem;border-radius:2px;letter-spacing:.05em;}
+.section-label .num.thermal-num{background:linear-gradient(135deg,var(--t2),var(--t4),var(--t5));color:var(--t7);}
+.section-label .ttl{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.4rem;text-transform:uppercase;letter-spacing:.06em;}
+.section-label .rule{flex:1;height:1px;background:var(--grid-line);border-top:1px dashed var(--ink-soft);}
+.section-label .sub{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--ink-soft);}
+.sec-lbl{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--ink-soft);margin-bottom:.5rem;}
+.sec-h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(1.6rem,3.5vw,2.2rem);text-transform:uppercase;margin-bottom:.7rem;}
+.sec-desc{max-width:60ch;color:var(--ink-soft);font-size:.94rem;line-height:1.65;margin-bottom:2.2rem;}
+.b2b-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--grid-line);border:2px solid var(--ink);}
+@media(max-width:900px){.b2b-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:520px){.b2b-grid{grid-template-columns:1fr;}}
+.b2b-card{background:var(--cream);padding:1.6rem 1.3rem;}
+.b2b-ico{font-size:1.5rem;margin-bottom:.6rem;}
+.b2b-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.95rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.4rem;color:var(--ink);}
+.b2b-d{font-size:.82rem;color:var(--ink-soft);line-height:1.5;}
+
 /* ===================== BLOG ===================== */
-.blog-section{ background:var(--near-black); padding:5rem 5vw; }
-.blog-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.07); }
-@media(max-width:900px){ .blog-grid{ grid-template-columns:1fr 1fr; } }
-@media(max-width:560px){ .blog-grid{ grid-template-columns:1fr; } }
-.blog-card{ background:rgba(255,255,255,.03); padding:1.6rem; }
-.blog-tag{ display:inline-block; font-family:'JetBrains Mono',monospace; font-size:.64rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:.2rem .6rem; border-radius:2px; margin-bottom:.7rem; background:linear-gradient(90deg,var(--t5),var(--t6)); color:var(--near-black); }
-.blog-title{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:.95rem; line-height:1.4; margin-bottom:.6rem; color:#fff; }
-.blog-ex{ font-size:.8rem; color:rgba(255,255,255,.4); line-height:1.55; }
+.blog-section{background:var(--near-black);padding:5rem 5vw;}
+.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.07);}
+@media(max-width:900px){.blog-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:560px){.blog-grid{grid-template-columns:1fr;}}
+.blog-card{background:rgba(255,255,255,.03);padding:1.6rem;}
+.blog-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.64rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.2rem .6rem;border-radius:2px;margin-bottom:.7rem;background:linear-gradient(90deg,var(--t5),var(--t6));color:var(--near-black);}
+.blog-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.95rem;line-height:1.4;margin-bottom:.6rem;color:#fff;}
+.blog-ex{font-size:.8rem;color:rgba(255,255,255,.4);line-height:1.55;}
+
 /* ===================== FOOTER ===================== */
-footer{
-  background:var(--near-black); border-top:1px solid rgba(255,255,255,.08);
-  padding:3rem 5vw;
-}
-.footer-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:2rem; margin-bottom:2rem; }
-@media(max-width:900px){ .footer-grid{ grid-template-columns:1fr; } }
-.footer-col .f-label{ font-family:'JetBrains Mono',monospace; font-size:.68rem; color:rgba(255,255,255,.3); letter-spacing:.08em; text-transform:uppercase; margin-bottom:.6rem; }
-.footer-col h4{ font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:.9rem; text-transform:uppercase; letter-spacing:.06em; color:#fff; margin-bottom:.4rem; }
-.footer-col p{ font-size:.82rem; color:rgba(255,255,255,.4); line-height:1.55; }
-.footer-col a{ color:rgba(255,255,255,.5); text-decoration:underline; text-underline-offset:3px; }
-.footer-bottom{ border-top:1px solid rgba(255,255,255,.07); padding-top:1.4rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
-.footer-bottom .meta{ font-family:'JetBrains Mono',monospace; font-size:.68rem; color:rgba(255,255,255,.3); letter-spacing:.04em; }
-.footer-tbar{ width:140px; height:4px; border-radius:2px; background:linear-gradient(90deg,var(--t0),var(--t2),var(--t4),var(--t5),var(--t6),var(--t7)); }
-/* ===================== WHATSAPP FLOAT BUTTON ===================== */
-.wa-float{
-  position:fixed; bottom:24px; right:24px; z-index:300;
-  width:58px; height:58px; border-radius:50%;
-  background:#25D366; display:flex; align-items:center; justify-content:center;
-  box-shadow:0 4px 18px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.08);
-  transition:transform .2s ease, box-shadow .2s ease;
-}
-.wa-float:hover{ transform:scale(1.08); box-shadow:0 6px 26px rgba(0,0,0,.5); }
-.wa-float svg{ width:30px; height:30px; position:relative; z-index:2; }
-.wa-float-pulse{
-  position:absolute; inset:0; border-radius:50%;
-  background:#25D366; opacity:.55; z-index:1;
-  animation:wa-pulse 2.2s ease-out infinite;
-}
-@keyframes wa-pulse{
-  0%{ transform:scale(1); opacity:.55; }
-  100%{ transform:scale(1.9); opacity:0; }
-}
-@media(prefers-reduced-motion:reduce){ .wa-float-pulse{ animation:none; } }
-@media(max-width:700px){ .wa-float{ width:52px; height:52px; bottom:18px; right:18px; } .wa-float svg{ width:26px; height:26px; } }
+footer{background:var(--near-black);border-top:1px solid rgba(255,255,255,.08);padding:3rem 5vw;}
+.footer-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;margin-bottom:2rem;}
+@media(max-width:900px){.footer-grid{grid-template-columns:1fr;}}
+.footer-col .f-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:rgba(255,255,255,.3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem;}
+.footer-col h4{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.9rem;text-transform:uppercase;letter-spacing:.06em;color:#fff;margin-bottom:.4rem;}
+.footer-col p{font-size:.82rem;color:rgba(255,255,255,.4);line-height:1.55;}
+.footer-col a{color:rgba(255,255,255,.5);text-decoration:underline;text-underline-offset:3px;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding-top:1.4rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.footer-bottom .meta{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:rgba(255,255,255,.3);letter-spacing:.04em;}
+.footer-tbar{width:140px;height:4px;border-radius:2px;background:linear-gradient(90deg,var(--t0),var(--t2),var(--t4),var(--t5),var(--t6),var(--t7));}
+
+/* ===================== WHATSAPP ===================== */
+.wa-float{position:fixed;bottom:24px;right:24px;z-index:300;width:58px;height:58px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.08);transition:transform .2s ease,box-shadow .2s ease;}
+.wa-float:hover{transform:scale(1.08);box-shadow:0 6px 26px rgba(0,0,0,.5);}
+.wa-float svg{width:30px;height:30px;position:relative;z-index:2;}
+.wa-float-pulse{position:absolute;inset:0;border-radius:50%;background:#25D366;opacity:.55;z-index:1;animation:wa-pulse 2.2s ease-out infinite;}
+@keyframes wa-pulse{0%{transform:scale(1);opacity:.55;}100%{transform:scale(1.9);opacity:0;}}
+@media(prefers-reduced-motion:reduce){.wa-float-pulse{animation:none;}}
+@media(max-width:700px){.wa-float{width:52px;height:52px;bottom:18px;right:18px;}.wa-float svg{width:26px;height:26px;}}
+
+/* btn-fs-primary */
+.btn-fs-primary{font-family:'Archivo',sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;padding:.9rem 2rem;border-radius:3px;cursor:pointer;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);color:#fff;border:1.5px solid rgba(255,255,255,.35);transition:all .2s;}
+.btn-fs-primary:hover{background:rgba(255,255,255,.25);}
 </style>
 </head>
 <body>
-<div class="spiral" id="spiral" aria-hidden="true"></div>
-<div class="page">
+
 <!-- ========== HEADER ========== -->
 <header id="main-header">
   <div class="logo-unit">
     <img src="images/logo.png" alt="ACERO.press" class="logo-acero">
-   <span class="logo-press">.press</span>
-</div>
-    
-  
+    <span class="logo-press">.press</span>
+  </div>
   <nav class="nav-links">
     <a href="#inicio">Inicio</a>
     <a href="#tecnologia">Tecnología</a>
@@ -639,120 +765,321 @@ footer{
   </nav>
   <a href="#cafe" class="btn-explora">EXPLORA →</a>
 </header>
-<!-- ========== HERO FULLSCREEN (video/imagen) ========== -->
+
+<!-- ========== HERO ========== -->
 <section class="fullscreen" id="inicio">
   <div class="fs-media">
-    <!-- 🎬 CAMPO DE VIDEO: reemplaza el placeholder con tu video -->
-     <video autoplay muted loop playsinline src="images/hero_main1.mp4"></video> 
-        
-    
-    <div class="fs-placeholder">
-      <span class="ph-icon">🎬</span>
-      <div class="ph-label"> imagen de referencia ACERO</div>
-      <span class="ph-file">images/hero-main.mp4 · 1920×1080 · autoplay / muted / loop</span>
-    </div>
+    <video autoplay muted loop playsinline src="images/hero_main1.mp4"></video>
   </div>
   <div class="fs-overlay"></div>
-  <!-- HUD temperatura -->
-  <div class="hud">
-    <div class="hud-lbl">Temperatura óptima</div>
-    <div class="hud-val" id="hero-temp">92.5°C</div>
-    <div class="hud-lbl" style="margin-top:.3rem;">Bogotá · 2.600 msnm</div>
-    <div class="hud-bar"><div class="hud-needle"></div></div>
-  </div>
-  <!-- Anotaciones técnicas esquinas -->
-   <div>
-   </div>
-   <div>
-   </div>
-  <div class="fs-annot top-left">Activo · Bogotá 2.600 msnm<br>R≈15mm · 60° · ajuste de molienda<br>Ø 4.5cm · base cilíndrica</div>
+  <div class="fs-annot tl">FIG. 01 — FIELD NOTEBOOK<br>Bogotá · 2.600 msnm · AeroPress Go™<br>Ø Base = 9.5cm · H = 13.5cm</div>
+  <div class="fs-annot tr">Reto activo · #aceropress50k<br>抽出 / extracción<br>反転式 / inversión</div>
   <div class="fs-top">
-    <div class="fs-eyebrow"><span class="dot"></span> Specialty Coffee · </div>
-    
-    <div class="fs-title">
-      Precisión.<br>Pureza.<br><span class="thermal">Futuro.</span>
-    </div>
-    
+    <div class="fs-eyebrow"><span class="live-dot"></span> Reto activo · Bogotá, 2.600 msnm</div>
+    <div class="fs-h1">50.000 tazas.<br><span class="press-tag">.press</span><br><span class="hot">ONE BREW.</span></div>
+    <div class="fs-sub">Diario de campo público del reto más largo en AeroPress. Documentado en Instagram, TikTok y YouTube.</div>
   </div>
-  <div class="fs-bottom">
+  <div class="fs-bottom" style="padding-bottom:2rem;">
+    <div class="hero-odo">
+      <div>
+        <div class="odo-lbl" style="margin-bottom:.4rem;">Tazas preparadas</div>
+        <div style="display:flex;align-items:center;gap:.8rem;">
+          <div class="odo"><span class="d">0</span><span class="d">1</span><span class="d">2</span><span class="d">8</span><span class="d">4</span><span class="d">7</span></div>
+          <span class="odo-sep">/</span>
+          <span class="odo-target">50.000</span>
+        </div>
+        <div class="seg-bar" id="segBar" style="margin-top:.6rem;"></div>
+      </div>
+    </div>
     <div class="fs-actions">
-      <a href="#cafe" class="btn-fs-primary btn-fs-thermal">Ver catálogo</a>
-      <a href="#proyectos" class="btn-fs-primary">Nuestros proyectos</a>
+      <a href="cafe.html" class="btn-glass hot"><span class="press-tag">.press</span></a>
+      <a href="#cafe" class="btn-glass">Cafe</a>
     </div>
     <div class="scroll-hint">Explora</div>
   </div>
 </section>
+
 <!-- Marquee -->
 <div class="mq-wrap">
   <div class="mq-track">
-    <span class="mh">· Gesha · </span><span>Castillo N</span><span class="mc"> · SCA 87+ · </span><span>Huila · Nariño · Cauca</span><span class="mh"> · Agro · </span><span>Bourbon Rosado</span><span class="mc"> · Proceso Lavado · </span><span>Trazabilidad Completa</span><span class="mh"> · 92.5°C · AeroPress · floatGardens · </span><span>Pink Bourbon</span><span class="mc"> · Origen Único · </span>
-    <span class="mh">· Gesha · </span><span>Castillo </span><span class="mc"> · SCA 87+ · </span><span>Huila · Nariño · Cauca</span><span class="mh"> ·  Agro · </span><span>Bourbon Rosado</span><span class="mc"> · Proceso Lavado · </span><span>Trazabilidad Completa</span><span class="mh"> · 92.5°C · AeroPress · floatGardens · </span><span>Pink Bourbon</span><span class="mc"> · Origen Único · </span>
+    <span class="mh">· Taza #012.847 </span><span>· Etiopía Yirgacheffe</span><span class="mc"> · 1:15 · 92°C </span><span>· Colombia Huila</span><span class="mh"> · 抽出 / extracción </span><span>· Brasil Cerrado</span><span class="mc"> · #aceropress50k </span><span>· Bourbon Rosado</span><span class="mh"> · 372 días restantes · </span><span>AeroPress Go™</span><span class="mc"> · Pink Bourbon · </span>
+    <span class="mh">· Taza #012.847 </span><span>· Etiopía Yirgacheffe</span><span class="mc"> · 1:15 · 92°C </span><span>· Colombia Huila</span><span class="mh"> · 抽出 / extracción </span><span>· Brasil Cerrado</span><span class="mc"> · #aceropress50k </span><span>· Bourbon Rosado</span><span class="mh"> · 372 días restantes · </span><span>AeroPress Go™</span><span class="mc"> · Pink Bourbon · </span>
   </div>
 </div>
-<!-- ========== TECNOLOGÍA — FEATURE ROW 1 ========== -->
+
+
+<!-- ╔══════════════════════════════════════════════════╗
+     ║       SECCIÓN TECNOLOGÍA — SCROLLYTELLING       ║
+     ╚══════════════════════════════════════════════════╝ -->
 <div id="tecnologia"></div>
-<div class="feature-row">
-  <div class="fr-media">
-    <!-- 🖼️ CAMPO DE IMAGEN / VIDEO -->
-     <img src="images/cans.png" alt=""> 
-    <!-- <video autoplay muted loop playsinline src="images/cerezas-cromo.mp4"></video> -->
-    <div class="fr-media-placeholder">
-      <span class="ph-icon">🖼️</span>
-      <div class="ph-label">
-         Structure — racimo de cerezas de café , boceto técnico con cotas (2.5m, Ø0.3m, ángulos 60°), ondas de fondo, acentos  naranja/ámbar</div>
-      <span class="ph-file"> · 1200×900 · o .mp4</span>
+
+<!-- ── INTRO PANEL ── -->
+<div id="tecnologia-intro">
+  <div class="tec-intro-eyebrow">FIG. 03 — Tecnología · IA aplicada al café</div>
+  <h2 class="tec-intro-title">
+    Tu café,<br>
+    <span class="line2">reinventado.</span>
+    <span class="line3">con inteligencia.</span>
+  </h2>
+  <p class="tec-intro-sub">
+    IA, datos y diseño al servicio de cada café de especialidad.<br>
+    Del espacio físico a la presencia digital, del tueste al campo.
+  </p>
+  <div class="tec-stats">
+    <div>
+      <span class="tec-stat-n">+38%</span>
+      <span class="tec-stat-l">ticket promedio post-rediseño</span>
     </div>
-    <span class="fr-annot tl">FIG. 02.1 — COLD BREW<br>CAN S STRUCTURE</span>
-    <span class="fr-annot br">2.5m · Ø 0.3m · 2.95°<br>ajuste de tolerancias</span>
+    <div>
+      <span class="tec-stat-n">72 h</span>
+      <span class="tec-stat-l">diagnóstico → propuesta</span>
+    </div>
+    <div>
+      <span class="tec-stat-n">×4</span>
+      <span class="tec-stat-l">alcance digital · 90 días</span>
+    </div>
+    <div>
+      <span class="tec-stat-n">2.600 m</span>
+      <span class="tec-stat-l">diseñado para Bogotá</span>
+    </div>
   </div>
-  <div class="fr-copy">
-    <div class="fr-eyebrow">FIG. 02.1 — ESTRUCTURA</div>
-    <div class="fr-title">COLD<br>BREW<br>CAN S<span class="th"></span></div>
-    <p class="fr-body">Inteligencia artificial aplicada a marcas de cafe. Trazabilidad desde la cereza hasta la taza,  análisis del fruto.</p>
-    <a href="#proyectos" class="btn-ink">Explorar →</a>
+  <div class="tec-scroll-cue" aria-hidden="true">
+    <div class="tec-scroll-line"></div>
+    <span>scroll</span>
   </div>
 </div>
-<!-- FEATURE ROW 2 — invertida -->
-<div class="feature-row reverse">
-  <div class="fr-media">
-    <!-- 🎬 CAMPO DE VIDEO -->
-    <img src="images/roasterDream.jpeg" alt=""> 
-    <div class="fr-media-placeholder">
-      <span class="ph-icon">🎬</span>
-      <div class="ph-label">Video / imagen del corte técnico AeroPress Go — cámara compacta, cotas en azul, fondo papel beige grillado, ondas </div>
-      <span class="ph-file">images/roasterDream.jpeg · 1200×900</span>
+
+<!-- ── STICKY SCROLL (3 paneles) ── -->
+<div class="tec-sticky-wrap" id="tec-wrap">
+  <div class="tec-sticky-inner" id="tec-inner">
+
+    <!-- BLUEPRINT BASE -->
+    <div class="tec-bg" id="tec-bg0" style="z-index:0">
+      <div class="tec-bg-blueprint"></div>
+      <!-- Líneas de cotas blueprint -->
+      <div class="bp-lines">
+        <div class="bp-line h" style="top:25%"></div>
+        <div class="bp-line h" style="top:50%"></div>
+        <div class="bp-line h" style="top:75%"></div>
+        <div class="bp-line v" style="left:33%"></div>
+        <div class="bp-line v" style="left:66%"></div>
+        <div class="bp-dot" style="top:25%;left:33%;transform:translate(-50%,-50%)"></div>
+        <div class="bp-dot" style="top:50%;left:66%;transform:translate(-50%,-50%)"></div>
+        <div class="bp-dot" style="top:75%;left:33%;transform:translate(-50%,-50%)"></div>
+      </div>
     </div>
-    <span class="fr-annot tl">FIG. 02.2 — AEROPRESS GO™<br>Ø Base = 9.5cm · H = 13.5cm</span>
-    <span class="fr-annot br">Filtro papel Go Ø55mm<br>Sello silicona R=1.5mm</span>
-  </div>
-  <div class="fr-copy">
-    <div class="fr-eyebrow">FIG. 02.2 — PROCESO</div>
-    <div class="fr-title">Diseño<br>de<br><span class="th">Experiencia</span></div>
-    <p class="fr-body">Diseño a medida de cada extracción.  AeroPress , 92.5°C, documentado taza a taza desde Bogotá a 2.600 msnm. Tolerancias: ±0.5mm.</p>
-    <a href="press.html" class="btn-ink">Ver acero.press →</a>
+
+    <!-- FONDO PANEL 1 — Rediseño de espacio -->
+    <div class="tec-bg" id="tec-bg1" style="opacity:0;z-index:1">
+      <video autoplay muted loop playsinline src="images/redesing.mp4"></video>
+      <div class="ph">
+        <div class="ph-ico">🏛</div>
+        <span>images/rediseno-cafeteria.jpg</span>
+        <span style="font-size:9px;opacity:.4">antes / después · 1600×900</span>
+      </div>
+      <div class="tec-photo-overlay"></div>
+    </div>
+
+    <!-- FONDO PANEL 2 — Carta -->
+    <div class="tec-bg" id="tec-bg2" style="opacity:0;z-index:1">
+      <<video autoplay muted loop playsinline src="images/menu.mp4"></video>
+      <div class="ph" style="background:#12100e">
+        <div class="ph-ico">📄</div>
+        <span style="color:rgba(255,255,255,.2)">images/carta-cafe.jpg</span>
+        <span style="font-size:9px;color:rgba(255,255,255,.12)">diseño de carta · 1600×900</span>
+      </div>
+      <div class="tec-photo-overlay" style="background:linear-gradient(to bottom,rgba(10,8,5,.4),rgba(10,8,5,.9))"></div>
+    </div>
+
+    <!-- FONDO PANEL 3 — Bebidas -->
+    <div class="tec-bg" id="tec-bg3" style="opacity:0;z-index:1">
+      <video autoplay muted loop playsinline src="images/cans.mp4"></video>
+      <div class="ph" style="background:#0d0804">
+        <div class="ph-ico">☕</div>
+        <span style="color:rgba(255,180,60,.25)">images/bebidas-espresso.jpg</span>
+        <span style="font-size:9px;color:rgba(255,140,0,.15)">estandarización bebidas · 1600×900</span>
+      </div>
+      <div class="tec-photo-overlay" style="background:linear-gradient(to bottom,rgba(8,5,2,.45),rgba(8,5,2,.92))"></div>
+    </div>
+
+    <!-- Anotaciones blueprint que rotan -->
+    <div class="tec-fig-annot tl" id="tec-fig-tl">FIG. 03.1 — REDISEÑO DE ESPACIO<br>Bogotá · 2.600 msnm · IA + Diseño</div>
+    <div class="tec-fig-annot tr" id="tec-fig-tr">Flujo de clientes · Mapas de calor<br>Generación 3D · 72h diagnóstico</div>
+
+    <!-- COPY 1 — Espacio -->
+    <div class="tec-copy show" id="tec-c1">
+      <div class="tec-step">01 · Espacio</div>
+      <h2 class="tec-title">Rediseña<br><span class="th-word">tu café</span></h2>
+      <p class="tec-body">IA que analiza tu espacio, detecta zonas muertas y propone una nueva distribución. Del diagnóstico a la propuesta en 72 horas.</p>
+      <div class="tec-tags">
+        <span class="tec-tag">Visión computacional</span>
+        <span class="tec-tag">Flujo de clientes</span>
+        <span class="tec-tag">Diseño 3D</span>
+        <span class="tec-tag">Mapas de calor</span>
+      </div>
+    </div>
+
+    <!-- COPY 2 — Carta -->
+    <div class="tec-copy" id="tec-c2">
+      <div class="tec-step">02 · Identidad</div>
+      <h2 class="tec-title">Una carta<br><span class="th-word">que vende</span></h2>
+      <p class="tec-body">Diseño de menú que comunica origen, proceso y notas de cata. Jerarquía visual que guía al cliente hacia los productos de mayor margen.</p>
+      <div class="tec-tags">
+        <span class="tec-tag">Diseño editorial</span>
+        <span class="tec-tag">Trazabilidad QR</span>
+        <span class="tec-tag">Menú digital</span>
+        <span class="tec-tag">Presencia digital</span>
+      </div>
+    </div>
+    <div class="tec-copy" id="tec-c2">
+      <div class="tec-step">02 · Identidad</div>
+      <h2 class="tec-title">Una carta<br><span class="th-word">que vende</span></h2>
+      <p class="tec-body">Diseño de menú que comunica origen, proceso y notas de cata. Jerarquía visual que guía al cliente hacia los productos de mayor margen.</p>
+      <div class="tec-tags">
+        <span class="tec-tag">Diseño editorial</span>
+        <span class="tec-tag">Trazabilidad QR</span>
+        <span class="tec-tag">Menú digital</span>
+        <span class="tec-tag">Presencia digital</span>
+      </div>
+    </div>
+
+    <!-- COPY 3 — Bebidas -->
+    <div class="tec-copy" id="tec-c3">
+      <div class="tec-step">03 · Estándar</div>
+      <h2 class="tec-title">Bebidas<br><span class="th-word">perfectas</span></h2>
+      <p class="tec-body">Cada bebida espresso documentada: dosis, ratio, tiempo, temperatura. El mismo estándar en cada turno, en cada barista, en cada taza.</p>
+      <div class="tec-tags">
+        <span class="tec-tag">Protocolo espresso</span>
+        <span class="tec-tag">Recetas calibradas</span>
+        <span class="tec-tag">Manual de servicio</span>
+        <span class="tec-tag">SCA standard</span>
+      </div>
+    </div>
+    <div class="tec-copy" id="tec-c3">
+      <div class="tec-step">03 · Estándar</div>
+      <h2 class="tec-title">Bebidas<br><span class="th-word">perfectas</span></h2>
+      <p class="tec-body">Cada bebida espresso documentada: dosis, ratio, tiempo, temperatura. El mismo estándar en cada turno, en cada barista, en cada taza.</p>
+      <div class="tec-tags">
+        <span class="tec-tag">Protocolo espresso</span>
+        <span class="tec-tag">Recetas calibradas</span>
+        <span class="tec-tag">Manual de servicio</span>
+        <span class="tec-tag">SCA standard</span>
+      </div>
+    </div>
+
+    <!-- TARJETA LATERAL 2 — Carta menú -->
+    <div class="tec-side" id="tec-s2">
+      <div class="bp-corner menu-card">
+        <div class="menu-header">
+          <div class="menu-header-logo">· Cafetería de especialidad ·</div>
+          <div class="menu-header-sub">Bogotá · 2.600 msnm · temporada 2025</div>
+        </div>
+        <div class="menu-section-title">Espresso base</div>
+        <div class="menu-item">
+          <div class="mi-left"><div class="mi-name">Espresso solo</div><div class="mi-desc">30ml · 9 bar · 27 seg</div></div>
+          <span class="mi-price">$5.500</span>
+        </div>
+        <div class="menu-item">
+          <div class="mi-left"><div class="mi-name">Cappuccino</div><div class="mi-desc">Leche texturizada · 6oz</div></div>
+          <span class="mi-price">$8.000</span>
+        </div>
+        <div class="menu-item">
+          <div class="mi-left"><div class="mi-name">Flat white</div><div class="mi-desc">Doble ristretto · 160ml</div></div>
+          <span class="mi-price">$9.500</span>
+        </div>
+        <div class="menu-section-title">Filtrado</div>
+        <div class="menu-item">
+          <div class="mi-left"><div class="mi-name">V60 de temporada</div><div class="mi-desc">Wush Wush · Huila · floral</div></div>
+          <span class="mi-price">$12.000</span>
+        </div>
+        <div class="menu-item">
+          <div class="mi-left"><div class="mi-name">Cold brew</div><div class="mi-desc">20h inmersión · 16oz</div></div>
+          <span class="mi-price">$10.000</span>
+        </div>
+        <div class="menu-tbar"></div>
+      </div>
+    </div>
+    <div class="tec-side" id="tec-s2">
+      <div class="bp-corner menu-card">
+        <div class="menu-header">
+          <div class="menu-header-logo">· Cafetería de especialidad ·</div>
+          <div class="menu-header-sub">Bogotá · 2.600 msnm · temporada 2025</div>
+        </div>
+        <div class="menu-section-title">Espresso base</div>
+        <div class="menu-item">
+          <div class="mi-left"><div class="mi-name">Espresso solo</div><div class="mi-desc">30ml · 9 bar · 27 seg</div></div>
+          <span class="mi-price">$5.500</span>
+        </div>
+        <div class="menu-item">
+          <div class="mi-left"><div class="mi-name">Cappuccino</div><div class="mi-desc">Leche texturizada · 6oz</div></div>
+          <span class="mi-price">$8.000</span>
+        </div>
+        <div class="menu-item">
+          <div class="mi-left"><div class="mi-name">Flat white</div><div class="mi-desc">Doble ristretto · 160ml</div></div>
+          <span class="mi-price">$9.500</span>
+        </div>
+        <div class="menu-section-title">Filtrado</div>
+        <div class="menu-item">
+          <div class="mi-left"><div class="mi-name">V60 de temporada</div><div class="mi-desc">Wush Wush · Huila · floral</div></div>
+          <span class="mi-price">$12.000</span>
+        </div>
+        <div class="menu-item">
+          <div class="mi-left"><div class="mi-name">Cold brew</div><div class="mi-desc">20h inmersión · 16oz</div></div>
+          <span class="mi-price">$10.000</span>
+        </div>
+        <div class="menu-tbar"></div>
+      </div>
+    </div>
+   
+
+    <!-- TARJETA LATERAL 3 — Estándar espresso -->
+    <div class="tec-side" id="tec-s3">
+      <div class="bp-corner std-card">
+        <div class="std-header">
+          <div class="std-header-title">Estándar de bebidas</div>
+          <div class="std-header-sub">Base espresso · protocolo SCA · Bogotá 2.600 msnm</div>
+        </div>
+        <div class="std-table-header">
+          <span>Bebida</span><span style="text-align:center">Dosis</span><span style="text-align:center">Ratio</span><span style="text-align:center">Temp</span>
+        </div>
+        <div class="std-row"><span class="std-name">Espresso</span><span class="std-val">18g</span><span class="std-val">1:2</span><span class="std-val">93°</span></div>
+        <div class="std-row"><span class="std-name">Ristretto</span><span class="std-val">18g</span><span class="std-val">1:1.5</span><span class="std-val">93°</span></div>
+        <div class="std-row"><span class="std-name">Cappuccino</span><span class="std-val">18g</span><span class="std-val">1:2</span><span class="std-val">65°</span></div>
+        <div class="std-row"><span class="std-name">Flat white</span><span class="std-val">20g</span><span class="std-val">1:1.8</span><span class="std-val">62°</span></div>
+        <div class="std-row"><span class="std-name">Latte</span><span class="std-val">18g</span><span class="std-val">1:2</span><span class="std-val">65°</span></div>
+        <div class="std-footer">
+          <div class="std-footer-text">Tiempo extracción: 25–30 seg · presión: 9 bar</div>
+          <div class="std-micro-bar"><div class="std-needle"></div></div>
+          <div style="display:flex;justify-content:space-between;margin-top:4px;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(255,255,255,.2)">bajo ←</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(255,255,255,.2)">→ sobre</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Indicador de progreso -->
+    <div class="tec-progress">
+      <div class="tec-pdot on" id="tp1"></div>
+      <div class="tec-pdot" id="tp2"></div>
+      <div class="tec-pdot" id="tp3"></div>
+    </div>
+
   </div>
 </div>
-<!-- FEATURE ROW 3 — granos -->
-<div class="feature-row">
-  <div class="fr-media">
-    <!-- 🖼️ CAMPO DE IMAGEN -->
-    <video autoplay muted loop playsinline src="images/roast.mp4">
-    <div class="fr-media-placeholder">
-      <span class="ph-icon">🖼️</span>
-      <div class="ph-label">Granos de café isométricos , boceto tinta azul, termografía infrarroja superpuesta (naranja/amarillo en la grieta del grano), fondo papel beige</div>
-      <span class="ph-file">images/granos-termicos.jpg · 1200×900</span>
-    </div>
-    <span class="fr-annot tl">FIG. 02.3 — TUESTE<br>THERMAL PROFILE </span>
-    <span class="fr-annot br">9m × 4.5m × 3.5m<br>Loring roaster machine </span>
-  </div>
-  <div class="fr-copy">
-    <div class="fr-eyebrow">FIG. 02.3 — TUESTE</div>
-    <div class="fr-title">Energía<br>en cada<br><span class="th">detalle</span></div>
-    <p class="fr-body">Tueste calibrado por curva térmica, no por tiempo. Cada lote ajusta temperatura y flujo de aire para sostener el perfil aromático. </p>
-    <a href="#cafe" class="btn-ink">Ver catálogo →</a>
-  </div>
+
+<!-- ── OUTRO TECNOLOGÍA ── -->
+<div id="tecnologia-outro">
+  <div class="outro-eyebrow">Diagnóstico gratuito · 72 horas</div>
+  <h2 class="outro-title">¿Tu café listo<br>para el <span class="th">futuro?</span></h2>
+  <p class="outro-body">Analizamos tu espacio, tu carta y tu presencia digital. En 72 horas sabes qué cambiar y cómo hacerlo.</p>
+  <a href="#contacto" class="btn-outro">Solicitar diagnóstico →</a>
 </div>
-<!-- ========== CAFÉ — SECCIÓN CINEMATOGRÁFICA ========== -->
+
+<div class="thermal-bar"></div>
+
+
+<!-- ========== CAFÉ ========== -->
 <section class="cafe-section" id="cafe">
   <div class="thermal-bar"></div>
   <div class="cafe-header">
@@ -767,81 +1094,25 @@ footer{
       Bogotá · Huila · Nariño · Cauca
     </div>
   </div>
-  <!-- FEATURED — Acero Gesha (el más destacado, ocupa toda la anchura) -->
-  <div class="cafe-featured">
-    <div class="cf-media">
-      <!-- 🖼️ IMAGEN DESTACADA DEL CAFÉ -->
-     <video autoplay muted loop playsinline src="images/domingo.mp4"> 
-      <div class="cf-media-placeholder">
-        <span class="ph-icon">🖼️</span>
-        <div class="ph-label">Fotografía de producto del  Gesha — taza blanca sobre fondo oscuro con vapor, granos Gesha en primer plano, luz lateral cálida/termal, estilo editorial de alta gama</div>
-        <span class="ph-file">images/cafe-gesha.jpg · 1600×1000 · portrait / landscape</span>
-      </div>
-      <div class="cf-badge">★ Destacado · SCA 91.5</div>
-    </div>
-    <div class="cf-body">
-      <div class="cf-variety">Gesha · Proceso Lavado · Origen único</div>
-      <div class="cf-name">DOMINGO<br>TORRES</div>
-      <div class="cf-meta-grid">
-        <div class="cf-meta-cell"><div class="ml">Origen</div><div class="mv">SANTANDER, Colombia</div></div>
-        <div class="cf-meta-cell"><div class="ml">Altitud</div><div class="mv">1.850 msnm</div></div>
-        <div class="cf-meta-cell"><div class="ml">Proceso</div><div class="mv">Lavado 36h</div></div>
-        <div class="cf-meta-cell"><div class="ml">Tueste</div><div class="mv">Claro · 196°C</div></div>
-      </div>
-      <div class="cf-score-row">
-        <div class="cf-score">91.5</div>
-        <div class="cf-score-label">Puntos SCA<br>Q-Grader<br>certificado</div>
-      </div>
-      <div class="cf-thermal-bar"><div class="cf-needle" style="left:85%"></div></div>
-      <p class="cf-notes">"Jasmine, bergamota, melocotón blanco, acidez de uva verde. Final prolongado con mineralidad."</p>
-      <div class="cf-price-row">
-        <div class="cf-price">$38.000 / 200g</div>
-        <div style="display:flex;gap:.7rem;flex-wrap:wrap;">
-          <button class="btn-buy" data-wa-msg="Hola! Quiero pedir el café DOMINGO TORRES (Gesha · 91.5 pts SCA) - 200g - $38.000">Pedir ahora →</button>
-          <button class="btn-buy btn-buy-ghost">Ver detalles</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- FULLSCREEN intermediaria — imagen ambiental de café -->
-  <div class="fullscreen" style="height:55vh; min-height:340px;">
+  <div class="fullscreen" style="height:55vh;min-height:340px;">
     <div class="fs-media">
-      <!-- 🖼️ IMAGEN / VIDEO AMBIENTAL entre productos -->
-     <img src="images/mountain.png" alt=""> 
-      <div class="fs-placeholder" style="background:#1A1A24;">
-        <span class="ph-icon">🎬</span>
-        <div class="ph-label" style="color:rgba(255,255,255,.4);">Video / imagen ambiental — manos preparando AeroPress, vapor del café, proceso en cámara lenta, estética termal o blueprint</div>
-        <span class="ph-file" style="color:var(--t7);background:rgba(255,255,255,.05);border:1px dashed rgba(255,215,0,.25);">images/cafe-ambiente.mp4 · 1920×1080 · autoplay / muted</span>
-      </div>
+      <img src="images/montain.png" alt="Montaña">
     </div>
     <div class="fs-overlay" style="background:linear-gradient(to bottom,rgba(14,14,18,.4),rgba(14,14,18,.7));"></div>
-    <div class="fs-top" style="padding-top:0; display:flex; align-items:center; height:100%; justify-content:center; flex-direction:column; gap:.5rem;">
-      <div class="fs-eyebrow"><span class="dot"></span> Más variedades disponibles</div>
-      <div class="fs-title" style="font-size:clamp(1.4rem,3vw,2.2rem);">Cada lote, una historia.</div>
+    <div class="fs-top" style="padding-top:0;display:flex;align-items:center;height:100%;justify-content:center;flex-direction:column;gap:.5rem;">
+      <div class="fs-eyebrow"><span class="live-dot"></span> Más variedades disponibles</div>
+      <div class="fs-h1" style="font-size:clamp(1.4rem,3vw,2.2rem);">Cada lote, una historia.</div>
     </div>
   </div>
-  <!-- GRID DE CAFÉS SECUNDARIOS -->
   <div class="cafe-grid">
-    <!-- Castillo  -->
     <div class="cg-card">
-      <div class="cg-media">
-        <!-- 🖼️ IMAGEN PRODUCTO -->
-         <img src="images/castillo.png" alt="Castillo Negro">
-        <div class="cg-media-placeholder">
-          <span class="ph-icon">🖼️</span>
-          <div class="ph-label">Fotografía del Castillo Negro — granos naturales, tonos oscuros, humo, fondo negro</div>
-          <span class="ph-file">images/cafe-castillo.jpg · 800×600</span>
-        </div>
-      </div>
+      <div class="cg-media"><img src="images/castillo.png" alt="Castillo Negro"></div>
       <div class="cg-score-stripe"><div class="cn" style="left:63%"></div></div>
       <div class="cg-body">
         <div class="cg-variety">Castillo Naranjal · Natural</div>
         <div class="cg-name">Castillo Negro</div>
         <div class="cg-origin">Nariño, Colombia · 2.100 msnm · Natural 21 días</div>
-        <div class="cg-score-badge">
-          <span class="cg-score-num">88.0</span>
-          <span class="cg-score-unit">pts SCA</span>
-        </div>
+        <div class="cg-score-badge"><span class="cg-score-num">88.0</span><span class="cg-score-unit">pts SCA</span></div>
         <p class="cg-notes">"Panela, mora, chocolate oscuro 70%, cuerpo denso. Ideal para prensa francesa y espresso."</p>
         <div class="cg-footer">
           <span class="cg-price">$28.000 / 200g</span>
@@ -849,26 +1120,14 @@ footer{
         </div>
       </div>
     </div>
-    <!-- Bourbon Rosado -->
     <div class="cg-card">
-      <div class="cg-media">
-        <!-- 🖼️ IMAGEN PRODUCTO -->
-         <img src="images/rosado.png" alt="Bourbon Rosado"> 
-        <div class="cg-media-placeholder">
-          <span class="ph-icon">🖼️</span>
-          <div class="ph-label">Fotografía del Bourbon Rosado — cerezas rosadas en rama, luz cálida, bokeh, fondo jardín</div>
-          <span class="ph-file">images/cafe-bourbon.jpg · 800×600</span>
-        </div>
-      </div>
+      <div class="cg-media"><img src="images/rosado.png" alt="Bourbon Rosado"></div>
       <div class="cg-score-stripe"><div class="cn" style="left:72%"></div></div>
       <div class="cg-body">
         <div class="cg-variety">Pink Bourbon · Honey</div>
         <div class="cg-name">Bourbon Rosado</div>
         <div class="cg-origin">Huila — Acevedo · 1.780 msnm · Honey 30% mucílago</div>
-        <div class="cg-score-badge">
-          <span class="cg-score-num">89.5</span>
-          <span class="cg-score-unit">pts SCA</span>
-        </div>
+        <div class="cg-score-badge"><span class="cg-score-num">89.5</span><span class="cg-score-unit">pts SCA</span></div>
         <p class="cg-notes">"Frambuesa fresca, durazno, caramelo, acidez brillante. Perfecto para V60 y AeroPress."</p>
         <div class="cg-footer">
           <span class="cg-price">$32.000 / 200g</span>
@@ -876,26 +1135,14 @@ footer{
         </div>
       </div>
     </div>
-    <!-- Typica Origen -->
     <div class="cg-card">
-      <div class="cg-media">
-        <!-- 🖼️ IMAGEN PRODUCTO -->
-        <img src="images/typica.png" alt="Typica Origen">  
-        <div class="cg-media-placeholder">
-          <span class="ph-icon">🖼️</span>
-          <div class="ph-label">Fotografía del Typica Origen — taza blanca minimalista, vapor, luz lateral fría, fondo gris piedra</div>
-          <span class="ph-file">images/cafe-typica.jpg · 800×600</span>
-        </div>
-      </div>
+      <div class="cg-media"><img src="images/typica.png" alt="Typica Origen"></div>
       <div class="cg-score-stripe"><div class="cn" style="left:55%"></div></div>
       <div class="cg-body">
         <div class="cg-variety">Typica · Lavado</div>
         <div class="cg-name">Typica Origen</div>
         <div class="cg-origin">Cauca — Inzá · 1.950 msnm · Lavado doble ferm.</div>
-        <div class="cg-score-badge">
-          <span class="cg-score-num">87.0</span>
-          <span class="cg-score-unit">pts SCA</span>
-        </div>
+        <div class="cg-score-badge"><span class="cg-score-num">87.0</span><span class="cg-score-unit">pts SCA</span></div>
         <p class="cg-notes">"Limón Meyer, manzana verde, té negro, cuerpo ligero sedoso. Variedad patrimonio colombiano."</p>
         <div class="cg-footer">
           <span class="cg-price">$26.000 / 200g</span>
@@ -906,95 +1153,58 @@ footer{
   </div>
   <div class="thermal-bar"></div>
 </section>
+
 <!-- ========== PROYECTOS ========== -->
 <section class="projects-section" id="proyectos">
   <div class="projects-grid">
-    <!-- floatGardens -->
     <div class="pj-card">
-      <div class="pj-media">
-        <!-- 🖼️ IMAGEN / VIDEO FLOATGARDENS -->
-       <img src="images/cerezas.png" alt="floatGardens"> 
-        <div class="pj-placeholder dark">
-          <span class="ph-icon">🖼️</span>
-          <div class="ph-label" style="color:var(--ink-soft);">Imagen floatGardens — boceto técnico de planta en módulo hidropónico flotante, logo superpuesto, acentos lima/lavanda, tinta azul sobre papel beige</div>
-          <span class="ph-file" style="color:var(--ink);background:rgba(255,255,255,.6);border:1px dashed var(--ink-soft);">images/float-gardens-hero.jpg · 960×1040</span>
-        </div>
-      </div>
+      <div class="pj-media"><img src="images/cerezas.png" alt="floatGardens"></div>
       <div class="pj-overlay light-ov"></div>
-      <div class="pj-top">
-        <div class="fs-eyebrow" style="color:rgba(42,53,80,.6);">FASE 01 ACTIVA</div>
-      </div>
+      <div class="pj-top"><div class="fs-eyebrow" style="color:rgba(42,53,80,.6);">FASE 01 ACTIVA</div></div>
       <div class="pj-bottom">
-        <div class="pj-name" style="color:var(--ink);">
-          <span style="color:#A6F23A;">float</span><span style="color:#C4A8E8;">Gardens</span>
-        </div>
+        <div class="pj-name" style="color:var(--ink);"><span style="color:#A6F23A;">float</span><span style="color:#C4A8E8;">Gardens</span></div>
         <div class="pj-desc" style="color:var(--ink-soft);">Red de terrazas hidropónicas en Bogotá. 14 nodos activos, 3 localidades, visión de granja vertical.</div>
         <a href="floatgardens.html" class="btn-ink" style="margin:0 auto;">Explorar →</a>
       </div>
     </div>
-    <!-- acero.press -->
     <div class="pj-card">
-      <div class="pj-media">
-        <!-- 🎬 VIDEO / IMAGEN ACERO.PRESS -->
-       <video autoplay muted loop playsinline src="images/hero_main.mp4"></video>
-        <div class="pj-placeholder darker">
-          <span class="ph-icon">🎬</span>
-          <div class="ph-label" style="color:rgba(255,255,255,.4);">Video o imagen de acero.press — manos preparando AeroPress, cuaderno de campo abierto con bocetos técnicos y el logo ACERO/PRESS grafiteado, tazas de café</div>
-          <span class="ph-file" style="color:var(--t7);background:rgba(255,255,255,.05);border:1px dashed rgba(255,215,0,.25);">images/aceropress-feed.mp4 · 960×1040</span>
-        </div>
-      </div>
+      <div class="pj-media"><video autoplay muted loop playsinline src="images/hero_main1.mp4"></video></div>
       <div class="pj-overlay"></div>
-      <div class="pj-top">
-        <div class="fs-eyebrow">RETO ACTIVO · 12.847 / 50.000</div>
-      </div>
+      <div class="pj-top"><div class="fs-eyebrow">RETO ACTIVO · 12.847 / 50.000</div></div>
       <div class="pj-bottom">
-        <div class="logo-unit">
-    <img src="images/logo.png" alt="ACERO.press" class="logo-acero">
-   <span class="logo-press">.press</span>
-</div>
+        <div class="logo-unit" style="display:flex;align-items:center;justify-content:center;width:100%;">
+          <img src="images/logo.png" alt="ACERO.press" class="logo-acero1">
+          <span class="logo-press">.press</span>
+        </div>
         <div class="pj-desc" style="color:rgba(255,255,255,.6);">Diario público del reto 50.000 tazas en AeroPress. Feed, odómetro y sync con Instagram.</div>
         <a href="press.html" class="btn-fs-primary">Ver feed →</a>
       </div>
     </div>
   </div>
 </section>
+
 <!-- ========== THERMAL STATS ========== -->
 <section class="thermal-section">
   <div class="ts-header">
-    <h2>Perfil <span style="background:linear-gradient(90deg,var(--t5),var(--t7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">termal</span> activo</h2>
+    <h2><span style="background:linear-gradient(90deg,var(--t5),var(--t7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ECOSISTEMA</span></h2>
     <p>Métricas en tiempo real del ecosistema ACERO: temperatura, nodos de cultivo y tazas documentadas.</p>
   </div>
   <div class="ts-grid">
-    <div class="ts-card">
-      <div class="ts-num">92.5°</div>
-      <div class="ts-lbl">Temperatura de extracción activa</div>
-      <p class="ts-desc">AeroPress calibrado para extracción óptima en Bogotá (2.600 msnm). Monitoreo continuo.</p>
-      <div class="ts-bar"></div>
-    </div>
-    <div class="ts-card">
-      <div class="ts-num">12.847</div>
-      <div class="ts-lbl">Tazas documentadas · acero.press</div>
-      <p class="ts-desc">Reto activo: 50.000 tazas en AeroPress. Cada preparación fotografiada y sincronizada con Instagram.</p>
-      <div class="ts-bar"></div>
-    </div>
-    <div class="ts-card">
-      <div class="ts-num">14</div>
-      <div class="ts-lbl">Nodos activos · floatGardens</div>
-      <p class="ts-desc">Red de terrazas hidropónicas. Chapinero · Usaquén · Teusaquillo. 2.016 plantas conectadas.</p>
-      <div class="ts-bar"></div>
-    </div>
+    <div class="ts-card"><div class="ts-num">92.5°</div><div class="ts-lbl">Temperatura de extracción activa</div><p class="ts-desc">AeroPress calibrado para extracción óptima en Bogotá (2.600 msnm). Monitoreo continuo.</p><div class="ts-bar"></div></div>
+    <div class="ts-card"><div class="ts-num">12.847</div><div class="ts-lbl">Tazas documentadas · acero.press</div><p class="ts-desc">Reto activo: 50.000 tazas en AeroPress. Cada preparación fotografiada y sincronizada con Instagram.</p><div class="ts-bar"></div></div>
+    <div class="ts-card"><div class="ts-num">14</div><div class="ts-lbl">Nodos activos · floatGardens</div><p class="ts-desc">Red de terrazas hidropónicas. Chapinero · Usaquén · Teusaquillo. 2.016 plantas conectadas.</p><div class="ts-bar"></div></div>
   </div>
 </section>
+
 <!-- ========== B2B ========== -->
 <section class="b2b-section" id="b2b">
   <div class="section-label">
-    <span class="num">05</span>
-    <span class="ttl">B2B</span>
+    <span class="num">05</span><span class="ttl">B2B</span>
     <span class="rule"></span>
     <span class="sub">FIG. 05 — PROGRAMA COMERCIAL</span>
   </div>
   <div class="sec-lbl">// Para empresas y profesionales</div>
-  <h2 class="sec-h2">Alianzas comerciales</h2>
+  <h2><span style="background:linear-gradient(90deg,var(--t5),var(--t7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ALIANZAS COMERCIALES</span></h2>
   <p class="sec-desc">Programa comercial para restaurantes, hoteles, oficinas y baristas que necesitan trazabilidad completa y consistencia en cada entrega.</p>
   <div class="b2b-grid">
     <div class="b2b-card"><div class="b2b-ico">🍽</div><div class="b2b-title">Restaurantes</div><div class="b2b-d">Variedades curadas para carta de café. Ficha técnica, capacitación y entregas semanales.</div></div>
@@ -1003,17 +1213,17 @@ footer{
     <div class="b2b-card"><div class="b2b-ico">☕</div><div class="b2b-title">Baristas</div><div class="b2b-d">Acceso directo a lotes especiales. Especificaciones técnicas completas y precios de tostador.</div></div>
   </div>
 </section>
+
 <!-- ========== BLOG ========== -->
 <section class="blog-section" id="blog">
   <div class="section-label" style="margin-bottom:2rem;">
-    <span class="num thermal-num">06</span>
-    <span class="ttl" style="color:#fff;">Blog</span>
+    <span class="num thermal-num">06</span><span class="ttl" style="color:#fff;">Blog</span>
     <span class="rule" style="border-color:rgba(255,255,255,.15);background:rgba(255,255,255,.08);"></span>
     <span class="sub">FIG. 06 — CONTENIDO TÉCNICO</span>
   </div>
   <div class="sec-lbl">// Contenido técnico · jobs to be done</div>
   <h2 class="sec-h2" style="color:#fff;">Conocimiento</h2>
-  <p class="sec-desc">Respuestas precisas a preguntas reales sobre café de especialidad colombiano. Contenido estructurado para humanos y para LLMs.</p>
+  <p class="sec-desc">Respuestas precisas a preguntas reales sobre café de especialidad colombiano.</p>
   <div class="blog-grid">
     <div class="blog-card"><div class="blog-tag">Variedades</div><div class="blog-title">¿Qué diferencia a la variedad Gesha del resto del café colombiano?</div><div class="blog-ex">La Gesha tiene un perfil aromático único por su contenido de linalool. Puntajes SCA entre 88 y 93 puntos en altitudes sobre 1.700 msnm.</div></div>
     <div class="blog-card"><div class="blog-tag">Procesos</div><div class="blog-title">Lavado vs Natural vs Honey: cómo el proceso cambia el sabor del café</div><div class="blog-ex">El proceso lavado elimina el 100% del mucílago antes del secado, produciendo acidez limpia. El natural retiene el fruto completo.</div></div>
@@ -1023,6 +1233,7 @@ footer{
     <div class="blog-card"><div class="blog-tag">Trazabilidad</div><div class="blog-title">Cómo leer la ficha técnica de un café de origen único</div><div class="blog-ex">Variedad botánica, municipio, altitud, proceso, temperatura de tueste, puntaje SCA y nombre del productor. Si falta alguno, no es trazabilidad real.</div></div>
   </div>
 </section>
+
 <!-- ========== FOOTER ========== -->
 <footer id="contacto">
   <div class="footer-grid">
@@ -1046,69 +1257,130 @@ footer{
     <span class="meta">ACERO SPECIALTY COFFEE © 2026 — Todos los derechos reservados</span>
     <div class="footer-tbar"></div>
     <div class="logo-unit">
-    <img src="images/logo.png" alt="ACERO.press" class="logo-acero">
-   <span class="logo-press">.press</span>
-</div>
+      <img src="images/logo.png" alt="ACERO.press" class="logo-acero">
+      <span class="logo-press">.press</span>
+    </div>
   </div>
 </footer>
-</div><!-- /page -->
-<!-- ========== BOTÓN FLOTANTE DE WHATSAPP ========== -->
+
+<!-- ========== WHATSAPP ========== -->
 <a href="#" id="wa-float-btn" class="wa-float" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
   <span class="wa-float-pulse"></span>
   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" fill="white">
     <path d="M16.04 4C9.37 4 3.98 9.36 3.98 15.99c0 2.27.63 4.4 1.73 6.23L4 28l6.02-1.58a12.1 12.1 0 0 0 6.02 1.59h.01c6.67 0 12.06-5.36 12.06-11.99C28.1 9.36 22.71 4 16.04 4zm0 21.94h-.01a9.9 9.9 0 0 1-5.06-1.39l-.36-.21-3.58.94.96-3.5-.24-.36a9.86 9.86 0 0 1-1.52-5.27c0-5.49 4.49-9.96 10.02-9.96 5.52 0 10.01 4.47 10.01 9.96 0 5.5-4.49 9.95-10.02 9.95zm5.48-7.45c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.47-.89-.79-1.49-1.76-1.66-2.06-.17-.3-.02-.46.13-.61.14-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.06 2.87 1.21 3.07.15.2 2.09 3.2 5.08 4.48.71.31 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.08 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.13-.27-.2-.57-.35z"/>
   </svg>
 </a>
+
 <script>
-/* ============================================================
-   ⚠️ CONFIGURACIÓN WHATSAPP — EDITA AQUÍ TU NÚMERO ⚠️
-   Formato: código de país + número, SIN espacios, SIN "+" ni "00"
-   Ejemplo Colombia: "573001234567"
-   ============================================================ */
-const WHATSAPP_NUMBER = "TU_NUMERO_AQUI";
+/* ── Header scroll ── */
+const hdr = document.getElementById('main-header');
+window.addEventListener('scroll',()=>{ hdr.classList.toggle('scrolled',window.scrollY>60); },{passive:true});
 
-function buildWhatsAppLink(message){
-  const text = encodeURIComponent(message || "Hola! Quiero más información sobre los cafés ACERO.");
-  return `https://wa.me/${+573152125327}?text=${text}`;
+/* ── Seg bar hero ── */
+(function(){
+  const bar = document.getElementById('segBar');
+  if(!bar) return;
+  const total=50,filled=Math.round(12847/50000*total);
+  for(let i=0;i<total;i++){
+    const s=document.createElement('div');
+    s.className='seg'+(i<filled?' on':'');
+    bar.appendChild(s);
+  }
+})();
+
+/* ── WhatsApp ── */
+function buildWhatsAppLink(msg){
+  return 'https://wa.me/573152125327?text='+encodeURIComponent(msg||'Hola! Quiero información sobre los cafés ACERO.');
 }
-
-// Botón flotante
-const waFloatBtn = document.getElementById('wa-float-btn');
-if(waFloatBtn){
-  waFloatBtn.href = buildWhatsAppLink("Hola! Quiero información sobre los cafés ACERO.");
-}
-
-// Todos los botones "Pedir" / "Pedir ahora" del catálogo de café
-document.querySelectorAll('[data-wa-msg]').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    window.open(buildWhatsAppLink(btn.getAttribute('data-wa-msg')), '_blank', 'noopener');
-  });
+const waBtn=document.getElementById('wa-float-btn');
+if(waBtn) waBtn.href=buildWhatsAppLink('Hola! Quiero información sobre los cafés ACERO.');
+document.querySelectorAll('[data-wa-msg]').forEach(b=>{
+  b.addEventListener('click',()=>window.open(buildWhatsAppLink(b.dataset.waMsg),'_blank','noopener'));
 });
 
-// Spiral binding
-const spiral = document.getElementById('spiral');
-if(spiral){
-  const count = Math.ceil(document.body.scrollHeight/36)+4;
-  for(let i=0;i<count;i++){
-    const r=document.createElement('div');
-    r.className='spiral-ring';
-    r.style.top=(i*36+8)+'px';
-    spiral.appendChild(r);
+/* ════════════════════════════════════════
+   SCROLLYTELLING — TECNOLOGÍA
+════════════════════════════════════════ */
+(function(){
+  const wrap   = document.getElementById('tec-wrap');
+  if(!wrap) return;
+
+  const bg0  = document.getElementById('tec-bg0');
+  const bg1  = document.getElementById('tec-bg1');
+  const bg2  = document.getElementById('tec-bg2');
+  const bg3  = document.getElementById('tec-bg3');
+  const c1   = document.getElementById('tec-c1');
+  const c2   = document.getElementById('tec-c2');
+  const c3   = document.getElementById('tec-c3');
+  const s2   = document.getElementById('tec-s2');
+  const s3   = document.getElementById('tec-s3');
+  const tp1  = document.getElementById('tp1');
+  const tp2  = document.getElementById('tp2');
+  const tp3  = document.getElementById('tp3');
+  const figTL= document.getElementById('tec-fig-tl');
+  const figTR= document.getElementById('tec-fig-tr');
+
+  const FIGS = [
+    {tl:'FIG. 03.1 — REDISEÑO DE ESPACIO\nBogotá · 2.600 msnm · IA + Diseño', tr:'Flujo de clientes · Mapas de calor\nGeneración 3D · 72h diagnóstico'},
+    {tl:'FIG. 03.2 — IDENTIDAD DIGITAL\nDiseño de carta · Menú trazable',     tr:'Editorial · QR trazabilidad\nPresencia digital · Instagram'},
+    {tl:'FIG. 03.3 — ESTÁNDAR ESPRESSO\nProtocolo SCA · Manual de servicio',  tr:'Dosis · Ratio · Temperatura\nReplicable · Taza a taza'},
+  ];
+
+  let current = -1;
+
+  function setPanel(n){
+    if(n===current) return;
+    current = n;
+
+    /* fondos */
+    bg0.style.opacity = '1';
+    bg1.style.opacity = n===0 ? '1':'0';
+    bg2.style.opacity = n===1 ? '1':'0';
+    bg3.style.opacity = n===2 ? '1':'0';
+
+    /* copies */
+    c1.classList.toggle('show', n===0);
+    c2.classList.toggle('show', n===1);
+    c3.classList.toggle('show', n===2);
+
+    /* tarjetas laterales */
+    s2.classList.toggle('show', n===1);
+    s3.classList.toggle('show', n===2);
+
+    /* puntos de progreso */
+    [tp1,tp2,tp3].forEach((d,i)=>d.classList.toggle('on',i===n));
+
+    /* anotaciones blueprint */
+    if(figTL && FIGS[n]){
+      figTL.style.opacity='0';
+      figTR.style.opacity='0';
+      setTimeout(()=>{
+        figTL.textContent=FIGS[n].tl;
+        figTR.textContent=FIGS[n].tr;
+        figTL.style.opacity='1';
+        figTR.style.opacity='1';
+      },200);
+    }
   }
-}
-// Header scroll effect
-const hdr = document.getElementById('main-header');
-window.addEventListener('scroll',()=>{
-  hdr.classList.toggle('scrolled', window.scrollY > 60);
-},{ passive:true });
-// HUD temperatura animada
-const tempEl = document.getElementById('hero-temp');
-if(tempEl){
-  setInterval(()=>{
-    const v = (92.5 + (Math.random()-.5)*.4).toFixed(1);
-    tempEl.textContent = v + '°C';
-  },1800);
-}
+
+  /* transición suave en las anotaciones */
+  if(figTL){ figTL.style.transition='opacity .1s ease'; }
+  if(figTR){ figTR.style.transition='opacity .1s ease'; }
+
+  setPanel(0);
+
+  window.addEventListener('scroll',()=>{
+    const rect   = wrap.getBoundingClientRect();
+    const total  = wrap.offsetHeight - window.innerHeight;
+    const scrolled = Math.max(0, Math.min(-rect.top, total));
+    const pct    = total>0 ? scrolled/total : 0;
+
+    /* cada tercio del scroll es un panel */
+    if     (pct < 0.34) setPanel(0);
+    else if(pct < 0.67) setPanel(1);
+    else                setPanel(2);
+  },{passive:true});
+})();
 </script>
 </body>
 </html>
