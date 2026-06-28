@@ -186,24 +186,24 @@ function renderIGGrid(posts) {
     const div = document.createElement("div");
     div.className = "ig-post" + (idx === 0 ? " large" : "");
 
-    div.innerHTML = `
+    div.innerHTML = 
       <div class="ig-media">
         <img src="${mediaSrc}"
              alt="${cap || "Post de Instagram"}"
              loading="${idx < 3 ? "eager" : "lazy"}"
              style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease;">
       </div>
-      ${typeBadge ? `<div class="ig-type-badge" style="
+      ${typeBadge ? <div class="ig-type-badge" style="
         position:absolute;top:.6rem;right:.6rem;z-index:3;
         font-size:.75rem;color:#fff;background:rgba(0,0,0,.55);
         padding:.2rem .4rem;border-radius:2px;
-        font-family:'JetBrains Mono',monospace;">${typeBadge}</div>` : ""}
+        font-family:'JetBrains Mono',monospace;">${typeBadge}</div> : ""}
       <div class="ig-post-overlay"></div>
       <div class="ig-post-info">
-        ${cup ? `<div class="ig-post-num">${cup}</div>` : ""}
+        ${cup ? <div class="ig-post-num">${cup}</div>`: ""}
         <div class="ig-post-cap">${cap}</div>
       </div>
-    `;
+    ;
 
     div.style.cursor = "pointer";
     div.addEventListener("click", () => window.open(post.permalink, "_blank", "noopener"));
@@ -221,14 +221,14 @@ function renderIGHero(post) {
 
   const isVideo  = post.media_type === "VIDEO";
   const mediaSrc = isVideo ? post.thumbnail_url : post.media_url;
-  heroMedia.innerHTML = `<img src="${mediaSrc}" alt="Hero Instagram" style="width:100%;height:100%;object-fit:cover;">`;
+  heroMedia.innerHTML = <img src="${mediaSrc}" alt="Hero Instagram" style="width:100%;height:100%;object-fit:cover;">;
 
   const heroP = document.querySelector("#instagram .ig-hero-content p");
   if (heroP) {
     const cup = extractCupNum(post.caption);
     const cap = shortCaption(post.caption, 120);
     heroP.innerHTML = cup
-      ? `<strong style="color:var(--hot)">${cup}</strong> — ${cap}`
+      ? <strong style="color:var(--hot)">${cup}</strong> — ${cap}
       : cap;
   }
 }
@@ -252,16 +252,16 @@ function showIGLoading() {
   const grid = document.querySelector("#instagram .ig-grid");
   if (!grid) return;
 
-  grid.innerHTML = Array(6).fill(0).map(() => `
+  grid.innerHTML = Array(6).fill(0).map(() => 
     <div class="ig-post" style="background:rgba(255,255,255,.04);animation:igSkeleton 1.4s ease-in-out infinite;">
       <div class="ig-media" style="aspect-ratio:1/1;"></div>
     </div>
-  `).join("");
+  ).join("");
 
   if (!document.getElementById("ig-skeleton-style")) {
     const st = document.createElement("style");
     st.id = "ig-skeleton-style";
-    st.textContent = `
+    st.textContent = 
       @keyframes igSkeleton { 0%,100%{opacity:1} 50%{opacity:.35} }
       .ig-type-badge {
         position:absolute; top:.6rem; right:.6rem; z-index:3;
@@ -269,7 +269,7 @@ function showIGLoading() {
         padding:.2rem .4rem; border-radius:2px;
         font-family:'JetBrains Mono',monospace;
       }
-    `;
+    ;
     document.head.appendChild(st);
   }
 }
@@ -278,7 +278,7 @@ function showIGError() {
   const grid = document.querySelector("#instagram .ig-grid");
   if (!grid) return;
 
-  grid.innerHTML = `
+  grid.innerHTML = 
     <div style="grid-column:1/-1;display:flex;flex-direction:column;align-items:center;
       gap:1rem;padding:4rem 2rem;text-align:center;border:1px dashed rgba(255,255,255,.1);">
       <span style="font-size:2rem">⚠</span>
@@ -290,7 +290,7 @@ function showIGError() {
         Ver en Instagram →
       </a>
     </div>
-  `;
+  ;
 }
 
 /* ══════════════════════════════════════════════════════════════
