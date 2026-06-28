@@ -25,7 +25,7 @@ const ADMIN_CONFIG = {
 /* ══════════════════════════════════════════════════════════════
    1. ESTADO GLOBAL
 ══════════════════════════════════════════════════════════════ */
-
+ 
 const adminState = {
   isOpen:      false,
   isLoggedIn:  false,
@@ -42,16 +42,16 @@ const adminState = {
   platforms:   { ig: true, tk: true, yt: true },
   scheduleDate: null,
 };
-
+ 
 /* ══════════════════════════════════════════════════════════════
    2. ESTILOS
 ══════════════════════════════════════════════════════════════ */
-
+ 
 function injectAdminStyles() {
   if (document.getElementById("admin-panel-styles")) return;
   const style = document.createElement("style");
   style.id = "admin-panel-styles";
-  style.textContent = 
+  style.textContent = `
     #admin-trigger {
       font-family:'Archivo',sans-serif; font-weight:700; font-size:.7rem;
       letter-spacing:.14em; text-transform:uppercase;
@@ -61,7 +61,7 @@ function injectAdminStyles() {
     }
     #admin-trigger:hover { border-color:var(--hot); color:var(--hot); }
     #admin-trigger.logged-in { border-color:#25D366; color:#25D366; }
-
+ 
     #admin-overlay {
       position:fixed; inset:0; z-index:1000;
       background:rgba(10,10,14,.92); backdrop-filter:blur(12px);
@@ -69,13 +69,13 @@ function injectAdminStyles() {
       padding:5rem 1rem 2rem; overflow-y:auto;
     }
     #admin-overlay.open { display:flex; }
-
+ 
     #admin-panel {
       width:100%; max-width:900px; background:#161618;
       border:1px solid rgba(255,255,255,.08); border-radius:6px;
       overflow:hidden; position:relative;
     }
-
+ 
     .adm-header {
       display:flex; align-items:center; justify-content:space-between;
       padding:1.2rem 1.5rem; border-bottom:1px solid rgba(255,255,255,.07);
@@ -92,7 +92,7 @@ function injectAdminStyles() {
     .adm-user-badge.visible { display:block; }
     .adm-close { background:none; border:none; color:rgba(255,255,255,.4); font-size:1.4rem; cursor:pointer; transition:color .2s; }
     .adm-close:hover { color:#fff; }
-
+ 
     #adm-login {
       padding:4rem 2rem; text-align:center;
       display:flex; flex-direction:column; align-items:center; gap:1.5rem;
@@ -108,10 +108,10 @@ function injectAdminStyles() {
     }
     .btn-fb-login:hover { opacity:.88; }
     .btn-fb-login svg { width:20px; height:20px; fill:#fff; }
-
+ 
     #adm-main { display:none; }
     #adm-main.visible { display:block; }
-
+ 
     .adm-tabs { display:flex; border-bottom:1px solid rgba(255,255,255,.07); padding:0 1.5rem; }
     .adm-tab {
       font-family:'JetBrains Mono',monospace; font-size:.7rem; letter-spacing:.1em;
@@ -120,10 +120,10 @@ function injectAdminStyles() {
     }
     .adm-tab:hover { color:rgba(255,255,255,.7); }
     .adm-tab.active { color:var(--t6); border-bottom-color:var(--t6); }
-
+ 
     .adm-tab-content { display:none; padding:1.5rem; }
     .adm-tab-content.active { display:block; }
-
+ 
     .metrics-grid {
       display:grid; grid-template-columns:repeat(3,1fr);
       gap:1px; background:rgba(255,255,255,.06); margin-bottom:1.5rem;
@@ -139,7 +139,7 @@ function injectAdminStyles() {
     .metric-l { font-family:'JetBrains Mono',monospace; font-size:.62rem; color:rgba(255,255,255,.3); letter-spacing:.08em; text-transform:uppercase; }
     .metrics-loading { font-family:'JetBrains Mono',monospace; font-size:.75rem; color:rgba(255,255,255,.3); text-align:center; padding:2rem; animation:adm-pulse 1.4s ease-in-out infinite; }
     @keyframes adm-pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-
+ 
     .recent-posts-title { font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,.3); margin-bottom:.8rem; }
     .recent-posts-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:4px; }
     @media(max-width:600px){ .recent-posts-grid{ grid-template-columns:repeat(3,1fr); } }
@@ -147,7 +147,7 @@ function injectAdminStyles() {
     .recent-post-thumb:hover { opacity:1; }
     .recent-post-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
     .recent-post-thumb.skeleton { background:rgba(255,255,255,.06); animation:adm-pulse 1.4s ease-in-out infinite; }
-
+ 
     .video-drop-zone {
       border:2px dashed rgba(255,255,255,.15); border-radius:4px;
       padding:3rem 2rem; text-align:center; cursor:pointer;
@@ -158,20 +158,20 @@ function injectAdminStyles() {
     .video-drop-zone p { font-family:'JetBrains Mono',monospace; font-size:.75rem; color:rgba(255,255,255,.35); line-height:1.6; }
     .video-drop-zone span { color:var(--t6); cursor:pointer; text-decoration:underline; }
     #video-file-input { display:none; }
-
+ 
     .editor-layout { display:none; gap:1.5rem; flex-direction:column; }
     .editor-layout.visible { display:flex; }
-
+ 
     .video-preview-wrap { position:relative; background:#000; border-radius:4px; overflow:hidden; aspect-ratio:16/9; }
     #admin-video-preview { width:100%; height:100%; object-fit:contain; }
-
+ 
     .trim-section { background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); border-radius:4px; padding:1rem 1.2rem; }
     .trim-label { font-family:'JetBrains Mono',monospace; font-size:.65rem; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.3); margin-bottom:.8rem; }
     .trim-bar-wrap { position:relative; height:44px; background:rgba(255,255,255,.05); border-radius:3px; margin-bottom:.8rem; cursor:pointer; }
     .trim-bar-fill { position:absolute; top:0; bottom:0; background:rgba(255,140,0,.3); border-left:2px solid var(--t6); border-right:2px solid var(--t6); }
     .trim-playhead { position:absolute; top:0; bottom:0; width:2px; background:#fff; pointer-events:none; }
     .trim-times { display:flex; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:.68rem; color:rgba(255,255,255,.45); }
-
+ 
     .subs-section { background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); border-radius:4px; padding:1rem 1.2rem; }
     .subs-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:.8rem; }
     .subs-title { font-family:'JetBrains Mono',monospace; font-size:.65rem; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.3); }
@@ -183,7 +183,7 @@ function injectAdminStyles() {
     .btn-del-sub { background:none; border:none; color:rgba(255,255,255,.25); cursor:pointer; font-size:1rem; transition:color .2s; }
     .btn-del-sub:hover { color:var(--hot); }
     .subs-empty { font-family:'JetBrains Mono',monospace; font-size:.7rem; color:rgba(255,255,255,.2); text-align:center; padding:1rem 0; }
-
+ 
     .publish-section { display:flex; flex-direction:column; gap:1.2rem; }
     .publish-platforms { display:grid; grid-template-columns:repeat(3,1fr); gap:.8rem; }
     .platform-toggle { border:1.5px solid rgba(255,255,255,.12); border-radius:4px; padding:1rem; cursor:pointer; transition:all .2s; text-align:center; opacity:.5; }
@@ -193,43 +193,43 @@ function injectAdminStyles() {
     .platform-toggle.yt.on { border-color:var(--yt); }
     .platform-toggle .pt-icon { font-size:1.5rem; margin-bottom:.3rem; }
     .platform-toggle .pt-name { font-family:'JetBrains Mono',monospace; font-size:.65rem; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.5); }
-
+ 
     .publish-caption-wrap { background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); border-radius:4px; padding:1rem 1.2rem; }
     .publish-caption-label { font-family:'JetBrains Mono',monospace; font-size:.65rem; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.3); margin-bottom:.6rem; }
     #publish-caption { width:100%; min-height:80px; background:transparent; border:none; color:rgba(255,255,255,.7); font-family:'Archivo',sans-serif; font-size:.88rem; line-height:1.6; resize:vertical; outline:none; }
     .caption-count { font-family:'JetBrains Mono',monospace; font-size:.62rem; color:rgba(255,255,255,.2); text-align:right; margin-top:.3rem; }
-
+ 
     .publish-schedule { display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
     .schedule-label { font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.35); white-space:nowrap; }
     #schedule-datetime { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:2px; padding:.5rem .8rem; color:rgba(255,255,255,.7); font-family:'JetBrains Mono',monospace; font-size:.72rem; outline:none; cursor:pointer; }
     .btn-adm-primary { font-family:'Archivo',sans-serif; font-weight:700; font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; padding:.85rem 2rem; border:none; border-radius:3px; cursor:pointer; background:linear-gradient(135deg,var(--t5),var(--t6),var(--t7)); color:var(--near-black); transition:opacity .2s; white-space:nowrap; }
     .btn-adm-primary:hover { opacity:.85; }
     .btn-adm-primary:disabled { opacity:.4; cursor:not-allowed; }
-
+ 
     .publish-status { font-family:'JetBrains Mono',monospace; font-size:.72rem; text-align:center; padding:1rem; border-radius:3px; display:none; }
     .publish-status.loading { display:block; background:rgba(255,140,0,.08); color:var(--t6); animation:adm-pulse 1.4s ease-in-out infinite; }
     .publish-status.success { display:block; background:rgba(37,211,102,.08); color:#25D366; }
     .publish-status.error { display:block; background:rgba(232,24,28,.08); color:var(--hot); }
-
+ 
     .upload-progress { display:none; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07); border-radius:4px; padding:1rem 1.2rem; }
     .upload-progress.visible { display:block; }
     .progress-bar-wrap { background:rgba(255,255,255,.08); border-radius:2px; height:4px; margin:.5rem 0; overflow:hidden; }
     .progress-bar-fill { height:100%; background:linear-gradient(90deg,var(--t5),var(--t7)); border-radius:2px; transition:width .3s ease; width:0%; }
     .progress-label { font-family:'JetBrains Mono',monospace; font-size:.65rem; color:rgba(255,255,255,.4); }
-
+ 
     .no-video-warning { font-family:'JetBrains Mono',monospace; font-size:.72rem; color:rgba(255,140,0,.7); background:rgba(255,140,0,.06); border:1px solid rgba(255,140,0,.2); border-radius:3px; padding:.8rem 1rem; text-align:center; }
-  ;
+  `;
   document.head.appendChild(style);
 }
-
+ 
 /* ══════════════════════════════════════════════════════════════
    3. RENDER DEL PANEL
 ══════════════════════════════════════════════════════════════ */
-
+ 
 function renderAdminPanel() {
   const overlay = document.createElement("div");
   overlay.id = "admin-overlay";
-  overlay.innerHTML = 
+  overlay.innerHTML = `
     <div id="admin-panel">
       <div class="adm-header">
         <div class="adm-header-left">
@@ -238,7 +238,7 @@ function renderAdminPanel() {
         </div>
         <button class="adm-close" id="adm-close">✕</button>
       </div>
-
+ 
       <div id="adm-login">
         <div class="adm-login-icon">🔐</div>
         <div class="adm-login-title">Acceso administrativo</div>
@@ -248,20 +248,20 @@ function renderAdminPanel() {
           Continuar con Facebook
         </button>
       </div>
-
+ 
       <div id="adm-main">
         <div class="adm-tabs">
           <button class="adm-tab active" data-tab="metrics">📊 Métricas</button>
           <button class="adm-tab" data-tab="editor">🎬 Editor</button>
           <button class="adm-tab" data-tab="publish">🚀 Publicar</button>
         </div>
-
+ 
         <div class="adm-tab-content active" id="tab-metrics">
           <div id="metrics-container">
             <div class="metrics-loading">Cargando métricas de Instagram...</div>
           </div>
         </div>
-
+ 
         <div class="adm-tab-content" id="tab-editor">
           <div class="video-drop-zone" id="video-drop-zone">
             <div class="drop-icon">🎬</div>
@@ -269,7 +269,7 @@ function renderAdminPanel() {
             <p style="margin-top:.5rem;font-size:.65rem;opacity:.5;">MP4, MOV · máx 500MB</p>
           </div>
           <input type="file" id="video-file-input" accept="video/*">
-
+ 
           <div class="editor-layout" id="editor-layout">
             <div class="video-preview-wrap">
               <video id="admin-video-preview" controls></video>
@@ -295,7 +295,7 @@ function renderAdminPanel() {
             </div>
           </div>
         </div>
-
+ 
         <div class="adm-tab-content" id="tab-publish">
           <div class="publish-section">
             <div>
@@ -328,14 +328,14 @@ function renderAdminPanel() {
         </div>
       </div>
     </div>
-  ;
+  `;
   document.body.appendChild(overlay);
 }
-
+ 
 /* ══════════════════════════════════════════════════════════════
    4. FACEBOOK LOGIN
 ══════════════════════════════════════════════════════════════ */
-
+ 
 function initFacebookSDK() {
   window.fbAsyncInit = function () {
     FB.init({ appId: ADMIN_CONFIG.FB_APP_ID, cookie: true, xfbml: true, version: "v19.0" });
@@ -348,7 +348,7 @@ function initFacebookSDK() {
     document.head.appendChild(script);
   }
 }
-
+ 
 function handleFBLogin() {
   if (typeof FB === "undefined") {
     alert("El SDK de Facebook aún no cargó. Intenta en unos segundos.");
@@ -361,7 +361,7 @@ function handleFBLogin() {
     }
   }, { scope: "instagram_basic,instagram_content_publish,pages_show_list,pages_read_engagement" });
 }
-
+ 
 function onLoginSuccess(auth) {
   adminState.isLoggedIn = true;
   FB.api("/me", { fields: "name" }, (user) => {
@@ -374,11 +374,11 @@ function onLoginSuccess(auth) {
   document.getElementById("adm-main").classList.add("visible");
   loadMetrics();
 }
-
+ 
 /* ══════════════════════════════════════════════════════════════
    5. MÉTRICAS
 ══════════════════════════════════════════════════════════════ */
-
+ 
 async function loadMetrics() {
   const container = document.getElementById("metrics-container");
   if (!container) return;
@@ -409,22 +409,22 @@ async function loadMetrics() {
     container.innerHTML = `<div class="metrics-loading" style="animation:none;color:rgba(255,100,100,.5);">No se pudieron cargar las métricas.</div>`;
   }
 }
-
+ 
 function fmtN(n) {
   if (!n) return "–";
   return n >= 1000 ? (n / 1000).toFixed(1) + "K" : String(n);
 }
-
+ 
 /* ══════════════════════════════════════════════════════════════
    6. EDITOR DE VIDEO
 ══════════════════════════════════════════════════════════════ */
-
+ 
 function initVideoEditor() {
   const dropZone    = document.getElementById("video-drop-zone");
   const fileInput   = document.getElementById("video-file-input");
   const fileTrigger = document.getElementById("video-file-trigger");
   if (!dropZone) return;
-
+ 
   fileTrigger?.addEventListener("click", () => fileInput?.click());
   dropZone.addEventListener("dragover", (e) => { e.preventDefault(); dropZone.classList.add("drag-over"); });
   dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag-over"));
@@ -437,7 +437,7 @@ function initVideoEditor() {
   document.getElementById("btn-add-sub")?.addEventListener("click", addSubtitle);
   initTrimBar();
 }
-
+ 
 function loadVideo(file) {
   if (adminState.videoURL) URL.revokeObjectURL(adminState.videoURL);
   adminState.video    = file;
@@ -457,7 +457,7 @@ function loadVideo(file) {
   if (dropZone) dropZone.style.display = "none";
   if (layout)   layout.classList.add("visible");
 }
-
+ 
 function initTrimBar() {
   const bar = document.getElementById("trim-bar");
   if (!bar) return;
@@ -495,7 +495,7 @@ function initTrimBar() {
     if (ph) ph.style.left = ((video.currentTime / video.duration) * 100) + "%";
   });
 }
-
+ 
 function updateTrimUI() {
   const video = document.getElementById("admin-video-preview");
   if (!video || !video.duration) return;
@@ -511,19 +511,19 @@ function updateTrimUI() {
   if (el) el.textContent = `Fin: ${fmt(adminState.trimEnd)}`;
   if (dl) dl.textContent = `Duración: ${fmt(adminState.trimEnd - adminState.trimStart)}`;
 }
-
+ 
 function addSubtitle() {
   const video = document.getElementById("admin-video-preview");
   const t = video ? video.currentTime : 0;
   adminState.subtitles.push({ id: Date.now(), start: t, end: t + 3, text: "" });
   renderSubtitles();
 }
-
+ 
 function removeSubtitle(id) {
   adminState.subtitles = adminState.subtitles.filter(s => s.id !== id);
   renderSubtitles();
 }
-
+ 
 function renderSubtitles() {
   const list = document.getElementById("subs-list");
   if (!list) return;
@@ -540,18 +540,18 @@ function renderSubtitles() {
     </div>
   `).join("");
 }
-
+ 
 window.updateSubtitle = (id, field, value) => {
   const sub = adminState.subtitles.find(s => s.id === id);
   if (sub) sub[field] = value;
 };
-
+ 
 window.removeSubtitle = removeSubtitle;
-
+ 
 /* ══════════════════════════════════════════════════════════════
    7. PUBLICADOR — sube directo a Storage, luego llama Edge Fn
 ══════════════════════════════════════════════════════════════ */
-
+ 
 function checkPublishReady() {
   const warning = document.getElementById("no-video-warning");
   const btn     = document.getElementById("btn-publish");
@@ -563,7 +563,7 @@ function checkPublishReady() {
     if (btn)     btn.disabled = false;
   }
 }
-
+ 
 function setProgress(pct, label) {
   const bar      = document.getElementById("progress-bar");
   const labelEl  = document.getElementById("progress-label");
@@ -572,30 +572,30 @@ function setProgress(pct, label) {
   if (bar)     bar.style.width = pct + "%";
   if (labelEl) labelEl.textContent = label;
 }
-
+ 
 function hideProgress() {
   const wrap = document.getElementById("upload-progress");
   if (wrap) wrap.classList.remove("visible");
 }
-
+ 
 async function handlePublish() {
   if (!adminState.video) return;
-
+ 
   const caption      = document.getElementById("publish-caption")?.value || "";
   const scheduleRaw  = document.getElementById("schedule-datetime")?.value;
   const scheduleTime = scheduleRaw ? new Date(scheduleRaw).toISOString() : null;
   const platforms    = adminState.platforms;
   const status       = document.getElementById("publish-status");
   const btn          = document.getElementById("btn-publish");
-
+ 
   if (status) { status.className = "publish-status loading"; status.textContent = "Preparando..."; }
   if (btn)    btn.disabled = true;
-
+ 
   try {
     // ── PASO 1: Subir video directo a Supabase Storage ──────
     const fileName = `videos/${Date.now()}-${adminState.video.name.replace(/[^a-zA-Z0-9._-]/g, "-")}`;
     setProgress(10, "Subiendo video a Storage...");
-
+ 
     const uploadRes = await fetch(
       `${ADMIN_CONFIG.SUPABASE_URL}/storage/v1/object/content/${fileName}`,
       {
@@ -608,16 +608,16 @@ async function handlePublish() {
         body: adminState.video,
       }
     );
-
+ 
     if (!uploadRes.ok) {
       const errData = await uploadRes.json().catch(() => ({}));
       throw new Error(`Storage: ${errData.message || errData.error || uploadRes.status}`);
     }
-
+ 
     setProgress(60, "Video subido. Publicando en plataformas...");
-
+ 
     const videoPublicUrl = `${ADMIN_CONFIG.SUPABASE_URL}/storage/v1/object/public/content/${fileName}`;
-
+ 
     // ── PASO 2: Llamar Edge Function con la URL (sin el archivo) ──
     const res = await fetch(
       `${ADMIN_CONFIG.SUPABASE_URL}/functions/v1/publish-content`,
@@ -638,21 +638,21 @@ async function handlePublish() {
         }),
       }
     );
-
+ 
     setProgress(90, "Procesando respuesta...");
-
+ 
     const result = await res.json();
     if (!res.ok || result.error) throw new Error(result.error || "Error al publicar");
-
+ 
     setProgress(100, "¡Listo!");
     setTimeout(hideProgress, 1500);
-
+ 
     const platformNames = [
       platforms.ig ? "Instagram" : null,
       platforms.tk ? "TikTok"   : null,
       platforms.yt ? "YouTube"  : null,
     ].filter(Boolean).join(", ");
-
+ 
     // Mostrar resultado por plataforma
     let detail = "";
     if (result.results) {
@@ -661,14 +661,14 @@ async function handlePublish() {
       if (r.tiktok)    detail += r.tiktok.success    ? " ✓ TikTok"    : ` ✕ TK: ${r.tiktok.error}`;
       if (r.youtube)   detail += r.youtube.success   ? " ✓ YouTube"   : ` ✕ YT: ${r.youtube.error}`;
     }
-
+ 
     if (status) {
       status.className   = "publish-status success";
       status.textContent = scheduleTime
         ? `Programado para ${new Date(scheduleTime).toLocaleString("es-CO")} —${detail}`
         : `Publicado —${detail}`;
     }
-
+ 
   } catch (err) {
     console.error("[Admin] Error:", err);
     hideProgress();
@@ -680,11 +680,11 @@ async function handlePublish() {
     if (btn) btn.disabled = false;
   }
 }
-
+ 
 /* ══════════════════════════════════════════════════════════════
    8. EVENTOS
 ══════════════════════════════════════════════════════════════ */
-
+ 
 function bindAdminEvents() {
   document.getElementById("admin-trigger")?.addEventListener("click", () => {
     document.getElementById("admin-overlay")?.classList.add("open");
@@ -696,7 +696,7 @@ function bindAdminEvents() {
     if (e.target.id === "admin-overlay") e.currentTarget.classList.remove("open");
   });
   document.getElementById("btn-fb-login")?.addEventListener("click", handleFBLogin);
-
+ 
   document.querySelectorAll(".adm-tab").forEach(tab => {
     tab.addEventListener("click", () => {
       document.querySelectorAll(".adm-tab").forEach(t => t.classList.remove("active"));
@@ -707,7 +707,7 @@ function bindAdminEvents() {
       if (tab.dataset.tab === "publish") checkPublishReady();
     });
   });
-
+ 
   document.querySelectorAll(".platform-toggle").forEach(toggle => {
     toggle.addEventListener("click", () => {
       const p = toggle.dataset.platform;
@@ -715,19 +715,19 @@ function bindAdminEvents() {
       toggle.classList.toggle("on", adminState.platforms[p]);
     });
   });
-
+ 
   document.getElementById("publish-caption")?.addEventListener("input", (e) => {
     const count = document.getElementById("caption-count");
     if (count) count.textContent = e.target.value.length;
   });
-
+ 
   document.getElementById("btn-publish")?.addEventListener("click", handlePublish);
 }
-
+ 
 /* ══════════════════════════════════════════════════════════════
    9. BOTÓN EN HEADER + INIT
 ══════════════════════════════════════════════════════════════ */
-
+ 
 function addAdminButton() {
   const btnFollow = document.querySelector(".btn-new");
   if (!btnFollow) return;
@@ -736,7 +736,7 @@ function addAdminButton() {
   adminBtn.textContent = "⚙ Admin";
   btnFollow.parentNode.insertBefore(adminBtn, btnFollow.nextSibling);
 }
-
+ 
 function initAdminPanel() {
   injectAdminStyles();
   addAdminButton();
@@ -746,13 +746,9 @@ function initAdminPanel() {
   initFacebookSDK();
   console.log("[Admin] ✓ Panel listo");
 }
-
+ 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initAdminPanel);
 } else {
-  initAdminPanel();
-}
-
-
   initAdminPanel();
 }
