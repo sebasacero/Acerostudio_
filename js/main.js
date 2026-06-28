@@ -51,7 +51,7 @@ function injectAdminStyles() {
   if (document.getElementById("admin-panel-styles")) return;
   const style = document.createElement("style");
   style.id = "admin-panel-styles";
-  style.textContent = `
+  style.textContent = 
     #admin-trigger {
       font-family:'Archivo',sans-serif; font-weight:700; font-size:.7rem;
       letter-spacing:.14em; text-transform:uppercase;
@@ -218,7 +218,7 @@ function injectAdminStyles() {
     .progress-label { font-family:'JetBrains Mono',monospace; font-size:.65rem; color:rgba(255,255,255,.4); }
 
     .no-video-warning { font-family:'JetBrains Mono',monospace; font-size:.72rem; color:rgba(255,140,0,.7); background:rgba(255,140,0,.06); border:1px solid rgba(255,140,0,.2); border-radius:3px; padding:.8rem 1rem; text-align:center; }
-  `;
+  ;
   document.head.appendChild(style);
 }
 
@@ -229,7 +229,7 @@ function injectAdminStyles() {
 function renderAdminPanel() {
   const overlay = document.createElement("div");
   overlay.id = "admin-overlay";
-  overlay.innerHTML = `
+  overlay.innerHTML = 
     <div id="admin-panel">
       <div class="adm-header">
         <div class="adm-header-left">
@@ -328,7 +328,7 @@ function renderAdminPanel() {
         </div>
       </div>
     </div>
-  `;
+  ;
   document.body.appendChild(overlay);
 }
 
