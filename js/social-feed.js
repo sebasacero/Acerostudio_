@@ -5,21 +5,28 @@
 const API = {
   URL:   "https://tylylfrabjkaiukuilem.supabase.co/functions/v1/instagram-proxy",
   WA:    "https://tylylfrabjkaiukuilem.supabase.co/functions/v1/whatsapp-link",
-  ANON:  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR5bHlsZnJhYmprYWl1a3VpbGVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0ODAwNDAsImV4cCI6MjA5ODA1NjA0MH0.Bqe1f2QBUBMiLmLCfAeownFsHLpSpxg6qaAkgvTB3uE", // ← reemplaza con tu anon key
+  ANON:  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR5bHlsZnJhYmprYWl1a3VpbGVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0ODAwNDAsImV4cCI6MjA5ODA1NjA0MH0.Bqe1f2QBUBMiLmLCfAeownFsHLpSpxg6qaAkgvTB3uE",
   LIMIT: 9
 };
 
 /* ══════════════════════════════════════════════════════════════
-   1. FETCH — INSTAGRAM
+   1. FETCH INSTAGRAM
 ══════════════════════════════════════════════════════════════ */
 
 async function fetchIGPosts() {
   const response = await fetch(
     `${API.URL}?limit=${API.LIMIT}`,
-    { method: "GET", headers: { "Accept": "application/json" } }
+    {
+      method: "GET",
+      headers: {
+        "Accept": "application/json",
+        "Authorization": `Bearer ${API.ANON}`
+      }
+    }
   );
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   const json = await response.json();
+  if (json.error) throw new Error(json.error);
   return json.data || [];
 }
 
@@ -40,7 +47,7 @@ function relativeTime(iso) {
   const h = Math.floor(m / 60);
   if (h < 24)  return `Hace ${h}h`;
   const d = Math.floor(h / 24);
-  return `Hace ${d} día${d > 1 ? "s" : ""}`;
+  return `Hace ${d} dia${d > 1 ? "s" : ""}`;
 }
 
 function fmtDate(iso) {
@@ -50,7 +57,7 @@ function fmtDate(iso) {
 }
 
 function fmtNum(n) {
-  if (!n) return "–";
+  if (!n) return "-";
   return n >= 1000 ? (n / 1000).toFixed(1) + "K" : String(n);
 }
 
@@ -64,10 +71,11 @@ function extractCupNum(caption) {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   3. WHATSAPP — via Supabase Edge Function
+   3. WHATSAPP
 ══════════════════════════════════════════════════════════════ */
 
-async function openWhatsApp(msgKey = "wa_msg_default") {
+async function openWhatsApp(msgKey) {
+  msgKey = msgKey || "wa_msg_default";
   try {
     const res = await fetch(
       `${API.WA}?msg=${msgKey}`,
@@ -75,53 +83,51 @@ async function openWhatsApp(msgKey = "wa_msg_default") {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${API.ANON}`,
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json"
+        }
       }
     );
-
-    if (!res.ok) throw new Error(`WA proxy error ${res.status}`);
-
+    if (!res.ok) throw new Error("WA proxy error " + res.status);
     const data = await res.json();
     if (data.error) throw new Error(data.error);
-    if (data.url)   window.open(data.url, "_blank", "noopener");
-
+    if (data.url) window.open(data.url, "_blank", "noopener");
   } catch (err) {
     console.error("[Acero.press] WhatsApp error:", err);
-    // Fallback silencioso — abre WhatsApp sin mensaje
+    // Fallback directo
     window.open("https://wa.me/573152125327", "_blank", "noopener");
   }
 }
 
 function initWhatsApp() {
-  // ── Botón flotante ──
-  const waBtn = document.getElementById("wa-float-btn");
+  // Boton flotante
+  var waBtn = document.getElementById("wa-float-btn");
   if (waBtn) {
     waBtn.removeAttribute("href");
     waBtn.style.cursor = "pointer";
-    waBtn.addEventListener("click", (e) => {
+    waBtn.addEventListener("click", function(e) {
       e.preventDefault();
       openWhatsApp("wa_msg_default");
     });
   }
 
-  // ── Botones con data-wa-msg (Pedir / Diagnóstico) ──
-  document.querySelectorAll("[data-wa-msg]").forEach(btn => {
-    btn.addEventListener("click", (e) => {
+  // Botones con data-wa-msg
+  document.querySelectorAll("[data-wa-msg]").forEach(function(btn) {
+    btn.addEventListener("click", function(e) {
       e.preventDefault();
-      openWhatsApp(btn.dataset.waMsg);
+      var key = btn.getAttribute("data-wa-msg");
+      openWhatsApp(key);
     });
   });
 
-  // ── Feedback visual: spinner mientras abre ──
-  document.querySelectorAll("[data-wa-msg], #wa-float-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const original    = btn.innerHTML;
-      const isFloat     = btn.id === "wa-float-btn";
-      btn.innerHTML     = isFloat ? "⏳" : "Abriendo…";
-      btn.style.opacity = ".7";
-      setTimeout(() => {
-        btn.innerHTML     = original;
+  // Feedback visual
+  document.querySelectorAll("[data-wa-msg], #wa-float-btn").forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      var original = btn.innerHTML;
+      var isFloat  = btn.id === "wa-float-btn";
+      btn.innerHTML = isFloat ? "⏳" : "Abriendo...";
+      btn.style.opacity = "0.7";
+      setTimeout(function() {
+        btn.innerHTML = original;
         btn.style.opacity = "1";
       }, 1800);
     });
@@ -129,84 +135,82 @@ function initWhatsApp() {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   4. RENDER — POST DESTACADO (#feed)
+   4. RENDER — POST DESTACADO
 ══════════════════════════════════════════════════════════════ */
 
 function renderFeaturedPost(post) {
-  const isVideo  = post.media_type === "VIDEO";
-  const mediaSrc = isVideo ? post.thumbnail_url : post.media_url;
-  const cup      = extractCupNum(post.caption);
-  const cap      = shortCaption(post.caption, 180);
-  const when     = relativeTime(post.timestamp);
+  var isVideo  = post.media_type === "VIDEO";
+  var mediaSrc = isVideo ? post.thumbnail_url : post.media_url;
+  var cup      = extractCupNum(post.caption);
+  var cap      = shortCaption(post.caption, 180);
+  var when     = relativeTime(post.timestamp);
 
-  const fpMedia = document.querySelector(".fp-media");
+  var fpMedia = document.querySelector(".fp-media");
   if (fpMedia) {
-    fpMedia.innerHTML = `
-      <img src="${mediaSrc}" alt="Post destacado" style="width:100%;height:100%;object-fit:cover;display:block;">
-      <div class="fp-platform-badge badge-ig">📸 Instagram · @aceropress50k</div>
-      ${cup ? `<div class="fp-cup-num">${cup}</div>` : ""}
-    `;
+    fpMedia.innerHTML =
+      '<img src="' + mediaSrc + '" alt="Post destacado" style="width:100%;height:100%;object-fit:cover;display:block;">' +
+      '<div class="fp-platform-badge badge-ig">Instragram - @aceropress50k</div>' +
+      (cup ? '<div class="fp-cup-num">' + cup + '</div>' : '');
   }
 
-  const fpBody = document.querySelector(".fp-body");
+  var fpBody = document.querySelector(".fp-body");
   if (fpBody) {
-    const likeEl  = fpBody.querySelector(".fp-stat:nth-child(1) .n");
-    const captEl  = fpBody.querySelector(".fp-caption");
-    const platEl  = fpBody.querySelector(".fp-platform");
-    const titleEl = fpBody.querySelector(".fp-title");
+    var likeEl  = fpBody.querySelector(".fp-stat:nth-child(1) .n");
+    var captEl  = fpBody.querySelector(".fp-caption");
+    var platEl  = fpBody.querySelector(".fp-platform");
+    var titleEl = fpBody.querySelector(".fp-title");
 
-    if (platEl)  platEl.textContent = `Última publicación · ${when}`;
-    if (likeEl)  likeEl.textContent  = fmtNum(post.like_count);
-    if (captEl)  captEl.innerHTML    = cap.replace(/\n/g, "<br>");
-    if (titleEl && cup) titleEl.innerHTML = `${cup}<br><span style="opacity:.5;font-size:.85em;">${fmtDate(post.timestamp)}</span>`;
+    if (platEl)  platEl.textContent = "Ultima publicacion - " + when;
+    if (likeEl)  likeEl.textContent = fmtNum(post.like_count);
+    if (captEl)  captEl.innerHTML   = cap.replace(/\n/g, "<br>");
+    if (titleEl && cup) titleEl.innerHTML = cup + '<br><span style="opacity:.5;font-size:.85em;">' + fmtDate(post.timestamp) + '</span>';
 
-    const btnIg = fpBody.querySelector(".btn-ig");
+    var btnIg = fpBody.querySelector(".btn-ig");
     if (btnIg) btnIg.href = post.permalink;
   }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   5. RENDER — GRID INSTAGRAM (#instagram)
+   5. RENDER — GRID INSTAGRAM
 ══════════════════════════════════════════════════════════════ */
 
 function renderIGGrid(posts) {
-  const grid = document.querySelector("#instagram .ig-grid");
+  var grid = document.querySelector("#instagram .ig-grid");
   if (!grid) return;
 
   grid.innerHTML = "";
 
-  posts.forEach((post, idx) => {
-    const isVideo    = post.media_type === "VIDEO";
-    const isCarousel = post.media_type === "CAROUSEL_ALBUM";
-    const mediaSrc   = isVideo ? post.thumbnail_url : post.media_url;
-    const cup        = extractCupNum(post.caption);
-    const cap        = shortCaption(post.caption, 60);
-    const typeBadge  = isVideo ? "▶" : isCarousel ? "⊞" : "";
+  posts.forEach(function(post, idx) {
+    var isVideo    = post.media_type === "VIDEO";
+    var isCarousel = post.media_type === "CAROUSEL_ALBUM";
+    var mediaSrc   = isVideo ? post.thumbnail_url : post.media_url;
+    var cup        = extractCupNum(post.caption);
+    var cap        = shortCaption(post.caption, 60);
+    var typeBadge  = isVideo ? "▶" : (isCarousel ? "⊞" : "");
 
-    const div = document.createElement("div");
+    var div = document.createElement("div");
     div.className = "ig-post" + (idx === 0 ? " large" : "");
 
-    div.innerHTML = 
-      <div class="ig-media">
-        <img src="${mediaSrc}"
-             alt="${cap || "Post de Instagram"}"
-             loading="${idx < 3 ? "eager" : "lazy"}"
-             style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease;">
-      </div>
-      ${typeBadge ? <div class="ig-type-badge" style="
-        position:absolute;top:.6rem;right:.6rem;z-index:3;
-        font-size:.75rem;color:#fff;background:rgba(0,0,0,.55);
-        padding:.2rem .4rem;border-radius:2px;
-        font-family:'JetBrains Mono',monospace;">${typeBadge}</div> : ""}
-      <div class="ig-post-overlay"></div>
-      <div class="ig-post-info">
-        ${cup ? <div class="ig-post-num">${cup}</div>`: ""}
-        <div class="ig-post-cap">${cap}</div>
-      </div>
-    ;
+    var badgeHTML = "";
+    if (typeBadge) {
+      badgeHTML = '<div class="ig-type-badge" style="position:absolute;top:.6rem;right:.6rem;z-index:3;font-size:.75rem;color:#fff;background:rgba(0,0,0,.55);padding:.2rem .4rem;border-radius:2px;font-family:monospace;">' + typeBadge + '</div>';
+    }
+
+    var cupHTML = cup ? '<div class="ig-post-num">' + cup + '</div>' : "";
+
+    div.innerHTML =
+      '<div class="ig-media">' +
+        '<img src="' + mediaSrc + '" alt="' + (cap || "Post") + '" loading="' + (idx < 3 ? "eager" : "lazy") + '" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease;">' +
+      '</div>' +
+      badgeHTML +
+      '<div class="ig-post-overlay"></div>' +
+      '<div class="ig-post-info">' + cupHTML + '<div class="ig-post-cap">' + cap + '</div></div>';
 
     div.style.cursor = "pointer";
-    div.addEventListener("click", () => window.open(post.permalink, "_blank", "noopener"));
+    div.addEventListener("click", (function(permalink) {
+      return function() { window.open(permalink, "_blank", "noopener"); };
+    })(post.permalink));
+
     grid.appendChild(div);
   });
 }
@@ -216,232 +220,214 @@ function renderIGGrid(posts) {
 ══════════════════════════════════════════════════════════════ */
 
 function renderIGHero(post) {
-  const heroMedia = document.querySelector("#instagram .ig-hero .fs-media");
+  var heroMedia = document.querySelector("#instagram .ig-hero .fs-media");
   if (!heroMedia) return;
 
-  const isVideo  = post.media_type === "VIDEO";
-  const mediaSrc = isVideo ? post.thumbnail_url : post.media_url;
-  heroMedia.innerHTML = <img src="${mediaSrc}" alt="Hero Instagram" style="width:100%;height:100%;object-fit:cover;">;
+  var isVideo  = post.media_type === "VIDEO";
+  var mediaSrc = isVideo ? post.thumbnail_url : post.media_url;
+  heroMedia.innerHTML = '<img src="' + mediaSrc + '" alt="Hero Instagram" style="width:100%;height:100%;object-fit:cover;">';
 
-  const heroP = document.querySelector("#instagram .ig-hero-content p");
+  var heroP = document.querySelector("#instagram .ig-hero-content p");
   if (heroP) {
-    const cup = extractCupNum(post.caption);
-    const cap = shortCaption(post.caption, 120);
+    var cup = extractCupNum(post.caption);
+    var cap = shortCaption(post.caption, 120);
     heroP.innerHTML = cup
-      ? <strong style="color:var(--hot)">${cup}</strong> — ${cap}
+      ? '<strong style="color:var(--hot)">' + cup + '</strong> — ' + cap
       : cap;
   }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   7. STATS BAR
-══════════════════════════════════════════════════════════════ */
-
-function updateStatsBar(posts) {
-  const totalLikes = posts.reduce((s, p) => s + (p.like_count || 0), 0);
-  if (totalLikes > 0) {
-    console.log(`[Acero.press] Likes totales (últimos ${posts.length} posts): ${totalLikes}`);
-  }
-}
-
-/* ══════════════════════════════════════════════════════════════
-   8. LOADING / ERROR STATES
+   7. LOADING / ERROR
 ══════════════════════════════════════════════════════════════ */
 
 function showIGLoading() {
-  const grid = document.querySelector("#instagram .ig-grid");
+  var grid = document.querySelector("#instagram .ig-grid");
   if (!grid) return;
 
-  grid.innerHTML = Array(6).fill(0).map(() => 
-    <div class="ig-post" style="background:rgba(255,255,255,.04);animation:igSkeleton 1.4s ease-in-out infinite;">
-      <div class="ig-media" style="aspect-ratio:1/1;"></div>
-    </div>
-  ).join("");
+  var skeletons = "";
+  for (var i = 0; i < 6; i++) {
+    skeletons += '<div class="ig-post" style="background:rgba(255,255,255,.04);animation:igSkeleton 1.4s ease-in-out infinite;"><div class="ig-media" style="aspect-ratio:1/1;"></div></div>';
+  }
+  grid.innerHTML = skeletons;
 
   if (!document.getElementById("ig-skeleton-style")) {
-    const st = document.createElement("style");
+    var st = document.createElement("style");
     st.id = "ig-skeleton-style";
-    st.textContent = 
-      @keyframes igSkeleton { 0%,100%{opacity:1} 50%{opacity:.35} }
-      .ig-type-badge {
-        position:absolute; top:.6rem; right:.6rem; z-index:3;
-        font-size:.75rem; color:#fff; background:rgba(0,0,0,.55);
-        padding:.2rem .4rem; border-radius:2px;
-        font-family:'JetBrains Mono',monospace;
-      }
-    ;
+    st.textContent = "@keyframes igSkeleton { 0%,100%{opacity:1} 50%{opacity:.35} } .ig-type-badge { position:absolute; top:.6rem; right:.6rem; z-index:3; font-size:.75rem; color:#fff; background:rgba(0,0,0,.55); padding:.2rem .4rem; border-radius:2px; font-family:'JetBrains Mono',monospace; }";
     document.head.appendChild(st);
   }
 }
 
 function showIGError() {
-  const grid = document.querySelector("#instagram .ig-grid");
+  var grid = document.querySelector("#instagram .ig-grid");
   if (!grid) return;
-
-  grid.innerHTML = 
-    <div style="grid-column:1/-1;display:flex;flex-direction:column;align-items:center;
-      gap:1rem;padding:4rem 2rem;text-align:center;border:1px dashed rgba(255,255,255,.1);">
-      <span style="font-size:2rem">⚠</span>
-      <p style="font-family:'JetBrains Mono',monospace;font-size:.8rem;color:rgba(255,255,255,.4);">
-        No se pudo cargar el feed de Instagram.
-      </p>
-      <a href="https://instagram.com/aceropress50k" target="_blank" rel="noopener"
-         class="btn-platform btn-ig" style="font-size:.7rem;padding:.7rem 1.4rem;">
-        Ver en Instagram →
-      </a>
-    </div>
-  ;
+  grid.innerHTML =
+    '<div style="grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:1rem;padding:4rem 2rem;text-align:center;border:1px dashed rgba(255,255,255,.1);">' +
+      '<span style="font-size:2rem">⚠</span>' +
+      '<p style="font-family:monospace;font-size:.8rem;color:rgba(255,255,255,.4);">No se pudo cargar el feed de Instagram.</p>' +
+      '<a href="https://instagram.com/aceropress50k" target="_blank" rel="noopener" class="btn-platform btn-ig" style="font-size:.7rem;padding:.7rem 1.4rem;">Ver en Instagram</a>' +
+    '</div>';
 }
 
 /* ══════════════════════════════════════════════════════════════
-   9. MARQUEE
+   8. MARQUEE
 ══════════════════════════════════════════════════════════════ */
 
 function updateMarquee(post) {
-  const track = document.querySelector(".mq-track");
+  var track = document.querySelector(".mq-track");
   if (!track || !post) return;
-  const cup  = extractCupNum(post.caption) || "–";
-  const when = relativeTime(post.timestamp);
-  const live = document.createElement("span");
+  var cup  = extractCupNum(post.caption) || "-";
+  var when = relativeTime(post.timestamp);
+  var live = document.createElement("span");
   live.className = "mc";
-  live.innerHTML = `· ${cup} · ${when} · `;
+  live.innerHTML = "· " + cup + " · " + when + " · ";
   track.insertBefore(live, track.firstChild);
 }
 
 /* ══════════════════════════════════════════════════════════════
-   10. INIT
+   9. INIT SOCIAL FEED
 ══════════════════════════════════════════════════════════════ */
 
 async function initSocialFeed() {
   showIGLoading();
-
-  // WhatsApp arranca independiente — no depende del feed de IG
   initWhatsApp();
 
   try {
-    const posts = await fetchIGPosts();
+    var posts = await fetchIGPosts();
     if (!posts.length) throw new Error("No posts");
 
     renderFeaturedPost(posts[0]);
     renderIGHero(posts[0]);
     renderIGGrid(posts);
-    updateStatsBar(posts);
     updateMarquee(posts[0]);
 
-    console.log(`[Acero.press] ✓ ${posts.length} posts cargados desde Instagram`);
+    window.dispatchEvent(new Event("scroll"));
+    console.log("[Acero.press] posts cargados: " + posts.length);
 
   } catch (err) {
-    console.error("[Acero.press] Error cargando feed:", err);
+    console.error("[Acero.press] Error:", err);
     showIGError();
   }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   10. HEADER SCROLL
+══════════════════════════════════════════════════════════════ */
+
+(function() {
+  var hdr = document.getElementById("main-header") || document.getElementById("hdr");
+  if (!hdr) return;
+  window.addEventListener("scroll", function() {
+    hdr.classList.toggle("scrolled", window.scrollY > 60);
+  }, { passive: true });
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   11. SEG BAR HERO
+══════════════════════════════════════════════════════════════ */
+
+(function() {
+  var bar = document.getElementById("segBar");
+  if (!bar) return;
+  var total  = 50;
+  var filled = Math.round(12847 / 50000 * total);
+  for (var i = 0; i < total; i++) {
+    var s = document.createElement("div");
+    s.className = "seg" + (i < filled ? " on" : "");
+    bar.appendChild(s);
+  }
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   12. SCROLLYTELLING — TECNOLOGIA
+══════════════════════════════════════════════════════════════ */
+
+(function() {
+  var wrap = document.getElementById("tec-wrap");
+  if (!wrap) return;
+
+  var bg0  = document.getElementById("tec-bg0");
+  var bg1  = document.getElementById("tec-bg1");
+  var bg2  = document.getElementById("tec-bg2");
+  var bg3  = document.getElementById("tec-bg3");
+  var c1   = document.getElementById("tec-c1");
+  var c2   = document.getElementById("tec-c2");
+  var c3   = document.getElementById("tec-c3");
+  var s2   = document.getElementById("tec-s2");
+  var s3   = document.getElementById("tec-s3");
+  var tp1  = document.getElementById("tp1");
+  var tp2  = document.getElementById("tp2");
+  var tp3  = document.getElementById("tp3");
+  var figTL = document.getElementById("tec-fig-tl");
+  var figTR = document.getElementById("tec-fig-tr");
+
+  var FIGS = [
+    { tl: "FIG. 03.1 — REDISENO DE ESPACIO\nBogota · 2.600 msnm · IA + Diseno", tr: "Flujo de clientes · Mapas de calor\nGeneracion 3D · 72h diagnostico" },
+    { tl: "FIG. 03.2 — IDENTIDAD DIGITAL\nDiseno de carta · Menu trazable",     tr: "Editorial · QR trazabilidad\nPresencia digital · Instagram" },
+    { tl: "FIG. 03.3 — ESTANDAR ESPRESSO\nProtocolo SCA · Manual de servicio",  tr: "Dosis · Ratio · Temperatura\nReplicable · Taza a taza" }
+  ];
+
+  var current = -1;
+
+  function setPanel(n) {
+    if (n === current) return;
+    current = n;
+
+    if (bg0) bg0.style.opacity = "1";
+    if (bg1) bg1.style.opacity = n === 0 ? "1" : "0";
+    if (bg2) bg2.style.opacity = n === 1 ? "1" : "0";
+    if (bg3) bg3.style.opacity = n === 2 ? "1" : "0";
+
+    if (c1) c1.classList.toggle("show", n === 0);
+    if (c2) c2.classList.toggle("show", n === 1);
+    if (c3) c3.classList.toggle("show", n === 2);
+    if (s2) s2.classList.toggle("show", n === 1);
+    if (s3) s3.classList.toggle("show", n === 2);
+
+    if (tp1) tp1.classList.toggle("on", n === 0);
+    if (tp2) tp2.classList.toggle("on", n === 1);
+    if (tp3) tp3.classList.toggle("on", n === 2);
+
+    if (figTL && FIGS[n]) {
+      figTL.style.opacity = "0";
+      figTR.style.opacity = "0";
+      setTimeout(function() {
+        figTL.textContent = FIGS[n].tl;
+        figTR.textContent = FIGS[n].tr;
+        figTL.style.opacity = "1";
+        figTR.style.opacity = "1";
+      }, 200);
+    }
+  }
+
+  if (figTL) figTL.style.transition = "opacity .1s ease";
+  if (figTR) figTR.style.transition = "opacity .1s ease";
+
+  setPanel(0);
+
+  window.addEventListener("scroll", function() {
+    var rect    = wrap.getBoundingClientRect();
+    var total   = wrap.offsetHeight - window.innerHeight;
+    var scrolled = Math.max(0, Math.min(-rect.top, total));
+    var pct     = total > 0 ? scrolled / total : 0;
+
+    if      (pct < 0.50) setPanel(0);
+    else if (pct < 0.80) setPanel(1);
+    else                 setPanel(2);
+  }, { passive: true });
+
+  // Re-calcular cuando carguen imagenes de IG
+  window.addEventListener("load", function() { setPanel(0); });
+
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   ARRANCAR
+══════════════════════════════════════════════════════════════ */
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initSocialFeed);
 } else {
   initSocialFeed();
 }
-
-/* ══════════════════════════════════════════════════════════════
-   11. DESING
-══════════════════════════════════════════════════════════════ */
-/* ── Header scroll ── */
-const hdr = document.getElementById('main-header');
-window.addEventListener('scroll',()=>{ hdr.classList.toggle('scrolled',window.scrollY>60); },{passive:true});
-
-/* ── Seg bar hero ── */
-(function(){
-  const bar = document.getElementById('segBar');
-  if(!bar) return;
-  const total=50,filled=Math.round(12847/50000*total);
-  for(let i=0;i<total;i++){
-    const s=document.createElement('div');
-    s.className='seg'+(i<filled?' on':'');
-    bar.appendChild(s);
-  }
-})();
-
-
-/* ════════════════════════════════════════
-   SCROLLYTELLING — TECNOLOGÍA
-════════════════════════════════════════ */
-(function(){
-  const wrap   = document.getElementById('tec-wrap');
-  if(!wrap) return;
-
-  const bg0  = document.getElementById('tec-bg0');
-  const bg1  = document.getElementById('tec-bg1');
-  const bg2  = document.getElementById('tec-bg2');
-  const bg3  = document.getElementById('tec-bg3');
-  const c1   = document.getElementById('tec-c1');
-  const c2   = document.getElementById('tec-c2');
-  const c3   = document.getElementById('tec-c3');
-  const s2   = document.getElementById('tec-s2');
-  const s3   = document.getElementById('tec-s3');
-  const tp1  = document.getElementById('tp1');
-  const tp2  = document.getElementById('tp2');
-  const tp3  = document.getElementById('tp3');
-  const figTL= document.getElementById('tec-fig-tl');
-  const figTR= document.getElementById('tec-fig-tr');
-
-  const FIGS = [
-    {tl:'FIG. 03.1 — REDISEÑO DE ESPACIO\nBogotá · 2.600 msnm · IA + Diseño', tr:'Flujo de clientes · Mapas de calor\nGeneración 3D · 72h diagnóstico'},
-    {tl:'FIG. 03.2 — IDENTIDAD DIGITAL\nDiseño de carta · Menú trazable',     tr:'Editorial · QR trazabilidad\nPresencia digital · Instagram'},
-    {tl:'FIG. 03.3 — ESTÁNDAR ESPRESSO\nProtocolo SCA · Manual de servicio',  tr:'Dosis · Ratio · Temperatura\nReplicable · Taza a taza'},
-  ];
-
-  let current = -1;
-
-  function setPanel(n){
-    if(n===current) return;
-    current = n;
-
-    /* fondos */
-    bg0.style.opacity = '1';
-    bg1.style.opacity = n===0 ? '1':'0';
-    bg2.style.opacity = n===1 ? '1':'0';
-    bg3.style.opacity = n===2 ? '1':'0';
-
-    /* copies */
-    c1.classList.toggle('show', n===0);
-    c2.classList.toggle('show', n===1);
-    c3.classList.toggle('show', n===2);
-
-    /* tarjetas laterales */
-    s2.classList.toggle('show', n===1);
-    s3.classList.toggle('show', n===2);
-
-    /* puntos de progreso */
-    [tp1,tp2,tp3].forEach((d,i)=>d.classList.toggle('on',i===n));
-
-    /* anotaciones blueprint */
-    if(figTL && FIGS[n]){
-      figTL.style.opacity='0';
-      figTR.style.opacity='0';
-      setTimeout(()=>{
-        figTL.textContent=FIGS[n].tl;
-        figTR.textContent=FIGS[n].tr;
-        figTL.style.opacity='1';
-        figTR.style.opacity='1';
-      },200);
-    }
-  }
-
-  /* transición suave en las anotaciones */
-  if(figTL){ figTL.style.transition='opacity .1s ease'; }
-  if(figTR){ figTR.style.transition='opacity .1s ease'; }
-
-  setPanel(0);
-
-  window.addEventListener('scroll',()=>{
-    const rect   = wrap.getBoundingClientRect();
-    const total  = wrap.offsetHeight - window.innerHeight;
-    const scrolled = Math.max(0, Math.min(-rect.top, total));
-    const pct    = total>0 ? scrolled/total : 0;
-
-    /* cada tercio del scroll es un panel */
-    if     (pct < 0.50) setPanel(0);
-    else if(pct < 0.80) setPanel(1);
-    else                setPanel(2);
-  },{passive:true});
-})();
