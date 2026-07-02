@@ -412,9 +412,9 @@ async function initSocialFeed() {
     var scrolled = Math.max(0, Math.min(-rect.top, total));
     var pct     = total > 0 ? scrolled / total : 0;
 
-    if      (pct < 0.50) setPanel(0);
-    else if (pct < 0.80) setPanel(1);
-    else                 setPanel(2);
+    if      (pct < 0.333) setPanel(0);
+    else if (pct < 0.667) setPanel(1);
+    else                  setPanel(2);
   }, { passive: true });
 
   // Re-calcular cuando carguen imagenes de IG
