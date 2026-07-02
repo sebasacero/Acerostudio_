@@ -30,7 +30,7 @@ const adminState = {
   isOpen:      false,
   isLoggedIn:  false,
   fbToken:     null,
-  igToken:     null,
+  igToken:     ,
   metrics:     null,
   video:       null,
   videoURL:    null,
@@ -51,7 +51,7 @@ function injectAdminStyles() {
   if (document.getElementById("admin-panel-styles")) return;
   const style = document.createElement("style");
   style.id = "admin-panel-styles";
-  style.textContent = `
+  style.textContent = 
     #admin-trigger {
       font-family:'Archivo',sans-serif; font-weight:700; font-size:.7rem;
       letter-spacing:.14em; text-transform:uppercase;
@@ -218,7 +218,7 @@ function injectAdminStyles() {
     .progress-label { font-family:'JetBrains Mono',monospace; font-size:.65rem; color:rgba(255,255,255,.4); }
  
     .no-video-warning { font-family:'JetBrains Mono',monospace; font-size:.72rem; color:rgba(255,140,0,.7); background:rgba(255,140,0,.06); border:1px solid rgba(255,140,0,.2); border-radius:3px; padding:.8rem 1rem; text-align:center; }
-  `;
+  ;
   document.head.appendChild(style);
 }
  
@@ -229,7 +229,7 @@ function injectAdminStyles() {
 function renderAdminPanel() {
   const overlay = document.createElement("div");
   overlay.id = "admin-overlay";
-  overlay.innerHTML = `
+  overlay.innerHTML = 
     <div id="admin-panel">
       <div class="adm-header">
         <div class="adm-header-left">
@@ -328,7 +328,7 @@ function renderAdminPanel() {
         </div>
       </div>
     </div>
-  `;
+  ;
   document.body.appendChild(overlay);
 }
  
@@ -391,7 +391,7 @@ async function loadMetrics() {
     const posts = data.data || [];
     const totalLikes = posts.reduce((s, p) => s + (p.like_count || 0), 0);
     const avgLikes   = posts.length ? Math.round(totalLikes / posts.length) : 0;
-    container.innerHTML = `
+    container.innerHTML = 
       <div class="metrics-grid">
         <div class="metric-cell"><div class="metric-n">${posts.length}</div><div class="metric-l">Posts recientes</div></div>
         <div class="metric-cell"><div class="metric-n">${fmtN(totalLikes)}</div><div class="metric-l">Likes totales</div></div>
@@ -404,7 +404,7 @@ async function loadMetrics() {
           return `<div class="recent-post-thumb"><img src="${src}" alt="" loading="lazy"></div>`;
         }).join("")}
       </div>
-    `;
+    ;
   } catch (err) {
     container.innerHTML = `<div class="metrics-loading" style="animation:none;color:rgba(255,100,100,.5);">No se pudieron cargar las métricas.</div>`;
   }
@@ -531,14 +531,14 @@ function renderSubtitles() {
     list.innerHTML = `<div class="subs-empty">Sin subtítulos — haz clic en "+ Agregar"</div>`;
     return;
   }
-  list.innerHTML = adminState.subtitles.map(sub => `
+  list.innerHTML = adminState.subtitles.map(sub => 
     <div class="sub-item" data-id="${sub.id}">
       <input class="sub-input" type="number" min="0" step="0.1" placeholder="Inicio" value="${sub.start.toFixed(1)}" onchange="updateSubtitle(${sub.id},'start',+this.value)">
       <input class="sub-input" type="number" min="0" step="0.1" placeholder="Fin" value="${sub.end.toFixed(1)}" onchange="updateSubtitle(${sub.id},'end',+this.value)">
       <input class="sub-input" type="text" placeholder="Texto..." value="${sub.text}" oninput="updateSubtitle(${sub.id},'text',this.value)">
       <button class="btn-del-sub" onclick="removeSubtitle(${sub.id})">✕</button>
     </div>
-  `).join("");
+  ).join("");
 }
  
 window.updateSubtitle = (id, field, value) => {
