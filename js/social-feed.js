@@ -340,13 +340,13 @@ async function initSocialFeed() {
 })();
 
 /* ══════════════════════════════════════════════════════════════
-   12. SCROLLYTELLING — TECNOLOGIA
+      12. SCROLLYTELLING — TECNOLOGIA
 ══════════════════════════════════════════════════════════════ */
-
+ 
 (function() {
   var wrap = document.getElementById("tec-wrap");
   if (!wrap) return;
-
+ 
   var bg0  = document.getElementById("tec-bg0");
   var bg1  = document.getElementById("tec-bg1");
   var bg2  = document.getElementById("tec-bg2");
@@ -361,34 +361,34 @@ async function initSocialFeed() {
   var tp3  = document.getElementById("tp3");
   var figTL = document.getElementById("tec-fig-tl");
   var figTR = document.getElementById("tec-fig-tr");
-
+ 
   var FIGS = [
     { tl: "FIG. 03.1 — REDISENO DE ESPACIO\nBogota · 2.600 msnm · IA + Diseno", tr: "Flujo de clientes · Mapas de calor\nGeneracion 3D · 72h diagnostico" },
     { tl: "FIG. 03.2 — IDENTIDAD DIGITAL\nDiseno de carta · Menu trazable",     tr: "Editorial · QR trazabilidad\nPresencia digital · Instagram" },
     { tl: "FIG. 03.3 — ESTANDAR ESPRESSO\nProtocolo SCA · Manual de servicio",  tr: "Dosis · Ratio · Temperatura\nReplicable · Taza a taza" }
   ];
-
+ 
   var current = -1;
-
+ 
   function setPanel(n) {
     if (n === current) return;
     current = n;
-
+ 
     if (bg0) bg0.style.opacity = "1";
     if (bg1) bg1.style.opacity = n === 0 ? "1" : "0";
     if (bg2) bg2.style.opacity = n === 1 ? "1" : "0";
     if (bg3) bg3.style.opacity = n === 2 ? "1" : "0";
-
+ 
     if (c1) c1.classList.toggle("show", n === 0);
     if (c2) c2.classList.toggle("show", n === 1);
     if (c3) c3.classList.toggle("show", n === 2);
     if (s2) s2.classList.toggle("show", n === 1);
     if (s3) s3.classList.toggle("show", n === 2);
-
+ 
     if (tp1) tp1.classList.toggle("on", n === 0);
     if (tp2) tp2.classList.toggle("on", n === 1);
     if (tp3) tp3.classList.toggle("on", n === 2);
-
+ 
     if (figTL && FIGS[n]) {
       figTL.style.opacity = "0";
       figTR.style.opacity = "0";
@@ -400,28 +400,62 @@ async function initSocialFeed() {
       }, 200);
     }
   }
-
+ 
   if (figTL) figTL.style.transition = "opacity .1s ease";
   if (figTR) figTR.style.transition = "opacity .1s ease";
-
+ 
+  // ── Umbrales de scroll proporcionales a la duración de cada video ──
+  // Por defecto, tercios iguales mientras cargan los metadatos.
+  var t1 = 1 / 3;
+  var t2 = 2 / 3;
+ 
+  var v1 = bg1 ? bg1.querySelector("video") : null;
+  var v2 = bg2 ? bg2.querySelector("video") : null;
+  var v3 = bg3 ? bg3.querySelector("video") : null;
+ 
+  function recalcThresholds() {
+    var d1 = (v1 && v1.duration && !isNaN(v1.duration)) ? v1.duration : 1;
+    var d2 = (v2 && v2.duration && !isNaN(v2.duration)) ? v2.duration : 1;
+    var d3 = (v3 && v3.duration && !isNaN(v3.duration)) ? v3.duration : 1;
+    var total = d1 + d2 + d3;
+    if (total > 0) {
+      t1 = d1 / total;
+      t2 = (d1 + d2) / total;
+    }
+  }
+ 
+  [v1, v2, v3].forEach(function(v) {
+    if (!v) return;
+    if (v.readyState >= 1) {
+      // Metadatos ya disponibles (por ejemplo, video en cache)
+      recalcThresholds();
+    } else {
+      v.addEventListener("loadedmetadata", recalcThresholds, { once: true });
+    }
+  });
+ 
   setPanel(0);
-
+ 
   window.addEventListener("scroll", function() {
     var rect    = wrap.getBoundingClientRect();
     var total   = wrap.offsetHeight - window.innerHeight;
     var scrolled = Math.max(0, Math.min(-rect.top, total));
     var pct     = total > 0 ? scrolled / total : 0;
-
-    if      (pct < 0.333) setPanel(0);
-    else if (pct < 0.667) setPanel(1);
-    else                  setPanel(2);
+ 
+    if      (pct < t1) setPanel(0);
+    else if (pct < t2) setPanel(1);
+    else                setPanel(2);
   }, { passive: true });
-
+ 
   // Re-calcular cuando carguen imagenes de IG
-  window.addEventListener("load", function() { setPanel(0); });
-
+  window.addEventListener("load", function() {
+    recalcThresholds();
+    setPanel(0);
+  });
+ 
 })();
-
+ 
+/* 
 /* ══════════════════════════════════════════════════════════════
    ARRANCAR
 ══════════════════════════════════════════════════════════════ */
