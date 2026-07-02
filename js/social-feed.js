@@ -6,7 +6,7 @@ const API = {
   URL:   "https://tylylfrabjkaiukuilem.supabase.co/functions/v1/instagram-proxy",
   WA:    "https://tylylfrabjkaiukuilem.supabase.co/functions/v1/whatsapp-link",
   ANON:  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR5bHlsZnJhYmprYWl1a3VpbGVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0ODAwNDAsImV4cCI6MjA5ODA1NjA0MH0.Bqe1f2QBUBMiLmLCfAeownFsHLpSpxg6qaAkgvTB3uE",
-  LIMIT: 9
+  LIMIT: 15
 };
 
 /* ══════════════════════════════════════════════════════════════
