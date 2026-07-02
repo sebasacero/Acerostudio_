@@ -312,7 +312,7 @@ header.scrolled{background:rgba(12,12,16,.96);}
 /* ── STICKY SCROLL CONTAINER ── */
 .tec-sticky-wrap{
   position:relative;
-  height:420vh; /* 3 paneles + holgura */
+  height:540vh; /* antes 420vh — más margen por panel */
 }
 
 .tec-sticky-inner{
