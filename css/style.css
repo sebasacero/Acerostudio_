@@ -94,7 +94,7 @@ header.scrolled{background:rgba(12,12,16,.96);}
   color:var(--t7);font-size:1.25rem;
   transform:rotate(-6deg);margin-left:-.1rem;
   text-shadow:0 0 16px var(--hot-glow),0 0 32px rgba(232,24,28,.25);
-  color:var(--magenta-bright); font-size:1.25rem;
+  color:var(--t7); font-size:1.25rem;
   transform:rotate(-6deg); margin-left:-.5rem;
   text-shadow:0 0 12px rgba(255, 0, 0, 0.429);
 }
