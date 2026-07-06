@@ -10,9 +10,9 @@
 /* ============================================================
    CONFIGURACIÓN
 ============================================================ */
-const IA_WHATSAPP_NUMBER = "573001234567"; // 🔧 pon aquí tu número real
+const IA_WHATSAPP_NUMBER = "573152125327"; // 🔧 pon aquí tu número real
 const IA_SUPABASE_FUNC_URL = "https://tylylfrabjkaiukuilem.supabase.co/functions/v1/generar-dise-o";
-const IA_SUPABASE_ANON_KEY = "TU-ANON-KEY-AQUI"; // 🔧 Supabase → Settings → API → anon public
+const IA_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR5bHlsZnJhYmprYWl1a3VpbGVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0ODAwNDAsImV4cCI6MjA5ODA1NjA0MH0.Bqe1f2QBUBMiLmLCfAeownFsHLpSpxg6qaAkgvTB3uE"; // 🔧 Supabase → Settings → API → anon public
 
 const IA_STYLES = ["Industrial", "Minimalista", "Cálido / Madera", "Escandinavo", "Tropical"];
 
