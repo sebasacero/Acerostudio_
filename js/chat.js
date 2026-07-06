@@ -1,281 +1,197 @@
-/* ============================================================
-   CONFIG — edita aquí el número de WhatsApp (código país + número, sin + ni espacios)
-============================================================ */
-const WHATSAPP_NUMBER = "573152125327";
+/**
+ * js/rediseno-ia.js
+ * ─────────────────────────────────────────────────────────────
+ * Widget de rediseño con IA — sección #rediseno-ia (acero.press)
+ * Sube foto → elige estilo → genera propuesta (Gemini vía Supabase
+ * Edge Function) → cotiza por WhatsApp.
+ * ─────────────────────────────────────────────────────────────
+ */
 
 /* ============================================================
-   SCROLLYTELLING — activa cada paso al entrar en pantalla
-   y actualiza los puntos de progreso (solo visibles en desktop)
+   CONFIGURACIÓN
 ============================================================ */
-(function initStoryScroll(){
-  const steps = document.querySelectorAll('.story-step');
-  const dots = document.querySelectorAll('.p-dot');
-  if(!steps.length) return;
+const IA_WHATSAPP_NUMBER = "573001234567"; // 🔧 pon aquí tu número real
+const IA_SUPABASE_FUNC_URL = "https://tylylfrabjkaiukuilem.supabase.co/functions/v1/generar-dise-o";
+const IA_SUPABASE_ANON_KEY = "TU-ANON-KEY-AQUI"; // 🔧 Supabase → Settings → API → anon public
 
-  const observer = new IntersectionObserver((entries)=>{
-    entries.forEach(entry=>{
-      if(entry.isIntersecting){
-        entry.target.classList.add('in-view');
-        const n = entry.target.dataset.step;
-        dots.forEach(d => d.classList.toggle('active', d.dataset.p === n));
-      }
-    });
-  }, { threshold: 0.4 });
-
-  steps.forEach(step => observer.observe(step));
-})();
+const IA_STYLES = ["Industrial", "Minimalista", "Cálido / Madera", "Escandinavo", "Tropical"];
 
 /* ============================================================
-   SUPABASE (opcional) — ver README para el paso a paso.
-   1. Agrega en index.html, antes de este script:
-      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-   2. Descomenta estas 3 líneas y pon tus credenciales del proyecto:
-
-   const SUPABASE_URL = "https://TU-PROYECTO.supabase.co";
-   const SUPABASE_ANON_KEY = "TU-ANON-KEY";
-   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+   REFERENCIAS AL DOM (deben existir en el index de acero.press)
 ============================================================ */
+const iaPreview = document.getElementById('iaPreview');
+const iaPreviewImg = document.getElementById('iaPreviewImg');
+const iaPreviewEmpty = document.getElementById('iaPreviewEmpty');
+const iaStatusText = document.getElementById('iaStatusText');
+const iaStylesBox = document.getElementById('iaStyles');
+const btnCamera = document.getElementById('btnCamera');
+const btnGallery = document.getElementById('btnGallery');
+const fileCamera = document.getElementById('fileCamera');
+const fileGallery = document.getElementById('fileGallery');
+const btnIaWhatsapp = document.getElementById('btnIaWhatsapp');
+const btnIaRetry = document.getElementById('btnIaRetry');
+
+// Si esta página no tiene el widget, no hacemos nada (evita errores en otras vistas)
+const iaWidgetPresent = iaPreview && btnCamera && btnGallery && fileCamera && fileGallery;
 
 /* ============================================================
-   ESTADO DE LA CONVERSACIÓN
-   welcome -> waiting_photo -> waiting_style -> generating -> result -> whatsapp
+   ESTADO
 ============================================================ */
-let state = "welcome";
-let uploadedImageURL = null;
-let uploadedFile = null;
-let chosenStyle = null;
+let iaRawFile = null;
+let iaUploadedURL = null;
+let iaChosenStyle = null;
+let iaGeneratedURL = null;
 
-const chat = document.getElementById('chat');
-const stateTag = document.getElementById('stateTag');
-
-const STYLES = ["Minimalista", "Industrial", "Cálido / madera", "Escandinavo", "Tropical"];
-
-function setState(s){
-  state = s;
-  stateTag.textContent = "estado: " + s;
+/* ============================================================
+   UTILIDADES
+============================================================ */
+function iaSetStatus(text, colorVar){
+  if(!iaStatusText) return;
+  iaStatusText.style.display = text ? 'block' : 'none';
+  iaStatusText.textContent = text || '';
+  iaStatusText.style.color = colorVar || 'var(--t5)';
 }
 
-function scrollBottom(){
-  requestAnimationFrame(()=> chat.scrollTop = chat.scrollHeight);
+const iaFileToBase64 = file => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = () => resolve(reader.result.split(',')[1]);
+  reader.onerror = reject;
+});
+
+function iaResetWidget(){
+  iaRawFile = null;
+  iaUploadedURL = null;
+  iaChosenStyle = null;
+  iaGeneratedURL = null;
+
+  iaPreviewImg.style.display = 'none';
+  iaPreviewImg.src = '';
+  iaPreviewEmpty.style.display = 'flex';
+
+  iaStylesBox.style.display = 'none';
+  iaStylesBox.innerHTML = '';
+
+  iaSetStatus('');
+
+  btnIaWhatsapp.style.display = 'none';
+  btnIaRetry.style.display = 'none';
+
+  btnCamera.style.display = '';
+  btnGallery.style.display = '';
 }
 
-function botBubble(html, figTag){
-  const row = document.createElement('div');
-  row.className = 'row bot';
-  row.innerHTML = `<div class="bubble bot">${figTag ? `<span class="fig-tag">${figTag}</span>`:''}${html}</div>`;
-  chat.appendChild(row);
-  scrollBottom();
-  return row;
-}
-
-function userBubble(html){
-  const row = document.createElement('div');
-  row.className = 'row user';
-  row.innerHTML = `<div class="bubble user">${html}</div>`;
-  chat.appendChild(row);
-  scrollBottom();
-  return row;
-}
-
-function typingBubble(){
-  const row = document.createElement('div');
-  row.className = 'row bot';
-  row.innerHTML = `<div class="bubble bot"><div class="typing"><span></span><span></span><span></span></div></div>`;
-  chat.appendChild(row);
-  scrollBottom();
-  return row;
-}
-
-function botDelay(fn, ms=650){
-  const t = typingBubble();
-  setTimeout(()=>{ t.remove(); fn(); }, ms);
-}
-
-/* ===== Flujo ===== */
-function start(){
-  botBubble(
-    "Hola 👋 Soy el asistente de rediseño de <b>acero.studio</b>. Te ayudo a visualizar cómo se vería tu cafetería con un nuevo diseño de interior o fachada.<br><br>Para empezar, envíame una foto del espacio: puedes tomarla ahora o subirla de tu galería.",
-    "FIG. 01 — INICIO"
-  );
-  setState("waiting_photo");
-}
-
-/* ===== Transición: scrollytelling -> chat (solo aplica visualmente en mobile) ===== */
-const appShell = document.getElementById('appShell');
-let chatStarted = false;
-
-function transitionToChat(){
-  appShell.classList.remove('story-active');
-  if(!chatStarted){
-    chatStarted = true;
-    start();
-  }
-}
-
-/* En desktop el chat ya es visible desde el inicio (columna derecha fija),
-   así que arrancamos la conversación de una vez. En mobile se espera a que
-   el usuario interactúe (foto o texto) para reemplazar el scrollytelling. */
-if (window.matchMedia('(min-width:980px)').matches){
-  transitionToChat();
-}
-
-function onImageSelected(file){
+/* ============================================================
+   PASO 1 — FOTO SELECCIONADA
+============================================================ */
+function iaOnImageSelected(file){
   if(!file) return;
-  transitionToChat();
-  uploadedFile = file;
-  uploadedImageURL = URL.createObjectURL(file);
-  userBubble(`<img src="${uploadedImageURL}" alt="Foto de la cafetería">`);
+  iaRawFile = file;
+  iaUploadedURL = URL.createObjectURL(file);
 
-  botDelay(()=>{
-    let chipsHtml = STYLES.map(s => `<button class="chip" data-style="${s}">${s}</button>`).join('');
-    botBubble(
-      `Buena foto. ¿Qué estilo te gustaría explorar para este espacio?<div class="chips">${chipsHtml}</div>`,
-      "FIG. 02 — ESTILO"
-    );
-    document.querySelectorAll('.chip').forEach(chip=>{
-      chip.addEventListener('click', ()=> onStyleChosen(chip.dataset.style));
-    });
-    setState("waiting_style");
-  });
+  iaPreviewEmpty.style.display = 'none';
+  iaPreviewImg.src = iaUploadedURL;
+  iaPreviewImg.style.display = 'block';
+
+  iaSetStatus('Foto cargada. Elige un estilo para continuar ↓');
+
+  // Ocultamos los botones de captura mientras se decide el estilo
+  btnCamera.style.display = 'none';
+  btnGallery.style.display = 'none';
+
+  iaRenderStyleChips();
 }
 
-function onStyleChosen(style){
-  chosenStyle = style;
-  document.querySelectorAll('.chip').forEach(c => c.style.pointerEvents='none');
-  userBubble(style);
-  setState("generating");
+function iaRenderStyleChips(){
+  iaStylesBox.innerHTML = IA_STYLES.map(s =>
+    `<span class="ia-chip" data-style="${s}">${s}</span>`
+  ).join('');
+  iaStylesBox.style.display = 'flex';
 
-  botDelay(()=>{
-    const genRow = botBubble(
-      `Generando propuesta en estilo <b>${style}</b>…<div class="scan-wrap"><img src="${uploadedImageURL}"><div class="scan-line"></div><div class="scan-label">renderizando · ControlNet activo</div></div>`,
-      "FIG. 03 — GENERACIÓN"
-    );
-    scrollBottom();
-
-    setTimeout(()=>{
-      genRow.remove();
-      showResult(style);
-    }, 2200);
-  }, 500);
-}
-
-function showResult(style){
-  botBubble(
-    `Listo — aquí tienes una primera propuesta en estilo <b>${style}</b>.
-     <div class="scan-wrap" style="border-color:var(--accent)"><img src="${uploadedImageURL}"></div>
-     <span class="result-tag">Propuesta preliminar · v1</span><br>
-     <div style="margin-top:10px; font-size:.8rem; color:var(--ink-soft)">
-       ¿Quieres afinar esta propuesta con un diseñador o cotizar la remodelación?
-     </div>
-     <button class="cta-btn" id="btnWA">💬 Continuar por WhatsApp</button>
-     <button class="cta-btn ghost" id="btnRetry">Probar otro estilo</button>`,
-    "FIG. 04 — RESULTADO"
-  );
-  document.getElementById('btnWA').addEventListener('click', goToWhatsapp);
-  document.getElementById('btnRetry').addEventListener('click', ()=>{
-    document.querySelectorAll('.chip').forEach(c => c.style.pointerEvents='auto');
-    botBubble("Elige otro estilo para esta misma foto:" +
-      `<div class="chips">${STYLES.map(s => `<button class="chip" data-style="${s}">${s}</button>`).join('')}</div>`,
-      "FIG. 02 — ESTILO"
-    );
-    document.querySelectorAll('.chip').forEach(chip=>{
-      chip.addEventListener('click', ()=> onStyleChosen(chip.dataset.style));
+  iaStylesBox.querySelectorAll('.ia-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      iaStylesBox.querySelectorAll('.ia-chip').forEach(c => c.style.pointerEvents = 'none');
+      iaGenerarPropuesta(chip.dataset.style);
     });
   });
-  setState("result");
-
-  /* --- Punto de enganche para Supabase (ver README) ---
-     saveLeadToSupabase({ style, imageFile: uploadedFile });
-  */
-}
-
-function goToWhatsapp(){
-  const msg = `Hola, quiero cotizar el rediseño de mi cafetería. Estilo elegido: ${chosenStyle}. Voy a adjuntar la foto y la propuesta generada en este chat.`;
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-  botBubble(
-    `Perfecto. Voy a abrir WhatsApp con el mensaje listo. <b>Recuerda adjuntar la foto y la propuesta</b> generada aquí — WhatsApp no permite enviarlas automáticamente desde la web por temas de privacidad.`,
-    "FIG. 05 — CONTACTO"
-  );
-  setState("whatsapp");
-  setTimeout(()=> window.open(url, '_blank'), 600);
-}
-
-/* ===== Texto libre — mantiene el foco solo en rediseño ===== */
-function handleUserText(text){
-  transitionToChat();
-  userBubble(text);
-  const t = text.toLowerCase();
-
-  botDelay(()=>{
-    if(state === "waiting_photo"){
-      botBubble("Para continuar necesito una foto del espacio — usa 📷 o 🖼️ abajo.");
-      return;
-    }
-    if(t.includes("gracias") || t.includes("listo")){
-      botBubble("¡Con gusto! Si quieres, podemos seguir explorando otro estilo o pasar directo a WhatsApp.");
-      return;
-    }
-    const offTopic = ["receta","precio del café","tueste","molienda","factura","nómina","marketing"];
-    if(offTopic.some(k => t.includes(k))){
-      botBubble("Mi función aquí es ayudarte a visualizar el rediseño físico de tu cafetería 🏗️. Para otros temas, un asesor puede ayudarte por WhatsApp. ¿Seguimos con el diseño?");
-      return;
-    }
-    botBubble("Entendido. Cuando quieras, envía una foto del espacio o elige un estilo para continuar con la propuesta visual.");
-  }, 500);
-}
-
-/* ===== Listeners ===== */
-document.getElementById('btnCamera').addEventListener('click', ()=> document.getElementById('fileCamera').click());
-document.getElementById('btnGallery').addEventListener('click', ()=> document.getElementById('fileGallery').click());
-document.getElementById('fileCamera').addEventListener('change', e => onImageSelected(e.target.files[0]));
-document.getElementById('fileGallery').addEventListener('change', e => onImageSelected(e.target.files[0]));
-
-document.getElementById('btnSend').addEventListener('click', sendText);
-document.getElementById('textInput').addEventListener('keydown', e => { if(e.key === 'Enter') sendText(); });
-
-function sendText(){
-  const input = document.getElementById('textInput');
-  const val = input.value.trim();
-  if(!val) return;
-  input.value = '';
-  handleUserText(val);
 }
 
 /* ============================================================
-   FUNCIÓN LISTA PARA SUPABASE — descomenta cuando tengas el
-   cliente configurado arriba. Sube la imagen al Storage y
-   guarda el lead en la tabla `leads`. Ver README para el SQL.
-============================================================
+   PASO 2 — GENERACIÓN (Gemini vía Supabase Edge Function)
+============================================================ */
+async function iaGenerarPropuesta(style){
+  iaChosenStyle = style;
+  iaStylesBox.style.display = 'none';
+  iaSetStatus(`Generando propuesta en estilo ${style}…`);
 
-async function saveLeadToSupabase({ style, imageFile }){
-  try{
-    const fileName = `lead-${Date.now()}.jpg`;
+  try {
+    const base64Data = await iaFileToBase64(iaRawFile);
 
-    const { data: uploadData, error: uploadError } = await supabase
-      .storage
-      .from('fotos-cafeterias')
-      .upload(fileName, imageFile);
+    const prompt = `Rediseña esta cafetería manteniendo estrictamente la ubicación de paredes, columnas y ventanas estructurales. Aplica un estilo estético de alta gama de tipo: ${style}. Devuelve la imagen final procesada de forma realista.`;
 
-    if(uploadError) throw uploadError;
+    const response = await fetch(IA_SUPABASE_FUNC_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${IA_SUPABASE_ANON_KEY}`,
+        'apikey': IA_SUPABASE_ANON_KEY
+      },
+      body: JSON.stringify({
+        prompt,
+        image_base64: base64Data,
+        mime_type: iaRawFile.type
+      })
+    });
 
-    const { data: urlData } = supabase
-      .storage
-      .from('fotos-cafeterias')
-      .getPublicUrl(fileName);
+    if (!response.ok) {
+      const errBody = await response.json().catch(() => ({}));
+      throw new Error(errBody.error || `Error de red (HTTP ${response.status})`);
+    }
 
-    const { error: insertError } = await supabase
-      .from('leads')
-      .insert({
-        estilo: style,
-        imagen_url: urlData.publicUrl,
-        creado_en: new Date().toISOString()
-      });
+    const resData = await response.json();
+    if (resData.error) throw new Error(resData.error);
 
-    if(insertError) throw insertError;
+    const url = resData.imageUrl || resData.image_url || resData.url || (resData.data && resData.data.publicUrl);
+    if (!url) throw new Error('El servidor no devolvió una imagen válida.');
 
-  }catch(err){
-    console.error('Error guardando en Supabase:', err);
+    iaGeneratedURL = url;
+    iaMostrarResultado();
+
+  } catch (err) {
+    console.error(err);
+    iaSetStatus(`⚠ ${err.message}`, '#ff6a39');
+    btnIaRetry.style.display = 'block';
   }
 }
 
+/* ============================================================
+   PASO 3 — RESULTADO + WHATSAPP
 ============================================================ */
+function iaMostrarResultado(){
+  iaPreviewImg.src = iaGeneratedURL;
+  iaSetStatus(`Propuesta lista · estilo ${iaChosenStyle}`, 'var(--t7)');
+
+  btnIaWhatsapp.style.display = 'block';
+  btnIaRetry.style.display = 'block';
+}
+
+function iaIrAWhatsapp(){
+  const msg = `Hola equipo de acero.studio 👋\n\n` +
+    `Generé una propuesta de rediseño para mi cafetería en estilo *${iaChosenStyle}*.\n\n` +
+    `Quiero cotizar la obra a partir de este render:\n${iaGeneratedURL}`;
+  const url = `https://wa.me/${IA_WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+}
+
+/* ============================================================
+   LISTENERS
+============================================================ */
+if (iaWidgetPresent){
+  btnCamera.addEventListener('click', () => fileCamera.click());
+  btnGallery.addEventListener('click', () => fileGallery.click());
+  fileCamera.addEventListener('change', function(){ if(this.files[0]) iaOnImageSelected(this.files[0]); });
+  fileGallery.addEventListener('change', function(){ if(this.files[0]) iaOnImageSelected(this.files[0]); });
+
+  btnIaWhatsapp.addEventListener('click', iaIrAWhatsapp);
+  btnIaRetry.addEventListener('click', iaResetWidget);
+}
