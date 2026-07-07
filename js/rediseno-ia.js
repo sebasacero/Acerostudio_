@@ -1,18 +1,26 @@
 /**
  * js/rediseno-ia.js
  * ─────────────────────────────────────────────────────────────
- * Widget de rediseño con IA — sección #rediseno-ia (acero.press)
- * Sube foto → elige estilo → genera propuesta (Gemini vía Supabase
- * Edge Function) → cotiza por WhatsApp.
+ * Widget de rediseño — sección #rediseno-ia (acero.press)
+ * Sube foto → elige estilo → la foto se sube a Supabase Storage →
+ * al confirmarse la subida se habilita "Enviar a WhatsApp" →
+ * el equipo de acero.studio responde manualmente con el rediseño.
+ *
+ * NOTA: Ya no se llama a la Edge Function "generar-dise-o" (Gemini).
+ * Esa función puede quedar sin usar en Supabase o eliminarse.
  * ─────────────────────────────────────────────────────────────
  */
 
 /* ============================================================
    CONFIGURACIÓN
 ============================================================ */
-const IA_WHATSAPP_NUMBER = "573152125327"; // 🔧 pon aquí tu número real
-const IA_SUPABASE_FUNC_URL = "https://tylylfrabjkaiukuilem.supabase.co/functions/v1/generar-dise-o";
-const IA_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR5bHlsZnJhYmprYWl1a3VpbGVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0ODAwNDAsImV4cCI6MjA5ODA1NjA0MH0.Bqe1f2QBUBMiLmLCfAeownFsHLpSpxg6qaAkgvTB3uE"; // 🔧 Supabase → Settings → API → anon public
+const IA_WHATSAPP_NUMBER = "573152125327"; // 🔧 tu número real
+const IA_SUPABASE_URL = "https://tylylfrabjkaiukuilem.supabase.co";
+const IA_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR5bHlsZnJhYmprYWl1a3VpbGVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0ODAwNDAsImV4cCI6MjA5ODA1NjA0MH0.Bqe1f2QBUBMiLmLCfAeownFsHLpSpxg6qaAkgvTB3uE";
+
+const IA_BUCKET_NAME = "disenos-cafe";       // bucket donde se guardan las fotos originales
+const IA_BUCKET_FOLDER = "originales";       // subcarpeta para no mezclar con renders anteriores
+const IA_LEADS_TABLE = "leads";              // tabla opcional; si no existe, se ignora el error
 
 const IA_STYLES = ["Industrial", "Minimalista", "Cálido / Madera", "Escandinavo", "Tropical"];
 
@@ -38,9 +46,9 @@ const iaWidgetPresent = iaPreview && btnCamera && btnGallery && fileCamera && fi
    ESTADO
 ============================================================ */
 let iaRawFile = null;
-let iaUploadedURL = null;
+let iaLocalPreviewURL = null;
 let iaChosenStyle = null;
-let iaGeneratedURL = null;
+let iaUploadedPublicURL = null;
 
 /* ============================================================
    UTILIDADES
@@ -52,18 +60,19 @@ function iaSetStatus(text, colorVar){
   iaStatusText.style.color = colorVar || 'var(--t5)';
 }
 
-const iaFileToBase64 = file => new Promise((resolve, reject) => {
-  const reader = new FileReader();
-  reader.readAsDataURL(file);
-  reader.onload = () => resolve(reader.result.split(',')[1]);
-  reader.onerror = reject;
-});
+function iaExtFromMime(mime){
+  if (!mime) return 'jpg';
+  if (mime.includes('png')) return 'png';
+  if (mime.includes('webp')) return 'webp';
+  if (mime.includes('heic')) return 'heic';
+  return 'jpg';
+}
 
 function iaResetWidget(){
   iaRawFile = null;
-  iaUploadedURL = null;
+  iaLocalPreviewURL = null;
   iaChosenStyle = null;
-  iaGeneratedURL = null;
+  iaUploadedPublicURL = null;
 
   iaPreviewImg.style.display = 'none';
   iaPreviewImg.src = '';
@@ -87,10 +96,10 @@ function iaResetWidget(){
 function iaOnImageSelected(file){
   if(!file) return;
   iaRawFile = file;
-  iaUploadedURL = URL.createObjectURL(file);
+  iaLocalPreviewURL = URL.createObjectURL(file);
 
   iaPreviewEmpty.style.display = 'none';
-  iaPreviewImg.src = iaUploadedURL;
+  iaPreviewImg.src = iaLocalPreviewURL;
   iaPreviewImg.style.display = 'block';
 
   iaSetStatus('Foto cargada. Elige un estilo para continuar ↓');
@@ -111,74 +120,97 @@ function iaRenderStyleChips(){
   iaStylesBox.querySelectorAll('.ia-chip').forEach(chip => {
     chip.addEventListener('click', () => {
       iaStylesBox.querySelectorAll('.ia-chip').forEach(c => c.style.pointerEvents = 'none');
-      iaGenerarPropuesta(chip.dataset.style);
+      iaSubirFoto(chip.dataset.style);
     });
   });
 }
 
 /* ============================================================
-   PASO 2 — GENERACIÓN (Gemini vía Supabase Edge Function)
+   PASO 2 — SUBIDA A SUPABASE STORAGE (sin IA)
 ============================================================ */
-async function iaGenerarPropuesta(style){
+function iaSubirFoto(style){
   iaChosenStyle = style;
   iaStylesBox.style.display = 'none';
-  iaSetStatus(`Generando propuesta en estilo ${style}…`);
+  iaSetStatus('Subiendo tu foto… 0%');
 
+  const ext = iaExtFromMime(iaRawFile.type);
+  const fileName = `${IA_BUCKET_FOLDER}/rediseno_${Date.now()}.${ext}`;
+  const uploadUrl = `${IA_SUPABASE_URL}/storage/v1/object/${IA_BUCKET_NAME}/${fileName}`;
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', uploadUrl, true);
+  xhr.setRequestHeader('Authorization', `Bearer ${IA_SUPABASE_ANON_KEY}`);
+  xhr.setRequestHeader('apikey', IA_SUPABASE_ANON_KEY);
+  xhr.setRequestHeader('Content-Type', iaRawFile.type || 'application/octet-stream');
+
+  xhr.upload.onprogress = (e) => {
+    if (e.lengthComputable){
+      const pct = Math.round((e.loaded / e.total) * 100);
+      iaSetStatus(`Subiendo tu foto… ${pct}%`);
+    }
+  };
+
+  xhr.onload = () => {
+    if (xhr.status >= 200 && xhr.status < 300){
+      const publicUrl = `${IA_SUPABASE_URL}/storage/v1/object/public/${IA_BUCKET_NAME}/${fileName}`;
+      iaUploadedPublicURL = publicUrl;
+      iaGuardarLead(publicUrl, style); // best-effort, no bloquea el flujo
+      iaMostrarConfirmacion();
+    } else {
+      console.error('Error subiendo a Supabase Storage:', xhr.status, xhr.responseText);
+      iaSetStatus('⚠ No se pudo subir la foto. Intenta de nuevo.', '#ff6a39');
+      btnIaRetry.style.display = 'block';
+    }
+  };
+
+  xhr.onerror = () => {
+    console.error('Error de red subiendo la foto.');
+    iaSetStatus('⚠ Error de red. Revisa tu conexión e intenta de nuevo.', '#ff6a39');
+    btnIaRetry.style.display = 'block';
+  };
+
+  xhr.send(iaRawFile);
+}
+
+/* ============================================================
+   REGISTRO OPCIONAL EN TABLA "leads" (best-effort)
+============================================================ */
+async function iaGuardarLead(publicUrl, style){
   try {
-    const base64Data = await iaFileToBase64(iaRawFile);
-
-    const prompt = `Rediseña esta cafetería manteniendo estrictamente la ubicación de paredes, columnas y ventanas estructurales. Aplica un estilo estético de alta gama de tipo: ${style}. Devuelve la imagen final procesada de forma realista.`;
-
-    const response = await fetch(IA_SUPABASE_FUNC_URL, {
+    await fetch(`${IA_SUPABASE_URL}/rest/v1/${IA_LEADS_TABLE}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'apikey': IA_SUPABASE_ANON_KEY,
         'Authorization': `Bearer ${IA_SUPABASE_ANON_KEY}`,
-        'apikey': IA_SUPABASE_ANON_KEY
+        'Prefer': 'return=minimal'
       },
       body: JSON.stringify({
-        prompt,
-        image_base64: base64Data,
-        mime_type: iaRawFile.type
+        foto_url: publicUrl,
+        estilo: style,
+        estado: 'pendiente_rediseno',
+        origen: 'acero-studio-widget'
       })
     });
-
-    if (!response.ok) {
-      const errBody = await response.json().catch(() => ({}));
-      throw new Error(errBody.error || `Error de red (HTTP ${response.status})`);
-    }
-
-    const resData = await response.json();
-    if (resData.error) throw new Error(resData.error);
-
-    const url = resData.imageUrl || resData.image_url || resData.url || (resData.data && resData.data.publicUrl);
-    if (!url) throw new Error('El servidor no devolvió una imagen válida.');
-
-    iaGeneratedURL = url;
-    iaMostrarResultado();
-
   } catch (err) {
-    console.error(err);
-    iaSetStatus(`⚠ ${err.message}`, '#ff6a39');
-    btnIaRetry.style.display = 'block';
+    // No bloquea el flujo si la tabla no existe o falla el insert
+    console.warn('No se pudo registrar el lead (no bloquea el flujo):', err);
   }
 }
 
 /* ============================================================
-   PASO 3 — RESULTADO + WHATSAPP
+   PASO 3 — CONFIRMACIÓN + WHATSAPP
 ============================================================ */
-function iaMostrarResultado(){
-  iaPreviewImg.src = iaGeneratedURL;
-  iaSetStatus(`Propuesta lista · estilo ${iaChosenStyle}`, 'var(--t7)');
-
+function iaMostrarConfirmacion(){
+  iaSetStatus(`Foto recibida · estilo ${iaChosenStyle}. Nuestro equipo te contacta con tu propuesta.`, 'var(--t7)');
   btnIaWhatsapp.style.display = 'block';
   btnIaRetry.style.display = 'block';
 }
 
 function iaIrAWhatsapp(){
   const msg = `Hola equipo de acero.studio 👋\n\n` +
-    `Generé una propuesta de rediseño para mi cafetería en estilo *${iaChosenStyle}*.\n\n` +
-    `Quiero cotizar la obra a partir de este render:\n${iaGeneratedURL}`;
+    `Quiero una propuesta de rediseño para mi cafetería en estilo *${iaChosenStyle}*.\n\n` +
+    `Aquí está la foto de mi espacio:\n${iaUploadedPublicURL}`;
   const url = `https://wa.me/${IA_WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
   window.open(url, '_blank');
 }
