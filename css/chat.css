@@ -708,6 +708,41 @@ input[type="file"]{display:none;}
   -webkit-mask-size: contain;
   mask-size: contain;
 }
+/* ============================================================
+   rediseno-chat-extra.css
+   Agregar DESPUÉS de css/chat.css en el <head>.
+   Todo usa las variables ya definidas en chat.css (--accent,
+   --cyan, --panel, --ink, --mono, --disp) — cero colores nuevos.
+============================================================ */
+
+/* El botón de enviar del composer, con forma circular tipo
+   "enviar mensaje" pero en el naranja térmico del sitio (--accent),
+   no en verde WhatsApp. */
+.send-btn{
+  border-radius:50%;
+  font-size:0; /* oculta el "➤" de texto, se reemplaza por el ícono de abajo */
+  position:relative;
+}
+.send-btn::before{
+  content:'';
+  width:16px; height:16px;
+  display:block;
+  background-color:#100701; /* mismo tono oscuro que ya usa .send-btn para el ícono */
+  -webkit-mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M2 21l21-9L2 3v7l15 2-15 2z'/></svg>");
+  mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M2 21l21-9L2 3v7l15 2-15 2z'/></svg>");
+  -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+  -webkit-mask-position:center; mask-position:center;
+  -webkit-mask-size:contain; mask-size:contain;
+}
+
+/* El botón "Enviar a WhatsApp" dentro del chat ya usa .cta-btn
+   (naranja térmico + texto oscuro), solo separamos un poco el ícono. */
+.cta-btn svg{ flex-shrink:0; }
+
+/* scan-label ya existe en chat.css para la etapa de "generación";
+   la reutilizamos para "subida" — solo un pequeño ajuste de contraste
+   cuando el texto cambia a estado de error. */
+.scan-label{ transition: background .2s ease; }
 
 
 
