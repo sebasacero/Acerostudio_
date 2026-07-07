@@ -546,3 +546,170 @@ input[type="file"]{display:none;}
   .app #storyInline{ display:none !important; }
   .app #chat{ display:flex !important; }
 }
+/* ============================================================
+   rediseno-chat.css
+   Añadir este archivo con <link rel="stylesheet" href="css/rediseno-chat.css">
+   DESPUÉS de css/chat.css en el <head>, o pegar su contenido al
+   final de css/chat.css.
+============================================================ */
+
+/* ---------- Burbujas de chat ---------- */
+.chat-msg {
+  max-width: 78%;
+  margin: 10px 0;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+  animation: chatFadeIn .25s ease;
+}
+
+.chat-msg p { margin: 0 0 6px; }
+.chat-msg p:last-child { margin-bottom: 0; }
+
+.chat-msg--bot {
+  align-self: flex-start;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+  color: rgba(255,255,255,.9);
+  border-bottom-left-radius: 4px;
+}
+
+.chat-msg--user {
+  align-self: flex-end;
+  margin-left: auto;
+  background: #1fae56;
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-msg-photo {
+  display: block;
+  max-width: 220px;
+  max-height: 220px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+@keyframes chatFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Asegura que #chat organice las burbujas en columna */
+#chat {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Chips de estilo ---------- */
+.ia-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.ia-chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.18);
+  color: rgba(255,255,255,.85);
+  cursor: pointer;
+  transition: background .15s ease, opacity .15s ease;
+}
+
+.ia-chip:hover { background: rgba(255,255,255,.1); }
+
+/* ---------- Botón de reintentar ---------- */
+.ia-retry-btn {
+  margin-top: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.2);
+  background: transparent;
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* ---------- Botón "Enviar a WhatsApp" dentro del chat ---------- */
+.ia-wa-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: none;
+  background: #25D366;
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background .15s ease, transform .1s ease;
+}
+
+.ia-wa-btn:hover { background: #1ebe5b; }
+.ia-wa-btn:active { transform: scale(.97); }
+
+/* ---------- Puntos de progreso del story (izquierda) ---------- */
+.story-progress .p-dot {
+  transition: background .2s ease, transform .2s ease;
+}
+
+.story-progress .p-dot.on {
+  background: #25D366;
+  transform: scale(1.15);
+}
+
+/* ============================================================
+   BOTÓN DE ENVIAR (composer) → estilo tipo WhatsApp
+   Círculo verde con ícono de avión de papel, igual al botón
+   nativo de envío de WhatsApp.
+============================================================ */
+.send-btn {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 50%;
+  border: none;
+  background: #25D366;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0; /* oculta el ➤ de texto si quedara como fallback */
+  transition: background .15s ease, transform .1s ease;
+}
+
+.send-btn:hover { background: #1ebe5b; }
+.send-btn:active { transform: scale(.94); }
+
+/* Ícono de avión de papel inyectado vía CSS (sin tocar el HTML) */
+.send-btn::before {
+  content: '';
+  width: 18px;
+  height: 18px;
+  display: block;
+  background-color: #fff;
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M2 21l21-9L2 3v7l15 2-15 2z'/></svg>");
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M2 21l21-9L2 3v7l15 2-15 2z'/></svg>");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+
+
+
+
