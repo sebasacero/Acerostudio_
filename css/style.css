@@ -210,7 +210,11 @@ header.scrolled{background:rgba(12,12,16,.96);}
 .mc{background:linear-gradient(90deg,var(--t5),var(--t7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}
 @keyframes scrollmq{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 @media(prefers-reduced-motion:reduce){.mq-track,.scroll-arrow{animation:none;}}
-
+/* ── STATS BAR ── */
+.stats-bar{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:rgba(255,255,255,.06);
+}
 
 /* ╔══════════════════════════════════════════════════════════════╗
    ║   SECCIÓN TECNOLOGÍA — SCROLLYTELLING BLUEPRINT + THERMAL  ║
