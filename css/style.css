@@ -210,6 +210,12 @@ header.scrolled{background:rgba(12,12,16,.96);}
 .mc{background:linear-gradient(90deg,var(--t5),var(--t7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}
 @keyframes scrollmq{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 @media(prefers-reduced-motion:reduce){.mq-track,.scroll-arrow{animation:none;}}
+.ally-item{width:220px;height:100px;flex:none;display:flex;align-items:center;justify-content:center;}
+.ally-item img{max-width:75%;max-height:60px;object-fit:contain;filter:grayscale(100%);opacity:.7;transition:.3s;}
+.ally-item:hover img{filter:none;opacity:1;}
+.mq-wrap:hover 
+.mq-track{animation-play-state:paused;}
+
 /* ── STATS BAR ── */
 .stats-bar{
   display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
