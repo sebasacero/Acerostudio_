@@ -1001,7 +1001,7 @@ footer{background:var(--near-black);border-top:1px solid rgba(255,255,255,.08);p
   line-height:1.04; letter-spacing:-.01em;
   margin:0;
 }
-.story-916 .fs-h1 .hot { color: var(--hot-1); text-shadow: 0 0 26px rgba(255,106,61,.35); display:block; margin-top:.15em; }
+.story-916 .fs-h1 .ho { color: var(--hot-1); text-shadow: 0 0 26px rgba(255,106,61,.35); display:block; margin-top:.15em; }
 
 .story-916 .logo-unit-banner { display:flex; align-items:center; justify-content:center; gap:.3em; margin-top: 5cqw; }
 .story-916 .logo-acero1-banner { height: 6.2cqw; width:auto; filter: drop-shadow(0 0 8px rgba(125,211,252,.25)); }
