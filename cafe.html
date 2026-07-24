@@ -94,477 +94,261 @@
   </div>
 </div>
 
-<!-- Stats rápidas -->
-<div class="stats-bar">
-  <div class="stat-cell"><div class="stat-v hot">12.847</div><div class="stat-l">Tazas preparadas</div></div>
-  <div class="stat-cell"><div class="stat-v">128</div><div class="stat-l">Días en curso</div></div>
-  <div class="stat-cell"><div class="stat-v">~100</div><div class="stat-l">Promedio diario</div></div>
-  <div class="stat-cell"><div class="stat-v">372</div><div class="stat-l">Días restantes</div></div>
-</div>
 
-<!-- ═══════ FEED — ÚLTIMA PUBLICACIÓN DESTACADA ═══════ -->
-<section class="feed-section" id="feed">
+    <div class="hero-overlay"></div>
 
-  <div class="sec-hdr">
-    <div class="sec-hdr-left">
-      <div class="eyebrow">FIG. 02 — DIARIO DEL RETO</div>
-      <h2>El <span class="hot">feed</span></h2>
-    </div>
-    <div class="sec-hdr-right">
-      Publicaciones simultáneas<br>
-      Instagram · TikTok · YouTube<br>
-      #aceropress50k
-    </div>
-  </div>
-
-  <!-- FEATURED POST — última publicación -->
-  <div class="featured-post">
-    <div class="fp-media">
-      <!-- 🖼️/🎬 IMAGEN O VIDEO DEL POST MÁS RECIENTE -->
-      <!-- <video autoplay muted loop playsinline src="images/post-latest.mp4"></video> -->
-      <!-- <img src="images/post-latest.jpg" alt=""> -->
-      <div class="ph-blueprint ph-dark fp-media-ph">
-        <span class="ph-icon">🎬</span>
-        <div class="ph-lbl">Video o foto de la última taza — encuadre cuadrado estilo Instagram, manos sobre la prensa, vapor, luz lateral cálida, cuaderno con anotaciones de fondo</div>
-        <span class="ph-file">images/post-latest.mp4 · 1080×1080 · o .jpg</span>
-      </div>
-      <div class="fp-platform-badge badge-ig">📸 Instagram · @aceropress50k</div>
-      <div class="fp-cup-num">#012.847</div>
-    </div>
-
-    <div class="fp-body">
-      <div class="fp-platform">Última publicación · Hoy, 7:32 a.m.</div>
-      <div class="fp-title">Etiopía Yirgacheffe<br>1:15 · 92°C · inversión</div>
-      <div class="fp-meta-row">
-        <span class="fp-tag hot-tag">#aceropress50k</span>
-        <span class="fp-tag">#aeropress</span>
-        <span class="fp-tag">#cafedeespecialidad</span>
-      </div>
-      <p class="fp-caption">
-        Taza #012.847. Etiopía Yirgacheffe proceso lavado, tueste claro de 6 días. Molienda media-fina. La acidez brillante de uva verde que te despierta antes del café.
-        <br><br>
-        <span style="color:#9b6a6a;font-size:.82rem;">エチオピア イルガチェフェ · 反転式抽出 · 92°C</span>
+    <div class="hero-copy">
+      <div class="schematic-tag"><span class="dot"></span> Reto activo · Bogotá, 2.600 msnm</div>
+      <h1>
+        50.000 tazas.<br>
+        <span class="marker">Una prensa.</span><br>
+        Cada día.
+      </h1>
+      <p class="hero-sub">
+        Diario de campo del camino hacia 50.000 tazas en AeroPress: receta, origen, foto o video de cada preparación, y sincronización con Instagram bajo <span class="annot-strong">#aceropress50k</span>.
+        <span class="jp">フィールドノート — 50,000カップへの道</span>
       </p>
-      <div class="fp-recipe">
-        <div><div class="rl">Ratio</div><div class="rv">1 : 15</div></div>
-        <div><div class="rl">Temperatura</div><div class="rv">92°C</div></div>
-        <div><div class="rl">Dosis</div><div class="rv">18g</div></div>
-        <div><div class="rl">Tiempo</div><div class="rv">1:45 min</div></div>
-        <div><div class="rl">Método</div><div class="rv">Inversión</div></div>
-        <div><div class="rl">Filtro</div><div class="rv">Papel Go</div></div>
+      <div class="hero-actions">
+        <a href="#feed" class="btn">Ver feed</a>
+        <a href="#metodo" class="btn btn-magenta">El método</a>
       </div>
-      <div class="fp-stats">
-        <div class="fp-stat"><div class="n">4.2K</div><div class="l">Me gusta IG</div></div>
-        <div class="fp-stat"><div class="n">89K</div><div class="l">Vistas TK</div></div>
-        <div class="fp-stat"><div class="n">12K</div><div class="l">Vistas YT</div></div>
+    </div>
+
+    <div class="odometer-panel">
+      <div class="cota cota-top"><span class="annot">FIG. 01 — PROGRESO</span> <span class="cota-badge">25.7%</span></div>
+      <div class="fig-label">CONTADOR DE TAZAS / CUP COUNTER · 杯数カウンター</div>
+      <div class="odometer-row">
+        <div class="odometer">
+          <span class="digit">0</span><span class="digit">1</span><span class="digit">2</span>
+          <span class="digit">8</span><span class="digit">4</span><span class="digit">7</span>
+        </div>
+        <span class="odometer-sep">/</span>
+        <span class="odometer-target">50.000</span>
       </div>
-      <div class="fp-links">
-        <a href="#instagram" class="btn-platform btn-ig">Instagram →</a>
-        <a href="#tiktok" class="btn-platform btn-tk">TikTok →</a>
-        <a href="#youtube" class="btn-platform btn-yt">YouTube →</a>
+      <div class="seg-bar" id="segmentBar"></div>
+      <div class="progress-caption">37.153 tazas restantes · cups remaining</div>
+      <div class="odometer-stats">
+        <div class="cell"><div class="v">1:15</div><div class="l">ratio</div></div>
+        <div class="cell"><div class="v">92°C</div><div class="l">temp</div></div>
+        <div class="cell"><div class="v">18g</div><div class="l">café</div></div>
+      </div>
+    </div>
+  </section>
+  <!-- ===================== INSTAGRAM SYNC ===================== -->
+  <div class="section-label" id="instagram">
+    <span class="num">01</span>
+    <span class="ttl">Instagram</span>
+    <span class="rule"></span>
+    <span class="sub">FIG. 01 — SINCRONIZACIÓN</span>
+  </div>
+
+  <section class="strip">
+    <div>
+      <div class="panel-eyebrow">FIG. 01.1 — ESTADO DE CONEXIÓN</div>
+      <div class="panel-title">Sync vía Instagram </div>
+      <div class="ig-status">
+        <div class="ig-dot connected"></div>
+        <div class="ig-status-text">
+          <span class="annot-strong"></span> conectado · <code>@aceropress.co</code>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="panel-eyebrow">FIG. 01.2 — ÚLTIMAS PUBLICACIONES</div>
+      <div class="ig-grid">
+        <span class="img-wrap"><img class="img-slot" src="images/ig-01.jpg" alt=""><span class="img-tag">images/ig-01.jpg</span></span>
+        <span class="img-wrap"><img class="img-slot" src="images/ig-02.jpg" alt=""><span class="img-tag">images/ig-02.jpg</span></span>
+        <span class="img-wrap"><img class="img-slot" src="images/ig-03.jpg" alt=""><span class="img-tag">images/ig-03.jpg</span></span>
+        <span class="img-wrap"><img class="img-slot" src="images/ig-04.jpg" alt=""><span class="img-tag">images/ig-04.jpg</span></span>
+        <span class="img-wrap"><img class="img-slot" src="images/ig-05.jpg" alt=""><span class="img-tag">images/ig-05.jpg</span></span>
+        <span class="img-wrap"><img class="img-slot" src="images/ig-06.jpg" alt=""><span class="img-tag">images/ig-06.jpg</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CAFÉ DE ESPECIALIDAD ===================== -->
+  <div class="section-label" id="cafe">
+    <span class="num">02</span>
+    <span class="ttl">Especialidad</span>
+    <span class="rule"></span>
+    <span class="sub">FIG. 02 — CATÁLOGO / ORIGEN</span>
+  </div>
+
+  <div class="sp">
+    <h2 class="sec-h2">Granos en rotación</h2>
+    <p class="sec-desc">
+      Cafés de especialidad trazables. Selección de fincas aliadas en las principales regiones cafeteras del país.
+      <span class="jp" style="display:block; margin-top:.4rem;">シングルオリジン — スペシャリティコーヒー</span>
+    </p>
+  </div>
+
+  <!-- Hero de sección adaptado al estilo de la página -->
+  <div class="cerezas-panel">
+    <div class="img-wrap">
+      <img src="images/montain.png" class="img-slot" alt="Montaña">
+      <span class="img-tag">FOTO 02.1 — ZONA DE CULTIVO</span>
+    </div>
+    <div class="cerezas-text">
+      <div class="schematic-tag"><span class="dot"></span> Trazabilidad garantizada</div>
+      <h3 class="cerezas-title">Cada lote, una historia única</h3>
+      <div class="cerezas-rule"></div>
+      <p class="annot" style="margin-bottom: 1.5rem; font-size:.85rem; line-height:1.6;">
+        Trabajamos directamente con micro-lotes seleccionados en Huila, Nariño y Cauca. Cada bolsa cuenta con un perfil fisicoquímico y de cata verificado mediante protocolo SCA.
+      </p>
+      <div class="cerezas-list">
+        <div class="row"><span>Ubicación base de cata:</span> <b>Bogotá, CO</b></div>
+        <div class="row"><span>Puntaje mínimo de catálogo:</span> <b>87.0 SCA</b></div>
+        <div class="row"><span>Molienda optimizada para:</span> <b>AeroPress / V60</b></div>
       </div>
     </div>
   </div>
 
-  <!-- FULLSCREEN BREAK — imagen ambiental entre secciones -->
-  <div class="fullscreen short">
-    <div class="fs-media">
-      <!-- 🖼️ IMAGEN AMBIENTAL -->
-      <!-- <img src="images/ambient-coffee.jpg" alt=""> -->
-      <div class="ph-blueprint ph-dark" style="height:100%;">
-        <span class="ph-icon">🖼️</span>
-        <div class="ph-lbl" style="color:rgba(255,255,255,.35);">Imagen ambiental — cuaderno de campo abierto con bocetos técnicos del AeroPress, pluma de tinta, taza de café al lado, luz natural</div>
-        <span class="ph-file" style="color:var(--hot);background:rgba(255,255,255,.04);border:1px dashed rgba(255,79,163,.3);">images/ambient-coffee.jpg · 1920×800</span>
+  <!-- Grid de productos unificado con .feed-grid -->
+  <div class="feed-grid" style="margin-bottom: 5rem;">
+    <!-- Tarjeta Castillo -->
+    <div class="feed-card">
+      <div class="feed-media">
+        <span class="img-wrap">
+          <img src="images/castillo.png" class="img-slot" alt="Castillo Negro">
+          <span class="img-tag">SCA <b>88.0 pts</b></span>
+        </span>
+      </div>
+      <div class="feed-info" style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <span class="feed-number">NARARIÑO · NATURAL 21 DÍAS</span>
+          <h4 class="sec-h2" style="font-size: 1.3rem; margin: .3rem 0; text-transform: uppercase;">Castillo Negro</h4>
+          <p class="feed-jp" style="margin-bottom: .8rem;">Castillo Naranjal · 2.100 msnm</p>
+          <p class="feed-caption" style="color: var(--ink-soft); font-size: .8rem; line-height: 1.5; margin-bottom: 1.5rem;">
+            "Panela, mora, chocolate oscuro 70% y cuerpo denso. Ideal para prensas intensas y espressos."
+          </p>
+        </div>
+        <div class="feed-meta" style="border-top: 1px dashed var(--grid-line); padding-top: 1rem; align-items: center;">
+          <span class="annot-strong" style="font-size: .95rem;">$28.000 <span class="annot">/ 200g</span></span>
+          <a href="#" class="btn btn-magenta" style="padding: .4rem 1rem; font-size: .65rem;" data-wa-msg="wa_msg_castillo">Pedir</a>
+        </div>
       </div>
     </div>
-    <div class="fs-overlay" style="background:linear-gradient(to bottom,rgba(14,14,18,.5),rgba(14,14,18,.8));"></div>
-    <div class="fs-top" style="padding-top:0;display:flex;align-items:center;height:100%;justify-content:center;flex-direction:column;gap:.5rem;">
-      <div class="fs-eyebrow"><span class="live-dot"></span> Publicando en 3 plataformas simultáneamente</div>
-      <div class="fs-h1" style="font-size:clamp(1.4rem,3.5vw,2.4rem);">Instagram · TikTok · YouTube</div>
+
+    <!-- Tarjeta Bourbon Rosado -->
+    <div class="feed-card">
+      <div class="feed-media">
+        <span class="img-wrap">
+          <img src="images/rosado.png" class="img-slot" alt="Bourbon Rosado">
+          <span class="img-tag">SCA <b>89.5 pts</b></span>
+        </span>
+      </div>
+      <div class="feed-info" style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <span class="feed-number">HUILA · HONEY 30% MUCÍLAGO</span>
+          <h4 class="sec-h2" style="font-size: 1.3rem; margin: .3rem 0; text-transform: uppercase;">Bourbon Rosado</h4>
+          <p class="feed-jp" style="margin-bottom: .8rem;">Pink Bourbon · 1.780 msnm</p>
+          <p class="feed-caption" style="color: var(--ink-soft); font-size: .8rem; line-height: 1.5; margin-bottom: 1.5rem;">
+            "Frambuesa fresca, durazno, caramelo y acidez brillante. Perfecto para V60 y AeroPress."
+          </p>
+        </div>
+        <div class="feed-meta" style="border-top: 1px dashed var(--grid-line); padding-top: 1rem; align-items: center;">
+          <span class="annot-strong" style="font-size: .95rem;">$32.000 <span class="annot">/ 200g</span></span>
+          <a href="#" class="btn btn-magenta" style="padding: .4rem 1rem; font-size: .65rem;" data-wa-msg="wa_msg_bourbon">Pedir</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tarjeta Typica -->
+    <div class="feed-card">
+      <div class="feed-media">
+        <span class="img-wrap">
+          <img src="images/typica.png" class="img-slot" alt="Typica Origen">
+          <span class="img-tag">SCA <b>87.0 pts</b></span>
+        </span>
+      </div>
+      <div class="feed-info" style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <span class="feed-number">CAUCA · LAVADO DOBLE FERM.</span>
+          <h4 class="sec-h2" style="font-size: 1.3rem; margin: .3rem 0; text-transform: uppercase;">Typica Origen</h4>
+          <p class="feed-jp" style="margin-bottom: .8rem;">Typica Heritage · 1.950 msnm</p>
+          <p class="feed-caption" style="color: var(--ink-soft); font-size: .8rem; line-height: 1.5; margin-bottom: 1.5rem;">
+            "Limón Meyer, manzana verde, té negro y cuerpo ligero sedoso. Variedad patrimonio."
+          </p>
+        </div>
+        <div class="feed-meta" style="border-top: 1px dashed var(--grid-line); padding-top: 1rem; align-items: center;">
+          <span class="annot-strong" style="font-size: .95rem;">$26.000 <span class="annot">/ 200g</span></span>
+          <a href="#" class="btn btn-magenta" style="padding: .4rem 1rem; font-size: .65rem;" data-wa-msg="wa_msg_typica">Pedir</a>
+        </div>
+      </div>
     </div>
   </div>
 
-</section>
+
+  <!-- ===================== MÉTODO — diagrama AeroPress GO style ===================== -->
+  <div class="section-label" id="metodo">
+    <span class="num">03</span>
+    <span class="ttl">Método</span>
+    <span class="rule"></span>
+    <span class="sub">FIG. 03 — ULTIMATE GUIDE / GUÍA DEFINITIVA</span>
+  </div>
+
+  <div class="sp">
+    <h2 class="sec-h2">La receta de control</h2>
+    <p class="sec-desc">
+      Diagrama de pasos como punto de partida para cada taza del reto. Cada entrada del feed registra las variaciones probadas sobre esta base.
+      <span class="jp" style="display:block; margin-top:.4rem;">基本レシピ — 抽出ステップガイド</span>
+    </p>
+  </div>
+
+  <div class="steps-grid">
+    <div class="step-cell">
+      <div class="step-num">1</div>
+      <h4>Calentar agua</h4>
+      <p>92°C (+/- 2°). Caudal listo antes de moler.</p>
+      <div class="step-jp">お湯を準備 92°C</div>
+    </div>
+    <div class="step-cell">
+      <div class="step-num">2</div>
+      <h4>Moler</h4>
+      <p>18g, molienda media (comaltera 18).</p>
+      <div class="step-jp">挽く 18g · 中挽き</div>
+    </div>
+    <div class="step-cell">
+      <div class="step-num">3</div>
+      <h4>Armar AeroPress</h4>
+      <p>Modo inversión. Filtro de papel humedecido.</p>
+      <div class="step-jp">反転式に組み立て</div>
+    </div>
+    <div class="step-cell">
+      <div class="step-num">4</div>
+      <h4>Verter café</h4>
+      <p>18g sobre la cámara, nivelar suavemente.</p>
+      <div class="step-jp">コーヒー粉を投入</div>
+    </div>
+    <div class="step-cell">
+      <div class="step-num">5</div>
+      <h4>Verter agua</h4>
+      <p>Ratio 1:15 (270ml). Agitar 10s (+/- 1s).</p>
+      <div class="step-jp">注湯 1:15 · 撹拌10秒</div>
+    </div>
+    <div class="step-cell">
+      <div class="step-num">6</div>
+      <h4>Esperar</h4>
+      <p>Reposo total de 1:45 min antes de prensar.</p>
+      <div class="step-jp">待機 1分45秒</div>
+    </div>
+    <div class="step-cell">
+      <div class="step-num">7</div>
+      <h4>Voltear y prensar</h4>
+      <p>Presión manual ~10s, hasta sentir resistencia.</p>
+      <div class="step-jp">反転してプレス 10秒</div>
+    </div>
+    <div class="step-cell">
+      <div class="step-num">8</div>
+      <h4>Registrar</h4>
+      <p>Foto/video + nota de cata. Sube a Instagram con #aceropress50k.</p>
+      <div class="step-jp">記録して投稿</div>
+    </div>
+  </div>
+
   
-
-<!-- ========== PROYECTOS ========== -->
-<section class="projects-section" id="proyectos">
-  <div class="projects-grid">
-    <div class="pj-card">
-      <div class="pj-media"><video autoplay muted loop playsinline src="images/floatGardens.mp4"></video></div>
-      <div class="pj-overlay light-ov"></div>
-      <div class="pj-overlay light-ov"></div>
-      <div class="pj-top"><div class="fs-eyebrow" style="color:rgba(42,53,80,.6);">FASE 01 ACTIVA</div></div>
-      <div class="pj-bottom">
-        <div class="pj-name" style="color:var(--ink);"><span style="color:#A6F23A;">float</span><span style="color:#C4A8E8;">Gardens</span></div>
-        <div class="pj-desc" style="color:var(--ink-soft);">Red de terrazas hidropónicas en Bogotá. 14 nodos activos, 3 localidades, visión de granja vertical.</div>
-        <a href="floatgarden.html" class="btn-ink" style="margin:0 auto;">Explorar →</a>
-      </div>
-    </div>
-    <div class="pj-card">
-      <div class="pj-media"><video autoplay muted loop playsinline src="images/hero_main1.mp4"></video></div>
-      <div class="pj-overlay"></div>
-      <div class="pj-top"><div class="fs-eyebrow">RETO ACTIVO · <span id="retoOdoNum">12.847</span> / 50.000</div></div>
-      <div class="pj-bottom">
-        <div class="logo-unit" style="display:flex;align-items:center;justify-content:center;width:100%;">
-          <img src="images/logo.png" alt="ACERO.press" class="logo-acero1">
-          <span class="logo-press">.press</span>
-        </div>
-        <div class="pj-desc" style="color:rgba(255,255,255,.6);">Diario público del reto 50.000 tazas en AeroPress. Feed, odómetro y sync con Instagram.</div>
-        <a href="cafe.html" class="btn-glass hot">Ver feed →</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-
-<!-- ═══════ INSTAGRAM — FULLSCREEN PANEL ═══════ -->
-<section class="ig-fullscreen" id="instagram">
-
-  <!-- Hero de Instagram -->
-  <div class="ig-hero">
-    <div class="fs-media">
-      <!-- 🖼️ IMAGEN HERO INSTAGRAM -->
-      <!-- <img src="images/ig-hero.jpg" alt=""> -->
-      <div class="ph-blueprint ph-dark" style="height:100%;">
-        <span class="ph-icon">📷</span>
-        <div class="ph-lbl" style="color:rgba(255,255,255,.35);">Imagen hero Instagram — composición cuadrada, manos y AeroPress, paleta beige/blueprint del cuaderno de campo</div>
-        <span class="ph-file" style="color:#f30707;background:rgba(225,48,108,.05);border:1px dashed rgba(225,48,108,.3);">images/ig-hero.jpg · 1080×1080</span>
-      </div>
-    </div>
-    <div class="ig-hero-overlay"></div>
-    <div class="ig-hero-content">
-      <div class="platform-label">Instagram · @aceropress50k</div>
-      <h2>El diario visual<br>del reto</h2>
-      <p>Cada taza documentada: foto o video, receta exacta, número de orden. 12.847 publicaciones activas.</p>
-    </div>
-  </div>
-
-  <!-- Grid de posts -->
-  <div class="ig-grid-section">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:.8rem;">
-      <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase;">// Últimas publicaciones</span>
-      <a href="https://instagram.com" target="_blank" class="btn-platform btn-ig" style="font-size:.66rem;padding:.55rem 1.1rem;">Ver perfil completo →</a>
-    </div>
-
-    <div class="ig-grid">
-
-      <!-- Post grande destacado -->
-      <div class="ig-post large">
-        <div class="ig-media">
-          <!-- 🖼️ POST IG GRANDE (ocupa 2×2) -->
-          <!-- <img src="images/ig-post-featured.jpg" alt=""> -->
-          <div class="ig-media-ph" style="min-height:400px;">
-            <span class="ph-icon">🖼️</span>
-            <div class="ph-lbl-sm">Post destacado grande — foto de taza #012.847, composición cuadrada, formato 2×2</div>
-            <span class="ph-file-sm">images/ig-post-featured.jpg · 1080×1080</span>
-          </div>
-        </div>
-        <div class="ig-post-overlay"></div>
-        <div class="ig-post-info">
-          <div class="ig-post-num">#012.847</div>
-          <div class="ig-post-cap">Etiopía Yirgacheffe · 92°C · inversión</div>
-        </div>
-      </div>
-
-      <!-- Posts pequeños -->
-      <div class="ig-post">
-        <div class="ig-media">
-          <!-- <img src="images/ig-post-01.jpg" alt=""> -->
-          <div class="ig-media-ph">
-            <span class="ph-icon">☕</span>
-            <div class="ph-lbl-sm">Taza #012.846 · video corto</div>
-            <span class="ph-file-sm">images/ig-post-01.jpg</span>
-          </div>
-        </div>
-        <div class="ig-post-overlay"></div>
-        <div class="ig-post-info"><div class="ig-post-num">#012.846</div><div class="ig-post-cap">1:14 · tueste oscuro</div></div>
-      </div>
-
-      <div class="ig-post">
-        <div class="ig-media">
-          <!-- <img src="images/ig-post-02.jpg" alt=""> -->
-          <div class="ig-media-ph">
-            <span class="ph-icon">🌿</span>
-            <div class="ph-lbl-sm">Taza #012.845 · Colombia Huila</div>
-            <span class="ph-file-sm">images/ig-post-02.jpg</span>
-          </div>
-        </div>
-        <div class="ig-post-overlay"></div>
-        <div class="ig-post-info"><div class="ig-post-num">#012.845</div><div class="ig-post-cap">Colombia Huila · clásico</div></div>
-      </div>
-
-      <div class="ig-post">
-        <div class="ig-media">
-          <!-- <img src="images/ig-post-03.jpg" alt=""> -->
-          <div class="ig-media-ph">
-            <span class="ph-icon">📦</span>
-            <div class="ph-lbl-sm">Taza #012.844 · nuevo saco Huila</div>
-            <span class="ph-file-sm">images/ig-post-03.jpg</span>
-          </div>
-        </div>
-        <div class="ig-post-overlay"></div>
-        <div class="ig-post-info"><div class="ig-post-num">#012.844</div><div class="ig-post-cap">Nuevo lote Huila · 5 días</div></div>
-      </div>
-
-      <div class="ig-post">
-        <div class="ig-media">
-          <!-- <video autoplay muted loop playsinline src="images/ig-reel-01.mp4"></video> -->
-          <div class="ig-media-ph">
-            <span class="ph-icon">🎬</span>
-            <div class="ph-lbl-sm">Reel — sesión 5 tazas · time-lapse</div>
-            <span class="ph-file-sm">images/ig-reel-01.mp4</span>
-          </div>
-        </div>
-        <div class="ig-post-overlay"></div>
-        <div class="ig-post-info"><div class="ig-post-num">#012.843</div><div class="ig-post-cap">5 tazas · curvas de extracción</div></div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ═══════ TIKTOK — PANEL ═══════ -->
-<section class="tk-section" id="tiktok">
-
-  <div class="tk-header">
-    <div>
-      <div class="tk-lbl">FIG. 03.2 — TIKTOK</div>
-      <h2 class="tk-header"><span class="cyan">Tik</span><span class="pink">Tok</span> · @aceropress50k</h2>
-    </div>
-    <div style="text-align:right;">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;color:#69C9D0;">89K</div>
-      <div class="tk-lbl">vistas promedio · video</div>
-    </div>
-  </div>
-
-  <!-- Hero video TikTok (fullscreen corto) -->
-  <div class="fullscreen short" style="margin-bottom:2rem;">
-    <div class="fs-media">
-      <!-- 🎬 VIDEO TIKTOK DESTACADO (puede ser 9:16 letterboxed o 16:9) -->
-      <!-- <video autoplay muted loop playsinline src="images/tk-featured.mp4"></video> -->
-      <div class="ph-blueprint ph-dark" style="height:100%;">
-        <span class="ph-icon">🎬</span>
-        <div class="ph-lbl" style="color:rgba(105,201,208,.5);">Video TikTok destacado — formato vertical 9:16 o 16:9 con letterbox, preparación de AeroPress en cámara lenta, texto superpuesto con la receta, música de tendencia</div>
-        <span class="ph-file" style="color:#69C9D0;background:rgba(105,201,208,.06);border:1px dashed rgba(105,201,208,.25);">images/tk-featured.mp4 · 1080×1920 · 9:16</span>
-      </div>
-    </div>
-    <div class="fs-overlay" style="background:linear-gradient(to bottom,rgba(1,1,1,.4),rgba(1,1,1,.75));"></div>
-    <div class="fs-top" style="padding-top:0;display:flex;align-items:center;height:100%;flex-direction:column;justify-content:center;gap:.5rem;">
-      <div class="fs-eyebrow" style="color:rgba(105,201,208,.7);"><span class="live-dot" style="background:#69C9D0;box-shadow:0 0 10px #69C9D0;"></span> Video viral · 312K vistas</div>
-      <div class="fs-h1" style="font-size:clamp(1.4rem,3.5vw,2.4rem);">"La receta perfecta de AeroPress<br>en 60 segundos"</div>
-    </div>
-  </div>
-
-  <div class="tk-grid">
-
-    <div class="tk-card">
-      <div class="tk-media">
-        <!-- <video autoplay muted loop playsinline src="images/tk-01.mp4"></video> -->
-        <div class="tk-media-ph">
-          <span class="ph-icon">🎬</span>
-          <div class="ph-lbl-sm">TikTok #1 — receta en 60s, cámara lenta, texto overlay</div>
-          <span class="ph-file-sm">images/tk-01.mp4 · 9:16</span>
-        </div>
-      </div>
-      <div class="tk-card-overlay"></div>
-      <div class="tk-card-info">
-        <div class="tk-card-num">#012.847</div>
-        <div class="tk-card-views">312K vistas</div>
-        <div class="tk-card-title">Receta AeroPress en 60s</div>
-        <div class="tk-sound"><span class="note">♪</span><span>sonido original</span></div>
-      </div>
-    </div>
-
-    <div class="tk-card">
-      <div class="tk-media">
-        <!-- <video autoplay muted loop playsinline src="images/tk-02.mp4"></video> -->
-        <div class="tk-media-ph">
-          <span class="ph-icon">☕</span>
-          <div class="ph-lbl-sm">TikTok #2 — ratio 1:14 tueste oscuro, comparación</div>
-          <span class="ph-file-sm">images/tk-02.mp4 · 9:16</span>
-        </div>
-      </div>
-      <div class="tk-card-overlay"></div>
-      <div class="tk-card-info">
-        <div class="tk-card-num">#012.846</div>
-        <div class="tk-card-views">89K vistas</div>
-        <div class="tk-card-title">1:14 vs 1:15 ¿cuál gana?</div>
-        <div class="tk-sound"><span class="note">♪</span><span>trending sound</span></div>
-      </div>
-    </div>
-
-    <div class="tk-card">
-      <div class="tk-media">
-        <!-- <video autoplay muted loop playsinline src="images/tk-03.mp4"></video> -->
-        <div class="tk-media-ph">
-          <span class="ph-icon">🌿</span>
-          <div class="ph-lbl-sm">TikTok #3 — Colombia Huila, unboxing del lote</div>
-          <span class="ph-file-sm">images/tk-03.mp4 · 9:16</span>
-        </div>
-      </div>
-      <div class="tk-card-overlay"></div>
-      <div class="tk-card-info">
-        <div class="tk-card-num">#012.845</div>
-        <div class="tk-card-views">54K vistas</div>
-        <div class="tk-card-title">Unboxing Huila · tueste 5 días</div>
-        <div class="tk-sound"><span class="note">♪</span><span>sonido original</span></div>
-      </div>
-    </div>
-
-    <div class="tk-card">
-      <div class="tk-media">
-        <!-- <video autoplay muted loop playsinline src="images/tk-04.mp4"></video> -->
-        <div class="tk-media-ph">
-          <span class="ph-icon">⏱</span>
-          <div class="ph-lbl-sm">TikTok #4 — time-lapse 5 tazas seguidas, comparación extracción</div>
-          <span class="ph-file-sm">images/tk-04.mp4 · 9:16</span>
-        </div>
-      </div>
-      <div class="tk-card-overlay"></div>
-      <div class="tk-card-info">
-        <div class="tk-card-num">#012.843</div>
-        <div class="tk-card-views">127K vistas</div>
-        <div class="tk-card-title">5 tazas · curvas de extracción</div>
-        <div class="tk-sound"><span class="note">♪</span><span>lofi coffee</span></div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ═══════ YOUTUBE — PANEL ═══════ -->
-<section class="yt-section" id="youtube">
-
-  <div class="yt-header">
-    <div>
-      <div class="yt-subs" style="margin-bottom:.5rem;">FIG. 03.3 — YOUTUBE</div>
-      <h2>YouTube · <span class="red">@aceropress50k</span></h2>
-    </div>
-    <div class="yt-subs" style="text-align:right;">
-      2.4K suscriptores<br>
-      Videos largos · tutoriales · detrás de cámaras
-    </div>
-  </div>
-
-  <!-- Video destacado YT -->
-  <div class="yt-featured" style="position:relative;">
-    <!-- 🖼️ THUMBNAIL DEL VIDEO DESTACADO -->
-    <!-- <img src="images/yt-featured-thumb.jpg" alt=""> -->
-    <div class="yt-featured-ph">
-      <span class="ph-icon">▶️</span>
-      <div class="ph-lbl">Thumbnail del video destacado de YouTube — título en pantalla grande, imagen del AeroPress con vapor, fondo del cuaderno de campo con bocetos</div>
-      <span class="ph-file">images/yt-featured-thumb.jpg · 1280×720 · thumbnail 16:9</span>
-    </div>
-    <div class="yt-featured-overlay"></div>
-    <div class="yt-play-btn">
-      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-    </div>
-    <div class="yt-featured-info">
-      <div class="yt-featured-title">El reto de las 50.000 tazas — Episodio 128 · Etiopía Yirgacheffe y la receta perfecta de inversión</div>
-      <div class="yt-featured-meta"><span>12K vistas</span><span>Hace 1 día</span><span>14:32</span></div>
-    </div>
-    <div class="yt-duration" style="top:auto;bottom:1rem;right:1rem;">14:32</div>
-  </div>
-
-  <!-- Grid videos YT -->
-  <div class="yt-grid">
-
-    <div class="yt-card">
-      <div class="yt-thumb">
-        <!-- <img src="images/yt-thumb-01.jpg" alt=""> -->
-        <div class="yt-thumb-ph">
-          <span class="ph-icon">🎬</span>
-          <div class="ph-lbl-sm">Thumbnail YT #1 — tutorial ratio 1:14 vs 1:15, composición con ambas tazas, texto grande</div>
-          <span class="ph-file-sm">images/yt-thumb-01.jpg · 1280×720</span>
-        </div>
-        <span class="yt-duration">8:47</span>
-      </div>
-      <div class="yt-card-title">Ratio 1:14 vs 1:15 · El experimento definitivo</div>
-      <div class="yt-card-meta"><span>6.2K vistas</span><span>Hace 2 días</span></div>
-    </div>
-
-    <div class="yt-card">
-      <div class="yt-thumb">
-        <!-- <img src="images/yt-thumb-02.jpg" alt=""> -->
-        <div class="yt-thumb-ph">
-          <span class="ph-icon">🌿</span>
-          <div class="ph-lbl-sm">Thumbnail YT #2 — unboxing Huila, saco de café, manos con los granos</div>
-          <span class="ph-file-sm">images/yt-thumb-02.jpg · 1280×720</span>
-        </div>
-        <span class="yt-duration">11:22</span>
-      </div>
-      <div class="yt-card-title">Unboxing Colombia Huila · Tueste día 5</div>
-      <div class="yt-card-meta"><span>4.8K vistas</span><span>Hace 3 días</span></div>
-    </div>
-
-    <div class="yt-card">
-      <div class="yt-thumb">
-        <!-- <img src="images/yt-thumb-03.jpg" alt=""> -->
-        <div class="yt-thumb-ph">
-          <span class="ph-icon">⏱</span>
-          <div class="ph-lbl-sm">Thumbnail YT #3 — 5 tazas comparación, fila de tazas en cuaderno de campo</div>
-          <span class="ph-file-sm">images/yt-thumb-03.jpg · 1280×720</span>
-        </div>
-        <span class="yt-duration">18:05</span>
-      </div>
-      <div class="yt-card-title">Comparativa 5 orígenes · El video más largo del reto</div>
-      <div class="yt-card-meta"><span>9.1K vistas</span><span>Hace 5 días</span></div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ═══════ MÉTODO — FULLSCREEN SOBRE IMAGEN ═══════ -->
-<section class="metodo-section" id="metodo">
-  <div class="metodo-fullscreen">
-    <div class="fs-media">
-      <!-- 🖼️ IMAGEN DE FONDO MÉTODO — el cuaderno de campo abierto -->
-      <!-- <img src="images/metodo-bg.jpg" alt=""> -->
-      <div class="ph-blueprint" style="height:100%;">
-        <span class="ph-icon">📋</span>
-        <div class="ph-lbl">Imagen de fondo — cuaderno de campo abierto con el diagrama AeroPress GO™ completo, bocetos técnicos, cotas a mano, tinta azul sobre papel beige, luz natural lateral</div>
-        <span class="ph-file">images/metodo-bg.jpg · 1920×1080 · landscape</span>
-      </div>
-    </div>
-    <div class="fs-overlay paper-ov"></div>
-    <div class="metodo-content">
-      <div>
-        <div class="metodo-eyebrow">FIG. 03 — GUÍA DEFINITIVA</div>
-        <div class="metodo-title">
-          La receta<br>de<br>control<br>
-          <span class="press-stamp">.press</span>
-        </div>
-        <p style="color:var(--ink-soft);font-size:.9rem;line-height:1.6;max-width:34ch;">
-          Punto de partida para cada taza del reto. Cada entrada del feed registra las variaciones probadas sobre esta base.
-          <br><br>
-          <span style="color:#9b6a6a;font-size:.8rem;">基本レシピ — 抽出ステップガイド</span>
-        </p>
-      </div>
-      <div>
-        <div class="steps-grid">
-          <div class="step-cell"><div class="step-n">1</div><h4>Calentar</h4><p>92°C (+/-2°)</p><div class="jp">お湯 92°C</div></div>
-          <div class="step-cell"><div class="step-n">2</div><h4>Moler</h4><p>18g · media</p><div class="jp">挽く 18g</div></div>
-          <div class="step-cell"><div class="step-n">3</div><h4>Armar</h4><p>Modo inversión</p><div class="jp">反転式に組立</div></div>
-          <div class="step-cell"><div class="step-n">4</div><h4>Verter</h4><p>270ml · 1:15</p><div class="jp">注湯 270ml</div></div>
-          <div class="step-cell"><div class="step-n">5</div><h4>Agitar</h4><p>10s (+/-1s)</p><div class="jp">撹拌 10秒</div></div>
-          <div class="step-cell"><div class="step-n">6</div><h4>Esperar</h4><p>1:45 min total</p><div class="jp">待機 1分45秒</div></div>
-          <div class="step-cell"><div class="step-n">7</div><h4>Prensar</h4><p>~10s manual</p><div class="jp">プレス 10秒</div></div>
-          <div class="step-cell"><div class="step-n">8</div><h4>Publicar</h4><p>IG · TK · YT</p><div class="jp">記録して投稿</div></div>
-        </div>
-        <div class="specs-row">
-          <div class="spec-cell"><div class="sl">Ratio</div><div class="sv">1<span class="su">: 15</span></div></div>
-          <div class="spec-cell"><div class="sl">Temperatura</div><div class="sv">92<span class="su">°C</span></div></div>
-          <div class="spec-cell"><div class="sl">Tiempo</div><div class="sv">1:45<span class="su">min</span></div></div>
-          <div class="spec-cell"><div class="sl">Filtro</div><div class="sv">Papel<span class="su">Go</span></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════ FOOTER ═══════ -->
+  
+  <!-- ═══════ FOOTER ═══════ -->
 <footer>
   <div class="footer-grid">
     <div>
