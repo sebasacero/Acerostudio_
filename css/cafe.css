@@ -81,47 +81,32 @@
 
   /* === Header / Logo grafiteado === */
   header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:1.4rem 5vw;
-    position:sticky;
-    top:0;
-    z-index:40;
-    background:rgba(237,230,211,.9);
-    backdrop-filter:blur(8px);
-    border-bottom:1px solid var(--grid-line);
-  }
-
-  .logo-unit{
-    display:flex;
-    align-items:center;
-    gap:.4rem;
-    position:relative;
-  }
-  .logo-acero{
-    position:relative;
-    border:2.5px solid var(--ink);
-    border-radius:10px;
-    background:
-      repeating-linear-gradient(45deg, rgba(42,53,80,.12) 0 6px, rgba(42,53,80,.04) 6px 12px);
-    padding:.35rem 1.1rem;
-    font-family:'Space Grotesk', sans-serif;
-    font-weight:700;
-    font-size:1.05rem;
-    letter-spacing:.22em;
-    color:var(--ink);
-  }
-  .logo-press{
-    font-family:'Permanent Marker', cursive;
-    color:var(--magenta-bright);
-    font-size:1.3rem;
-    transform:rotate(-6deg);
-    margin-left:-.2rem;
-    text-shadow: 1px 1px 0 rgba(224,56,138,.25);
-    white-space:nowrap;
-  }
-
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.1rem 5vw;
+  background:rgba(26,26,30,.55);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  transition:background .3s;
+}
+header.scrolled{background:rgba(12,12,16,.96);}
+.logo-unit{display:flex;align-items:center;gap:.4rem;}
+.logo-acero{height:48px;width:auto;display:block;object-fit:contain;border-radius:8px;}
+.logo-acero1{height:48px;width:auto;display:block;object-fit:contain;border-radius:8px;}
+.logo-press{
+  font-family:'Permanent Marker',cursive;
+  color:var(--hot);font-size:1.25rem;
+  transform:rotate(-6deg);margin-left:-.1rem;
+  text-shadow:0 0 16px var(--hot-glow),0 0 32px rgba(232,24,28,.25);
+  color:var(--magenta-bright); font-size:1.25rem;
+  transform:rotate(-6deg); margin-left:-.5rem;
+  text-shadow:0 0 12px rgba(255, 0, 0, 0.429);
+}
+.logo-press{
+  font-family:'Permanent Marker',cursive;color:var(--hot);font-size:1.25rem;
+  transform:rotate(-6deg);margin-left:-.1rem;
+  text-shadow:0 0 14px rgba(236, 8, 8, 0.734);
+}
   .nav-links{ display:flex; gap:2.2rem; }
   .nav-links a{
     font-size:.8rem;
