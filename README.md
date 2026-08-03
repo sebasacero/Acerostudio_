@@ -1,96 +1,36 @@
-# ☕ Acero.press — 50.000 tazas en AeroPress
+# ☕ ACERO.studio — AI-Driven Architecture & Design for Specialty Coffee
 
-> Publicamos el reto más largo en AeroPress.  
-> Documentado en Instagram, TikTok y YouTube. Bogotá · 2.600 msnm.
+> Transformamos locales comerciales en experiencias de café de especialidad mediante recomendaciones de diseño y maquetación impulsadas por Inteligencia Artificial.  
+> Bogotá · 2.600 msnm.
 
-🌐 **[Ver web en vivo →](https://sebasacero.github.io/Acero.pres)**
+🌐 **[Ver web en vivo →](https://www.acerostudio.com)**
 
 ---
 
 ## ¿Qué es esto?
 
-**Acero.press** es un proyecto personal de documentación obsesiva: preparar 50.000 tazas de café en AeroPress, registrando cada una con su receta, origen, foto o video, y sincronizando automáticamente con Instagram.
+**ACERO.studio** es una plataforma tecnológica y estudio de diseño enfocado en la arquitectura comercial, optimización de flujos operacionales y distribución espacial para cafeterías de especialidad y barras manuales de filtrado (AeroPress, V60, Origami). 
+
+Utilizamos modelos de visión por computador e IA para analizar fotografías y planos de locales comerciales, generando propuestas de diseño integrales que combinan estética industrial, acabados en *liquid chrome*, blueprints técnicos y paletas térmicas.
 
 - 🏔️ Bogotá, Colombia · 2.600 msnm
-- ☕ Herramienta: AeroPress Go™
-- 📸 Canal: [@aceropress](https://instagram.com/aceropress50k) en Instagram
-- 🎯 Meta: 50.000 tazas · Hashtag: `#aceropress50k`
+- 🛠️ Enfoque: Arquitectura comercial, renderizado IA y diseño de barras de café
+- ⚙️ Estética: Industrial, blueprint técnico, cyberpunk minimalista
+- 🎯 Meta: Optimización espacial y diseño funcional para tiendas de café B2B
 
 ---
 
-## Progreso actual
+## Servicios Principales
 
-| Tazas preparadas | Meta | % completado |
-|:---:|:---:|:---:|
-| **12.847** | 50.000 | 25,7% |
-
----
-
-## Estructura del proyecto
-
-```
-Acero.pres/
-├── index.html          ← Página principal (hero, tecnología, café, proyectos)
-├── cafe.html           ← Catálogo de cafés de especialidad
-├── press.html          ← Página de prensa / media kit
-├── floatgardens.html   ← Proyecto Float Gardens
-├── style.css           ← Estilos globales
-├── main.js             ← Lógica JavaScript
-└── images/             ← Imágenes, videos y favicon
-```
+| Servicio | Descripción | Output |
+|:---|:---|:---:|
+| **Análisis Espacial IA** | Diagnóstico visual de locales comerciales a partir de fotografías | Reporte espacial |
+| **Diseño de Barras & Layout** | Maquetación ergográfica para métodos de filtrado y espresso | Planos blueprint |
+| **Renderizado & Moodboards** | Propuestas estéticas con texturas industriales y *liquid chrome* | Propuestas 3D/IA |
+| **Identidad Editorial & Menús** | Cartas técnicas, señalética e integración de marca | Media Kit / Print |
 
 ---
 
-## Stack
 
-Proyecto 100% estático · sin frameworks · sin build tools.
-
-- **HTML5** semántico
-- **CSS3** con variables custom (design tokens)
-- **JavaScript** vanilla
-- **Fuentes**: Space Grotesk · JetBrains Mono · Archivo · Permanent Marker (Google Fonts)
-- **Deploy**: GitHub Pages (rama `main`, raíz `/`)
-
----
-
-## Correr localmente
-
-```bash
-git clone https://github.com/sebasacero/Acero.pres.git
-cd Acero.pres
-# Abrir index.html en el navegador, o usar cualquier servidor local:
-npx serve .
-```
-
----
-
-## Características de la web
-
-- 🎬 Hero con video de fondo y odómetro de tazas animado
-- 🌡️ Paleta térmica (del negro al amarillo) como hilo visual
-- 📐 Estética blueprint + campo · tipografía JetBrains Mono
-- 📱 Responsive para mobile
-- 🔄 Marquee animado con datos de la última preparación
-- 🧩 Scrollytelling con sticky panels para la sección de tecnología
-
----
-
-## Servicios B2B
-
-Además del reto personal, **Acero.press** ofrece servicios para cafeterías de especialidad:
-
-- Rediseño de espacios asistido por IA
-- Diseño de cartas y menús editoriales
-- Estandarización de bebidas espresso
-- Presencia digital y sincronización con Instagram
-
----
-
-## Contacto
-
-- 📷 Instagram: [@aceropress50k](https://instagram.com/aceropress50k)
-- 🌐 Web: [sebasacero.github.io/Acero.pres](https://sebasacero.github.io/Acero.pres)
-
----
 
 <sub>Hecho con ☕ en Bogotá · MIT License</sub>
