@@ -830,17 +830,126 @@ header.scrolled{background:rgba(12,12,16,.96);}
 .blog-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.95rem;line-height:1.4;margin-bottom:.6rem;color:#fff;}
 .blog-ex{font-size:.8rem;color:rgba(255,255,255,.4);line-height:1.55;}
 
-/* ===================== FOOTER ===================== */
-footer{background:var(--near-black);border-top:1px solid rgba(255,255,255,.08);padding:3rem 5vw;}
-.footer-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;margin-bottom:2rem;}
-@media(max-width:900px){.footer-grid{grid-template-columns:1fr;}}
-.footer-col .f-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:rgba(255,255,255,.3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem;}
-.footer-col h4{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.9rem;text-transform:uppercase;letter-spacing:.06em;color:#fff;margin-bottom:.4rem;}
-.footer-col p{font-size:.82rem;color:rgba(255,255,255,.4);line-height:1.55;}
-.footer-col a{color:rgba(255,255,255,.5);text-decoration:underline;text-underline-offset:3px;}
-.footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding-top:1.4rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
-.footer-bottom .meta{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:rgba(255,255,255,.3);letter-spacing:.04em;}
-.footer-tbar{width:140px;height:4px;border-radius:2px;background:linear-gradient(90deg,var(--t0),var(--t2),var(--t4),var(--t5),var(--t6),var(--t7));}
+.hero-footer {
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+.hero-footer {
+  position: relative;
+  width: 100%;
+  min-height: 350px; /* Ajusta la altura deseada */
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* El vídeo se expande y cubre todo el contenedor */
+.footer-video-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Mantiene la proporción sin deformarse */
+  z-index: 1;
+}
+
+
+/* El contenido debe estar por encima del vídeo y la capa */
+.footer-hero-content {
+  position: relative;
+  z-index: 3;
+  color: #ffffff;
+  text-align: center;
+}
+/* Sección superior con imagen de fondo */
+.footer-hero-content {
+  min-height: 400px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url('tu-imagen.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.footer-hero-content h2 {
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 24px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Redes sociales */
+.social-icons {
+  display: flex;
+  gap: 16px;
+}
+
+.social-icons a {
+  background-color: #ffffff;
+  color: #000000;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  text-decoration: none;
+}
+
+.social-icons a:hover {
+  transform: scale(1.08);
+  opacity: 0.9;
+}
+
+.social-icons svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Barra inferior del footer */
+.footer-bottom {
+  background-color: #ffffff;
+  padding: 24px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #eaeaea;
+}
+
+.footer-bottom p, 
+.footer-bottom a {
+  font-size: 0.85rem;
+  color: #555555;
+  text-decoration: none;
+}
+
+.footer-bottom a:hover {
+  color: #000000;
+}
+
+/* Responsivo para móviles */
+@media (max-width: 600px) {
+  .footer-bottom {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+}
+/* Reset Básico */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 /* ===================== WHATSAPP ===================== */
 .wa-float{position:fixed;bottom:24px;right:24px;z-index:300;width:58px;height:58px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.08);transition:transform .2s ease,box-shadow .2s ease;}
