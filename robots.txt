@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+
+# Crawlers de IA / LLM — permitidos explícitamente para visibilidad en respuestas generativas
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://www.acerostudio.com/sitemap.xml

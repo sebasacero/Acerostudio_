@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- ================================================================= -->
+  <!-- SEO, METADATOS Y RECURSOS — ACEROSTUDIO -->
+  <!-- ================================================================= -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AceroStudio — Diseño, Código y Café </title>
+
+  <!-- SEO Orgánico Estándar -->
+  <meta name="description" content="Estudio de diseño digital, desarrollo web y automatización con alma de café filtrado. Proyectamos marcas con estética técnica y funcional desde Bogotá." id="metaDescription">
+  <meta name="keywords" content="AceroStudio, diseño web, desarrollo web, automatización, n8n, café de especialidad, Bogotá, estética industrial, UI UX, arquitectura de interiores, interiorismo, rediseño con IA, diseño de cafeterías">
+  <meta name="author" content="AceroStudio">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.acerostudio.com/">
+
+  <!-- Idiomas disponibles (contenido bilingüe ES/EN servido vía JS en la misma URL) -->
+  <link rel="alternate" hreflang="es" href="https://www.acerostudio.com/">
+  <link rel="alternate" hreflang="en" href="https://www.acerostudio.com/">
+  <link rel="alternate" hreflang="x-default" href="https://www.acerostudio.com/">
+
+  <!-- Open Graph / Facebook / LinkedIn -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.acerostudio.com/">
+  <meta property="og:site_name" content="AceroStudio">
+  <meta property="og:locale" content="es_CO">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:title" content="AceroStudio — Estética Técnica & Código">
+  <meta property="og:description" content="Diseño digital, desarrollo web y flujos automatizados con sabor a AeroPress. Creamos interfaces tan precisas como una receta de filtrado.">
+  <meta property="og:image" content="https://www.acerostudio.com/images/og-preview.jpg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://www.acerostudio.com/">
+  <meta name="twitter:title" content="AceroStudio — Estética Técnica & Código">
+  <meta name="twitter:description" content="Diseño digital, desarrollo web y flujos automatizados con sabor a AeroPress.">
+  <meta name="twitter:image" content="https://www.acerostudio.com/images/og-preview.jpg">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/favicon.png">
+
+  <!-- Color de la barra de navegador en móvil (Chrome Android / Safari iOS) -->
+  <meta name="theme-color" content="#0a0806">
+
+  <!-- Fuentes de Google: Estilo Técnico, Monoespaciado e Industrial -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Archivo:wght@400;500;600;700;800&family=Permanent+Marker&display=swap" rel="stylesheet">
+
+  <!-- Hojas de Estilo -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/chat.css">
+
+  <!-- ===== i18n + nav-compacto: estilos ===== -->
+  <style>
+    /* Deja el header limpio: logo a la izquierda, todo lo demás comprimido a la derecha */
+    #main-header{
+      display:flex !important;
+      align-items:center !important;
+      justify-content:space-between !important;
+      gap:1rem !important;
+      padding:.6rem 1.25rem !important;
+    }
+
+    .nav-compact{
+      position:relative;
+      display:flex;
+      align-items:center;
+    }
+
+    /* Botón hamburguesa — 3 líneas, se transforma en X al abrir */
+    .hamburger-btn{
+      display:flex;flex-direction:column;justify-content:center;align-items:center;
+      gap:5px;
+      width:38px;height:38px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:2px;
+      cursor:pointer;
+      position:relative;
+      transition:border-color .2s ease;
+    }
+    .hamburger-btn::before,.hamburger-btn::after{
+      content:"";position:absolute;width:5px;height:5px;
+      border:1px solid rgba(0,229,255,.5);
+    }
+    .hamburger-btn::before{top:-1px;left:-1px;border-right:none;border-bottom:none;}
+    .hamburger-btn::after{bottom:-1px;right:-1px;border-left:none;border-top:none;}
+    .hamburger-btn:hover{border-color:rgba(0,229,255,.45);}
+    .hb-line{
+      width:18px;height:2px;background:rgba(255,255,255,.75);
+      border-radius:1px;
+      transition:transform .25s ease,opacity .25s ease,background .2s ease;
+    }
+    .hamburger-btn[aria-expanded="true"] .hb-line{background:#00e5ff;}
+    .hamburger-btn[aria-expanded="true"] .hb-line:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .hamburger-btn[aria-expanded="true"] .hb-line:nth-child(2){opacity:0;}
+    .hamburger-btn[aria-expanded="true"] .hb-line:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+    /* Panel desplegable */
+    .nav-dropdown{
+      position:absolute;
+      top:calc(100% + 12px);
+      right:0;
+      min-width:200px;
+      background:rgba(10,10,14,.92);
+      backdrop-filter:blur(14px);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:3px;
+      padding:.9rem 1.1rem 1rem;
+      display:flex;flex-direction:column;gap:.6rem;
+      opacity:0;visibility:hidden;transform:translateY(-6px);
+      transition:opacity .18s ease,transform .18s ease,visibility .18s;
+      z-index:200;
+      font-family:'JetBrains Mono',monospace;
+    }
+    .nav-dropdown.open{
+      opacity:1;visibility:visible;transform:translateY(0);
+    }
+    .nav-dropdown .nav-links{
+      display:flex !important;
+      flex-direction:column !important;
+      gap:.65rem !important;
+    }
+    .nav-dropdown .nav-links a{
+      font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+      color:rgba(255,255,255,.7);transition:color .2s;
+      white-space:nowrap;
+    }
+    .nav-dropdown .nav-links a:hover{color:#00e5ff;}
+    .nav-dropdown-divider{height:1px;background:rgba(255,255,255,.1);margin:.15rem 0;}
+    .nav-dropdown .lang-switch{align-self:flex-start;}
+
+    /* Lang-switch (ya existente, se mantiene igual visualmente) */
+    .lang-switch{
+      display:flex;align-items:center;gap:2px;
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:2px;
+      padding:3px;
+      background:rgba(255,255,255,.03);
+      font-family:'JetBrains Mono',monospace;
+      font-size:11px;
+      letter-spacing:.05em;
+      position:relative;
+    }
+    .lang-switch .lang-btn{
+      background:transparent;border:none;
+      color:rgba(255,255,255,.45);
+      padding:4px 9px;border-radius:1px;
+      cursor:pointer;transition:all .2s ease;
+      font-family:inherit;font-size:inherit;letter-spacing:inherit;
+    }
+    .lang-switch .lang-btn.active{
+      background:#00e5ff;color:#05070a;font-weight:700;
+    }
+    .lang-switch .lang-btn:hover:not(.active){color:rgba(255,255,255,.85);}
+
+    @media (max-width:600px){
+      .nav-dropdown{min-width:180px;right:-4px;}
+    }
+  </style>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6F6S72KWWQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6F6S72KWWQ');
+</script>
+
+<!-- Datos estructurados schema.org — ayuda a Google (rich results) y a los LLMs a entender qué es AceroStudio -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "LocalBusiness",
+      "@id": "https://www.acerostudio.com/#organization",
+      "name": "AceroStudio",
+      "alternateName": "Acero.studio",
+      "url": "https://www.acerostudio.com/",
+      "logo": "https://www.acerostudio.com/images/logo.png",
+      "image": "https://www.acerostudio.com/images/og-preview.jpg",
+      "description": "Estudio de rediseño de cafeterías con inteligencia artificial en Bogotá. Convertimos una foto real del espacio en una propuesta de rediseño de interior o fachada en 72 horas.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Bogotá",
+        "addressCountry": "CO"
+      },
+      "areaServed": { "@type": "City", "name": "Bogotá" },
+      "priceRange": "$$",
+      "sameAs": ["https://instagram.com/acero.press"]
+    },
+    {
+      "@type": "Service",
+      "@id": "https://www.acerostudio.com/#service-rediseno",
+      "name": "Rediseño de cafeterías con IA",
+      "serviceType": "Diseño de interiores con inteligencia artificial",
+      "provider": { "@id": "https://www.acerostudio.com/#organization" },
+      "areaServed": { "@type": "City", "name": "Bogotá" },
+      "description": "Análisis de espacio, detección de zonas muertas, generación de propuesta de rediseño con IA en 72 horas y acompañamiento hasta obra.",
+      "audience": {
+        "@type": "Audience",
+        "audienceType": "Cafeterías de especialidad, cadenas y franquicias, estudios de arquitectura, real estate comercial, gastronomía y hospitality"
+      }
+    },
+    {
+      "@type": "Service",
+      "@id": "https://www.acerostudio.com/#service-identidad",
+      "name": "Diseño de identidad y menú para cafeterías",
+      "serviceType": "Diseño editorial y branding",
+      "provider": { "@id": "https://www.acerostudio.com/#organization" },
+      "description": "Diseño de menú que comunica origen, proceso y notas de cata, con trazabilidad por QR y menú digital."
+    },
+    {
+      "@type": "Service",
+      "@id": "https://www.acerostudio.com/#service-estandar",
+      "name": "Estandarización de bebidas espresso",
+      "serviceType": "Consultoría operativa de café",
+      "provider": { "@id": "https://www.acerostudio.com/#organization" },
+      "description": "Documentación de dosis, ratio, tiempo y temperatura de cada bebida espresso bajo protocolo SCA, para lograr el mismo estándar en cada turno y cada barista."
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.acerostudio.com/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Cómo funciona el rediseño con IA de AceroStudio?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Subes una foto real de tu cafetería, eliges un estilo (minimalista, industrial, cálido, escandinavo u otro), la IA genera una propuesta manteniendo la estructura real del local —paredes, ventanas, columnas— y luego cotizas por WhatsApp con un asesor para llevarla a obra."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Cuánto tiempo toma el diagnóstico y la propuesta?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "El diagnóstico inicial y la propuesta de rediseño se entregan en 72 horas."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Para quién es AceroStudio?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Para cafeterías de especialidad independientes, cadenas y franquicias, estudios de arquitectura, empresas de real estate comercial, y negocios de gastronomía y hospitality en Bogotá."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Dónde está ubicado AceroStudio?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "AceroStudio opera desde Bogotá, Colombia, a 2.600 metros sobre el nivel del mar."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+</head>
+  
+<body>
+
+
+
+<!-- ========== HEADER ========== -->
+<header id="main-header">
+  <div class="logo-unit">
+    <img src="images/logo.png" alt="ACERO.press" class="logo-acero">
+    <span class="logo-studio">.studio</span>
+  </div>
+
+  <div class="nav-compact" id="navCompact">
+    <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú" aria-expanded="false" aria-controls="navDropdown">
+      <span class="hb-line"></span>
+      <span class="hb-line"></span>
+      <span class="hb-line"></span>
+    </button>
+
+    <div class="nav-dropdown" id="navDropdown">
+      <nav class="nav-links">
+        <a href="#inicio" data-i18n="nav_home">Inicio</a>
+        <a href="#tecnologia" data-i18n="nav_tech">Tecnología</a>
+        <a href="#cafe" data-i18n="nav_coffee">Café</a>
+        <a href="#proyectos" data-i18n="nav_projects">Proyectos</a>
+        <a href="#b2b" data-i18n="nav_b2b">B2B</a>
+        <a href="#blog" data-i18n="nav_blog">Blog</a>
+      </nav>
+      <div class="nav-dropdown-divider"></div>
+      <div class="lang-switch" id="langSwitch" role="group" aria-label="Language / Idioma">
+        <button type="button" class="lang-btn" data-lang="es">ES</button>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ========== HERO ========== -->
+<section class="fullscreen" id="inicio">
+  <div class="fs-media">
+    <video autoplay muted loop playsinline src="images/redesingACERO.mp4"></video>
+  </div>
+  <div class="fs-overlay"></div>
+  <div class="fs-annot tl">FIG. 01 — FIELD NOTEBOOK<br>Bogotá · 2.600 msnm · AeroPress Go™<br>Ø Base = 9.5cm · H = 13.5cm</div>
+  <div class="fs-annot tr" data-i18n-html="hero_annot_tr">Reto activo · #aceropress50k<br>抽出 / extracción<br>反転式 / inversión</div>
+  <div class="fs-top">
+    <div class="fs-eyebrow"><span class="live-dot"></span> <span data-i18n="hero_eyebrow">Reto activo · Bogotá, 2.600 msnm</span></div>
+    <div class="fs-h1" ><br><br><span color"white">DESING YOUR SPACE.</span></div>
+    <div class="pj-bottom">
+        <div class="logo-unit" style="display:flex;align-items:center;justify-content:center;width:100%;">
+          <img src="images/logo.png" alt="ACERO.press" class="logo-acero1">
+          <span class="logo-studio">.STUDIO</span>
+        </div>
+    <div class="fs-sub" data-i18n="hero_sub">Sigue nuestras publicaciones en Instagram.</div>
+  </div>
+  <div class="fs-bottom" style="padding-bottom:2rem;">
+    <div class="hero-odo">
+      <div>
+        <div class="odo-lbl" style="margin-bottom:.4rem;" data-i18n="hero_odo_label"></div>
+        
+          
+        </div>
+        <div style="display:flex;align-items:center;gap:.8rem;">
+    </div>
+    <div class="fs-actions">
+      <a href="https://www.aceropress.com/" class="btn-glass hot" target="_blank" rel="noopener noreferrer">
+    <span>ACEROPRESS</span>
+</a>
+      <a href="#tecnologia" class="btn-outro"> <span>STUDIO</span></a>
+      
+    </div>
+      
+    <div class="scroll-hint" data-i18n="hero_scroll_hint">Explora</div>
+  </div>
+</section>
+<!-- Marquee -->
+<div class="mq-wrap">
+  <div class="mq-track" data-i18n-html="marquee">
+    <span class="mh">· Taza #012.847 </span><span>· Etiopía Yirgacheffe</span><span class="mc"> · 1:15 · 92°C </span><span>· Colombia Huila</span><span class="mh"> · 抽出 / extracción </span><span>· Brasil Cerrado</span><span class="mc"> · #aceropress50k </span><span>· Bourbon Rosado</span><span class="mh"> · 372 días restantes · </span><span>AeroPress Go™</span><span class="mc"> · Pink Bourbon · </span>
+    <span class="mh">· Taza #012.847 </span><span>· Etiopía Yirgacheffe</span><span class="mc"> · 1:15 · 92°C </span><span>· Colombia Huila</span><span class="mh"> · 抽出 / extracción </span><span>· Brasil Cerrado</span><span class="mc"> · #aceropress50k </span><span>· Bourbon Rosado</span><span class="mh"> · 372 días restantes · </span><span>AeroPress Go™</span><span class="mc"> · Pink Bourbon · </span>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════════════════╗
+     ║       SECCIÓN TECNOLOGÍA — SCROLLYTELLING       ║
+     ╚══════════════════════════════════════════════════╝ -->
+<div id="tecnologia"></div>
+
+<!-- ── INTRO PANEL ── -->
+<div id="tecnologia-intro">
+  <div class="tec-intro-eyebrow" data-i18n="tec_intro_eyebrow">FIG. 03 — Tecnología · IA aplicada </div>
+  <h2 class="tec-intro-title" data-i18n-html="tec_intro_title">
+    Tu espacio,<br>
+    <span class="line2">diseñado.</span>
+    <span class="line3">con inteligencia .</span>
+  </h2>
+  <p class="tec-intro-sub" data-i18n-html="tec_intro_sub">
+    IA, datos y diseño al servicio de cada esapcio.<br>
+    Del espacio físico a la presencia digital.
+  </p>
+  
+  </div>
+  <div class="tec-scroll-cue" aria-hidden="true">
+    <div class="tec-scroll-line"></div>
+    <span>scroll</span>
+  </div>
+</div>
+    <!-- Marquee -->
+<div class="mq-wrap">
+  <div class="mq-track" data-i18n-html="marquee">
+    <span class="mh">· Taza #012.847 </span><span>· Etiopía Yirgacheffe</span><span class="mc"> · 1:15 · 92°C </span><span>· Colombia Huila</span><span class="mh"> · 抽出 / extracción </span><span>· Brasil Cerrado</span><span class="mc"> · #aceropress50k </span><span>· Bourbon Rosado</span><span class="mh"> · 372 días restantes · </span><span>AeroPress Go™</span><span class="mc"> · Pink Bourbon · </span>
+    <span class="mh">· Taza #012.847 </span><span>· Etiopía Yirgacheffe</span><span class="mc"> · 1:15 · 92°C </span><span>· Colombia Huila</span><span class="mh"> · 抽出 / extracción </span><span>· Brasil Cerrado</span><span class="mc"> · #aceropress50k </span><span>· Bourbon Rosado</span><span class="mh"> · 372 días restantes · </span><span>AeroPress Go™</span><span class="mc"> · Pink Bourbon · </span>
+  </div>
+</div>
+
+<!-- ── STICKY SCROLL (3 paneles) ── -->
+<div class="tec-sticky-wrap" id="tec-wrap">
+  <div class="tec-sticky-inner" id="tec-inner">
+
+    <!-- BLUEPRINT BASE -->
+    <div class="tec-bg" id="tec-bg0" style="z-index:0">
+      <div class="tec-bg-blueprint"></div>
+      <!-- Líneas de cotas blueprint -->
+      <div class="bp-lines">
+        <div class="bp-line h" style="top:25%"></div>
+        <div class="bp-line h" style="top:50%"></div>
+        <div class="bp-line h" style="top:75%"></div>
+        <div class="bp-line v" style="left:33%"></div>
+        <div class="bp-line v" style="left:66%"></div>
+        <div class="bp-dot" style="top:25%;left:33%;transform:translate(-50%,-50%)"></div>
+        <div class="bp-dot" style="top:50%;left:66%;transform:translate(-50%,-50%)"></div>
+        <div class="bp-dot" style="top:75%;left:33%;transform:translate(-50%,-50%)"></div>
+      </div>
+    </div>
+
+    <!-- FONDO PANEL 1 — Rediseño de espacio -->
+    <div class="tec-bg" id="tec-bg1" style="opacity:0;z-index:1">
+      <video autoplay muted loop playsinline src="images/redesing.mp4"></video>
+      <div class="ph">
+        <div class="ph-ico">🏛</div>
+        <span>images/rediseno-cafeteria.jpg</span>
+        <span style="font-size:9px;opacity:.4">antes / después · 1600×900</span>
+      </div>
+      <div class="tec-photo-overlay"></div>
+    </div>
+
+    <!-- FONDO PANEL 2 — Carta -->
+    <div class="tec-bg" id="tec-bg2" style="opacity:0;z-index:1">
+      <video autoplay muted loop playsinline src=""></video>
+      <div class="ph" style="background:#12100e">
+        <div class="ph-ico"></div>
+        <span style="color:rgba(255,255,255,.2)"></span>
+        <span style="font-size:9px;color:rgba(255,255,255,.12)"></span>
+      </div>
+      <div class="tec-photo-overlay" style="background:linear-gradient(to bottom,rgba(10,8,5,.4),rgba(10,8,5,.9))"></div>
+    </div>
+
+    <!-- FONDO PANEL 3 — Bebidas -->
+    
+
+    <!-- Anotaciones blueprint que rotan -->
+    <div class="tec-fig-annot tl" id="tec-fig-tl" data-i18n-html="tec_fig_tl">FIG. 03.1 — REDISEÑO DE ESPACIO<br>Bogotá · 2.600 msnm · IA + Diseño</div>
+    <div class="tec-fig-annot tr" id="tec-fig-tr" data-i18n-html="tec_fig_tr">Flujo de clientes · Mapas de calor<br>Generación 3D · 72h diagnóstico</div>
+
+    <!-- COPY 1 — Espacio -->
+    <div class="tec-copy show" id="tec-c1">
+      <div class="tec-step" data-i18n="tec_c1_step">01 · Espacio</div>
+      <h2 class="tec-title" data-i18n-html="tec_c1_title">Rediseña<br><span class="th-word">tu café</span></h2>
+      <p class="tec-body" data-i18n="tec_c1_body">IA que analiza tu espacio, detecta zonas muertas y propone una nueva distribución. Del diagnóstico a la propuesta en 72 horas.</p>
+      <div class="tec-tags">
+        <span class="tec-tag" data-i18n="tec_c1_tag1">Visión computacional</span>
+        <span class="tec-tag" data-i18n="tec_c1_tag2">Flujo de clientes</span>
+        <span class="tec-tag" data-i18n="tec_c1_tag3">Diseño 3D</span>
+        <span class="tec-tag" data-i18n="tec_c1_tag4">Mapas de calor</span>
+      </div>
+    </div>
+
+       <!-- Indicador de progreso -->
+    <div class="tec-progress">
+      <div class="tec-pdot on" id="tp1"></div>
+      <div class="tec-pdot" id="tp2"></div>
+      
+    </div>
+
+  </div>
+</div>
+<div class="thermal-bar"></div>
+<!-- ── chat TECNOLOGÍA ── -->
+<div class="layout">
+ 
+
+  <!-- ============ IZQUIERDA: SCROLLYTELLING ============ -->
+  <section class="story" id="story">
+    <div class="story-grid-bg"></div>
+ 
+    <div class="story-intro">
+      <div class="about-eyebrow"><span class="dot"></span> <span data-i18n="story_eyebrow">FIG. 00 — CÓMO FUNCIONA</span></div>
+      <h1 class="about-h1" data-i18n-html="story_h1">Tu cafetería,<br><em>reinventada</em><br>antes de mover un ladrillo.</h1>
+      <p class="about-lead" data-i18n="story_lead">acero.studio convierte una foto real de tu espacio en una propuesta de rediseño en minutos, y te conecta directo con un asesor para llevarla a obra.</p>
+      <div class="story-scroll-cue"><span class="only-desktop" data-i18n="story_scroll_desktop">explora los pasos →</span><span class="only-mobile" data-i18n="story_scroll_mobile">desliza para ver cómo ↓</span></div>
+    </div>
+ 
+    <div class="story-steps">
+ 
+      <article class="story-step" data-step="1">
+        <span class="fig-tag" data-i18n="story_step1_fig">FIG. 01 — CAPTURA</span>
+        <span class="story-num">01</span>
+        <h2 data-i18n="story_step1_title">Sube una foto real</h2>
+        <p data-i18n="story_step1_body">Desde la cámara o la galería. Interior o fachada, tal como está hoy — sin planos, sin medidas, sin renders previos.</p>
+        <div class="story-visual">
+          <div class="sv-frame">
+            <div class="sv-corner tl"></div><div class="sv-corner tr"></div>
+            <div class="sv-corner bl"></div><div class="sv-corner br"></div>
+            <div class="sv-icon">📷</div>
+          </div>
+        </div>
+      </article>
+ 
+      <article class="story-step" data-step="2">
+        <span class="fig-tag" data-i18n="story_step2_fig">FIG. 02 — ESTILO</span>
+        <span class="story-num">02</span>
+        <h2 data-i18n="story_step2_title">Elige un estilo</h2>
+        <p data-i18n="story_step2_body">Minimalista, industrial, cálido, escandinavo, tropical — o describe el tuyo. Cada opción ajusta materiales, color y luz.</p>
+        <div class="story-visual">
+          <div class="sv-chips">
+            <span data-i18n="chip1">Minimalista</span><span data-i18n="chip2">Industrial</span><span data-i18n="chip3">Cálido</span><span data-i18n="chip4">Escandinavo</span>
+          </div>
+        </div>
+      </article>
+ 
+      <article class="story-step" data-step="3">
+        <span class="fig-tag" data-i18n="story_step3_fig">FIG. 03 — GENERACIÓN</span>
+        <span class="story-num">03</span>
+        <h2 data-i18n="story_step3_title">La IA genera la propuesta</h2>
+        <p data-i18n="story_step3_body">Mantenemos la estructura real del local — paredes, ventanas, columnas — y solo transformamos acabados, mobiliario y estilo.</p>
+        <div class="story-visual">
+          <div class="sv-scan"><div class="sv-scan-line"></div></div>
+        </div>
+      </article>
+ 
+      <article class="story-step" data-step="4">
+        <span class="fig-tag" data-i18n="story_step4_fig">FIG. 04 — CONTACTO</span>
+        <span class="story-num">04</span>
+        <h2 data-i18n="story_step4_title">Cotiza por WhatsApp</h2>
+        <p data-i18n="story_step4_body">Con la propuesta lista, hablas directo con un asesor de acero.studio para llevarla a obra: materiales, tiempos y presupuesto.</p>
+        <div class="story-visual">
+          <div class="sv-wa" data-i18n="story_wa_btn" data-wa-trigger data-wa-message="Hola, vi la propuesta de rediseño en acero.studio y quiero cotizar." role="button" tabindex="0" style="cursor:pointer;">💬 Enviar a WhatsApp →</div>
+        </div>
+      </article>
+ 
+    </div>
+ 
+    <div class="story-outro">
+      <p><span class="only-desktop" data-i18n="story_outro_desktop">Pruébalo ahora en el panel de la derecha →</span><span class="only-mobile" data-i18n="story_outro_mobile">Pruébalo ahora ↓</span></p>
+    </div>
+  </section>
+ 
+  <!-- Puntos de progreso (solo desktop) -->
+  <div class="story-progress" id="storyProgress">
+    <span class="p-dot" data-p="1"></span>
+    <span class="p-dot" data-p="2"></span>
+    <span class="p-dot" data-p="3"></span>
+    <span class="p-dot" data-p="4"></span>
+  </div>
+ 
+  <!-- ============ DERECHA: CHAT ============ -->
+  <section class="chat-panel">
+    <div class="app story-active" id="appShell">
+      <div class="grid-bg"></div>
+ 
+      <header>
+        <div class="logo-unit">
+    <img src="images/logo.png" alt="ACERO.press" class="logo-acero">
+    <span class="logo-studio">.studio</span>
+  </div>
+        <div class="h-fig">
+          <span data-i18n="chat_fig">FIG. 05 — ASISTENTE</span>
+          <span id="stateTag" data-i18n="chat_state">estado: bienvenida</span>
+        </div>
+      </header>
+ 
+      <div class="story-inline" id="storyInline">
+        <div class="si-intro">
+          <span class="fig-tag" data-i18n="story_eyebrow">FIG. 00 — CÓMO FUNCIONA</span>
+          <p class="si-lead" data-i18n="si_lead">Convierte una foto real de tu cafetería en una propuesta de rediseño en minutos.</p>
+        </div>
+        <div class="si-steps">
+          <div class="si-step">
+            <span class="si-num">01</span>
+            <div><b data-i18n="si_step1_title">Sube una foto</b><p data-i18n="si_step1_body">Cámara o galería, tal como está hoy.</p></div>
+          </div>
+          <div class="si-step">
+            <span class="si-num">02</span>
+            <div><b data-i18n="story_step2_title">Elige un estilo</b><p data-i18n="si_step2_body">Minimalista, industrial, cálido, escandinavo…</p></div>
+          </div>
+          <div class="si-step">
+            <span class="si-num">03</span>
+            <div><b data-i18n="story_step3_title">La IA genera la propuesta</b><p data-i18n="si_step3_body">Misma estructura del local, nuevo estilo.</p></div>
+          </div>
+          <div class="si-step">
+            <span class="si-num">04</span>
+            <div><b data-i18n="story_step4_title">Cotiza por WhatsApp</b><p data-i18n="si_step4_body">Habla directo con un asesor real.</p></div>
+          </div>
+        </div>
+        <div class="si-cta" data-i18n="si_cta">↓ Usa los botones de abajo para empezar</div>
+      </div>
+ 
+      <div class="chat" id="chat"></div>
+ 
+      <div class="composer">
+        <div class="composer-row">
+          <button class="icon-btn" id="btnCamera" data-i18n-title="btn_camera" title="Tomar foto">📷</button>
+          <button class="icon-btn" id="btnGallery" data-i18n-title="btn_gallery" title="Subir de galería">🖼️</button>
+          <input type="text" class="text-input" id="textInput" data-i18n-placeholder="input_placeholder" placeholder="Escribe un mensaje…">
+          <button class="send-btn" id="btnSend">➤</button>
+        </div>
+        <div class="composer-hint" data-i18n="composer_hint">Enfocado en rediseño de interior y fachada de cafeterías</div>
+      </div>
+      <!-- Estos inputs son invisibles pero necesarios para que la lógica funcione -->
+        <input type="file" id="fileCamera" accept="image/*" capture="environment" style="display:none;">
+        <input type="file" id="fileGallery" accept="image/*" style="display:none;">
+ 
+     
+    </div>
+  </section>
+ 
+</div>
+
+
+<div class="thermal-bar"></div>
+<!-- Marquee -->
+<div class="mq-wrap">
+  <div class="mq-track" data-i18n-html="marquee">
+    <span class="mh">· Taza #012.847 </span><span>· Etiopía Yirgacheffe</span><span class="mc"> · 1:15 · 92°C </span><span>· Colombia Huila</span><span class="mh"> · 抽出 / extracción </span><span>· Brasil Cerrado</span><span class="mc"> · #aceropress50k </span><span>· Bourbon Rosado</span><span class="mh"> · 372 días restantes · </span><span>AeroPress Go™</span><span class="mc"> · Pink Bourbon · </span>
+    <span class="mh">· Taza #012.847 </span><span>· Etiopía Yirgacheffe</span><span class="mc"> · 1:15 · 92°C </span><span>· Colombia Huila</span><span class="mh"> · 抽出 / extracción </span><span>· Brasil Cerrado</span><span class="mc"> · #aceropress50k </span><span>· Bourbon Rosado</span><span class="mh"> · 372 días restantes · </span><span>AeroPress Go™</span><span class="mc"> · Pink Bourbon · </span>
+  </div>
+</div>
+
+<!-- Stats rápidas -->
+<div class="stats-bar">
+  <div class="stat-cell"><div class="stat-v hot">60</div><div class="stat-l" data-i18n="stat_designs">DISEÑOS</div></div>
+  <div class="stat-cell"><div class="stat-v">100</div><div class="stat-l" data-i18n="stat_styles">ESTILOS</div></div>
+  <div class="stat-cell"><div class="stat-v">~20</div><div class="stat-l" data-i18n="stat_clients">CLIENTES</div></div>
+  <div class="stat-cell"><div class="stat-v">IA</div><div class="stat-l" data-i18n="stat_design">DISEÑO</div></div>
+</div>
+
+  <!-- Posts pequeños -->
+<section class="ig-fullscreen" id="instagram">
+    <div class="ig-grid">
+       <div class="ig-post">
+        <div class="ig-media">
+          <!-- <img src="images/ig-post-01.jpg" alt=""> -->
+          <div class="ig-media-ph">
+            <span class="ph-icon">☕</span>
+            <div class="ph-lbl-sm" data-i18n="ig1_lbl">Taza #012.846 · video corto</div>
+            <span class="ph-file-sm">images/ig-post-01.jpg</span>
+          </div>
+        </div>
+        <div class="ig-post-overlay"></div>
+        <div class="ig-post-info"><div class="ig-post-num">#012.846</div><div class="ig-post-cap" data-i18n="ig1_cap">1:14 · tueste oscuro</div></div>
+      </div>
+
+      <div class="ig-post">
+        <div class="ig-media">
+          <!-- <img src="images/ig-post-02.jpg" alt=""> -->
+          <div class="ig-media-ph">
+            <span class="ph-icon">🌿</span>
+            <div class="ph-lbl-sm" data-i18n="ig2_lbl">Taza #012.845 · Colombia Huila</div>
+            <span class="ph-file-sm">images/ig-post-02.jpg</span>
+          </div>
+        </div>
+        <div class="ig-post-overlay"></div>
+        <div class="ig-post-info"><div class="ig-post-num">#012.845</div><div class="ig-post-cap" data-i18n="ig2_cap">Colombia Huila · clásico</div></div>
+      </div>
+
+      <div class="ig-post">
+        <div class="ig-media">
+          <!-- <img src="images/ig-post-03.jpg" alt=""> -->
+          <div class="ig-media-ph">
+            <span class="ph-icon">📦</span>
+            <div class="ph-lbl-sm" data-i18n="ig3_lbl">Taza #012.844 · nuevo saco Huila</div>
+            <span class="ph-file-sm">images/ig-post-03.jpg</span>
+          </div>
+        </div>
+        <div class="ig-post-overlay"></div>
+        <div class="ig-post-info"><div class="ig-post-num">#012.844</div><div class="ig-post-cap" data-i18n="ig3_cap">Nuevo lote Huila · 5 días</div></div>
+      </div>
+      <div class="ig-post">
+        <div class="ig-media">
+          <!-- <img src="images/ig-post-02.jpg" alt=""> -->
+          <div class="ig-media-ph">
+            <span class="ph-icon">🌿</span>
+            <div class="ph-lbl-sm" data-i18n="ig2_lbl">Taza #012.845 · Colombia Huila</div>
+            <span class="ph-file-sm">images/ig-post-02.jpg</span>
+          </div>
+        </div>
+        <div class="ig-post-overlay"></div>
+        <div class="ig-post-info"><div class="ig-post-num">#012.845</div><div class="ig-post-cap" data-i18n="ig2_cap">Colombia Huila · clásico</div></div>
+      </div>
+
+      <div class="ig-post">
+        <div class="ig-media">
+          <!-- <img src="images/ig-post-03.jpg" alt=""> -->
+          <div class="ig-media-ph">
+            <span class="ph-icon">📦</span>
+            <div class="ph-lbl-sm" data-i18n="ig3_lbl">Taza #012.844 · nuevo saco Huila</div>
+            <span class="ph-file-sm">images/ig-post-03.jpg</span>
+          </div>
+        </div>
+        <div class="ig-post-overlay"></div>
+        <div class="ig-post-info"><div class="ig-post-num">#012.844</div><div class="ig-post-cap" data-i18n="ig3_cap">Nuevo lote Huila · 5 días</div></div>
+      </div>
+
+      <div class="ig-post">
+        <div class="ig-media">
+          <!-- <video autoplay muted loop playsinline src="images/ig-reel-01.mp4"></video> -->
+          <div class="ig-media-ph">
+            <span class="ph-icon">🎬</span>
+            <div class="ph-lbl-sm" data-i18n="ig4_lbl">Reel — sesión 5 tazas · time-lapse</div>
+            <span class="ph-file-sm">images/ig-reel-01.mp4</span>
+          </div>
+        </div>
+        <div class="ig-post-overlay"></div>
+        <div class="ig-post-info"><div class="ig-post-num">#012.843</div><div class="ig-post-cap" data-i18n="ig4_cap">5 tazas · curvas de extracción</div></div>
+      </div>
+    </div>
+    </section>
+
+<div class="thermal-bar"></div>
+<!-- ========== THERMAL STATS ========== -->
+<section class="thermal-section">
+  <div class="ts-header">
+    <h2>
+      <span style="background:linear-gradient(90deg,var(--t5),var(--t7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" data-i18n="allies_title">
+        ALIADOS
+      </span>
+    </h2>
+  </div>
+  <div class="mq-wrap allies-wrap">
+    <div class="mq-track">
+      <!-- BLOQUE ORIGINAL -->
+      <div class="ally-item">
+        <img src="images/logo1.png" alt="Aliado 1" data-i18n-alt="ally_alt1">
+      </div>
+      <div class="ally-item">
+        <img src="images/logo2.png" alt="Aliado 2" data-i18n-alt="ally_alt2">
+      </div>
+      <div class="ally-item">
+        <img src="images/logo3.png" alt="Aliado 3" data-i18n-alt="ally_alt3">
+      </div>
+      <div class="ally-item">
+        <img src="images/logo4.png" alt="Aliado 4" data-i18n-alt="ally_alt4">
+      </div>
+      <div class="ally-item">
+        <img src="images/logo5.png" alt="Aliado 5" data-i18n-alt="ally_alt5">
+      </div>
+      <!-- DUPLICADO PARA LOOP INFINITO -->
+      <div class="ally-item">
+        <img src="images/logo1.png" alt="Aliado 1" data-i18n-alt="ally_alt1">
+      </div>
+      <div class="ally-item">
+        <img src="images/logo2.png" alt="Aliado 2" data-i18n-alt="ally_alt2">
+      </div>
+      <div class="ally-item">
+        <img src="images/logo3.png" alt="Aliado 3" data-i18n-alt="ally_alt3">
+      </div>
+      <div class="ally-item">
+        <img src="images/logo4.png" alt="Aliado 4" data-i18n-alt="ally_alt4">
+      </div>
+      <div class="ally-item">
+        <img src="images/logo5.png" alt="Aliado 5" data-i18n-alt="ally_alt5">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== B2B / ACERO.STUDIO ========== -->
+<section class="b2b-section" id="b2b">
+  <div class="section-label">
+    <span class="num thermal-num">05</span><span class="ttl">B2B</span>
+    <span class="rule"></span>
+    <span class="sub" data-i18n="b2b_fig">FIG. 05 — SERVICIOS CORPORATIVOS</span> 
+  </div>
+  <div class="sec-lbl" data-i18n="b2b_sec_lbl">// Para empresas, arquitectos y marcas</div>
+  <h2><span style="background:linear-gradient(90deg,var(--accent),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" data-i18n="b2b_h2">SOLUCIONES ENTERPRISE</span></h2>
+  <p class="sec-desc" data-i18n="b2b_desc">Infraestructura visual e inteligencia espacial para cadenas comerciales, firmas de arquitectura y desarrolladores que buscan acelerar la conversión de sus proyectos.</p>
+  
+  <div class="b2b-grid">
+    <div class="b2b-card">
+      <div class="b2b-ico">🏪</div>
+      <div class="b2b-title" data-i18n="b2b_card1_title">Cadenas y Franquicias</div>
+      <div class="b2b-d" data-i18n="b2b_card1_desc">Estandarización de imagen e interiorismo para múltiples sedes. Análisis visual automatizado y propuestas conceptuales masivas.</div>
+    </div>
+    
+    <div class="b2b-card">
+      <div class="b2b-ico">📐</div>
+      <div class="b2b-title" data-i18n="b2b_card2_title">Estudios de Arquitectura</div>
+      <div class="b2b-d" data-i18n="b2b_card2_desc">Aceleración de anteproyectos con IA. Generación rápida de iteraciones estéticas y análisis de flujos comerciales para presentación a clientes.</div>
+    </div>
+    
+    <div class="b2b-card">
+      <div class="b2b-ico">🏢</div>
+      <div class="b2b-title" data-i18n="b2b_card3_title">Real Estate & Commercial</div>
+      <div class="b2b-d" data-i18n="b2b_card3_desc">Visualización de potencial para locales desocupados. Renders comerciales inmediatos para agilizar el arrendamiento o venta de inmuebles.</div>
+    </div>
+    
+    <div class="b2b-card">
+      <div class="b2b-ico">☕</div>
+      <div class="b2b-title" data-i18n="b2b_card4_title">Gastronomía & Hospitality</div>
+      <div class="b2b-d" data-i18n="b2b_card4_desc">Optimización visual de barras, zonas de alto tráfico y comedores. Layouts técnicos enfocados en maximizar la capacidad y la experiencia del usuario.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== BLOG ========== -->
+<section class="blog-section" id="blog">
+  <div class="section-label" style="margin-bottom:2rem;">
+    <span class="num thermal-num">06</span><span class="ttl" data-i18n="nav_blog">Blog</span>
+    <span class="rule" style="border-color:rgba(255,255,255,.15);background:rgba(255,255,255,.08);"></span>
+    <span class="sub" data-i18n="blog_fig">FIG. 06 — CONTENIDO TÉCNICO</span>
+  </div>
+  <div class="sec-lbl" data-i18n="blog_sec_lbl">// Arquitectura, IA y rediseño · jobs to be done</div>
+  <h2 class="sec-h2" style="color:#fff;" data-i18n="blog_h2">Conocimiento</h2>
+  <p class="sec-desc" data-i18n="blog_desc">Arquitectura, diseño de interiores y rediseño con inteligencia artificial aplicados al café de especialidad — pensado y escrito desde Bogotá.</p>
+  <div class="blog-grid">
+    <div class="blog-card"><div class="blog-tag" data-i18n="blog1_tag">Arquitectura</div><div class="blog-title" data-i18n="blog1_title">Los 6 principios de arquitectura que hacen que una cafetería se sienta bien</div><div class="blog-ex" data-i18n="blog1_ex">Flujo de circulación, zonificación barra-mesas, acústica y luz natural definen la experiencia antes que cualquier elección de color. Un espacio bien zonificado reduce fricción en hora pico y hace que los clientes se queden más tiempo.</div></div>
+    <div class="blog-card"><div class="blog-tag" data-i18n="blog2_tag">IA + Rediseño</div><div class="blog-title" data-i18n="blog2_title">Cómo funciona un rediseño con IA: de la foto a la propuesta en 3 pasos</div><div class="blog-ex" data-i18n="blog2_ex">Subes una foto real de tu espacio, eliges un estilo y la IA genera una propuesta manteniendo paredes, ventanas y columnas tal como están. Todo el proceso, de la captura a la propuesta visual, toma minutos en vez de semanas.</div></div>
+    <div class="blog-card"><div class="blog-tag" data-i18n="blog3_tag">Interiorismo</div><div class="blog-title" data-i18n="blog3_title">Materiales que sí funcionan en un café de especialidad: acero, madera y concreto</div><div class="blog-ex" data-i18n="blog3_ex">El acero visto resiste el uso diario y comunica honestidad de proceso; la madera cálida equilibra la frialdad del metal; el concreto pulido absorbe mejor el ruido de piso que la cerámica. La elección de materiales es tan técnica como estética.</div></div>
+    <div class="blog-card"><div class="blog-tag" data-i18n="blog4_tag">Tendencias 2026</div><div class="blog-title" data-i18n="blog4_title">Las 5 tendencias de diseño de interiores que van a dominar las cafeterías en 2026</div><div class="blog-ex" data-i18n="blog4_ex">Minimalismo cálido, materiales honestos como acero y madera, iluminación circadiana y biofilia urbana lideran el cambio. La tendencia no es decorar más, es comunicar mejor con menos elementos.</div></div>
+    <div class="blog-card"><div class="blog-tag" data-i18n="blog5_tag">Luz + Acústica</div><div class="blog-title" data-i18n="blog5_title">Por qué el ruido y la luz importan más que la decoración en una cafetería</div><div class="blog-ex" data-i18n="blog5_ex">Un espacio con mala acústica se siente caótico aunque el diseño visual sea impecable, y la temperatura de color de la luz cambia cuánto tiempo percibe quedarse un cliente. Son de las primeras variables que un rediseño con IA debería resolver, antes que el color de las paredes.</div></div>
+    <div class="blog-card"><div class="blog-tag" data-i18n="blog6_tag">Automatización</div><div class="blog-title" data-i18n="blog6_title">n8n para negocios pequeños: automatizar redes sociales sin contratar un equipo de marketing</div><div class="blog-ex" data-i18n="blog6_ex">Un flujo simple conecta Telegram, almacenamiento en la nube y publicación nativa en Instagram, TikTok y YouTube. La automatización no reemplaza la creatividad, elimina el trabajo repetitivo.</div></div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="hero-footer">
+  <!-- Vídeo de Fondo -->
+  <video class="footer-video-bg" autoplay loop muted playsinline>
+    <source src="image/hero_main1.mp4" type="video/mp4" />
+    Tu navegador no soporta vídeos en HTML5.
+  </video>
+
+  <!-- Capa oscura opcional para mejorar legibilidad del texto -->
+  <div class="footer-overlay"></div>
+
+  <!-- Contenido sobre el vídeo -->
+  <div class="footer-hero-content">
+    <h2>Tap for more cafe content!</h2>
+    
+    <div class="social-icons">
+      <a href="#" aria-label="Facebook">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z"/>
+        </svg>
+      </a>
+
+      <a href="#" aria-label="Instagram">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+        </svg>
+      </a>
+
+      <a href="#" aria-label="TikTok">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 3 15.68 6.34 6.34 0 0 0 9.33 22a6.34 6.34 0 0 0 6.34-6.34V9.37a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-.85-.8z"/>
+        </svg>
+      </a>
+
+      <a href="#" aria-label="YouTube">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+  
+</footer>
+<!-- ========== WHATSAPP ========== -->
+<a href="https://wa.me/57XXXXXXXXXX" id="wa-float-btn" class="wa-float" target="_blank" rel="noopener" data-i18n-aria="wa_aria" aria-label="Escríbenos por WhatsApp" data-wa-trigger data-wa-message="Hola, quiero información sobre el rediseño de mi cafetería con IA.">
+  <span class="wa-float-pulse"></span>
+  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" fill="white">
+    <path d="M16.04 4C9.37 4 3.98 9.36 3.98 15.99c0 2.27.63 4.4 1.73 6.23L4 28l6.02-1.58a12.1 12.1 0 0 0 6.02 1.59h.01c6.67 0 12.06-5.36 12.06-11.99C28.1 9.36 22.71 4 16.04 4zm0 21.94h-.01a9.9 9.9 0 0 1-5.06-1.39l-.36-.21-3.58.94.96-3.5-.24-.36a9.86 9.86 0 0 1-1.52-5.27c0-5.49 4.49-9.96 10.02-9.96 5.52 0 10.01 4.47 10.01 9.96 0 5.5-4.49 9.95-10.02 9.95zm5.48-7.45c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.47-.89-.79-1.49-1.76-1.66-2.06-.17-.3-.02-.46.13-.61.14-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.06 2.87 1.21 3.07.15.2 2.09 3.2 5.08 4.48.71.31 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.08 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.13-.27-.2-.57-.35z"/>
+  </svg>
+</a>
+<script>
+function initBannerModal() {
+  const bannerModal = document.getElementById('bannerModal');
+  const closeBannerBtn = document.getElementById('closeBannerBtn');
+
+  if (!bannerModal || !closeBannerBtn) {
+    console.warn('[Banner] bannerModal o closeBannerBtn no existen en el DOM');
+    return;
+  }
+
+  function closeBanner() { bannerModal.classList.add('hidden'); }
+  function openBanner()  { bannerModal.classList.remove('hidden'); }
+
+  closeBannerBtn.addEventListener('click', closeBanner);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeBanner();
+  });
+
+  // Necesario porque tu HTML llama a closeBanner()/openBanner() vía onclick="" inline
+  window.closeBanner = closeBanner;
+  window.openBanner  = openBanner;
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initBannerModal);
+} else {
+  initBannerModal();
+}
+</script>
+   
+
+  <!-- ===== i18n: auto-detect + manual toggle, + menú hamburguesa ===== -->
+  <script>
+  (function () {
+    var translations = {
+      es: {
+        meta_title: "AceroStudio — Diseño, Código y Café",
+        meta_description: "Estudio de diseño digital, desarrollo web y automatización con alma de café filtrado. Proyectamos marcas con estética técnica y funcional desde Bogotá.",
+        nav_home: "Inicio", nav_tech: "Tecnología", nav_coffee: "Café", nav_projects: "Proyectos", nav_b2b: "B2B", nav_blog: "Blog",
+        hero_annot_tr: "Reto activo · #aceropress50k<br>抽出 / extracción<br>反転式 / inversión",
+        hero_eyebrow: "Reto activo · Bogotá, 2.600 msnm",
+        hero_h1: '.<br><br><span class="hot">ONE SHOT TO REDESING.</span>',
+        hero_sub: "Sigue nuestras publicaciones en Instagram.",
+        hero_odo_label: "",
+        hero_scroll_hint: "Explora",
+        marquee: '<span class="mh">· Taza #012.847 </span><span>· Etiopía Yirgacheffe</span><span class="mc"> · 1:15 · 92°C </span><span>· Colombia Huila</span><span class="mh"> · 抽出 / extracción </span><span>· Brasil Cerrado</span><span class="mc"> · #aceropress50k </span><span>· Bourbon Rosado</span><span class="mh"> · 372 días restantes · </span><span>AeroPress Go™</span><span class="mc"> · Pink Bourbon · </span><span class="mh">· Taza #012.847 </span><span>· Etiopía Yirgacheffe</span><span class="mc"> · 1:15 · 92°C </span><span>· Colombia Huila</span><span class="mh"> · 抽出 / extracción </span><span>· Brasil Cerrado</span><span class="mc"> · #aceropress50k </span><span>· Bourbon Rosado</span><span class="mh"> · 372 días restantes · </span><span>AeroPress Go™</span><span class="mc"> · Pink Bourbon · </span>',
+        tec_intro_eyebrow: "FIG. 03 — Tecnología · IA aplicada al café",
+        tec_intro_title: 'Tu café,<br><span class="line2">rediseñado.</span><span class="line3">con inteligencia.</span>',
+        tec_intro_sub: "IA, datos y diseño al servicio de cada café de especialidad.<br>Del espacio físico a la presencia digital, del tueste al campo.",
+        tec_stat1: "ticket promedio post-rediseño", tec_stat2: "diagnóstico → propuesta", tec_stat3: "alcance digital · 90 días", tec_stat4: "diseñado para Bogotá",
+        tec_fig_tl: "FIG. 03.1 — REDISEÑO DE ESPACIO<br>Bogotá · 2.600 msnm · IA + Diseño",
+        tec_fig_tr: "Flujo de clientes · Mapas de calor<br>Generación 3D · 72h diagnóstico",
+        tec_c1_step: "01 · Espacio", tec_c1_title: 'Rediseña<br><span class="th-word">tu café</span>',
+        tec_c1_body: "IA que analiza tu espacio, detecta zonas muertas y propone una nueva distribución. Del diagnóstico a la propuesta en 72 horas.",
+        tec_c1_tag1: "Visión computacional", tec_c1_tag2: "Flujo de clientes", tec_c1_tag3: "Diseño 3D", tec_c1_tag4: "Mapas de calor",
+        tec_c2_step: "02 · Identidad", tec_c2_title: 'Una carta<br><span class="th-word">que vende</span>',
+        tec_c2_body: "Diseño de menú que comunica origen, proceso y notas de cata. Jerarquía visual que guía al cliente hacia los productos de mayor margen.",
+        tec_c2_tag1: "Diseño editorial", tec_c2_tag2: "Trazabilidad QR", tec_c2_tag3: "Menú digital", tec_c2_tag4: "Presencia digital",
+        tec_c3_step: "03 · Estándar", tec_c3_title: 'Bebidas<br><span class="th-word">perfectas</span>',
+        tec_c3_body: "Cada bebida espresso documentada: dosis, ratio, tiempo, temperatura. El mismo estándar en cada turno, en cada barista, en cada taza.",
+        tec_c3_tag1: "Protocolo espresso", tec_c3_tag2: "Recetas calibradas", tec_c3_tag3: "Manual de servicio",
+        menu_header_logo: "· Cafetería de especialidad ·", menu_header_sub: "Bogotá · 2.600 msnm · temporada 2025",
+        menu_section1: "Espresso base", menu_item1_name: "Espresso solo", menu_item1_desc: "30ml · 9 bar · 27 seg",
+        menu_item2_desc: "Leche texturizada · 6oz", menu_item3_desc: "Doble ristretto · 160ml",
+        menu_section2: "Filtrado", menu_item4_name: "V60 de temporada", menu_item5_desc: "20h inmersión · 16oz",
+        std_header_title: "Estándar de bebidas", std_header_sub: "Base espresso · protocolo SCA · Bogotá 2.600 msnm",
+        std_col1: "Bebida", std_col2: "Dosis", std_footer_text: "Tiempo extracción: 25–30 seg · presión: 9 bar",
+        std_low: "bajo ←", std_high: "→ sobre",
+        story_eyebrow: "FIG. 00 — CÓMO FUNCIONA",
+        story_h1: "Tu cafetería,<br><em>reinventada</em><br>antes de mover un ladrillo.",
+        story_lead: "acero.studio convierte una foto real de tu espacio en una propuesta de rediseño en minutos, y te conecta directo con un asesor para llevarla a obra.",
+        story_scroll_desktop: "explora los pasos →", story_scroll_mobile: "desliza para ver cómo ↓",
+        story_step1_fig: "FIG. 01 — CAPTURA", story_step1_title: "Sube una foto real",
+        story_step1_body: "Desde la cámara o la galería. Interior o fachada, tal como está hoy — sin planos, sin medidas, sin renders previos.",
+        story_step2_fig: "FIG. 02 — ESTILO", story_step2_title: "Elige un estilo",
+        story_step2_body: "Minimalista, industrial, cálido, escandinavo, tropical — o describe el tuyo. Cada opción ajusta materiales, color y luz.",
+        chip1: "Minimalista", chip2: "Industrial", chip3: "Cálido", chip4: "Escandinavo",
+        story_step3_fig: "FIG. 03 — GENERACIÓN", story_step3_title: "La IA genera la propuesta",
+        story_step3_body: "Mantenemos la estructura real del local — paredes, ventanas, columnas — y solo transformamos acabados, mobiliario y estilo.",
+        story_step4_fig: "FIG. 04 — CONTACTO", story_step4_title: "Cotiza por WhatsApp",
+        story_step4_body: "Con la propuesta lista, hablas directo con un asesor de acero.studio para llevarla a obra: materiales, tiempos y presupuesto.",
+        story_wa_btn: "💬 Enviar a WhatsApp →",
+        story_outro_desktop: "Pruébalo ahora en el panel de la derecha →", story_outro_mobile: "Pruébalo ahora ↓",
+        chat_fig: "FIG. 05 — ASISTENTE", chat_state: "estado: bienvenida",
+        si_lead: "Convierte una foto real de tu cafetería en una propuesta de rediseño en minutos.",
+        si_step1_title: "Sube una foto", si_step1_body: "Cámara o galería, tal como está hoy.",
+        si_step2_body: "Minimalista, industrial, cálido, escandinavo…",
+        si_step3_body: "Misma estructura del local, nuevo estilo.",
+        si_step4_body: "Habla directo con un asesor real.",
+        si_cta: "↓ Usa los botones de abajo para empezar",
+        btn_camera: "Tomar foto", btn_gallery: "Subir de galería", input_placeholder: "Escribe un mensaje…",
+        composer_hint: "Enfocado en rediseño de interior y fachada de cafeterías",
+        stat_designs: "DISEÑOS", stat_styles: "ESTILOS", stat_clients: "CLIENTES", stat_design: "DISEÑO",
+        ig1_lbl: "Taza #012.846 · video corto", ig1_cap: "1:14 · tueste oscuro",
+        ig2_lbl: "Taza #012.845 · Colombia Huila", ig2_cap: "Colombia Huila · clásico",
+        ig3_lbl: "Taza #012.844 · nuevo saco Huila", ig3_cap: "Nuevo lote Huila · 5 días",
+        ig4_lbl: "Reel — sesión 5 tazas · time-lapse", ig4_cap: "5 tazas · curvas de extracción",
+        allies_title: "ALIADOS",
+        ally_alt1: "Aliado 1", ally_alt2: "Aliado 2", ally_alt3: "Aliado 3", ally_alt4: "Aliado 4", ally_alt5: "Aliado 5",
+        b2b_fig: "FIG. 05 — PROGRAMA COMERCIAL", b2b_sec_lbl: "// Para empresas y profesionales", b2b_h2: "ALIANZAS COMERCIALES",
+        b2b_desc: "Programa comercial para restaurantes, hoteles, oficinas y baristas que necesitan trazabilidad completa y consistencia en cada entrega.",
+        b2b_card1_title: "Restaurantes", b2b_card1_desc: "Variedades curadas para carta de café. Ficha técnica, capacitación y entregas semanales.",
+        b2b_card2_title: "Hoteles", b2b_card2_desc: "Amenities con café de especialidad. Storytelling del productor para el huésped.",
+        b2b_card3_title: "Oficinas", b2b_card3_desc: "Café de especialidad como beneficio corporativo. Entregas quincenales y variedad rotativa.",
+        b2b_card4_title: "Baristas", b2b_card4_desc: "Acceso directo a lotes especiales. Especificaciones técnicas completas y precios de tostador.",
+        blog_fig: "FIG. 06 — CONTENIDO TÉCNICO", blog_sec_lbl: "// Arquitectura, IA y rediseño · jobs to be done", blog_h2: "Conocimiento",
+        blog_desc: "Arquitectura, diseño de interiores y rediseño con inteligencia artificial aplicados al café de especialidad — pensado y escrito desde Bogotá.",
+        blog1_tag: "Arquitectura", blog1_title: "Los 6 principios de arquitectura que hacen que una cafetería se sienta bien", blog1_ex: "Flujo de circulación, zonificación barra-mesas, acústica y luz natural definen la experiencia antes que cualquier elección de color. Un espacio bien zonificado reduce fricción en hora pico y hace que los clientes se queden más tiempo.",
+        blog2_tag: "IA + Rediseño", blog2_title: "Cómo funciona un rediseño con IA: de la foto a la propuesta en 3 pasos", blog2_ex: "Subes una foto real de tu espacio, eliges un estilo y la IA genera una propuesta manteniendo paredes, ventanas y columnas tal como están. Todo el proceso, de la captura a la propuesta visual, toma minutos en vez de semanas.",
+        blog3_tag: "Interiorismo", blog3_title: "Materiales que sí funcionan en un café de especialidad: acero, madera y concreto", blog3_ex: "El acero visto resiste el uso diario y comunica honestidad de proceso; la madera cálida equilibra la frialdad del metal; el concreto pulido absorbe mejor el ruido de piso que la cerámica. La elección de materiales es tan técnica como estética.",
+        blog4_tag: "Tendencias 2026", blog4_title: "Las 5 tendencias de diseño de interiores que van a dominar las cafeterías en 2026", blog4_ex: "Minimalismo cálido, materiales honestos como acero y madera, iluminación circadiana y biofilia urbana lideran el cambio. La tendencia no es decorar más, es comunicar mejor con menos elementos.",
+        blog5_tag: "Luz + Acústica", blog5_title: "Por qué el ruido y la luz importan más que la decoración en una cafetería", blog5_ex: "Un espacio con mala acústica se siente caótico aunque el diseño visual sea impecable, y la temperatura de color de la luz cambia cuánto tiempo percibe quedarse un cliente. Son de las primeras variables que un rediseño con IA debería resolver, antes que el color de las paredes.",
+        blog6_tag: "Automatización", blog6_title: "n8n para negocios pequeños: automatizar redes sociales sin contratar un equipo de marketing", blog6_ex: "Un flujo simple conecta Telegram, almacenamiento en la nube y publicación nativa en Instagram, TikTok y YouTube. La automatización no reemplaza la creatividad, elimina el trabajo repetitivo.",
+        foot1_fig: "FIG. 07.1 — IDENTIDAD", foot1_body: "Startup aplicada al DISEÑO.  Finish: Brushed Chrome. Tolerancias: ±0.5mm.",
+        foot2_fig: "FIG. 07.2 — ECOSISTEMA", foot2_h4: "Proyectos activos", foot2_line1: "Red hidropónica", foot2_line2: "Diario 50k tazas",
+        foot3_body: "Packaging specs — layered storage & logistics data. Brand identification sistema activo.",
+        footer_meta: "ACEROSTUDIO © 2026 — Todos los derechos reservados",
+        wa_aria: "Escríbenos por WhatsApp"
+      },
+      en: {
+        meta_title: "AceroStudio — Design, Code & Coffee",
+        meta_description: "A digital design, web development and automation studio with the soul of filter coffee. We build brands with technical, functional aesthetics from Bogotá.",
+        nav_home: "Home", nav_tech: "Technology", nav_coffee: "Coffee", nav_projects: "Projects", nav_b2b: "B2B", nav_blog: "Blog",
+        hero_annot_tr: "Active challenge · #aceropress50k<br>抽出 / extraction<br>反転式 / inversion",
+        hero_eyebrow: "Active challenge · Bogotá, 2,600 masl",
+        hero_h1: '<br><br><span class="hot">ONE SHOT TO REDESING.</span>',
+        hero_sub: "Follow our posts on Instagram.",
+        hero_odo_label: "",
+        hero_scroll_hint: "Explore",
+        marquee: '<span class="mh">· Cup #012.847 </span><span>· Ethiopia Yirgacheffe</span><span class="mc"> · 1:15 · 92°C </span><span>· Colombia Huila</span><span class="mh"> · 抽出 / extraction </span><span>· Brazil Cerrado</span><span class="mc"> · #aceropress50k </span><span>· Pink Bourbon</span><span class="mh"> · 372 days left · </span><span>AeroPress Go™</span><span class="mc"> · Pink Bourbon · </span><span class="mh">· Cup #012.847 </span><span>· Ethiopia Yirgacheffe</span><span class="mc"> · 1:15 · 92°C </span><span>· Colombia Huila</span><span class="mh"> · 抽出 / extraction </span><span>· Brazil Cerrado</span><span class="mc"> · #aceropress50k </span><span>· Pink Bourbon</span><span class="mh"> · 372 days left · </span><span>AeroPress Go™</span><span class="mc"> · Pink Bourbon · </span>',
+        tec_intro_eyebrow: "FIG. 03 — Technology · AI applied to coffee",
+        tec_intro_title: 'Your café,<br><span class="line2">redesigned.</span><span class="line3">with intelligence.</span>',
+        tec_intro_sub: "AI, data and design in service of every specialty coffee shop.<br>From physical space to digital presence, from the roast to the farm.",
+        tec_stat1: "average ticket post-redesign", tec_stat2: "diagnosis → proposal", tec_stat3: "digital reach · 90 days", tec_stat4: "designed for Bogotá",
+        tec_fig_tl: "FIG. 03.1 — SPACE REDESIGN<br>Bogotá · 2,600 masl · AI + Design",
+        tec_fig_tr: "Customer flow · Heat maps<br>3D generation · 72h diagnosis",
+        tec_c1_step: "01 · Space", tec_c1_title: 'Redesign<br><span class="th-word">your café</span>',
+        tec_c1_body: "AI that analyzes your space, spots dead zones, and proposes a new layout. From diagnosis to proposal in 72 hours.",
+        tec_c1_tag1: "Computer vision", tec_c1_tag2: "Customer flow", tec_c1_tag3: "3D design", tec_c1_tag4: "Heat maps",
+        tec_c2_step: "02 · Identity", tec_c2_title: 'A menu<br><span class="th-word">that sells</span>',
+        tec_c2_body: "Menu design that communicates origin, process and tasting notes. Visual hierarchy that guides customers toward higher-margin products.",
+        tec_c2_tag1: "Editorial design", tec_c2_tag2: "QR traceability", tec_c2_tag3: "Digital menu", tec_c2_tag4: "Digital presence",
+        tec_c3_step: "03 · Standard", tec_c3_title: 'Perfect<br><span class="th-word">drinks</span>',
+        tec_c3_body: "Every espresso drink documented: dose, ratio, time, temperature. The same standard on every shift, every barista, every cup.",
+        tec_c3_tag1: "Espresso protocol", tec_c3_tag2: "Calibrated recipes", tec_c3_tag3: "Service manual",
+        menu_header_logo: "· Specialty coffee shop ·", menu_header_sub: "Bogotá · 2,600 masl · 2025 season",
+        menu_section1: "Espresso basics", menu_item1_name: "Espresso", menu_item1_desc: "30ml · 9 bar · 27 sec",
+        menu_item2_desc: "Textured milk · 6oz", menu_item3_desc: "Double ristretto · 160ml",
+        menu_section2: "Filter", menu_item4_name: "Seasonal V60", menu_item5_desc: "20h immersion · 16oz",
+        std_header_title: "Drink standards", std_header_sub: "Espresso base · SCA protocol · Bogotá 2,600 masl",
+        std_col1: "Drink", std_col2: "Dose", std_footer_text: "Extraction time: 25–30 sec · pressure: 9 bar",
+        std_low: "under ←", std_high: "→ over",
+        story_eyebrow: "FIG. 00 — HOW IT WORKS",
+        story_h1: "Your coffee shop,<br><em>reinvented</em><br>before moving a single brick.",
+        story_lead: "acero.studio turns a real photo of your space into a redesign proposal in minutes, and connects you directly with an advisor to bring it to life.",
+        story_scroll_desktop: "explore the steps →", story_scroll_mobile: "swipe to see how ↓",
+        story_step1_fig: "FIG. 01 — CAPTURE", story_step1_title: "Upload a real photo",
+        story_step1_body: "From camera or gallery. Interior or façade, exactly as it is today — no blueprints, no measurements, no prior renders.",
+        story_step2_fig: "FIG. 02 — STYLE", story_step2_title: "Choose a style",
+        story_step2_body: "Minimalist, industrial, warm, Scandinavian, tropical — or describe your own. Each option adjusts materials, color and light.",
+        chip1: "Minimalist", chip2: "Industrial", chip3: "Warm", chip4: "Scandinavian",
+        story_step3_fig: "FIG. 03 — GENERATION", story_step3_title: "The AI generates the proposal",
+        story_step3_body: "We keep the real structure of your space — walls, windows, columns — and only transform finishes, furniture and style.",
+        story_step4_fig: "FIG. 04 — CONTACT", story_step4_title: "Get a quote on WhatsApp",
+        story_step4_body: "Once the proposal is ready, you talk directly with an acero.studio advisor to bring it to life: materials, timeline and budget.",
+        story_wa_btn: "💬 Send on WhatsApp →",
+        story_outro_desktop: "Try it now in the panel on the right →", story_outro_mobile: "Try it now ↓",
+        chat_fig: "FIG. 05 — ASSISTANT", chat_state: "status: welcome",
+        si_lead: "Turn a real photo of your coffee shop into a redesign proposal in minutes.",
+        si_step1_title: "Upload a photo", si_step1_body: "Camera or gallery, just as it is today.",
+        si_step2_body: "Minimalist, industrial, warm, Scandinavian…",
+        si_step3_body: "Same structure, new style.",
+        si_step4_body: "Talk directly with a real advisor.",
+        si_cta: "↓ Use the buttons below to get started",
+        btn_camera: "Take photo", btn_gallery: "Upload from gallery", input_placeholder: "Type a message…",
+        composer_hint: "Focused on interior and façade redesign for coffee shops",
+        stat_designs: "DESIGNS", stat_styles: "STYLES", stat_clients: "CLIENTS", stat_design: "DESIGN",
+        ig1_lbl: "Cup #012.846 · short video", ig1_cap: "1:14 · dark roast",
+        ig2_lbl: "Cup #012.845 · Colombia Huila", ig2_cap: "Colombia Huila · classic",
+        ig3_lbl: "Cup #012.844 · new Huila bag", ig3_cap: "New Huila lot · 5 days",
+        ig4_lbl: "Reel — 5-cup session · time-lapse", ig4_cap: "5 cups · extraction curves",
+        allies_title: "PARTNERS",
+        ally_alt1: "Partner 1", ally_alt2: "Partner 2", ally_alt3: "Partner 3", ally_alt4: "Partner 4", ally_alt5: "Partner 5",
+        b2b_fig: "FIG. 05 — COMMERCIAL PROGRAM", b2b_sec_lbl: "// For businesses and professionals", b2b_h2: "COMMERCIAL PARTNERSHIPS",
+        b2b_desc: "Commercial program for restaurants, hotels, offices and baristas who need full traceability and consistency in every delivery.",
+        b2b_card1_title: "Restaurants", b2b_card1_desc: "Curated varieties for your coffee menu. Technical sheet, training and weekly deliveries.",
+        b2b_card2_title: "Hotels", b2b_card2_desc: "Specialty-coffee amenities. Producer storytelling for your guests.",
+        b2b_card3_title: "Offices", b2b_card3_desc: "Specialty coffee as a corporate perk. Biweekly deliveries and rotating variety.",
+        b2b_card4_title: "Baristas", b2b_card4_desc: "Direct access to special lots. Full technical specs and roaster pricing.",
+        blog_fig: "FIG. 06 — TECHNICAL CONTENT", blog_sec_lbl: "// Architecture, AI and redesign · jobs to be done", blog_h2: "Knowledge",
+        blog_desc: "Architecture, interior design and AI-powered redesign applied to specialty coffee — thought and written from Bogotá.",
+        blog1_tag: "Architecture", blog1_title: "The 6 architecture principles that make a coffee shop feel right", blog1_ex: "Circulation flow, bar-to-table zoning, acoustics and natural light shape the experience before any color choice does. A well-zoned space reduces friction at peak hours and keeps customers around longer.",
+        blog2_tag: "AI + Redesign", blog2_title: "How an AI redesign actually works: from photo to proposal in 3 steps", blog2_ex: "Upload a real photo of your space, pick a style, and the AI generates a proposal that keeps walls, windows and columns exactly as they are. The whole process, from capture to visual proposal, takes minutes instead of weeks.",
+        blog3_tag: "Interior design", blog3_title: "Materials that actually work in a specialty coffee shop: steel, wood and concrete", blog3_ex: "Exposed steel holds up to daily wear and communicates honesty of process; warm wood balances the coldness of metal; polished concrete absorbs floor noise better than ceramic tile. Material choice is as technical as it is aesthetic.",
+        blog4_tag: "2026 Trends", blog4_title: "The 5 interior design trends set to dominate coffee shops in 2026", blog4_ex: "Warm minimalism, honest materials like steel and wood, circadian lighting and urban biophilia lead the shift. The trend isn't decorating more, it's communicating better with less.",
+        blog5_tag: "Light + Acoustics", blog5_title: "Why noise and light matter more than décor in a coffee shop", blog5_ex: "A space with poor acoustics feels chaotic even when the visual design is flawless, and light color temperature changes how long a customer feels like staying. These are among the first variables an AI redesign should solve, before wall color.",
+        blog6_tag: "Automation", blog6_title: "n8n for small businesses: automating social media without hiring a marketing team", blog6_ex: "A simple flow connects Telegram, cloud storage and native publishing on Instagram, TikTok and YouTube. Automation doesn't replace creativity — it removes repetitive work.",
+        foot1_fig: "FIG. 07.1 — IDENTITY", foot1_body: "AI startup applied to DESING. Finish: Brushed Chrome. Tolerances: ±0.5mm.",
+        foot2_fig: "FIG. 07.2 — ECOSYSTEM", foot2_h4: "Active projects", foot2_line1: "Hydroponic network", foot2_line2: "50k Cups diary",
+        foot3_body: "Packaging specs — layered storage & logistics data. Brand identification system active.",
+        footer_meta: "ACEROSTUDIO© 2026 — All rights reserved",
+        wa_aria: "Message us on WhatsApp"
+      }
+    };
+
+    function detectLang() {
+      try {
+        var saved = localStorage.getItem('acero_lang');
+        if (saved === 'es' || saved === 'en') return saved;
+      } catch (e) {}
+      var nav = (navigator.language || navigator.userLanguage || 'es').toLowerCase();
+      return nav.indexOf('es') === 0 ? 'es' : 'en';
+    }
+
+    function applyLang(lang) {
+      var dict = translations[lang] || translations.es;
+      document.documentElement.setAttribute('lang', lang);
+
+      document.querySelectorAll('[data-i18n]').forEach(function (el) {
+        var key = el.getAttribute('data-i18n');
+        if (dict[key] !== undefined) el.textContent = dict[key];
+      });
+      document.querySelectorAll('[data-i18n-html]').forEach(function (el) {
+        var key = el.getAttribute('data-i18n-html');
+        if (dict[key] !== undefined) el.innerHTML = dict[key];
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
+        var key = el.getAttribute('data-i18n-placeholder');
+        if (dict[key] !== undefined) el.setAttribute('placeholder', dict[key]);
+      });
+      document.querySelectorAll('[data-i18n-title]').forEach(function (el) {
+        var key = el.getAttribute('data-i18n-title');
+        if (dict[key] !== undefined) el.setAttribute('title', dict[key]);
+      });
+      document.querySelectorAll('[data-i18n-aria]').forEach(function (el) {
+        var key = el.getAttribute('data-i18n-aria');
+        if (dict[key] !== undefined) el.setAttribute('aria-label', dict[key]);
+      });
+      document.querySelectorAll('[data-i18n-alt]').forEach(function (el) {
+        var key = el.getAttribute('data-i18n-alt');
+        if (dict[key] !== undefined) el.setAttribute('alt', dict[key]);
+      });
+
+      if (dict.meta_title) document.title = dict.meta_title;
+      var metaDesc = document.getElementById('metaDescription');
+      if (metaDesc && dict.meta_description) metaDesc.setAttribute('content', dict.meta_description);
+
+      document.querySelectorAll('.lang-btn').forEach(function (btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+      });
+
+      try { localStorage.setItem('acero_lang', lang); } catch (e) {}
+    }
+
+    window.setAceroLang = applyLang;
+
+    function initNavDropdown() {
+      var btn = document.getElementById('hamburgerBtn');
+      var dropdown = document.getElementById('navDropdown');
+      var compact = document.getElementById('navCompact');
+      if (!btn || !dropdown) return;
+
+      function closeDropdown() {
+        dropdown.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+      function openDropdown() {
+        dropdown.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var isOpen = dropdown.classList.contains('open');
+        if (isOpen) { closeDropdown(); } else { openDropdown(); }
+      });
+
+      // cierra al hacer clic en un link del nav (ancla dentro de la misma página)
+      dropdown.querySelectorAll('.nav-links a').forEach(function (a) {
+        a.addEventListener('click', closeDropdown);
+      });
+
+      // cierra al hacer clic fuera del menú
+      document.addEventListener('click', function (e) {
+        if (compact && !compact.contains(e.target)) closeDropdown();
+      });
+
+      // cierra con Escape
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeDropdown();
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      applyLang(detectLang());
+      document.querySelectorAll('.lang-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          applyLang(btn.getAttribute('data-lang'));
+        });
+      });
+      initNavDropdown();
+    });
+  })();
+  </script>
+  <!-- ===== WhatsApp: config única + propagación a todos los botones ===== -->
+  <script>
+  (function () {
+    // ── ÚNICA FUENTE DE VERDAD ──
+    // TODO: reemplazar por el número real de AceroStudio, formato 57XXXXXXXXXX (código país + número, sin +, sin espacios).
+    window.ACERO_WHATSAPP_NUMBER = "57XXXXXXXXXX";
+    window.ACERO_WHATSAPP_DEFAULT_MESSAGE = "Hola, quiero información sobre el rediseño de mi cafetería con IA.";
+
+    function buildWaLink(message) {
+      var number = window.ACERO_WHATSAPP_NUMBER;
+      var text = encodeURIComponent(message || window.ACERO_WHATSAPP_DEFAULT_MESSAGE);
+      return "https://wa.me/" + number + "?text=" + text;
+    }
+    window.buildWaLink = buildWaLink;
+
+    function wireWaTriggers() {
+      document.querySelectorAll('[data-wa-trigger]').forEach(function (el) {
+        var message = el.getAttribute('data-wa-message');
+        var link = buildWaLink(message);
+
+        if (el.tagName === 'A') {
+          // Elementos que ya son <a>: solo actualizamos el href con el número + mensaje correctos.
+          el.setAttribute('href', link);
+          el.setAttribute('target', '_blank');
+          el.setAttribute('rel', 'noopener');
+        } else {
+          // Elementos que no son <a> (ej. el div "Enviar a WhatsApp" del paso 4): les damos la misma función.
+          el.addEventListener('click', function () {
+            window.open(link, '_blank', 'noopener');
+          });
+          el.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              window.open(link, '_blank', 'noopener');
+            }
+          });
+        }
+      });
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", wireWaTriggers);
+    } else {
+      wireWaTriggers();
+    }
+  })();
+  </script>
+
+    <script src="js/main.js"></script>
+  <script src="js/rediseno-ia.js"></script>
+  <script src="js/social-feed.js"></script>
+</body>
+</html>
