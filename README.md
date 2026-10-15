@@ -20,6 +20,11 @@ Utilizamos modelos de visión por computador e IA para analizar fotografías y p
 
 ---
 
+## Documentación
+
+- 📄 [`CONTEXT.md`](CONTEXT.md) — contexto de negocio y producto para desarrollo/IA.
+- 🗄️ [`supabase/README.md`](supabase/README.md) — backend (Supabase) ya conectado al sitio: esquema, Storage, Edge Functions.
+
 ## Servicios Principales
 
 | Servicio | Descripción | Output |

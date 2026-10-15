@@ -1,0 +1,8 @@
+#  Config file for the Supabase CLI — links this repo to the existing
+#  "acero-press" project that already powers www.acerostudio.com.
+#
+#  To work on this project locally with the Supabase CLI:
+#    supabase link --project-ref tylylfrabjkaiukuilem
+#    supabase db pull      # sync any further remote changes into migrations/
+#
+project_id = "tylylfrabjkaiukuilem"
