@@ -23,7 +23,7 @@ const IA_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzd
 
 const IA_BUCKET_NAME = "disenos-cafe";
 const IA_BUCKET_FOLDER = "originales";
-const IA_LEADS_TABLE = "leads"; // opcional, best-effort
+const IA_LEADS_TABLE = "redesign_leads"; // opcional, best-effort
 
 const IA_STYLES = ["Industrial", "Minimalista", "Cálido / Madera", "Escandinavo", "Tropical"];
 
@@ -229,10 +229,10 @@ async function iaGuardarLead(publicUrl, style){
         'Prefer': 'return=minimal'
       },
       body: JSON.stringify({
-        foto_url: publicUrl,
-        estilo: style,
-        estado: 'pendiente_rediseno',
-        origen: 'acero-press-chat'
+        photo_url: publicUrl,
+        style: style,
+        status: 'pendiente_rediseno',
+        source: 'acero-press-chat'
       })
     });
   } catch (err) {
