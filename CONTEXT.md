@@ -84,8 +84,23 @@ paso del widget de chat.
 Ver [`supabase/README.md`](supabase/README.md) para el detalle del
 proyecto de Supabase (`acero-press`, ref `tylylfrabjkaiukuilem`) que ya
 está conectado al sitio: catálogo/inventario de café, POS del café físico,
-leads del chat de rediseño, configuración de WhatsApp, CMS de secciones,
-analítica propia y panel de insights de crecimiento.
+configuración de WhatsApp, CMS de secciones, analítica propia y panel de
+insights de crecimiento.
+
+## Herramienta de rediseño en React (`redesign-app/`)
+
+A partir de esta tarea, la herramienta real de "sube una foto → elige
+estilo → recibe un rediseño generado con IA → cotiza" vive en una app
+Next.js aparte ([`redesign-app/README.md`](redesign-app/README.md)), para
+que la lógica sea reutilizable al migrar a React Native más adelante. El
+sitio estático (`index.html`) sigue igual; cuando `redesign-app` tenga una
+URL de despliegue, falta enlazarla desde el CTA de "Pruébalo ahora" del
+sitio principal.
+
+A diferencia del chat viejo (que solo mandaba la foto a un asesor humano
+por WhatsApp), esta versión sí llama a la Edge Function `generar-dise-o`,
+que genera el render con **Gemini 2.5 Flash Image** y ahora soporta tanto
+espacios como productos/empaques.
 
 ## Notas para IA (del propio sitio, `llms.txt`)
 
