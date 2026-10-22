@@ -8,6 +8,7 @@
   --muted: #a8a099;
   --faint: #6b645c;
   --accent: #00e5ff;
+  --indigo: #2f2d8f;
   --rust: #b5562a;
   --border: rgba(255, 255, 255, 0.12);
   --grid: rgba(0, 229, 255, 0.045);
@@ -22,6 +23,7 @@
   --color-faint: var(--faint);
   --color-accent: var(--accent);
   --color-rust: var(--rust);
+  --color-indigo: var(--indigo);
   --color-border: var(--border);
   --font-sans: var(--font-space-grotesk);
   --font-mono: var(--font-jetbrains-mono);
@@ -42,6 +44,32 @@ body {
     linear-gradient(var(--grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid) 1px, transparent 1px);
   background-size: 32px 32px;
+}
+
+/* Cyberpunk sobrio: scanlines muy tenues, brillo solo en el acento. */
+.scanlines {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 3px);
+  mix-blend-mode: overlay;
+}
+.glow {
+  text-shadow: 0 0 18px rgba(0, 229, 255, 0.35);
+}
+.btn-accent {
+  background: var(--accent);
+  color: var(--background);
+  box-shadow: 0 0 0 1px rgba(0, 229, 255, 0.4), 0 0 24px rgba(0, 229, 255, 0.18);
+  transition: box-shadow 0.2s ease;
+}
+.btn-accent:hover {
+  box-shadow: 0 0 0 1px rgba(0, 229, 255, 0.7), 0 0 36px rgba(0, 229, 255, 0.35);
+}
+.hairline {
+  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.6), transparent);
+  height: 1px;
 }
 
 .fig {
@@ -120,7 +148,8 @@ input[type="range"] {
     background: #fff !important;
     color: #111 !important;
   }
-  .no-print {
+  .no-print,
+  .scanlines {
     display: none !important;
   }
   .print-sheet {
