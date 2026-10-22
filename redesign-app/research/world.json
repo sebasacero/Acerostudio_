@@ -1,0 +1,1124 @@
+{
+ "traditions": [
+  {
+   "id": "colombia-contemporaneo",
+   "name": "Colombia contemporánea (Medellín / Bogotá)",
+   "region": "América Latina — Andes",
+   "countries": [
+    "Colombia"
+   ],
+   "cities": [
+    "Medellín",
+    "Bogotá"
+   ],
+   "era": "2000 – hoy",
+   "philosophy": "Arquitectura cívica que usa la geometría y la repetición de módulos para crear espacio público abierto, sombra y lugar de encuentro en el clima templado de montaña. El edificio se piensa como paisaje y como gesto social.",
+   "steel_language": "Acero estructural liviano en módulos repetidos: perfiles tubulares y celosías que forman 'árboles' o paraguas hexagonales, cerchas de gran luz para cubiertas de coliseos y bastidores metálicos que sostienen pieles de madera, piedra o lámina. El acero queda a la vista, pintado en tonos oscuros o grises, combinado con madera de pino inmunizada y ladrillo local.",
+   "signature_details": [
+    "Módulo hexagonal tipo 'flor-árbol' de tubo estructural con celosía de madera fijada a bastidor metálico",
+    "Cerchas espaciales y vigas en celosía de tubo para cubiertas de gran luz con lucernarios lineales",
+    "Pieles de placas (piedra, lámina, madera) colgadas de subestructura de ángulos y platinas",
+    "Columnas inclinadas o agrupadas que rompen la retícula ortogonal",
+    "Cubiertas con aleros generosos para lluvia andina y canales ocultos en perfil C",
+    "Combinación de acero negro con ladrillo tolete y madera de pino patula"
+   ],
+   "materials": [
+    "Tubo estructural cuadrado y redondo",
+    "Perfiles IPE / HEA",
+    "Madera de pino inmunizada",
+    "Ladrillo tolete",
+    "Piedra pizarra",
+    "Lámina colaborante"
+   ],
+   "preferred_material_ids": [
+    "acero-estructural",
+    "acero-galvanizado"
+   ],
+   "preferred_finish_ids": [
+    "anticorrosivo-esmalte",
+    "epoxico-poliuretano",
+    "electrostatica"
+   ],
+   "palette": [
+    {
+     "name": "Grafito estructural",
+     "hex": "#2E3135"
+    },
+    {
+     "name": "Ladrillo tolete",
+     "hex": "#A65A3A"
+    },
+    {
+     "name": "Pino patula",
+     "hex": "#C9A26B"
+    },
+    {
+     "name": "Verde montaña",
+     "hex": "#3F5B45"
+    },
+    {
+     "name": "Gris niebla bogotana",
+     "hex": "#B8BDC0"
+    }
+   ],
+   "reference_architects": [
+    "Giancarlo Mazzanti",
+    "Felipe Mesa (Plan:b Arquitectos)",
+    "Camilo Restrepo (JPRCR)",
+    "Daniel Bonilla"
+   ],
+   "reference_works": [
+    {
+     "name": "Orquideorama del Jardín Botánico de Medellín",
+     "architect": "Plan:b Arquitectos + JPRCR Arquitectos",
+     "city": "Medellín",
+     "year": "2006"
+    },
+    {
+     "name": "Parque Biblioteca España",
+     "architect": "Giancarlo Mazzanti",
+     "city": "Medellín",
+     "year": "2007"
+    },
+    {
+     "name": "Coliseos de los Juegos Suramericanos",
+     "architect": "Giancarlo Mazzanti y Felipe Mesa (Plan:b)",
+     "city": "Medellín",
+     "year": "2009"
+    }
+   ],
+   "prompt_keywords_en": "contemporary Colombian architecture, Medellin, modular hexagonal steel tree canopy, exposed dark steel tubes, pine wood lattice, brick, lush tropical highland greenery, civic open space, soft Andean overcast light, generous eaves",
+   "complexity_factor": 1.1,
+   "complexity_rationale": "Módulos repetitivos y perfiles comerciales soldables en taller local; la dificultad está en la geometría no ortogonal y la integración madera-acero, no en tolerancias extremas.",
+   "lat": 6.2442,
+   "lng": -75.5812
+  },
+  {
+   "id": "francia-prouve",
+   "name": "Francia — Jean Prouvé, prefabricación en lámina plegada",
+   "region": "Europa Occidental",
+   "countries": [
+    "Francia"
+   ],
+   "cities": [
+    "Nancy",
+    "París",
+    "Clichy"
+   ],
+   "era": "1930 – 1970",
+   "philosophy": "El constructor como ingeniero-artesano: cada pieza se diseña para fabricarse en serie, transportarse y montarse en seco. 'No hay diferencia entre construir un mueble y una casa'.",
+   "steel_language": "Lámina de acero plegada en prensa (tôle pliée) que trabaja como estructura gracias a su forma: pórticos axiales en 'compás', columnas y vigas de sección variable hechas de chapa doblada, paneles de fachada modulares con ojos de buey y uniones atornilladas desmontables. La rigidez se obtiene del pliegue, no del espesor.",
+   "signature_details": [
+    "Pórtico axial en forma de compás de lámina plegada que soporta la viga cumbrera",
+    "Vigas y patas de sección variable (afiladas en los extremos) en chapa doblada y soldada",
+    "Paneles de fachada modulares de lámina con ventanas de ojo de buey y persianas pivotantes",
+    "Uniones atornilladas visibles pensadas para montaje y desmontaje",
+    "Pliegues de rigidización y nervaduras en vez de perfiles laminados",
+    "Patas de mesa y sillas en lámina plegada con pintura de color sólido"
+   ],
+   "materials": [
+    "Lámina de acero plegada calibre 12–16",
+    "Aluminio en paneles",
+    "Madera contrachapada",
+    "Vidrio"
+   ],
+   "preferred_material_ids": [
+    "acero-estructural",
+    "acero-galvanizado"
+   ],
+   "preferred_finish_ids": [
+    "electrostatica",
+    "epoxico-poliuretano"
+   ],
+   "palette": [
+    {
+     "name": "Rojo japonés",
+     "hex": "#B5302A"
+    },
+    {
+     "name": "Gris Vermeer",
+     "hex": "#6E7377"
+    },
+    {
+     "name": "Azul dinastía",
+     "hex": "#1F3A5F"
+    },
+    {
+     "name": "Aluminio natural",
+     "hex": "#C7CACC"
+    },
+    {
+     "name": "Roble claro",
+     "hex": "#C49A6C"
+    }
+   ],
+   "reference_architects": [
+    "Jean Prouvé",
+    "Eugène Beaudouin y Marcel Lods",
+    "Le Corbusier (colaboraciones)"
+   ],
+   "reference_works": [
+    {
+     "name": "Maison du Peuple",
+     "architect": "Jean Prouvé con Beaudouin y Lods",
+     "city": "Clichy",
+     "year": "1939"
+    },
+    {
+     "name": "Maison Tropicale",
+     "architect": "Jean Prouvé",
+     "city": "Niamey / Brazzaville",
+     "year": "1951"
+    },
+    {
+     "name": "Casa de Jean Prouvé",
+     "architect": "Jean Prouvé",
+     "city": "Nancy",
+     "year": "1954"
+    }
+   ],
+   "prompt_keywords_en": "Jean Prouve style, folded sheet steel, compass-shaped axial portal frame, tapered press-brake steel legs, prefabricated demountable pavilion, porthole panels, visible bolts, matte red and grey enamel, mid-century French industrial design",
+   "complexity_factor": 1.2,
+   "complexity_rationale": "Exige plegado CNC de precisión, secciones variables y uniones atornilladas a tolerancia de mueble; el acabado en pintura sólida deja ver cualquier defecto de chapa.",
+   "lat": 48.6921,
+   "lng": 6.1844
+  },
+  {
+   "id": "japon-minimal",
+   "name": "Japón — esbeltez y levedad",
+   "region": "Asia Oriental",
+   "countries": [
+    "Japón"
+   ],
+   "cities": [
+    "Tokio",
+    "Sendai",
+    "Kanazawa",
+    "Atsugi"
+   ],
+   "era": "1990 – hoy",
+   "philosophy": "Disolver la estructura hasta casi desaparecer: espacios ligeros, luminosos y ambiguos donde el límite entre interior y exterior se vuelve difuso. La precisión técnica está al servicio de la calma.",
+   "steel_language": "Columnas de acero sólido o tubular extremadamente delgadas (a veces barras macizas de 60–100 mm), losas de placa de acero tipo panal, perfiles pintados de blanco que se funden con el cielo raso y uniones totalmente ocultas. Cada elemento se calcula al límite para reducir su sección visible.",
+   "signature_details": [
+    "Columnas de barra maciza o tubo de pared gruesa de diámetro mínimo, pintadas en blanco",
+    "Bordes de losa y aleros en platina de 6–12 mm que dan un canto casi inexistente",
+    "Uniones soldadas y esmeriladas sin pernos visibles",
+    "Tubos estructurales de malla helicoidal que funcionan también como ductos de luz",
+    "Carpinterías metálicas de perfil mínimo enrasadas con muros",
+    "Barandas de cable o varilla delgada casi invisibles"
+   ],
+   "materials": [
+    "Barra maciza de acero",
+    "Platina estructural",
+    "Tubo de pared gruesa",
+    "Vidrio extraclaro",
+    "Madera hinoki"
+   ],
+   "preferred_material_ids": [
+    "acero-estructural",
+    "acero-inox-304"
+   ],
+   "preferred_finish_ids": [
+    "epoxico-poliuretano",
+    "electrostatica",
+    "intumescente"
+   ],
+   "palette": [
+    {
+     "name": "Blanco papel washi",
+     "hex": "#F2EFE8"
+    },
+    {
+     "name": "Gris claro sumi",
+     "hex": "#D6D4CF"
+    },
+    {
+     "name": "Madera hinoki",
+     "hex": "#D9BE92"
+    },
+    {
+     "name": "Negro tinta",
+     "hex": "#1C1C1C"
+    },
+    {
+     "name": "Verde musgo",
+     "hex": "#6B7A4F"
+    }
+   ],
+   "reference_architects": [
+    "Toyo Ito",
+    "Kazuyo Sejima y Ryue Nishizawa (SANAA)",
+    "Junya Ishigami",
+    "Shigeru Ban"
+   ],
+   "reference_works": [
+    {
+     "name": "Mediateca de Sendai",
+     "architect": "Toyo Ito",
+     "city": "Sendai",
+     "year": "2001"
+    },
+    {
+     "name": "Museo de Arte Contemporáneo del Siglo XXI",
+     "architect": "SANAA",
+     "city": "Kanazawa",
+     "year": "2004"
+    },
+    {
+     "name": "KAIT Workshop",
+     "architect": "Junya Ishigami",
+     "city": "Atsugi",
+     "year": "2008"
+    }
+   ],
+   "prompt_keywords_en": "Japanese minimalist architecture, ultra-thin white steel columns, razor-thin steel plate roof edge, hidden joints, translucent glass, airy luminous space, hinoki wood, serene, SANAA Toyo Ito style, soft diffused daylight",
+   "complexity_factor": 1.35,
+   "complexity_rationale": "Secciones mínimas implican cálculo exigente, soldadura de penetración completa esmerilada y tolerancias de montaje milimétricas; cualquier desplome o deformación es visible.",
+   "lat": 35.6762,
+   "lng": 139.6503
+  },
+  {
+   "id": "escandinavia",
+   "name": "Escandinavia — acero, madera y luz nórdica",
+   "region": "Europa del Norte",
+   "countries": [
+    "Dinamarca",
+    "Noruega",
+    "Suecia",
+    "Finlandia"
+   ],
+   "cities": [
+    "Copenhague",
+    "Oslo",
+    "Hamar"
+   ],
+   "era": "1950 – hoy",
+   "philosophy": "Funcionalismo humano: materiales honestos, proporciones serenas y una obsesión por la luz natural y el confort. Menos objetos, mejor hechos y pensados para durar.",
+   "steel_language": "Acero negro o grafito en perfiles delgados (platinas, ángulos, tubos rectangulares) como marco discreto para madera clara de roble o pino. El acero sostiene, enmarca y define bordes; la madera es lo que se toca. Juntas limpias, tornillería escondida y proporciones contenidas.",
+   "signature_details": [
+    "Marcos de platina negra que reciben tableros y repisas de roble macizo",
+    "Pasamanos de madera sobre parales de platina de acero mate",
+    "Muro cortina de montantes de acero esbeltos con vidrio de piso a techo",
+    "Escaleras de zancas de platina con huellas de madera en voladizo",
+    "Pasarelas y rampas de acero y vidrio insertadas en edificios históricos",
+    "Uniones con tornillo avellanado oculto y cantos redondeados al tacto"
+   ],
+   "materials": [
+    "Platina y tubo rectangular de acero",
+    "Roble macizo",
+    "Pino nórdico",
+    "Vidrio",
+    "Piedra caliza / concreto claro"
+   ],
+   "preferred_material_ids": [
+    "acero-estructural",
+    "acero-galvanizado"
+   ],
+   "preferred_finish_ids": [
+    "electrostatica",
+    "epoxico-poliuretano"
+   ],
+   "palette": [
+    {
+     "name": "Negro grafito mate",
+     "hex": "#2B2B2B"
+    },
+    {
+     "name": "Roble nórdico",
+     "hex": "#D8BC94"
+    },
+    {
+     "name": "Blanco hueso",
+     "hex": "#EEEBE3"
+    },
+    {
+     "name": "Gris fiordo",
+     "hex": "#8A9399"
+    },
+    {
+     "name": "Verde salvia",
+     "hex": "#9CAA92"
+    }
+   ],
+   "reference_architects": [
+    "Arne Jacobsen",
+    "Sverre Fehn",
+    "Snøhetta",
+    "Alvar Aalto"
+   ],
+   "reference_works": [
+    {
+     "name": "SAS Royal Hotel",
+     "architect": "Arne Jacobsen",
+     "city": "Copenhague",
+     "year": "1960"
+    },
+    {
+     "name": "Museo de Hedmark (Domkirkeodden)",
+     "architect": "Sverre Fehn",
+     "city": "Hamar",
+     "year": "1967–1979"
+    },
+    {
+     "name": "Ópera de Oslo",
+     "architect": "Snøhetta",
+     "city": "Oslo",
+     "year": "2008"
+    }
+   ],
+   "prompt_keywords_en": "Scandinavian minimalist interior, slender matte black steel frame, light oak wood, hygge, soft northern daylight, clean joints, floor-to-ceiling glass, calm functional design, Nordic cafe",
+   "complexity_factor": 1.15,
+   "complexity_rationale": "Perfiles comerciales, pero con acabado de mueble: cortes limpios, uniones ocultas y buen ensamble madera-acero exigen más horas de taller que una estructura industrial.",
+   "lat": 55.6761,
+   "lng": 12.5683
+  },
+  {
+   "id": "alemania-bauhaus-mies",
+   "name": "Alemania — Bauhaus y Mies van der Rohe",
+   "region": "Europa Central",
+   "countries": [
+    "Alemania",
+    "Estados Unidos",
+    "España"
+   ],
+   "cities": [
+    "Berlín",
+    "Dessau",
+    "Chicago",
+    "Barcelona",
+    "Plano, Illinois"
+   ],
+   "era": "1919 – 1970",
+   "philosophy": "'Menos es más': la estructura de acero como orden universal, retícula clara y espacio libre y fluido. La belleza surge de la proporción exacta y del detalle resuelto con rigor absoluto.",
+   "steel_language": "Retícula modular de perfiles laminados (I/H) expresados como orden clásico: columnas cruciformes armadas con ángulos o perfiles, parteluces de perfil I soldados a fachada, cubiertas planas de gran luz sobre pocos apoyos. Soldaduras rellenas y esmeriladas para que el acero parezca una pieza monolítica, pintado en negro o blanco.",
+   "signature_details": [
+    "Columna cruciforme armada con cuatro ángulos o perfiles T, con o sin forro cromado",
+    "Parteluces de perfil I soldados a la fachada como 'pilastras' de acero",
+    "Soldaduras de tapón esmeriladas para ocultar toda unión (Casa Farnsworth)",
+    "Cubierta reticular de vigas de acero de gran luz sobre apoyos articulados",
+    "Losa flotante elevada del terreno sobre columnas de perfil H",
+    "Retícula modular estricta que ordena piso, techo y fachada"
+   ],
+   "materials": [
+    "Perfiles laminados IPE/HEA/W",
+    "Ángulos y platinas",
+    "Vidrio plano de gran formato",
+    "Travertino",
+    "Mármol / ónix"
+   ],
+   "preferred_material_ids": [
+    "acero-estructural",
+    "acero-inox-304"
+   ],
+   "preferred_finish_ids": [
+    "epoxico-poliuretano",
+    "electrostatica",
+    "inox-cepillado",
+    "intumescente"
+   ],
+   "palette": [
+    {
+     "name": "Negro Mies",
+     "hex": "#151515"
+    },
+    {
+     "name": "Blanco Farnsworth",
+     "hex": "#F4F4F1"
+    },
+    {
+     "name": "Travertino",
+     "hex": "#E3D6BF"
+    },
+    {
+     "name": "Cromo",
+     "hex": "#BFC3C7"
+    },
+    {
+     "name": "Verde mármol Tinos",
+     "hex": "#4C6B5C"
+    }
+   ],
+   "reference_architects": [
+    "Ludwig Mies van der Rohe",
+    "Walter Gropius",
+    "Marcel Breuer",
+    "Lilly Reich"
+   ],
+   "reference_works": [
+    {
+     "name": "Pabellón de Barcelona",
+     "architect": "Ludwig Mies van der Rohe",
+     "city": "Barcelona",
+     "year": "1929"
+    },
+    {
+     "name": "Casa Farnsworth",
+     "architect": "Ludwig Mies van der Rohe",
+     "city": "Plano, Illinois",
+     "year": "1951"
+    },
+    {
+     "name": "Neue Nationalgalerie",
+     "architect": "Ludwig Mies van der Rohe",
+     "city": "Berlín",
+     "year": "1968"
+    }
+   ],
+   "prompt_keywords_en": "Mies van der Rohe style, Bauhaus modernism, black steel I-beam mullions, cruciform columns, strict modular grid, floor-to-ceiling glass, travertine floor, floating flat roof, less is more, precise welded ground steel",
+   "complexity_factor": 1.3,
+   "complexity_rationale": "La retícula exacta, las columnas armadas y las soldaduras esmeriladas invisibles requieren planitud, escuadra y acabado de altísima precisión.",
+   "lat": 52.52,
+   "lng": 13.405
+  },
+  {
+   "id": "uk-high-tech",
+   "name": "Reino Unido — High-Tech",
+   "region": "Europa Occidental",
+   "countries": [
+    "Reino Unido",
+    "Francia",
+    "Hong Kong"
+   ],
+   "cities": [
+    "Londres",
+    "Norwich",
+    "París",
+    "Hong Kong"
+   ],
+   "era": "1970 – hoy",
+   "philosophy": "La tecnología como expresión: la estructura, las instalaciones y la manera de ensamblar se muestran al exterior. Edificios flexibles, desmontables y celebratorios de la ingeniería.",
+   "steel_language": "Acero expuesto y articulado: nodos de acero fundido, tensores de varilla con horquillas, cerchas tridimensionales, mástiles y estructuras colgadas. Las conexiones son protagonistas y las instalaciones (ductos, escaleras, ascensores) van por fuera codificadas por color.",
+   "signature_details": [
+    "Ménsulas y nodos de acero fundido (gerberettes) que reciben vigas y tensores",
+    "Tensores de varilla con horquilla roscada y pasador visible",
+    "Cerchas tubulares triangulares soldadas de gran luz",
+    "Estructuras colgadas de mástiles con cables y tirantes",
+    "Instalaciones expuestas pintadas en colores primarios según su función",
+    "Pernos, pasadores y placas de unión diseñados como piezas de exhibición"
+   ],
+   "materials": [
+    "Tubo estructural circular",
+    "Acero fundido",
+    "Varilla tensora y cable inoxidable",
+    "Vidrio laminado",
+    "Aluminio"
+   ],
+   "preferred_material_ids": [
+    "acero-estructural",
+    "acero-inox-304",
+    "acero-galvanizado"
+   ],
+   "preferred_finish_ids": [
+    "epoxico-poliuretano",
+    "intumescente",
+    "inox-cepillado",
+    "galvanizado-caliente"
+   ],
+   "palette": [
+    {
+     "name": "Blanco estructural",
+     "hex": "#F5F5F5"
+    },
+    {
+     "name": "Azul servicios",
+     "hex": "#1E5AA8"
+    },
+    {
+     "name": "Rojo circulación",
+     "hex": "#D12A2A"
+    },
+    {
+     "name": "Amarillo eléctrico",
+     "hex": "#F2C230"
+    },
+    {
+     "name": "Gris aluminio",
+     "hex": "#A9AFB4"
+    }
+   ],
+   "reference_architects": [
+    "Norman Foster",
+    "Richard Rogers",
+    "Renzo Piano",
+    "Michael Hopkins",
+    "Nicholas Grimshaw"
+   ],
+   "reference_works": [
+    {
+     "name": "Centre Pompidou",
+     "architect": "Renzo Piano y Richard Rogers",
+     "city": "París",
+     "year": "1977"
+    },
+    {
+     "name": "Sainsbury Centre for Visual Arts",
+     "architect": "Norman Foster",
+     "city": "Norwich",
+     "year": "1978"
+    },
+    {
+     "name": "HSBC Main Building",
+     "architect": "Norman Foster",
+     "city": "Hong Kong",
+     "year": "1985"
+    }
+   ],
+   "prompt_keywords_en": "British high-tech architecture, exposed structural steel, cast steel nodes, tension rods with clevis pins, tubular trusses, color-coded exposed services, white steel, glass, Foster Rogers style, engineered precision",
+   "complexity_factor": 1.35,
+   "complexity_rationale": "Nodos especiales, tensores con terminales roscados, cerchas tridimensionales y conexiones expuestas exigen ingeniería de detalle, maquinado y montaje de alta precisión.",
+   "lat": 51.5074,
+   "lng": -0.1278
+  },
+  {
+   "id": "cataluna-rcr-corten",
+   "name": "Cataluña — RCR Arquitectes y el acero corten",
+   "region": "Europa Mediterránea",
+   "countries": [
+    "España",
+    "Francia"
+   ],
+   "cities": [
+    "Olot",
+    "Girona",
+    "Barcelona",
+    "Palamós",
+    "Ripoll",
+    "Rodez"
+   ],
+   "era": "1990 – hoy",
+   "philosophy": "Arquitectura que nace del paisaje y se funde con él: materiales únicos, masivos y oxidados que envejecen con el lugar. La luz filtrada y la sensación táctil definen el espacio.",
+   "steel_language": "Acero corten usado como material total: placas de 10–20 mm que son muro, estructura, cubierta y piso al mismo tiempo; lamas verticales repetidas que filtran la luz; cajas y pabellones monolíticos de un solo material. La pátina natural de óxido es el acabado.",
+   "signature_details": [
+    "Muros de placa corten de 10–20 mm soldada como lámina continua sin juntas visibles",
+    "Celosías de lamas verticales de platina corten con separación rítmica que tamiza la luz",
+    "Pabellones en voladizo de caja de corten que se posan sobre el terreno",
+    "Escalones y pisos de placa corten con canto expuesto",
+    "Gestión del escurrimiento de óxido con goteros y canales para no manchar pisos",
+    "Contraste de corten con vidrio sin marco y vegetación"
+   ],
+   "materials": [
+    "Placa de acero corten",
+    "Platina corten",
+    "Vidrio sin marco",
+    "Piedra volcánica",
+    "Grava"
+   ],
+   "preferred_material_ids": [
+    "acero-corten"
+   ],
+   "preferred_finish_ids": [
+    "patina-corten"
+   ],
+   "palette": [
+    {
+     "name": "Óxido corten maduro",
+     "hex": "#7A3B1D"
+    },
+    {
+     "name": "Corten joven",
+     "hex": "#B5562A"
+    },
+    {
+     "name": "Piedra volcánica",
+     "hex": "#3A3633"
+    },
+    {
+     "name": "Verde roble mediterráneo",
+     "hex": "#5E6B43"
+    },
+    {
+     "name": "Arena cálida",
+     "hex": "#D9C7A7"
+    }
+   ],
+   "reference_architects": [
+    "RCR Arquitectes (Rafael Aranda, Carme Pigem, Ramon Vilalta)",
+    "Enric Miralles",
+    "Benedetta Tagliabue"
+   ],
+   "reference_works": [
+    {
+     "name": "Bodegas Bell-lloc",
+     "architect": "RCR Arquitectes",
+     "city": "Palamós",
+     "year": "2007"
+    },
+    {
+     "name": "Espacio público Teatro La Lira",
+     "architect": "RCR Arquitectes",
+     "city": "Ripoll",
+     "year": "2011"
+    },
+    {
+     "name": "Museo Soulages",
+     "architect": "RCR Arquitectes",
+     "city": "Rodez",
+     "year": "2014"
+    }
+   ],
+   "prompt_keywords_en": "RCR Arquitectes style, weathering corten steel plates, vertical corten steel louvers filtering light, rusted monolithic pavilion, landscape integration, Mediterranean, warm raking light, tactile materiality, Pritzker",
+   "complexity_factor": 1.25,
+   "complexity_rationale": "Placas gruesas exigen soldadura continua sin distorsión, lamas en serie con espaciado exacto y control de pátina y escurrimiento; poco margen para corregir.",
+   "lat": 42.1817,
+   "lng": 2.4897
+  },
+  {
+   "id": "mexico-contemporaneo",
+   "name": "México — celosía, color y sombra",
+   "region": "América del Norte / Latinoamérica",
+   "countries": [
+    "México"
+   ],
+   "cities": [
+    "Ciudad de México",
+    "Guadalajara",
+    "Oaxaca"
+   ],
+   "era": "1940 – hoy",
+   "philosophy": "Arquitectura de muros, patios y sombra, heredera de Barragán, donde la luz y el color construyen la emoción. Lo contemporáneo dialoga con lo artesanal y lo local.",
+   "steel_language": "Acero como trama y filtro: celosías de platina o lámina perforada que tamizan el sol intenso, estructuras de acero que sostienen muros de barro o piezas cerámicas, y grandes sistemas de estantería y pasarelas suspendidas. El acero suele ir pintado en negro o en colores intensos y se combina con concreto aparente y madera.",
+   "signature_details": [
+    "Celosías de lámina perforada o platina que proyectan patrones de sombra",
+    "Bastidor de acero que sostiene una trama de piezas cerámicas o de concreto",
+    "Estanterías y pasarelas metálicas suspendidas en grandes volúmenes",
+    "Pérgolas de perfil delgado con vegetación sobre patios",
+    "Escaleras metálicas escultóricas contra muros de color",
+    "Rejas y portones de herrería contemporánea con geometría artesanal"
+   ],
+   "materials": [
+    "Platina y ángulo de acero",
+    "Lámina perforada",
+    "Concreto aparente",
+    "Barro / cerámica",
+    "Madera de parota"
+   ],
+   "preferred_material_ids": [
+    "acero-estructural",
+    "acero-galvanizado",
+    "acero-corten"
+   ],
+   "preferred_finish_ids": [
+    "electrostatica",
+    "epoxico-poliuretano",
+    "anticorrosivo-esmalte"
+   ],
+   "palette": [
+    {
+     "name": "Rosa mexicano",
+     "hex": "#D6336C"
+    },
+    {
+     "name": "Terracota barro",
+     "hex": "#B4583A"
+    },
+    {
+     "name": "Amarillo Barragán",
+     "hex": "#E8B730"
+    },
+    {
+     "name": "Concreto claro",
+     "hex": "#BDB6AA"
+    },
+    {
+     "name": "Negro herrería",
+     "hex": "#1F1F1F"
+    }
+   ],
+   "reference_architects": [
+    "Luis Barragán",
+    "Alberto Kalach",
+    "Tatiana Bilbao",
+    "Frida Escobedo",
+    "Fernando Romero"
+   ],
+   "reference_works": [
+    {
+     "name": "Biblioteca Vasconcelos",
+     "architect": "Alberto Kalach (con Juan Palomar, Gustavo Lipkau y Tonatiuh Martínez)",
+     "city": "Ciudad de México",
+     "year": "2006"
+    },
+    {
+     "name": "Museo Soumaya Plaza Carso",
+     "architect": "Fernando Romero (FR-EE)",
+     "city": "Ciudad de México",
+     "year": "2011"
+    },
+    {
+     "name": "Serpentine Pavilion",
+     "architect": "Frida Escobedo",
+     "city": "Londres",
+     "year": "2018"
+    }
+   ],
+   "prompt_keywords_en": "contemporary Mexican architecture, steel lattice screen casting patterned shadows, perforated metal celosia, vibrant pink and ochre walls, exposed concrete, courtyard, hanging steel shelving, strong sunlight, Barragan inspired",
+   "complexity_factor": 1.1,
+   "complexity_rationale": "Fabricación mayormente con perfiles y lámina comerciales; la celosía repetitiva y la integración con piezas artesanales añaden horas de corte y armado.",
+   "lat": 19.4326,
+   "lng": -99.1332
+  },
+  {
+   "id": "brasil-escuela-paulista",
+   "name": "Brasil — Escuela Paulista",
+   "region": "América del Sur",
+   "countries": [
+    "Brasil"
+   ],
+   "cities": [
+    "São Paulo"
+   ],
+   "era": "1950 – hoy",
+   "philosophy": "Arquitectura de gesto estructural audaz y espacio público libre: grandes luces, pocos apoyos y el suelo cedido a la ciudad. La técnica es una postura ética y social.",
+   "steel_language": "El acero aparece como contrapunto ligero al concreto brutalista: vigas armadas de alma llena de gran canto, pasarelas y puentes metálicos insertados en edificios existentes, y marquesinas colosales suspendidas de pocos apoyos. Planos de chapa robusta, pintados en blanco o colores sobrios, con uniones atornilladas sinceras.",
+   "signature_details": [
+    "Marquesina de gran luz en viga armada de chapa soldada sobre solo dos o cuatro apoyos",
+    "Pasarelas y puentes metálicos que atraviesan patios y vacíos",
+    "Vigas de alma llena de gran canto pintadas, expresadas como gesto único",
+    "Tensores que cuelgan losas o cubiertas desde una viga superior",
+    "Contraste de acero esbelto con concreto aparente de encofrado de tabla",
+    "Escaleras metálicas suspendidas sin zanca intermedia"
+   ],
+   "materials": [
+    "Chapa gruesa para vigas armadas",
+    "Perfiles laminados",
+    "Concreto aparente",
+    "Vidrio",
+    "Piso de placa alfajor"
+   ],
+   "preferred_material_ids": [
+    "acero-estructural"
+   ],
+   "preferred_finish_ids": [
+    "epoxico-poliuretano",
+    "anticorrosivo-esmalte",
+    "intumescente"
+   ],
+   "palette": [
+    {
+     "name": "Concreto bruto",
+     "hex": "#9E9B95"
+    },
+    {
+     "name": "Blanco estructural",
+     "hex": "#F1F0EC"
+    },
+    {
+     "name": "Rojo MASP",
+     "hex": "#C1272D"
+    },
+    {
+     "name": "Negro hierro",
+     "hex": "#232323"
+    },
+    {
+     "name": "Verde tropical",
+     "hex": "#2F6B3B"
+    }
+   ],
+   "reference_architects": [
+    "Paulo Mendes da Rocha",
+    "Lina Bo Bardi",
+    "João Batista Vilanova Artigas"
+   ],
+   "reference_works": [
+    {
+     "name": "Loja Forma",
+     "architect": "Paulo Mendes da Rocha",
+     "city": "São Paulo",
+     "year": "1987"
+    },
+    {
+     "name": "Renovación de la Pinacoteca do Estado",
+     "architect": "Paulo Mendes da Rocha",
+     "city": "São Paulo",
+     "year": "1998"
+    },
+    {
+     "name": "Pórtico de la Praça do Patriarca",
+     "architect": "Paulo Mendes da Rocha",
+     "city": "São Paulo",
+     "year": "2002"
+    }
+   ],
+   "prompt_keywords_en": "Paulista school Brazilian modernism, Paulo Mendes da Rocha, monumental steel plate girder canopy on few supports, steel walkway bridges, raw board-formed concrete, open civic ground floor, bold structural gesture, tropical light",
+   "complexity_factor": 1.15,
+   "complexity_rationale": "Las vigas armadas de chapa y las grandes luces piden ingeniería y soldadura certificada, aunque la geometría es simple y el acabado es pintura sobre acero robusto.",
+   "lat": -23.5505,
+   "lng": -46.6333
+  },
+  {
+   "id": "australia-murcutt",
+   "name": "Australia — Glenn Murcutt, tocar la tierra suavemente",
+   "region": "Oceanía",
+   "countries": [
+    "Australia"
+   ],
+   "cities": [
+    "Sídney",
+    "Kempsey"
+   ],
+   "era": "1970 – hoy",
+   "philosophy": "'Touch the earth lightly': arquitectura climática, ligera y elevada del suelo, que responde al sol, al viento y a la lluvia con medios simples. Lo industrial común se vuelve poético.",
+   "steel_language": "Pórticos de acero liviano y perfiles comerciales galvanizados, cubiertas de lámina ondulada de curva suave, persianas y quiebrasoles regulables, canales y bajantes expresados como piezas de diseño. Todo es seco, atornillado, ventilado y visible.",
+   "signature_details": [
+    "Cubierta de lámina ondulada galvanizada con curva o ala de mariposa",
+    "Canales de recolección y gárgolas de lámina expresadas al exterior",
+    "Quiebrasoles y persianas de lamas metálicas regulables a mano",
+    "Pórticos de perfil liviano sobre pilotes que elevan el piso del terreno",
+    "Aleros calculados según el ángulo solar de verano e invierno",
+    "Uniones atornilladas con lámina plegada simple"
+   ],
+   "materials": [
+    "Lámina ondulada galvanizada / zincalum",
+    "Perfiles livianos galvanizados",
+    "Madera",
+    "Vidrio con persianas",
+    "Mampostería clara"
+   ],
+   "preferred_material_ids": [
+    "acero-galvanizado",
+    "acero-estructural"
+   ],
+   "preferred_finish_ids": [
+    "galvanizado-caliente",
+    "electrostatica"
+   ],
+   "palette": [
+    {
+     "name": "Zinc galvanizado",
+     "hex": "#A8ADB0"
+    },
+    {
+     "name": "Eucalipto",
+     "hex": "#8FA38A"
+    },
+    {
+     "name": "Ocre del bush",
+     "hex": "#C08A4A"
+    },
+    {
+     "name": "Blanco cal",
+     "hex": "#EDEBE5"
+    },
+    {
+     "name": "Cielo austral",
+     "hex": "#7FA9C9"
+    }
+   ],
+   "reference_architects": [
+    "Glenn Murcutt",
+    "Sean Godsell",
+    "Richard Leplastrier"
+   ],
+   "reference_works": [
+    {
+     "name": "Casa Ball-Eastaway",
+     "architect": "Glenn Murcutt",
+     "city": "Glenorie, Nueva Gales del Sur",
+     "year": "1983"
+    },
+    {
+     "name": "Casa Magney",
+     "architect": "Glenn Murcutt",
+     "city": "Bingie Point, Nueva Gales del Sur",
+     "year": "1984"
+    },
+    {
+     "name": "Casa Simpson-Lee",
+     "architect": "Glenn Murcutt",
+     "city": "Mount Wilson, Nueva Gales del Sur",
+     "year": "1994"
+    }
+   ],
+   "prompt_keywords_en": "Glenn Murcutt style, touch the earth lightly, curved corrugated galvanized steel roof, expressed gutters and rainwater spouts, adjustable metal louvers, lightweight steel frame on stilts, Australian bush landscape, climate responsive pavilion",
+   "complexity_factor": 1.08,
+   "complexity_rationale": "Usa perfiles y láminas industriales comunes; el sobrecosto viene del rolado de la cubierta curva y de la fabricación de persianas y canales a medida.",
+   "lat": -33.8688,
+   "lng": 151.2093
+  },
+  {
+   "id": "chile-sismico",
+   "name": "Chile — materia, sismo y paisaje extremo",
+   "region": "América del Sur — Cono Sur",
+   "countries": [
+    "Chile"
+   ],
+   "cities": [
+    "Santiago",
+    "Concepción"
+   ],
+   "era": "1990 – hoy",
+   "philosophy": "Arquitectura austera y experimental, forjada por terremotos y paisajes extremos: pocos materiales, usados con intensidad y con estructuras que se muestran sin pudor.",
+   "steel_language": "Marcos de acero arriostrados y disipativos, diagonales y crucetas visibles como parte de la arquitectura, fachadas de corten o lámina perforada de gran escala y estructuras livianas cubiertas con membranas translúcidas. El acero se combina con piedra, concreto bruto y madera de forma directa y robusta.",
+   "signature_details": [
+    "Marcos arriostrados con diagonales y crucetas expuestas como recurso expresivo",
+    "Fachada de grandes paneles de corten perforado que filtran luz y vistas",
+    "Estructura de acero ligera revestida con membrana translúcida (PTFE)",
+    "Juntas sísmicas y apoyos deslizantes resueltos como detalle visible",
+    "Contraste de acero con rocas, concreto bruto y madera nativa",
+    "Conexiones atornilladas sobredimensionadas pensadas para ductilidad"
+   ],
+   "materials": [
+    "Perfiles laminados y tubo estructural",
+    "Placa corten perforada",
+    "Membrana PTFE",
+    "Concreto bruto",
+    "Piedra / roca natural",
+    "Cobre"
+   ],
+   "preferred_material_ids": [
+    "acero-estructural",
+    "acero-corten"
+   ],
+   "preferred_finish_ids": [
+    "patina-corten",
+    "anticorrosivo-esmalte",
+    "intumescente"
+   ],
+   "palette": [
+    {
+     "name": "Corten andino",
+     "hex": "#8C4A2A"
+    },
+    {
+     "name": "Cobre chileno",
+     "hex": "#B87333"
+    },
+    {
+     "name": "Roca granítica",
+     "hex": "#6F6A64"
+    },
+    {
+     "name": "Blanco membrana",
+     "hex": "#F3F1EA"
+    },
+    {
+     "name": "Azul Pacífico",
+     "hex": "#2B4A63"
+    }
+   ],
+   "reference_architects": [
+    "Smiljan Radić",
+    "Alejandro Aravena (Elemental)",
+    "Cristián Fernández",
+    "Pezo von Ellrichshausen"
+   ],
+   "reference_works": [
+    {
+     "name": "Restaurante Mestizo",
+     "architect": "Smiljan Radić",
+     "city": "Santiago",
+     "year": "2007"
+    },
+    {
+     "name": "Centro Cultural Gabriela Mistral (GAM)",
+     "architect": "Cristián Fernández Arquitectos + Lateral Arquitectura",
+     "city": "Santiago",
+     "year": "2010"
+    },
+    {
+     "name": "Teatro Regional del Biobío",
+     "architect": "Smiljan Radić, Eduardo Castillo y Gabriela Medrano",
+     "city": "Concepción",
+     "year": "2018"
+    }
+   ],
+   "prompt_keywords_en": "contemporary Chilean architecture, exposed steel braced frames, perforated weathering steel facade, translucent membrane over steel structure, raw concrete and boulders, austere experimental, Andes backdrop, seismic expression",
+   "complexity_factor": 1.12,
+   "complexity_rationale": "Las conexiones dúctiles sismorresistentes y la perforación de grandes paneles añaden ingeniería y CNC, pero el lenguaje es austero y de perfiles estándar.",
+   "lat": -33.4489,
+   "lng": -70.6693
+  },
+  {
+   "id": "nueva-york-loft",
+   "name": "Nueva York — hierro fundido y loft industrial",
+   "region": "América del Norte",
+   "countries": [
+    "Estados Unidos"
+   ],
+   "cities": [
+    "Nueva York"
+   ],
+   "era": "1850 – hoy",
+   "philosophy": "La estética de la fábrica convertida en hogar, galería o café: estructura y oficio a la vista, materiales que muestran su historia y espacios amplios y flexibles.",
+   "steel_language": "Columnas de hierro fundido y vigas I remachadas expuestas, ventanería de perfil de acero en cuadrícula, escaleras de emergencia y barandas de herrería, acero negro pavonado o encerado combinado con ladrillo y madera recuperada. El acero se muestra con soldaduras, remaches y marcas de taller.",
+   "signature_details": [
+    "Ventanería y divisiones interiores de perfil T/L de acero en cuadrícula con vidrio",
+    "Vigas I expuestas con remaches o pernos de cabeza redonda",
+    "Columnas de hierro fundido con capitel y fachadas modulares de hierro",
+    "Escaleras metálicas con huella de placa alfajor y baranda de varilla",
+    "Acero negro con acabado pavonado / encerado que muestra la cascarilla de laminación",
+    "Rieles y estructuras ferroviarias reutilizadas como espacio público"
+   ],
+   "materials": [
+    "Perfiles laminados I/T/L",
+    "Hierro fundido",
+    "Placa alfajor",
+    "Ladrillo a la vista",
+    "Madera recuperada"
+   ],
+   "preferred_material_ids": [
+    "acero-estructural"
+   ],
+   "preferred_finish_ids": [
+    "anticorrosivo-esmalte",
+    "epoxico-poliuretano",
+    "intumescente"
+   ],
+   "palette": [
+    {
+     "name": "Acero pavonado",
+     "hex": "#2A2D30"
+    },
+    {
+     "name": "Ladrillo neoyorquino",
+     "hex": "#8E3B2E"
+    },
+    {
+     "name": "Madera recuperada",
+     "hex": "#7B5B3E"
+    },
+    {
+     "name": "Verde hierro fundido",
+     "hex": "#3D4A3F"
+    },
+    {
+     "name": "Concreto envejecido",
+     "hex": "#A39E96"
+    }
+   ],
+   "reference_architects": [
+    "James Bogardus",
+    "John P. Gaynor",
+    "Louis Sullivan",
+    "Diller Scofidio + Renfro",
+    "James Corner Field Operations"
+   ],
+   "reference_works": [
+    {
+     "name": "E. V. Haughwout Building",
+     "architect": "John P. Gaynor (hierro de Daniel D. Badger)",
+     "city": "Nueva York",
+     "year": "1857"
+    },
+    {
+     "name": "Bayard–Condict Building (estructura de acero con fachada de terracota)",
+     "architect": "Louis Sullivan",
+     "city": "Nueva York",
+     "year": "1899"
+    },
+    {
+     "name": "The High Line",
+     "architect": "James Corner Field Operations + Diller Scofidio + Renfro",
+     "city": "Nueva York",
+     "year": "2009"
+    }
+   ],
+   "prompt_keywords_en": "New York industrial loft, SoHo cast iron, exposed riveted steel I-beams, black steel grid factory windows, blackened waxed steel, exposed brick, reclaimed wood, Edison bulbs, specialty coffee shop, warm moody light",
+   "complexity_factor": 1.05,
+   "complexity_rationale": "Línea base industrial: perfiles estándar y soldadura visible aceptada; solo la ventanería en cuadrícula y el acabado encerado agregan algo de mano de obra.",
+   "lat": 40.7233,
+   "lng": -74.003
+  }
+ ]
+}

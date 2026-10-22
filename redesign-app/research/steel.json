@@ -1,0 +1,1202 @@
+{
+ "profiles": [
+  {
+   "family": "IPE (perfil I europeo laminado en caliente)",
+   "designation": "IPE 100",
+   "kg_per_m": 8.1,
+   "typical_use": "Viguetas cortas, correas de pérgola, marcos de portón pivotante pesado."
+  },
+  {
+   "family": "IPE (perfil I europeo laminado en caliente)",
+   "designation": "IPE 120",
+   "kg_per_m": 10.4,
+   "typical_use": "Viguetas de mezzanine con luces de 2,5–3 m, ménsulas de marquesina pequeñas."
+  },
+  {
+   "family": "IPE (perfil I europeo laminado en caliente)",
+   "designation": "IPE 160",
+   "kg_per_m": 15.8,
+   "typical_use": "Viguetas de mezzanine (luces 3,5–4,5 m), vigas de pérgola, ménsulas de marquesina."
+  },
+  {
+   "family": "IPE (perfil I europeo laminado en caliente)",
+   "designation": "IPE 200",
+   "kg_per_m": 22.4,
+   "typical_use": "Vigas secundarias de mezzanine, vigas principales de pérgola de 5–6 m."
+  },
+  {
+   "family": "IPE (perfil I europeo laminado en caliente)",
+   "designation": "IPE 240",
+   "kg_per_m": 30.7,
+   "typical_use": "Vigas principales de mezzanine con luces de 5–6 m."
+  },
+  {
+   "family": "IPE (perfil I europeo laminado en caliente)",
+   "designation": "IPE 300",
+   "kg_per_m": 42.2,
+   "typical_use": "Vigas principales de mezzanine con luces de 6–8 m o cargas de almacenamiento."
+  },
+  {
+   "family": "HEA (perfil H europeo de ala ancha)",
+   "designation": "HEA 100",
+   "kg_per_m": 16.7,
+   "typical_use": "Columnas cortas de pérgola o marquesina, postes de portón."
+  },
+  {
+   "family": "HEA (perfil H europeo de ala ancha)",
+   "designation": "HEA 140",
+   "kg_per_m": 24.7,
+   "typical_use": "Columnas de mezzanine de una planta (h ≈ 3 m)."
+  },
+  {
+   "family": "HEA (perfil H europeo de ala ancha)",
+   "designation": "HEA 160",
+   "kg_per_m": 30.4,
+   "typical_use": "Columnas de mezzanine y pórticos de kiosko grande."
+  },
+  {
+   "family": "HEA (perfil H europeo de ala ancha)",
+   "designation": "HEA 200",
+   "kg_per_m": 42.3,
+   "typical_use": "Columnas de mezzanine con cargas altas, vigas de transferencia cortas."
+  },
+  {
+   "family": "HEA (perfil H europeo de ala ancha)",
+   "designation": "HEA 240",
+   "kg_per_m": 60.3,
+   "typical_use": "Columnas o vigas de pórticos resistentes a momento en estructuras de mayor luz."
+  },
+  {
+   "family": "W (perfil de ala ancha AISC, muy común en Colombia)",
+   "designation": "W8x10 (W200x15)",
+   "kg_per_m": 14.9,
+   "typical_use": "Alternativa a IPE 160 para viguetas de mezzanine y ménsulas."
+  },
+  {
+   "family": "W (perfil de ala ancha AISC, muy común en Colombia)",
+   "designation": "W10x12 (W250x17.9)",
+   "kg_per_m": 17.9,
+   "typical_use": "Viguetas de mezzanine de 4–5 m de luz."
+  },
+  {
+   "family": "W (perfil de ala ancha AISC, muy común en Colombia)",
+   "designation": "W12x26 (W310x38.7)",
+   "kg_per_m": 38.7,
+   "typical_use": "Vigas principales de mezzanine de 6–7 m."
+  },
+  {
+   "family": "UPN (canal laminado en caliente)",
+   "designation": "UPN 160",
+   "kg_per_m": 18.8,
+   "typical_use": "Zancas de escalera recta, vigas de borde de mezzanine."
+  },
+  {
+   "family": "UPN (canal laminado en caliente)",
+   "designation": "UPN 200",
+   "kg_per_m": 25.3,
+   "typical_use": "Zancas de escalera de mayor luz o ancho, vigas de borde con baranda."
+  },
+  {
+   "family": "Tubo estructural cuadrado (PTS, ASTM A500)",
+   "designation": "Tubo cuadrado 25x25x1.5",
+   "kg_per_m": 1.06,
+   "typical_use": "Barrotes de baranda, marcos de exhibidores livianos, mobiliario."
+  },
+  {
+   "family": "Tubo estructural cuadrado (PTS, ASTM A500)",
+   "designation": "Tubo cuadrado 40x40x2",
+   "kg_per_m": 2.31,
+   "typical_use": "Patas de mesa, montantes de estantería, bastidores de letreros."
+  },
+  {
+   "family": "Tubo estructural cuadrado (PTS, ASTM A500)",
+   "designation": "Tubo cuadrado 50x50x2",
+   "kg_per_m": 2.93,
+   "typical_use": "Bastidor de barra de café, parales de baranda, marcos de puertas."
+  },
+  {
+   "family": "Tubo estructural cuadrado (PTS, ASTM A500)",
+   "designation": "Tubo cuadrado 75x75x3",
+   "kg_per_m": 6.6,
+   "typical_use": "Marcos de portón, subestructura de fachada, columnas de pérgola pequeña."
+  },
+  {
+   "family": "Tubo estructural cuadrado (PTS, ASTM A500)",
+   "designation": "Tubo cuadrado 100x100x3",
+   "kg_per_m": 8.96,
+   "typical_use": "Columnas de pérgola y marquesina, pedestales de señalética."
+  },
+  {
+   "family": "Tubo estructural cuadrado (PTS, ASTM A500)",
+   "designation": "Tubo cuadrado 100x100x4",
+   "kg_per_m": 11.73,
+   "typical_use": "Columnas de pérgola, kiosko y mezzanine liviano."
+  },
+  {
+   "family": "Tubo estructural rectangular (PTS, ASTM A500)",
+   "designation": "Tubo rectangular 40x20x1.5",
+   "kg_per_m": 1.3,
+   "typical_use": "Travesaños de baranda, marcos de repisa, lamas livianas."
+  },
+  {
+   "family": "Tubo estructural rectangular (PTS, ASTM A500)",
+   "designation": "Tubo rectangular 100x50x2",
+   "kg_per_m": 4.5,
+   "typical_use": "Correas y lamas de pérgola, subestructura de fachada, bastidor de portón."
+  },
+  {
+   "family": "Tubo estructural rectangular (PTS, ASTM A500)",
+   "designation": "Tubo rectangular 100x50x3",
+   "kg_per_m": 6.6,
+   "typical_use": "Vigas frontales de marquesina (ocultan la canal), dinteles de portón, correas de mayor luz."
+  },
+  {
+   "family": "Tubo estructural rectangular (PTS, ASTM A500)",
+   "designation": "Tubo rectangular 150x50x3",
+   "kg_per_m": 8.96,
+   "typical_use": "Vigas perimetrales de kiosko, zancas de escalera tipo tubo, vigas de pérgola."
+  },
+  {
+   "family": "Tubo redondo (ASTM A500 / A53)",
+   "designation": "Tubo redondo 1-1/2\" (48,3 mm) x 2.0",
+   "kg_per_m": 2.28,
+   "typical_use": "Pasamanos, reposapiés de barra, tensores rígidos livianos."
+  },
+  {
+   "family": "Tubo redondo (ASTM A500 / A53)",
+   "designation": "Tubo redondo 2\" (60,3 mm) x 2.5",
+   "kg_per_m": 3.56,
+   "typical_use": "Pasamanos robustos, pedestal de mesa, columnas esbeltas decorativas."
+  },
+  {
+   "family": "Tubo redondo (ASTM A500 / A53)",
+   "designation": "Tubo redondo 4\" SCH 40 (114,3 x 6,02 mm)",
+   "kg_per_m": 16.07,
+   "typical_use": "Columnas de pérgola y marquesina con estética circular."
+  },
+  {
+   "family": "Ángulo de alas iguales (ASTM A36)",
+   "designation": "Ángulo L 1-1/2\" x 1/8\"",
+   "kg_per_m": 1.83,
+   "typical_use": "Soporte de tableros y repisas, marcos de vidrio, rigidizadores livianos."
+  },
+  {
+   "family": "Ángulo de alas iguales (ASTM A36)",
+   "designation": "Ángulo L 2\" x 3/16\"",
+   "kg_per_m": 3.63,
+   "typical_use": "Soporte de peldaños, arriostramientos, marcos de piso de kiosko."
+  },
+  {
+   "family": "Ángulo de alas iguales (ASTM A36)",
+   "designation": "Ángulo L 2\" x 1/4\"",
+   "kg_per_m": 4.75,
+   "typical_use": "Conexiones de cortante (clip angles), riostras, ménsulas cortas."
+  },
+  {
+   "family": "Platina / barra plana (ASTM A36)",
+   "designation": "Platina 1-1/2\" x 1/4\"",
+   "kg_per_m": 1.9,
+   "typical_use": "Lamas de celosía fina, parales de baranda minimalista, cartelas."
+  },
+  {
+   "family": "Platina / barra plana (ASTM A36)",
+   "designation": "Platina 2\" x 1/4\"",
+   "kg_per_m": 2.53,
+   "typical_use": "Lamas de celosía y fachada, montantes de estantería, marcos de letreros."
+  },
+  {
+   "family": "Platina / barra plana (ASTM A36)",
+   "designation": "Platina 3\" x 3/8\"",
+   "kg_per_m": 5.7,
+   "typical_use": "Parales de baranda estructural, zancas de escalera liviana, pletinas de anclaje."
+  },
+  {
+   "family": "Perfil PHR C (lámina formada en frío, NSR-10 F.4)",
+   "designation": "Perfil C 100x50x15x2",
+   "kg_per_m": 3.49,
+   "typical_use": "Correas de cubierta liviana, viguetas de piso de kiosko, bastidores."
+  },
+  {
+   "family": "Perfil PHR C (lámina formada en frío, NSR-10 F.4)",
+   "designation": "Perfil C 150x50x15x2",
+   "kg_per_m": 4.27,
+   "typical_use": "Correas de pérgola y marquesina, viguetas de cubierta de kiosko."
+  },
+  {
+   "family": "Barra maciza (ASTM A36)",
+   "designation": "Varilla cuadrada 1/2\"",
+   "kg_per_m": 1.27,
+   "typical_use": "Barrotes verticales de baranda y portón, celosía forjada tradicional (herencia de El Taller)."
+  },
+  {
+   "family": "Barra maciza (ASTM A36)",
+   "designation": "Varilla redonda 5/8\"",
+   "kg_per_m": 1.55,
+   "typical_use": "Tensores de marquesina con horquilla, arriostramientos en cruz."
+  }
+ ],
+ "connections": [
+  {
+   "id": "soldadura-filete",
+   "name": "Soldadura de filete (SMAW E7018 / GMAW ER70S-6)",
+   "description": "Cordón triangular en junta en T, traslapo o esquina; es la unión más económica y común en taller. Tamaño mínimo según espesor (AWS D1.1 / NSR-10 F.2.10.2); en perfiles de lámina delgada (≤ 4,8 mm) aplica AWS D1.3.",
+   "when_to_use": "Uniones de bastidores, mobiliario, barandas, conexiones de cortante, platinas a tubo y cualquier unión de taller que no transmita momento sísmico crítico."
+  },
+  {
+   "id": "soldadura-penetracion-completa",
+   "name": "Soldadura de penetración completa (CJP)",
+   "description": "Junta biselada que funde todo el espesor de la pieza y desarrolla la resistencia completa del metal base. Requiere WPS calificado o precalificado, soldador calificado (AWS D1.1) e inspección VT 100% más UT/MT según criticidad.",
+   "when_to_use": "Empalmes de vigas y columnas, patines en conexiones a momento, placas base de columnas en voladizo, uniones de zancas y ménsulas de marquesina."
+  },
+  {
+   "id": "pernada-a325-cortante",
+   "name": "Conexión pernada A325 a cortante (apriete ajustado)",
+   "description": "Pernos ASTM F3125 Gr. A325 con tuerca A563 y arandela F436, instalados en condición snug-tight; trabajan por aplastamiento. Permite montaje rápido en obra sin soldadura en sitio.",
+   "when_to_use": "Unión de viguetas a vigas, ensamble de kioskos modulares desmontables, pérgolas y estanterías que deben armarse en sitio."
+  },
+  {
+   "id": "pernada-a325-momento",
+   "name": "Conexión a momento con placa extrema pernada (pretensionada)",
+   "description": "Placa soldada al extremo de la viga y pernada a la columna con pernos A325 pretensionados (deslizamiento crítico o pretensionado), con rigidizadores. Precalificada según AISC 358 referenciada por NSR-10 F.3.",
+   "when_to_use": "Pórticos resistentes a momento de pérgolas exentas, kioskos sin arriostramiento y mezzanines donde no se pueden poner riostras."
+  },
+  {
+   "id": "conexion-articulada-aleta",
+   "name": "Conexión articulada (platina de cortante / ángulos)",
+   "description": "Platina simple (shear tab) o par de ángulos que transmiten solo cortante; se modela como articulación. Más económica que una conexión a momento, pero exige un sistema de arriostramiento o muros para la estabilidad lateral.",
+   "when_to_use": "Viguetas de mezzanine, vigas secundarias, pórticos arriostrados con diagonales o anclados a muros de concreto."
+  },
+  {
+   "id": "conexion-momento-soldada",
+   "name": "Conexión a momento soldada en taller/obra",
+   "description": "Patines con soldadura CJP y alma pernada o soldada; puede requerir placas de continuidad. En sistemas sísmicos (PRM DMO/DES) debe ser una conexión precalificada o ensayada (NSR-10 F.3, AISC 358) con soldaduras de demanda crítica con tenacidad Charpy.",
+   "when_to_use": "Pórticos rígidos de mezzanine, marcos de kiosko y voladizos de marquesina empotrados."
+  },
+  {
+   "id": "placa-base-anclaje-quimico",
+   "name": "Placa base con anclajes químicos (epóxicos)",
+   "description": "Placa de acero (típicamente 3/8\"–3/4\") perforada, fijada a losa o dado existente con varilla roscada y adhesivo epóxico o híbrido de alto desempeño, calificado para concreto fisurado y cargas sísmicas (ACI 355.4 / ETA). Nivelación con mortero sin retracción (grout).",
+   "when_to_use": "Intervenciones en locales existentes: columnas de mezzanine y pérgola, barandas, barras, estanterías antivuelco y señalética sobre concreto."
+  },
+  {
+   "id": "placa-base-pernos-embebidos",
+   "name": "Placa base con pernos de anclaje embebidos (F1554)",
+   "description": "Pernos ASTM F1554 Gr. 36/55 en J o con tuerca de anclaje embebidos en dado de concreto nuevo, con plantilla de posicionamiento y grout sin retracción bajo placa.",
+   "when_to_use": "Obra nueva: cimentación de kioskos, columnas de pérgolas exentas y mezzanines con zapatas nuevas."
+  },
+  {
+   "id": "anclaje-mecanico-expansivo",
+   "name": "Anclaje mecánico de expansión / tornillo para concreto",
+   "description": "Anclaje de cuña o de tornillo (screw anchor) en concreto macizo; instalación inmediata sin tiempo de curado. No apto para mampostería hueca ni cargas sísmicas altas sin calificación.",
+   "when_to_use": "Fijaciones livianas: estanterías a muro, letreros, bastidores de fachada sobre concreto, marcos de portón."
+  },
+  {
+   "id": "pasador-pivote",
+   "name": "Pasador / pivote con rodamiento",
+   "description": "Articulación real con pasador macizo o pivote de piso con rodamiento axial y buje superior; permite giro libre y concentra la carga vertical en un punto.",
+   "when_to_use": "Puertas y portones pivotantes, lamas giratorias de celosía, articulaciones expresadas en pérgolas."
+  },
+  {
+   "id": "tornillo-autoperforante",
+   "name": "Tornillo autoperforante con arandela EPDM",
+   "description": "Tornillo de acero cementado o inoxidable con punta broca, para fijar láminas, policarbonato o paneles a correas; la arandela de neopreno/EPDM garantiza estanqueidad.",
+   "when_to_use": "Cubiertas de pérgola, marquesina y kiosko; forros de lámina en portones y fachadas."
+  },
+  {
+   "id": "conector-cortante-studs",
+   "name": "Conectores de cortante soldados (studs) para steel deck",
+   "description": "Pernos con cabeza soldados a través de la lámina colaborante sobre las vigas, que generan acción compuesta entre la losa y el acero (NSR-10 F.2.9, sección compuesta).",
+   "when_to_use": "Mezzanines con steel deck y losa de concreto, para reducir el peso de las vigas y controlar vibraciones."
+  },
+  {
+   "id": "tensor-varilla-horquilla",
+   "name": "Tensor de varilla con horquilla y templador",
+   "description": "Varilla roscada o barra con horquillas (clevis) y templador para ajustar tensión; los tensores trabajan solo a tracción y deben anclarse a un elemento estructural sólido.",
+   "when_to_use": "Marquesinas atirantadas a muro o losa, arriostramiento en cruz de pérgolas y kioskos."
+  }
+ ],
+ "finishes": [
+  {
+   "id": "anticorrosivo-esmalte",
+   "name": "Anticorrosivo alquídico + esmalte sintético",
+   "description": "Limpieza mecánica (SSPC-SP2/SP3), 2 manos de anticorrosivo alquídico (≈50 µm) y 2 de esmalte sintético (≈50 µm). Es el sistema más económico; en Bogotá el UV alto lo decolora y la condensación nocturna acelera la corrosión en bordes y soldaduras.",
+   "durability_years_low": 3,
+   "durability_years_high": 8,
+   "maintenance": "En exterior: retoques anuales en golpes y bordes, repintura completa cada 3–5 años. En interior: repintura cada 7–8 años.",
+   "best_for": "Interiores secos, mobiliario y estructura oculta con presupuesto ajustado."
+  },
+  {
+   "id": "epoxico-poliuretano",
+   "name": "Sistema epóxico + poliuretano alifático",
+   "description": "Chorro abrasivo a grado SA 2½ (SSPC-SP10), imprimante epóxico rico en zinc o epoxi-poliamida (≈75 µm), intermedio epóxico de alto espesor (≈100 µm) y acabado de poliuretano alifático resistente al UV (≈50–75 µm). Sistema de 200–250 µm para corrosividad C3, durabilidad alta según ISO 12944.",
+   "durability_years_low": 12,
+   "durability_years_high": 20,
+   "maintenance": "Lavado con agua y jabón neutro 1–2 veces al año; inspección anual y retoque inmediato de golpes; nueva capa de poliuretano hacia los 8–10 años para recuperar color y brillo.",
+   "best_for": "Estructura a la vista en exterior: pérgolas, marquesinas, escaleras, mezzanines y fachadas de alto tráfico."
+  },
+  {
+   "id": "electrostatica",
+   "name": "Pintura electrostática en polvo (poliéster)",
+   "description": "Desengrase, fosfatado o pretratamiento nanocerámico y polvo poliéster de grado exterior (60–80 µm) curado en horno a 180–200 °C. Acabado uniforme con amplia gama RAL y texturas. El tamaño de pieza está limitado por el horno (típicamente 6 m de largo).",
+   "durability_years_low": 8,
+   "durability_years_high": 15,
+   "maintenance": "Limpieza con paño húmedo y jabón neutro; no usar solventes ni abrasivos. Los daños se retocan con pintura líquida compatible (no se puede repolvorear en sitio). En exterior se recomienda sobre galvanizado (sistema dúplex).",
+   "best_for": "Mobiliario, barras, estanterías, mesas, barandas y portones con color de marca."
+  },
+  {
+   "id": "galvanizado-caliente",
+   "name": "Galvanizado por inmersión en caliente",
+   "description": "Inmersión de la pieza terminada en zinc fundido (ASTM A123 / ISO 1461), con recubrimiento metalúrgico de 70–100 µm que protege también por dentro de los tubos. En atmósfera urbana C2–C3 como la de Bogotá el zinc se consume lentamente. Exige diseñar perforaciones de venteo/drenaje y limita el tamaño de la pieza a la cuba.",
+   "durability_years_low": 30,
+   "durability_years_high": 60,
+   "maintenance": "Prácticamente nulo: inspección cada 2–3 años y retoque de cortes o soldaduras de obra con pintura rica en zinc. Para color, aplicar dúplex (galvanizado + electrostática o poliuretano).",
+   "best_for": "Exteriores expuestos: fachadas, pérgolas, marquesinas, portones, estructura de kioskos y subestructuras ocultas."
+  },
+  {
+   "id": "patina-corten",
+   "name": "Pátina natural o acelerada de acero corten",
+   "description": "Capa de óxido estable y adherente que se forma en aceros ASTM A588/A242 con ciclos de mojado y secado. Puede acelerarse con soluciones oxidantes en taller. En Bogotá, por la humedad persistente y el secado lento, la pátina tarda 2–4 años en estabilizarse y no se forma bien en zonas resguardadas o permanentemente húmedas; en interiores requiere pátina acelerada y sellado.",
+   "durability_years_low": 20,
+   "durability_years_high": 50,
+   "maintenance": "Mantener drenajes libres y evitar hojas o tierra acumuladas; controlar la escorrentía de óxido (goteros, gravilla). En interior, renovar el sellador (barniz o cera) cada 1–2 años. No pintar parcialmente.",
+   "best_for": "Señalética, celosías y fachadas expuestas a la lluvia y bien ventiladas, jardineras y piezas escultóricas."
+  },
+  {
+   "id": "inox-cepillado",
+   "name": "Acero inoxidable 304 cepillado",
+   "description": "Acabado satinado (grano 180–320) sobre AISI 304; resiste el contacto con alimentos, el café y la limpieza frecuente. Después de soldar exige decapado y pasivado. En exterior con contaminación vehicular puede presentar manchas superficiales (tea staining); para ese caso se recomienda 316.",
+   "durability_years_low": 25,
+   "durability_years_high": 50,
+   "maintenance": "Limpieza con agua y detergente neutro en el sentido del grano, de 2 a 4 veces al año en exterior. Evitar lana de acero común y cloro. Repasivar si aparecen puntos de óxido.",
+   "best_for": "Barras de café, frentes de servicio, mesas de trabajo, pasamanos y piezas en contacto con alimentos o con alto tráfico de manos."
+  },
+  {
+   "id": "intumescente",
+   "name": "Pintura intumescente (protección contra fuego)",
+   "description": "Recubrimiento que se expande con el calor y aísla el acero durante 30–90 minutos (R30–R90), con espesor según el factor de sección Hp/A. Va sobre un imprimante compatible y con acabado de sello. La base agua es solo para interior; para exterior se usa base solvente o epóxica.",
+   "durability_years_low": 10,
+   "durability_years_high": 20,
+   "maintenance": "Inspección anual de golpes y desprendimientos; reparar con el mismo producto hasta el espesor certificado; renovar la capa de acabado cada 5–8 años. No lijar ni perforar sin reparar.",
+   "best_for": "Estructura principal de mezzanines y escaleras en locales con público, cuando el Título J de NSR-10 exige resistencia al fuego."
+  }
+ ],
+ "works": [
+  {
+   "id": "barra-cafe",
+   "name": "Barra de café en acero",
+   "category": "Mobiliario de servicio",
+   "unit": "ml",
+   "description": "Barra de servicio con bastidor de tubo estructural, frente en lámina lisa, perforada o calada y tablero de madera o cuarzo. Toma referencias de los bares de pie italianos (banco de espresso), los kissaten japoneses de madera y metal oscuro, y la herencia de la ornamentación forjada de El Taller.",
+   "default_quantity": 4,
+   "quantity_min": 1.5,
+   "quantity_max": 15,
+   "quantity_step": 0.5,
+   "structural_system": "Bastidor espacial de tubo cuadrado con montantes cada 0,60 m, travesaños superiores e inferiores, ángulos de apoyo para el tablero y anclaje a piso con placas y anclajes químicos. Altura de 1,05–1,10 m y fondo de 0,60–0,70 m.",
+   "typical_profiles": [
+    "Tubo cuadrado 50x50x2",
+    "Tubo cuadrado 40x40x2",
+    "Ángulo L 1-1/2\" x 1/8\"",
+    "Tubo redondo 1-1/2\" (48,3 mm) x 2.0"
+   ],
+   "typical_connection_ids": [
+    "soldadura-filete",
+    "placa-base-anclaje-quimico",
+    "anclaje-mecanico-expansivo"
+   ],
+   "allowed_material_ids": [
+    "acero-estructural",
+    "acero-inox-304",
+    "acero-corten",
+    "acero-galvanizado"
+   ],
+   "default_material_id": "acero-estructural",
+   "default_finish_id": "electrostatica",
+   "kg_per_unit_low": 35,
+   "kg_per_unit_high": 65,
+   "finish_area_m2_per_unit": 4.5,
+   "complements": [
+    {
+     "id": "tablero-madera",
+     "qty_per_unit": 0.65,
+     "optional": false
+    },
+    {
+     "id": "tablero-cuarzo",
+     "qty_per_unit": 0.65,
+     "optional": true
+    },
+    {
+     "id": "lamina-perforada",
+     "qty_per_unit": 1,
+     "optional": true
+    },
+    {
+     "id": "led-lineal",
+     "qty_per_unit": 1,
+     "optional": true
+    },
+    {
+     "id": "corte-laser-cnc",
+     "qty_per_unit": 0.3,
+     "optional": true
+    },
+    {
+     "id": "anclajes-quimicos",
+     "qty_per_unit": 2,
+     "optional": false
+    }
+   ],
+   "nsr10_notes": "Se considera elemento no estructural (NSR-10 A.9): debe anclarse al piso para resistir la fuerza sísmica de diseño Fp, sobre todo si carga una máquina de espresso (60–90 kg) o molinos. Verificar el soporte de los equipos y que no haya volcamiento.",
+   "maintenance_notes": "Limpieza diaria con detergente neutro; en zonas de salpicadura de agua y leche preferir inox 304 o epóxico. Revisar los sellos del tablero y los retoques de pintura en el zócalo (golpes de pies y traperos) cada 6 meses.",
+   "fabrication_days_low": 8,
+   "fabrication_days_high": 15,
+   "weight_rationale": "Por ml: ≈9,6 m de tubo 50x50x2 (2,93 kg/m) ≈ 28 kg, más frente en lámina cal. 16 (11,8 kg/m² x 1,05 m²) ≈ 12 kg, más reposapiés y ángulos (≈4 kg). Con frente calado o inox el peso sube a ≈65 kg/ml."
+  },
+  {
+   "id": "fachada-celosia",
+   "name": "Fachada / celosía metálica",
+   "category": "Envolvente",
+   "unit": "m2",
+   "description": "Piel de lamas, platinas o lámina perforada/calada sobre una subestructura anclada a la edificación; filtra luz, da privacidad y construye identidad. Inspirada en la mashrabiya árabe, el jali indio y las celosías modernistas de Brasil y México, reinterpretadas en acero.",
+   "default_quantity": 20,
+   "quantity_min": 4,
+   "quantity_max": 300,
+   "quantity_step": 1,
+   "structural_system": "Subestructura de montantes de tubo rectangular cada 1,0–1,2 m anclados a losas o vigas (no a mampostería no reforzada), con agujeros ovalados que absorben la deriva sísmica; sobre ella van lamas de platina cada 80–120 mm o paneles de lámina perforada o calada por CNC.",
+   "typical_profiles": [
+    "Tubo rectangular 100x50x2",
+    "Tubo cuadrado 75x75x3",
+    "Platina 2\" x 1/4\"",
+    "Platina 1-1/2\" x 1/4\"",
+    "Ángulo L 2\" x 1/4\""
+   ],
+   "typical_connection_ids": [
+    "soldadura-filete",
+    "placa-base-anclaje-quimico",
+    "anclaje-mecanico-expansivo",
+    "pernada-a325-cortante",
+    "pasador-pivote"
+   ],
+   "allowed_material_ids": [
+    "acero-estructural",
+    "acero-corten",
+    "acero-galvanizado",
+    "acero-inox-304"
+   ],
+   "default_material_id": "acero-estructural",
+   "default_finish_id": "galvanizado-caliente",
+   "kg_per_unit_low": 15,
+   "kg_per_unit_high": 40,
+   "finish_area_m2_per_unit": 2,
+   "complements": [
+    {
+     "id": "lamina-perforada",
+     "qty_per_unit": 1,
+     "optional": true
+    },
+    {
+     "id": "corte-laser-cnc",
+     "qty_per_unit": 1,
+     "optional": true
+    },
+    {
+     "id": "anclajes-quimicos",
+     "qty_per_unit": 0.8,
+     "optional": false
+    },
+    {
+     "id": "led-lineal",
+     "qty_per_unit": 0.3,
+     "optional": true
+    }
+   ],
+   "nsr10_notes": "Elemento no estructural de fachada (NSR-10 A.9): se diseña para la fuerza sísmica Fp y el viento (Título B, B.6), y sus anclajes deben acomodar la deriva de piso sin desprenderse. Los anclajes van a concreto. Cambiar una fachada puede requerir licencia de construcción en modalidad de modificación; en inmuebles BIC o sectores de interés cultural se necesita además el concepto del IDPC.",
+   "maintenance_notes": "Inspección anual de anclajes y uniones; lavado con agua a baja presión para retirar el hollín de la ciudad. Evitar perfiles horizontales que acumulen agua; dejar drenajes en los tubos.",
+   "fabrication_days_low": 12,
+   "fabrication_days_high": 25,
+   "weight_rationale": "Por m²: subestructura de tubo 100x50x2 (≈1,3 m/m² x 4,5 kg/m ≈ 6 kg) más ménsulas (≈1,5 kg) más lamas de platina 2\"x1/4\" cada 100 mm (10 m/m² x 2,53 ≈ 25 kg) o lámina perforada de 2 mm con 40% de vacío (≈9 kg)."
+  },
+  {
+   "id": "pergola",
+   "name": "Pérgola / cubierta ligera",
+   "category": "Cubiertas y exteriores",
+   "unit": "m2",
+   "description": "Pórtico de columnas y vigas con correas o lamas, abierta o con cubierta de policarbonato o vidrio, para terrazas de café. Retoma la pérgola mediterránea, el engawa japonés y las galerías tropicales de Jean Prouvé, en acero de sección esbelta.",
+   "default_quantity": 25,
+   "quantity_min": 6,
+   "quantity_max": 200,
+   "quantity_step": 1,
+   "structural_system": "Pórticos de columnas de tubo cuadrado o HEA con vigas IPE o tubo rectangular, correas o lamas cada 0,5–1,0 m y estabilidad lateral mediante conexiones a momento, arriostramiento en cruz o anclaje a la fachada existente. Luces típicas de 4–6 m.",
+   "typical_profiles": [
+    "Tubo cuadrado 100x100x4",
+    "HEA 100",
+    "IPE 160",
+    "IPE 200",
+    "Tubo rectangular 100x50x2",
+    "Perfil C 150x50x15x2",
+    "Tubo redondo 4\" SCH 40 (114,3 x 6,02 mm)"
+   ],
+   "typical_connection_ids": [
+    "placa-base-anclaje-quimico",
+    "placa-base-pernos-embebidos",
+    "pernada-a325-momento",
+    "conexion-momento-soldada",
+    "soldadura-filete",
+    "tornillo-autoperforante",
+    "tensor-varilla-horquilla"
+   ],
+   "allowed_material_ids": [
+    "acero-estructural",
+    "acero-galvanizado",
+    "acero-corten"
+   ],
+   "default_material_id": "acero-estructural",
+   "default_finish_id": "epoxico-poliuretano",
+   "kg_per_unit_low": 14,
+   "kg_per_unit_high": 30,
+   "finish_area_m2_per_unit": 1.1,
+   "complements": [
+    {
+     "id": "policarbonato",
+     "qty_per_unit": 1.05,
+     "optional": true
+    },
+    {
+     "id": "vidrio-templado",
+     "qty_per_unit": 1,
+     "optional": true
+    },
+    {
+     "id": "tablero-madera",
+     "qty_per_unit": 0.5,
+     "optional": true
+    },
+    {
+     "id": "led-lineal",
+     "qty_per_unit": 0.4,
+     "optional": true
+    },
+    {
+     "id": "anclajes-quimicos",
+     "qty_per_unit": 0.65,
+     "optional": false
+    }
+   ],
+   "nsr10_notes": "Diseño según NSR-10 F.2 (acero) y F.4 (correas formadas en frío). Cargas: cubierta liviana (B.4), viento (B.6) y granizo (B.4.8.3): en Bogotá, por estar a más de 2.000 m s. n. m., la carga de granizo es obligatoria y es mayor en cubiertas de poca pendiente (verificar el valor exacto en el Título B). Si se usa vidrio en cubierta debe ser de seguridad laminado (templado-laminado, Título K). Una cubierta fija que aumente el área construida o cubra un aislamiento puede requerir licencia.",
+   "maintenance_notes": "Limpiar las canales y la cubierta antes de cada temporada de lluvias (marzo y septiembre); revisar los tornillos y sellos del policarbonato cada año; retocar la pintura en las uniones columna-placa, donde se acumula agua.",
+   "fabrication_days_low": 10,
+   "fabrication_days_high": 20,
+   "weight_rationale": "Ejemplo de 5x5 m: 4 columnas de 2,7 m en tubo 100x100x4 (127 kg) + 2 vigas IPE 160 de 5 m (158 kg) + correas/lamas de tubo 100x50x2 cada 0,5 m (≈50 m, 225 kg) + placas (20 kg) ≈ 530 kg / 25 m² ≈ 21 kg/m². Con correas cada 1,0 m baja a ≈16 kg/m²."
+  },
+  {
+   "id": "mezzanine",
+   "name": "Mezzanine estructural",
+   "category": "Estructura",
+   "unit": "m2",
+   "description": "Entrepiso metálico que duplica el área útil del local (zona de tostión, coworking o mesas) con vigas a la vista y losa en steel deck o tablero de madera. Retoma la tradición de los lofts industriales de Nueva York y los micro-cafés de doble altura de Tokio.",
+   "default_quantity": 20,
+   "quantity_min": 6,
+   "quantity_max": 150,
+   "quantity_step": 1,
+   "structural_system": "Sistema de vigas principales IPE/W y viguetas cada 1,0–1,25 m sobre columnas HEA o de tubo con placa base; losa de steel deck de 2\" con concreto (≈10 cm de espesor total) y conectores de cortante, o tablero de madera sobre perfil C. Estabilidad lateral con pórticos a momento, riostras o anclaje a muros de concreto.",
+   "typical_profiles": [
+    "IPE 240",
+    "IPE 200",
+    "IPE 160",
+    "W10x12 (W250x17.9)",
+    "HEA 160",
+    "HEA 140",
+    "Tubo cuadrado 100x100x4",
+    "UPN 160"
+   ],
+   "typical_connection_ids": [
+    "conexion-articulada-aleta",
+    "pernada-a325-cortante",
+    "pernada-a325-momento",
+    "conexion-momento-soldada",
+    "soldadura-penetracion-completa",
+    "placa-base-anclaje-quimico",
+    "placa-base-pernos-embebidos",
+    "conector-cortante-studs"
+   ],
+   "allowed_material_ids": [
+    "acero-estructural"
+   ],
+   "default_material_id": "acero-estructural",
+   "default_finish_id": "epoxico-poliuretano",
+   "kg_per_unit_low": 40,
+   "kg_per_unit_high": 70,
+   "finish_area_m2_per_unit": 1.6,
+   "complements": [
+    {
+     "id": "steel-deck-concreto",
+     "qty_per_unit": 1,
+     "optional": false
+    },
+    {
+     "id": "tablero-madera",
+     "qty_per_unit": 1,
+     "optional": true
+    },
+    {
+     "id": "anclajes-quimicos",
+     "qty_per_unit": 0.8,
+     "optional": false
+    },
+    {
+     "id": "led-lineal",
+     "qty_per_unit": 0.5,
+     "optional": true
+    }
+   ],
+   "nsr10_notes": "Es una estructura y requiere diseño de un ingeniero civil con matrícula profesional (Ley 400 de 1997) según NSR-10 F.2 y F.3 (provisiones sísmicas). Bogotá está en zona de amenaza sísmica intermedia (Aa = 0,15; Av = 0,20) y se aplica la microzonificación (Decreto 523 de 2010). Carga viva según el uso (Tabla B.4.2.1-1; restaurantes y áreas de público ≈5,0 kN/m²). Verificar deflexión (L/360 por carga viva) y vibración de piso. Necesita licencia de construcción (modalidad ampliación o modificación) ante curaduría urbana y verificación de la cimentación existente; puede requerir protección contra fuego (Título J) y barandas (Título K).",
+   "maintenance_notes": "Inspección anual de uniones pernadas (torque), soldaduras y placas base; revisar fisuras en la losa y en el grout. Retocar el epóxico en zonas de roce. Si lleva intumescente, inspeccionar golpes cada año.",
+   "fabrication_days_low": 18,
+   "fabrication_days_high": 35,
+   "weight_rationale": "Ejemplo de 4x5 m: 2 vigas IPE 240 de 5 m (307 kg) + 5 viguetas IPE 160 de 4 m (316 kg) + 4 columnas HEA 160 de 3 m (365 kg) + conexiones (≈10%, 100 kg) ≈ 1.090 kg / 20 m² ≈ 54 kg/m²; con apoyo en muros baja a ≈40 y con luces largas o almacenamiento sube a ≈70."
+  },
+  {
+   "id": "escalera",
+   "name": "Escalera metálica",
+   "category": "Circulación",
+   "unit": "und",
+   "description": "Tramo recto de escalera de un nivel (≈3 m de altura, 1,0 m de ancho) con zancas laterales o central y peldaños en lámina plegada, alfajor o madera. Se inspira en las escaleras plegadas escandinavas, las de Carlo Scarpa y la estética de las escaleras de servicio industriales. La baranda se cotiza como obra aparte (baranda).",
+   "default_quantity": 1,
+   "quantity_min": 1,
+   "quantity_max": 6,
+   "quantity_step": 1,
+   "structural_system": "Dos zancas (UPN, platina o tubo rectangular) apoyadas en la losa inferior y en el borde del mezzanine o la losa superior; peldaños en lámina plegada o alfajor de 1/8\"–3/16\" sobre ángulos soldados, o zanca central con peldaños en voladizo. ≈17 contrahuellas de ≈17,6 cm y huella ≥ 28 cm.",
+   "typical_profiles": [
+    "UPN 160",
+    "UPN 200",
+    "Tubo rectangular 150x50x3",
+    "Platina 3\" x 3/8\"",
+    "Ángulo L 2\" x 3/16\""
+   ],
+   "typical_connection_ids": [
+    "soldadura-filete",
+    "soldadura-penetracion-completa",
+    "placa-base-anclaje-quimico",
+    "pernada-a325-cortante"
+   ],
+   "allowed_material_ids": [
+    "acero-estructural",
+    "acero-galvanizado",
+    "acero-inox-304"
+   ],
+   "default_material_id": "acero-estructural",
+   "default_finish_id": "epoxico-poliuretano",
+   "kg_per_unit_low": 280,
+   "kg_per_unit_high": 520,
+   "finish_area_m2_per_unit": 18,
+   "complements": [
+    {
+     "id": "tablero-madera",
+     "qty_per_unit": 4.8,
+     "optional": true
+    },
+    {
+     "id": "anclajes-quimicos",
+     "qty_per_unit": 8,
+     "optional": false
+    },
+    {
+     "id": "led-lineal",
+     "qty_per_unit": 5,
+     "optional": true
+    },
+    {
+     "id": "corte-laser-cnc",
+     "qty_per_unit": 1,
+     "optional": true
+    }
+   ],
+   "nsr10_notes": "Diseño estructural según NSR-10 F.2, con carga viva igual o mayor a la del uso al que sirve (Título B). Geometría y ancho según los medios de evacuación del Título K (huella, contrahuella uniforme, ancho libre según la carga de ocupación; verificar Capítulo K.3). Verificar vibración y rigidez lateral. Si es parte de un mezzanine nuevo, va incluida en la licencia de construcción.",
+   "maintenance_notes": "Revisar el antideslizante de los peldaños cada 6 meses y renovar las cintas o recubrimientos; retocar la pintura en las narices de los peldaños; ajustar los anclajes al año del montaje.",
+   "fabrication_days_low": 10,
+   "fabrication_days_high": 18,
+   "weight_rationale": "2 zancas UPN 160 de 5,4 m (203 kg) + 16 peldaños de alfajor 1/8\" de 0,36 m² (≈158 kg) + ángulos de apoyo L2\"x3/16\" (29 kg) + placas (15 kg) ≈ 400 kg por tramo."
+  },
+  {
+   "id": "kiosko-modular",
+   "name": "Kiosko / módulo de café en acero",
+   "category": "Arquitectura modular",
+   "unit": "und",
+   "description": "Módulo autónomo de 6–15 m² con estructura metálica, cerramientos de lámina y vidrio, ventana de servicio abatible y cubierta liviana; transportable en camión e izable con grúa. Toma como referencia la Maison Tropicale de Jean Prouvé, los yatai japoneses y los kioskos parisinos de hierro.",
+   "default_quantity": 1,
+   "quantity_min": 1,
+   "quantity_max": 10,
+   "quantity_step": 1,
+   "structural_system": "Marco rígido espacial con columnas de tubo cuadrado en las esquinas, vigas perimetrales de tubo rectangular arriba y abajo, viguetas de piso y cubierta en perfil C, cerramientos de lámina cal. 18 sobre bastidor y puntos de izaje. Se apoya en dados o placas niveladoras con anclaje.",
+   "typical_profiles": [
+    "Tubo cuadrado 100x100x4",
+    "Tubo rectangular 150x50x3",
+    "Perfil C 100x50x15x2",
+    "Perfil C 150x50x15x2",
+    "Tubo cuadrado 50x50x2",
+    "Ángulo L 2\" x 3/16\""
+   ],
+   "typical_connection_ids": [
+    "conexion-momento-soldada",
+    "soldadura-filete",
+    "pernada-a325-cortante",
+    "placa-base-pernos-embebidos",
+    "placa-base-anclaje-quimico",
+    "tornillo-autoperforante"
+   ],
+   "allowed_material_ids": [
+    "acero-estructural",
+    "acero-galvanizado",
+    "acero-corten"
+   ],
+   "default_material_id": "acero-estructural",
+   "default_finish_id": "epoxico-poliuretano",
+   "kg_per_unit_low": 650,
+   "kg_per_unit_high": 1800,
+   "finish_area_m2_per_unit": 75,
+   "complements": [
+    {
+     "id": "vidrio-templado",
+     "qty_per_unit": 3,
+     "optional": true
+    },
+    {
+     "id": "tablero-madera",
+     "qty_per_unit": 9,
+     "optional": true
+    },
+    {
+     "id": "tablero-cuarzo",
+     "qty_per_unit": 1,
+     "optional": true
+    },
+    {
+     "id": "led-lineal",
+     "qty_per_unit": 12,
+     "optional": true
+    },
+    {
+     "id": "lamina-perforada",
+     "qty_per_unit": 4,
+     "optional": true
+    },
+    {
+     "id": "corte-laser-cnc",
+     "qty_per_unit": 2,
+     "optional": true
+    },
+    {
+     "id": "anclajes-quimicos",
+     "qty_per_unit": 8,
+     "optional": false
+    }
+   ],
+   "nsr10_notes": "Estructura liviana según NSR-10 F.2/F.4: verificar volcamiento y deslizamiento por sismo y viento (B.6), granizo en cubierta y las fuerzas de izaje y transporte. En predio privado puede requerir licencia de construcción si es permanente; en espacio público necesita permiso de aprovechamiento económico (Marco Regulatorio del Aprovechamiento Económico del Espacio Público, Decreto Distrital 552 de 2018 y normas que lo modifiquen; DADEP/IDU según el caso). Las instalaciones eléctricas deben cumplir RETIE.",
+   "maintenance_notes": "Revisar sellos de cubierta y ventanas antes de las temporadas de lluvia; inspeccionar la corrosión en la base (zona de salpicadura) y en las bisagras de la ventana de servicio cada 6 meses; reapretar pernos después de cada traslado.",
+   "fabrication_days_low": 20,
+   "fabrication_days_high": 35,
+   "weight_rationale": "Módulo de 3x3x2,7 m: columnas 100x100x4 (127 kg) + vigas perimetrales 150x50x3 (215 kg) + viguetas C (147 kg) + cerramientos cal. 18 (135 kg) + cubierta (60 kg) + piso alfajor (245 kg) + marcos (40 kg) ≈ 970 kg; un módulo de 6 m² pesa ≈650 kg y uno de 15 m² con piso metálico ≈1.800 kg."
+  },
+  {
+   "id": "estanteria",
+   "name": "Estantería / exhibidor de producto",
+   "category": "Mobiliario de exhibición",
+   "unit": "ml",
+   "description": "Exhibidor de piso a techo para café en grano, métodos de preparación y merchandising, con montantes metálicos y repisas de lámina plegada o madera. Referencias: el sistema modular de Dieter Rams (Vitsoe 606), las estanterías de las tiendas de té de Kioto y los anaqueles de las ferreterías tradicionales.",
+   "default_quantity": 3,
+   "quantity_min": 1,
+   "quantity_max": 20,
+   "quantity_step": 0.5,
+   "structural_system": "Montantes de tubo o platina cada 0,9–1,0 m anclados a piso y muro (antivuelco), con 4–6 repisas en lámina cal. 14 plegada o tablero de madera sobre ángulos; altura de 2,1–2,4 m y fondo de 0,30–0,40 m.",
+   "typical_profiles": [
+    "Tubo cuadrado 40x40x2",
+    "Platina 2\" x 1/4\"",
+    "Ángulo L 1-1/2\" x 1/8\"",
+    "Tubo rectangular 40x20x1.5"
+   ],
+   "typical_connection_ids": [
+    "soldadura-filete",
+    "anclaje-mecanico-expansivo",
+    "placa-base-anclaje-quimico",
+    "pernada-a325-cortante"
+   ],
+   "allowed_material_ids": [
+    "acero-estructural",
+    "acero-inox-304",
+    "acero-corten",
+    "acero-galvanizado"
+   ],
+   "default_material_id": "acero-estructural",
+   "default_finish_id": "electrostatica",
+   "kg_per_unit_low": 18,
+   "kg_per_unit_high": 45,
+   "finish_area_m2_per_unit": 3.5,
+   "complements": [
+    {
+     "id": "tablero-madera",
+     "qty_per_unit": 1.75,
+     "optional": true
+    },
+    {
+     "id": "vidrio-templado",
+     "qty_per_unit": 0.7,
+     "optional": true
+    },
+    {
+     "id": "led-lineal",
+     "qty_per_unit": 3,
+     "optional": true
+    },
+    {
+     "id": "anclajes-quimicos",
+     "qty_per_unit": 3,
+     "optional": false
+    }
+   ],
+   "nsr10_notes": "Elemento no estructural (NSR-10 A.9): en Bogotá es obligatorio el anclaje antivuelco a muro o placa para la fuerza sísmica Fp. Indicar la carga máxima por repisa y usar bordes o retenedores para que los productos no caigan durante un sismo.",
+   "maintenance_notes": "Limpieza semanal con paño húmedo; verificar el anclaje a muro una vez al año; no sobrecargar las repisas por encima de la capacidad indicada.",
+   "fabrication_days_low": 6,
+   "fabrication_days_high": 12,
+   "weight_rationale": "Por ml: ≈4,9 m de montante 40x40x2 (11 kg) + 5 repisas con ángulos L1-1/2\"x1/8\" (18 kg) o lámina cal. 14 plegada (≈31 kg) + arriostramiento (≈3 kg)."
+  },
+  {
+   "id": "mesa",
+   "name": "Mesa de acero con tablero",
+   "category": "Mobiliario",
+   "unit": "und",
+   "description": "Mesa de café (0,60–0,80 m) o mesa comunal (hasta 2,4x0,9 m) con base de tubo o pedestal con disco de platina y tablero de madera o cuarzo. Referencias: el mueble tubular de la Bauhaus, el bistró parisino de pedestal y la mesa de taller de la ornamentación colombiana.",
+   "default_quantity": 4,
+   "quantity_min": 1,
+   "quantity_max": 40,
+   "quantity_step": 1,
+   "structural_system": "Bastidor de 4 patas en tubo cuadrado con cerco perimetral, o pedestal de tubo redondo con base de disco de platina de 3/8\" (Ø 450 mm) y cruceta superior. Niveladores en las patas.",
+   "typical_profiles": [
+    "Tubo cuadrado 40x40x2",
+    "Tubo cuadrado 25x25x1.5",
+    "Tubo redondo 2\" (60,3 mm) x 2.5",
+    "Platina 2\" x 1/4\""
+   ],
+   "typical_connection_ids": [
+    "soldadura-filete",
+    "anclaje-mecanico-expansivo"
+   ],
+   "allowed_material_ids": [
+    "acero-estructural",
+    "acero-inox-304",
+    "acero-corten",
+    "acero-galvanizado"
+   ],
+   "default_material_id": "acero-estructural",
+   "default_finish_id": "electrostatica",
+   "kg_per_unit_low": 12,
+   "kg_per_unit_high": 35,
+   "finish_area_m2_per_unit": 1.2,
+   "complements": [
+    {
+     "id": "tablero-madera",
+     "qty_per_unit": 0.56,
+     "optional": false
+    },
+    {
+     "id": "tablero-cuarzo",
+     "qty_per_unit": 0.56,
+     "optional": true
+    }
+   ],
+   "nsr10_notes": "No aplica diseño estructural NSR-10 por ser mobiliario. Verificar la estabilidad al volcamiento del pedestal (regla práctica de taller, no de norma: diámetro de la base ≥ 0,6 veces el lado del tablero).",
+   "maintenance_notes": "Revisar niveladores y tornillos del tablero cada 6 meses; en terrazas preferir galvanizado + electrostática (dúplex) y tablero tratado para exterior.",
+   "fabrication_days_low": 5,
+   "fabrication_days_high": 10,
+   "weight_rationale": "Mesa de 4 patas de 0,7 m: ≈5,7 m de tubo 40x40x2 (13 kg) + placas (1 kg) ≈ 14 kg. Pedestal: tubo 2\" (3 kg) + disco Ø450 de 3/8\" (12 kg) + cruceta ≈ 17 kg. Mesa comunal de 2,4 m ≈ 35 kg."
+  },
+  {
+   "id": "baranda",
+   "name": "Baranda / pasamanos",
+   "category": "Protección y circulación",
+   "unit": "ml",
+   "description": "Baranda de protección en bordes de mezzanine, escaleras y terrazas, con parales de platina o tubo, pasamanos redondo y relleno de barrotes, vidrio o lámina perforada. Desde la reja colonial bogotana forjada en El Taller hasta los pasamanos minimalistas de Carlo Scarpa.",
+   "default_quantity": 8,
+   "quantity_min": 1,
+   "quantity_max": 80,
+   "quantity_step": 0.5,
+   "structural_system": "Parales cada 1,0–1,2 m empotrados con placa base y anclajes químicos (típicamente 4 por paral en montaje de piso, 2–4 en montaje de canto) a losa o viga de borde, pasamanos continuo y relleno con aberturas pequeñas (barrotes de varilla cuadrada cada ≤ 10 cm, vidrio templado-laminado o lámina perforada).",
+   "typical_profiles": [
+    "Tubo cuadrado 50x50x2",
+    "Platina 3\" x 3/8\"",
+    "Tubo redondo 1-1/2\" (48,3 mm) x 2.0",
+    "Tubo rectangular 40x20x1.5",
+    "Varilla cuadrada 1/2\"",
+    "Tubo cuadrado 25x25x1.5"
+   ],
+   "typical_connection_ids": [
+    "soldadura-filete",
+    "placa-base-anclaje-quimico",
+    "anclaje-mecanico-expansivo"
+   ],
+   "allowed_material_ids": [
+    "acero-estructural",
+    "acero-inox-304",
+    "acero-galvanizado",
+    "acero-corten"
+   ],
+   "default_material_id": "acero-estructural",
+   "default_finish_id": "electrostatica",
+   "kg_per_unit_low": 8,
+   "kg_per_unit_high": 22,
+   "finish_area_m2_per_unit": 1,
+   "complements": [
+    {
+     "id": "vidrio-templado",
+     "qty_per_unit": 0.9,
+     "optional": true
+    },
+    {
+     "id": "lamina-perforada",
+     "qty_per_unit": 0.9,
+     "optional": true
+    },
+    {
+     "id": "led-lineal",
+     "qty_per_unit": 1,
+     "optional": true
+    },
+    {
+     "id": "anclajes-quimicos",
+     "qty_per_unit": 3.6,
+     "optional": false
+    }
+   ],
+   "nsr10_notes": "Las barandas se diseñan para una carga lineal horizontal en el pasamanos y una carga concentrada según el Título B (del orden de 0,75 kN/m; verificar el valor vigente). Altura y aberturas según el Título K: altura del orden de 1,0 m en bordes de mezzanine y balcones, y aberturas que no dejen pasar una esfera de ≈10 cm (verificar). El vidrio de relleno debe ser de seguridad templado-laminado. El anclaje del paral es el punto crítico: momento en la base.",
+   "maintenance_notes": "Revisar el apriete de los anclajes y la fijación del vidrio una vez al año; en exterior, retocar las bases de los parales, donde se acumula agua; limpiar el inox del pasamanos con frecuencia.",
+   "fabrication_days_low": 6,
+   "fabrication_days_high": 14,
+   "weight_rationale": "Por ml: parales 50x50x2 (≈2,8 kg) + pasamanos Ø1-1/2\" (2,3 kg) + 2 travesaños 40x20 (2,6 kg) + 10 barrotes de 1/2\" de 0,9 m (11,4 kg) + placas (1,5 kg) ≈ 20 kg. Con vidrio o lámina en lugar de barrotes ≈ 8–10 kg."
+  },
+  {
+   "id": "porton",
+   "name": "Portón / puerta pivotante",
+   "category": "Accesos",
+   "unit": "m2",
+   "description": "Puerta de acceso o portón de gran formato, batiente o pivotante, con bastidor de tubo y forro de lámina, lamas o celosía. Retoma las puertas pivotantes holandesas y escandinavas, los portones de Carlo Scarpa en Castelvecchio y la rejería ornamental bogotana.",
+   "default_quantity": 6,
+   "quantity_min": 2,
+   "quantity_max": 30,
+   "quantity_step": 0.5,
+   "structural_system": "Bastidor perimetral con montantes intermedios en tubo cuadrado o rectangular, forro de lámina cal. 16 o lamas, girando sobre pivote de piso con rodamiento y buje superior (pivotante) o sobre bisagras de carga; marco anclado a la estructura del vano.",
+   "typical_profiles": [
+    "Tubo rectangular 100x50x2",
+    "Tubo cuadrado 75x75x3",
+    "Tubo cuadrado 50x50x2",
+    "Platina 2\" x 1/4\"",
+    "Varilla cuadrada 1/2\""
+   ],
+   "typical_connection_ids": [
+    "soldadura-filete",
+    "pasador-pivote",
+    "anclaje-mecanico-expansivo",
+    "placa-base-anclaje-quimico",
+    "tornillo-autoperforante"
+   ],
+   "allowed_material_ids": [
+    "acero-estructural",
+    "acero-corten",
+    "acero-galvanizado",
+    "acero-inox-304"
+   ],
+   "default_material_id": "acero-estructural",
+   "default_finish_id": "epoxico-poliuretano",
+   "kg_per_unit_low": 18,
+   "kg_per_unit_high": 40,
+   "finish_area_m2_per_unit": 2.6,
+   "complements": [
+    {
+     "id": "lamina-perforada",
+     "qty_per_unit": 1,
+     "optional": true
+    },
+    {
+     "id": "corte-laser-cnc",
+     "qty_per_unit": 1,
+     "optional": true
+    },
+    {
+     "id": "tablero-madera",
+     "qty_per_unit": 1,
+     "optional": true
+    },
+    {
+     "id": "vidrio-templado",
+     "qty_per_unit": 0.5,
+     "optional": true
+    },
+    {
+     "id": "anclajes-quimicos",
+     "qty_per_unit": 0.7,
+     "optional": false
+    }
+   ],
+   "nsr10_notes": "No es estructural, pero el marco y los pivotes deben resistir el peso propio, el viento (B.6) en hojas grandes y el uso. Si es salida de evacuación, el sentido de giro, el ancho y los herrajes deben cumplir el Título K. Verificar que la losa o el piso resista la carga puntual del pivote.",
+   "maintenance_notes": "Lubricar pivotes y bisagras cada 6 meses; revisar el alineamiento y la holgura inferior; retocar la pintura del borde inferior (salpicaduras de lluvia) cada año.",
+   "fabrication_days_low": 8,
+   "fabrication_days_high": 15,
+   "weight_rationale": "Portón de 3x2 m: bastidor y montantes en tubo 100x50x2 (≈17 m x 4,5 = 77 kg) + forro de lámina cal. 16 (6 m² x 11,8 = 71 kg) ≈ 148 kg / 6 m² ≈ 25 kg/m²; con lamas macizas o bastidor 75x75x3 llega a ≈40 kg/m²."
+  },
+  {
+   "id": "senaletica-corten",
+   "name": "Letrero / señalética en acero corten",
+   "category": "Identidad y señalética",
+   "unit": "und",
+   "description": "Aviso de fachada o tótem de 1–2 m² en lámina corten de 3 mm con letras y logotipo calados por láser, separados del muro y opcionalmente retroiluminados. Referencias: la señalética de los parques nórdicos, las esculturas de Richard Serra y los avisos de corten de las tostadoras de especialidad.",
+   "default_quantity": 1,
+   "quantity_min": 1,
+   "quantity_max": 10,
+   "quantity_step": 1,
+   "structural_system": "Panel de lámina corten de 3 mm calado por CNC sobre bastidor de tubo, con separadores de 30–50 mm y anclaje a muro de concreto; en versión tótem, pedestal de tubo cuadrado con placa base anclada.",
+   "typical_profiles": [
+    "Tubo cuadrado 40x40x2",
+    "Tubo cuadrado 100x100x4",
+    "Platina 1-1/2\" x 1/4\"",
+    "Ángulo L 1-1/2\" x 1/8\""
+   ],
+   "typical_connection_ids": [
+    "soldadura-filete",
+    "anclaje-mecanico-expansivo",
+    "placa-base-anclaje-quimico"
+   ],
+   "allowed_material_ids": [
+    "acero-corten",
+    "acero-estructural",
+    "acero-inox-304"
+   ],
+   "default_material_id": "acero-corten",
+   "default_finish_id": "patina-corten",
+   "kg_per_unit_low": 25,
+   "kg_per_unit_high": 90,
+   "finish_area_m2_per_unit": 4,
+   "complements": [
+    {
+     "id": "corte-laser-cnc",
+     "qty_per_unit": 1.5,
+     "optional": false
+    },
+    {
+     "id": "led-lineal",
+     "qty_per_unit": 4,
+     "optional": true
+    },
+    {
+     "id": "anclajes-quimicos",
+     "qty_per_unit": 4,
+     "optional": false
+    }
+   ],
+   "nsr10_notes": "Como elemento no estructural adosado (A.9) se anclan para viento y sismo; no fijarlos a mampostería no reforzada. En Bogotá la publicidad exterior visual está regulada por la Secretaría Distrital de Ambiente (Decreto Distrital 959 de 2000): el aviso requiere registro y debe cumplir dimensiones y ubicación (verificar área máxima por fachada). Las conexiones LED cumplen RETIE.",
+   "maintenance_notes": "Durante los primeros 2–3 años la escorrentía de óxido mancha muros y andenes: prever gotero, separación del muro y una franja de gravilla. Limpiar hojas y polvo; revisar los anclajes una vez al año. En zonas resguardadas aplicar sellador.",
+   "fabrication_days_low": 5,
+   "fabrication_days_high": 10,
+   "weight_rationale": "Panel de 1,5 m² en lámina de 3 mm (23,6 kg/m² x 1,5 = 35 kg, menos 30% calado ≈ 25 kg) + bastidor 40x40x2 (≈6 m = 14 kg) ≈ 40 kg; tótem con pedestal 100x100x4 (2x2 m = 47 kg) ≈ 90 kg."
+  },
+  {
+   "id": "marquesina",
+   "name": "Marquesina / alero de acceso",
+   "category": "Cubiertas y exteriores",
+   "unit": "m2",
+   "description": "Voladizo de 1,0–2,0 m sobre el acceso, con ménsulas empotradas o atirantadas y cubierta de vidrio, lámina o policarbonato, con canal y gotero integrados. Desde las marquesinas Art Nouveau del metro de París de Guimard hasta los aleros finos de la arquitectura japonesa contemporánea.",
+   "default_quantity": 6,
+   "quantity_min": 2,
+   "quantity_max": 60,
+   "quantity_step": 0.5,
+   "structural_system": "Ménsulas IPE o tubo rectangular cada 1,2–1,5 m empotradas con placa y anclajes químicos a viga o losa de concreto (o atirantadas con tensores de varilla a la fachada), viga frontal que oculta la canal y correas para la cubierta.",
+   "typical_profiles": [
+    "IPE 160",
+    "IPE 120",
+    "Tubo rectangular 150x50x3",
+    "Tubo rectangular 100x50x3",
+    "Tubo rectangular 100x50x2",
+    "Varilla redonda 5/8\"",
+    "Perfil C 100x50x15x2"
+   ],
+   "typical_connection_ids": [
+    "soldadura-penetracion-completa",
+    "placa-base-anclaje-quimico",
+    "tensor-varilla-horquilla",
+    "pasador-pivote",
+    "soldadura-filete",
+    "tornillo-autoperforante"
+   ],
+   "allowed_material_ids": [
+    "acero-estructural",
+    "acero-galvanizado",
+    "acero-corten",
+    "acero-inox-304"
+   ],
+   "default_material_id": "acero-estructural",
+   "default_finish_id": "galvanizado-caliente",
+   "kg_per_unit_low": 20,
+   "kg_per_unit_high": 40,
+   "finish_area_m2_per_unit": 1.3,
+   "complements": [
+    {
+     "id": "vidrio-templado",
+     "qty_per_unit": 1,
+     "optional": true
+    },
+    {
+     "id": "policarbonato",
+     "qty_per_unit": 1.05,
+     "optional": true
+    },
+    {
+     "id": "lamina-perforada",
+     "qty_per_unit": 1,
+     "optional": true
+    },
+    {
+     "id": "led-lineal",
+     "qty_per_unit": 0.7,
+     "optional": true
+    },
+    {
+     "id": "anclajes-quimicos",
+     "qty_per_unit": 3,
+     "optional": false
+    }
+   ],
+   "nsr10_notes": "Diseño según NSR-10 F.2 para peso propio, granizo (B.4.8.3, obligatorio en Bogotá), viento ascendente (succión, B.6) y sismo con componente vertical en voladizos. El empotramiento debe hacerse a concreto con anclajes calificados para sismo. El vidrio de cubierta debe ser templado-laminado (Título K). Si vuela sobre el andén o espacio público, verificar las restricciones del POT y la cartilla de andenes de Bogotá antes de diseñar.",
+   "maintenance_notes": "Limpiar la canal y el gotero cada 3 meses y siempre antes de las lluvias; revisar los sellos del vidrio y la tensión de los tensores cada año; retocar el galvanizado en cortes de obra con pintura rica en zinc.",
+   "fabrication_days_low": 7,
+   "fabrication_days_high": 14,
+   "weight_rationale": "Ejemplo de 4 m x 1,5 m: 3 ménsulas IPE 160 de 1,5 m (71 kg) + viga frontal tubo 100x50x3 de 4 m (6,6 kg/m, 26 kg) + correas 100x50x2 (≈12 m, 54 kg) + tensores Ø5/8\" (10 kg) + placas y horquillas (24 kg) ≈ 185 kg / 6 m² ≈ 31 kg/m²."
+  }
+ ],
+ "code_notes": [
+  "NSR-10 (Reglamento Colombiano de Construcción Sismo Resistente, Decreto 926 de 2010 y sus modificaciones, bajo la Ley 400 de 1997) es obligatorio. El Título F regula las estructuras metálicas: F.2 acero estructural laminado y tubular (basado en AISC 360), F.3 provisiones sísmicas para acero (basado en AISC 341) y F.4 perfiles de lámina formada en frío (basado en AISI S100). Verificar la numeración en la edición vigente.",
+  "Bogotá está en zona de amenaza sísmica intermedia (Aa = 0,15; Av = 0,20, Apéndice A-4) y aplica la microzonificación sísmica (Decreto Distrital 523 de 2010), con espectros por zona (cerros, piedemonte, lacustre, aluvial). Las estructuras nuevas como mezzanines y pérgolas exentas deben usar el espectro de la zona del predio.",
+  "Elementos no estructurales (Título A, Capítulo A.9): fachadas, celosías, barras, estanterías, letreros y equipos deben anclarse para la fuerza sísmica Fp y acomodar la deriva de la estructura principal.",
+  "Cargas (Título B): carga viva según el uso (Tabla B.4.2.1-1; áreas de público y restaurantes ≈5,0 kN/m², oficinas ≈2,0 kN/m², almacenamiento mayor), carga de granizo obligatoria en cubiertas de ciudades sobre 2.000 m s. n. m. como Bogotá (B.4.8.3), viento (B.6) y cargas en barandas y pasamanos. Los valores exactos deben verificarse en el texto vigente.",
+  "Título J (protección contra incendio): según el grupo de ocupación y el área, la estructura principal de mezzanines y escaleras puede requerir resistencia al fuego (pintura intumescente o encapsulado). Título K (requisitos complementarios): medios de evacuación, escaleras, barandas y vidrios de seguridad (vidrio templado-laminado en cubiertas y barandas).",
+  "Licencia de construcción (Decreto 1077 de 2015, que compila el Decreto 1469 de 2010): un mezzanine que agrega área es una ampliación y requiere licencia ante una curaduría urbana de Bogotá, con planos arquitectónicos, memorias de cálculo y planos estructurales firmados por un ingeniero civil con matrícula profesional (COPNIA). Modificar la fachada, hacer un reforzamiento estructural o poner una cubierta permanente también puede requerir licencia. Las reparaciones locativas no la requieren, siempre que no afecten la estructura.",
+  "Los inmuebles declarados Bien de Interés Cultural o ubicados en sectores de interés cultural (La Candelaria, Teusaquillo, partes de Chapinero) requieren aprobación previa del Instituto Distrital de Patrimonio Cultural (IDPC) para cualquier intervención de fachada, cubierta o estructura.",
+  "Soldadura: AWS D1.1 (acero estructural, espesores ≥ 3 mm), AWS D1.3 (lámina delgada ≤ 4,8 mm) y AWS D1.6 (inoxidable). Se requieren procedimientos WPS precalificados o calificados, soldadores con certificado vigente (WPQ) e inspector CWI o equivalente para estructura. Usar electrodos de bajo hidrógeno (E7018) o alambre ER70S-6; en conexiones sísmicas de demanda crítica, metal de aporte con tenacidad Charpy certificada.",
+  "Inspección de soldaduras: inspección visual (VT) al 100%; en soldaduras CJP de conexiones a momento, ultrasonido (UT) o partículas magnéticas (MT) según F.3/AISC 341. Deben documentarse los planos de taller (shop drawings) aprobados por el diseñador estructural antes de fabricar.",
+  "Materiales: perfiles ASTM A36 (Fy 250 MPa) o A572 Gr. 50 (Fy 345 MPa); tubería estructural ASTM A500 Gr. C; corten ASTM A588 (Fy 345 MPa) o A242 y lámina tipo corten A606-4; lámina galvanizada ASTM A653 (steel deck G60/G90); pernos ASTM F3125 Gr. A325 con tuercas A563 y arandelas F436; anclajes ASTM F1554; adhesivos químicos calificados para concreto fisurado y sismo (ACI 355.4). Exigir certificados de calidad (mill certificates).",
+  "Protección anticorrosiva: especificar según ISO 12944 (categoría de corrosividad y durabilidad) con preparación de superficie SSPC/ISO 8501 (SA 2½ para sistemas epóxicos) y galvanizado según ASTM A123 / ISO 1461. Medir espesores de película seca y registrarlos en el dossier de calidad.",
+  "Instalaciones eléctricas en kioskos, iluminación LED de barras, letreros y barandas: deben cumplir RETIE y quedar certificadas.",
+  "Publicidad exterior visual en Bogotá: los avisos de fachada se registran ante la Secretaría Distrital de Ambiente (Decreto Distrital 959 de 2000 y normas complementarias), que limita su número, área y ubicación por establecimiento.",
+  "Espacio público: kioskos, marquesinas sobre el andén y mobiliario en antejardín o andén requieren permisos distritales (DADEP, IDU, Marco Regulatorio del Aprovechamiento Económico del Espacio Público, Decreto Distrital 552 de 2018 y sus modificaciones; verificar la norma vigente) y deben respetar el POT y la cartilla de andenes; no se puede ocupar el andén sin autorización."
+ ],
+ "bogota_notes": [
+  "Altitud de ≈2.600 m s. n. m.: la temperatura media es de 13–15 °C con fuerte oscilación diaria (≈5 °C de madrugada y 20–22 °C al mediodía). Es una dilatación térmica moderada (≈2–3 mm cada 10 m de acero expuesto), pero en elementos largos se deben prever juntas u agujeros ovalados.",
+  "Humedad relativa alta (70–85%) y condensación de madrugada sobre el acero frío: el tiempo de humectación es largo aunque no llueva. Esto acelera la corrosión en bordes, soldaduras, cavidades y uniones sin drenaje; hay que sellar o drenar todos los tubos y evitar trampas de agua.",
+  "Lluvias de ≈800–1.100 mm al año con régimen bimodal (temporadas de marzo a mayo y de septiembre a noviembre), lloviznas frecuentes y aguaceros con granizo. Las tormentas de granizo intensas (por ejemplo la de noviembre de 2007 en el norte de la ciudad y la de diciembre de 2022 en San Cristóbal) obligan a diseñar cubiertas para el granizo, preferir policarbonato de ≥ 8–10 mm o lámina sólida y usar vidrio laminado.",
+  "Radiación UV muy alta por la altitud (índice UV con frecuencia de 11 o más al mediodía): los epóxicos sin protección se entizan y decoloran en meses. En exterior usar siempre acabado de poliuretano alifático o polvo poliéster de grado exterior; los colores oscuros se calientan más y se desvanecen antes.",
+  "Corrosividad atmosférica estimada ISO 9223 C2–C3: C3 cerca de avenidas de alto tráfico diésel y zonas industriales (Puente Aranda, Montevideo, calle 13 y avenida 68). El hollín y el material particulado (PM2,5/PM10) ensucian los acabados, así que se recomienda lavarlos periódicamente. El galvanizado en caliente rinde muy bien en este ambiente.",
+  "Acero corten en Bogotá: la pátina necesita ciclos de mojado y secado. Con el clima frío, nublado y húmedo se estabiliza lentamente (2–4 años) y en zonas resguardadas, en contacto con suelo o vegetación, o permanentemente húmedas, puede quedar porosa y escamosa con pérdida de sección. Se debe usar en superficies verticales ventiladas y expuestas, con espesores ≥ 3 mm en exterior, sin contacto con tierra.",
+  "La escorrentía del corten mancha durante los primeros años andenes, fachadas claras y pisos de piedra: diseñar goteros, separaciones del muro y franjas de gravilla. En interiores la pátina no se forma de manera natural: usar pátina acelerada en taller y sellador (barniz o cera).",
+  "Aplicación de pintura: por la humedad y el frío de las mañanas, aplicar solo cuando la superficie esté ≥ 3 °C por encima del punto de rocío y la HR sea < 85%. Los epóxicos curan lentamente por debajo de 10–15 °C. Conviene pintar en taller con condiciones controladas y dejar en obra solo los retoques.",
+  "Suministro: en Colombia los perfiles y tubos se venden normalmente en barras de 6 m (algunos IPE/HEA/W en 12 m). Esto define la modulación y los empalmes. El precio del acero sigue el mercado internacional y la tasa de cambio, así que las cotizaciones deben tener vigencia corta (15–30 días).",
+  "Galvanizado: hay plantas de galvanizado por inmersión en Bogotá y en municipios de la Sabana; el tamaño de la cuba (verificar con cada planta, del orden de 6–12 m de largo) limita las piezas. El diseño debe incluir perforaciones de venteo y drenaje y sumar 5–10 días de logística al cronograma.",
+  "Logística y montaje: Bogotá restringe el tránsito de vehículos de carga en ciertos horarios y zonas, y los centros comerciales y zonas gastronómicas (Zona G, Usaquén, Chapinero) suelen exigir montajes nocturnos o en horarios definidos. Las piezas grandes, como los kioskos, requieren grúa y permiso para ocupar la vía.",
+  "Suelos: la zona lacustre del occidente y el norte tiene arcillas blandas compresibles. Las estructuras exentas como kioskos, pérgolas y tótems necesitan dados o zapatas diseñados según la microzonificación y el estudio de suelos; no se deben apoyar sobre rellenos ni sobre el andén sin verificar."
+ ]
+}
