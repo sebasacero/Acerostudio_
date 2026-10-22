@@ -1,5 +1,6 @@
 import Link from "next/link";
 import WorldMap from "@/components/WorldMap";
+import { B2b, Blog, Hero, Instagram, Marquee, Tecnologia } from "@/components/home/SiteSections";
 import { PriceNote, SectionHeader, WorkCard } from "@/components/ui";
 import { FEES, TRADITIONS, UNIT_LABEL, WORKS, typicalEstimate } from "@/lib/catalog";
 import { formatRangeShort } from "@/lib/pricing";
@@ -14,50 +15,12 @@ const STEPS = [
 export default function Home() {
   return (
     <main>
-      <section className="blueprint border-b border-border">
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-[1.1fr_1fr] md:py-20">
-          <div>
-            <p className="fig mb-4">FIG. 00 — Estudio de arquitectura en acero · Bogotá</p>
-            <h1 className="text-4xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
-              Arquitectura en acero, con el mundo como referencia y el precio a la vista.
-            </h1>
-            <p className="mt-5 max-w-xl text-lg text-muted">
-              Diseña tu obra con doce lenguajes constructivos del mundo, entiende cada detalle en
-              acero y conoce cuánto cuesta antes de pedir una cotización.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/estudio" className="bg-accent px-5 py-3 font-medium text-background">
-                Abrir el estudio →
-              </Link>
-              <Link href="/obras" className="corner border border-border px-5 py-3 text-foreground hover:border-accent/50">
-                Ver precios de obras
-              </Link>
-            </div>
-            <dl className="mt-10 grid max-w-md grid-cols-3 gap-4 font-mono text-xs">
-              <div>
-                <dt className="text-faint uppercase tracking-widest">Obras</dt>
-                <dd className="mt-1 text-2xl text-foreground">{WORKS.length}</dd>
-              </div>
-              <div>
-                <dt className="text-faint uppercase tracking-widest">Lenguajes</dt>
-                <dd className="mt-1 text-2xl text-foreground">{TRADITIONS.length}</dd>
-              </div>
-              <div>
-                <dt className="text-faint uppercase tracking-widest">IVA</dt>
-                <dd className="mt-1 text-2xl text-foreground">incl.</dd>
-              </div>
-            </dl>
-          </div>
-          <div className="self-center">
-            <WorldMap traditions={TRADITIONS} />
-            <p className="mt-3 font-mono text-[0.68rem] uppercase tracking-[0.12em] text-faint">
-              FIG. 00.1 — 12 lenguajes conectados con el taller en Bogotá ·{" "}
-              <Link href="/atlas" className="text-accent hover:underline">
-                explorar el atlas
-              </Link>
-            </p>
-          </div>
-        </div>
+      <Hero />
+      <Marquee />
+
+      <section className="mx-auto max-w-6xl px-4 pt-14">
+        <SectionHeader fig="FIG. 00.1 — Atlas" title="12 lenguajes conectados con el taller en Bogotá" lead={<Link href="/atlas" className="text-accent hover:underline">Explorar el atlas →</Link>} />
+        <WorldMap traditions={TRADITIONS} />
       </section>
 
       <section className="border-b border-border bg-panel/60" aria-label="Lista de precios">
@@ -72,6 +35,8 @@ export default function Home() {
           })}
         </div>
       </section>
+
+      <Tecnologia />
 
       <section className="mx-auto max-w-6xl px-4 py-16">
         <SectionHeader
@@ -133,6 +98,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <B2b />
+      <Blog />
+      <Instagram />
     </main>
   );
 }

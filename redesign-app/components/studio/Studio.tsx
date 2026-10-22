@@ -318,7 +318,7 @@ export default function Studio() {
               <a href="#presupuesto" className="border border-border px-3 py-2 font-mono text-[0.65rem] uppercase tracking-widest text-muted hover:text-foreground">
                 Desglose
               </a>
-              <a href="#cotizar" className="bg-accent px-4 py-2 text-sm font-medium text-background">
+              <a href="#cotizar" className="btn-accent px-4 py-2 text-sm font-medium">
                 Cotizar
               </a>
             </div>
@@ -393,7 +393,7 @@ export default function Studio() {
             <p className="font-mono text-[0.6rem] uppercase tracking-widest text-faint">Estimado con IVA</p>
             <p className="text-lg font-semibold tabular-nums">{formatRangeShort(est.total)}</p>
           </div>
-          <a href="#cotizar" className="bg-accent px-4 py-2 text-sm font-medium text-background">
+          <a href="#cotizar" className="btn-accent px-4 py-2 text-sm font-medium">
             Cotizar
           </a>
         </div>

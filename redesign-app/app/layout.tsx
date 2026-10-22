@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
@@ -33,11 +34,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${spaceGrotesk.variable} ${jetBrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <div className="scanlines" aria-hidden="true" />
         <header className="no-print sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
           <div className="relative mx-auto flex max-w-6xl items-center justify-between gap-6 px-4 py-3">
-            <Link href="/" className="flex items-baseline gap-2">
-              <span className="text-lg font-semibold tracking-tight">ACERO</span>
-              <span className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-accent">studio</span>
+            <Link href="/" className="flex items-center gap-2" aria-label="AceroStudio, inicio">
+              <Image src="/logo.png" alt="ACERO" width={96} height={36} priority className="h-8 w-auto" />
+              <span className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-accent">.studio</span>
             </Link>
             <Suspense
               fallback={
