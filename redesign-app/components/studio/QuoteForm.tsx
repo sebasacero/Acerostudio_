@@ -126,8 +126,8 @@ export default function QuoteForm({
   const field = "w-full border border-border bg-background px-3 py-2 text-sm placeholder:text-faint focus:border-accent focus:outline-none";
 
   return (
-    <form onSubmit={submit} aria-labelledby="cotizar" className="no-print border border-border bg-panel p-5">
-      <p id="cotizar" className="fig mb-2">Solicitar cotización formal</p>
+    <form onSubmit={submit} aria-labelledby="cotizar-title" className="no-print border border-border bg-panel p-5">
+      <p id="cotizar-title" className="fig mb-2">Solicitar cotización formal</p>
       <p className="mb-4 text-sm text-muted">
         Enviamos esta configuración exacta a nuestro taller. Sin compromiso: el siguiente paso es una visita técnica.
       </p>

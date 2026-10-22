@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { MATERIAL_BY_ID, TRADITIONS, WORKS, WORK_BY_ID } from "./catalog.ts";
-import { clampQuantity, initialState, parseState, reduce, serializeState } from "./studio-state.ts";
+import { MATERIAL_BY_ID, TRADITIONS, TRADITION_BY_ID, WORKS, WORK_BY_ID, estimateFor, typicalEstimate } from "./catalog.ts";
+import { clampQuantity, initialState, parseState, reduce, serializeState, toSelection } from "./studio-state.ts";
 
 const params = (q: string) => new URLSearchParams(q);
 
@@ -56,4 +56,55 @@ test("switching work resets work-specific choices", () => {
   s = reduce(s, { type: "work", workId: b.id });
   assert.equal(s.quantity, WORK_BY_ID[b.id].quantity.default);
   assert.deepEqual(s.extras, []);
+});
+
+test("a replacement complement removes the one it replaces (no double charge)", () => {
+  for (const w of WORKS) {
+    for (const alt of w.complements.filter((c) => c.replaces)) {
+      const base = initialState(w.id);
+      const withAlt = reduce(base, { type: "extra", id: alt.id, on: true });
+      const lines = estimateFor(toSelection(withAlt)).lines.map((l) => l.key);
+      assert.ok(lines.includes(`complement:${alt.id}`), `${w.id}: ${alt.id} charged`);
+      assert.ok(!lines.includes(`complement:${alt.replaces}`), `${w.id}: ${alt.replaces} not charged`);
+    }
+  }
+});
+
+test("options in the same group are mutually exclusive, from the UI and from the URL", () => {
+  for (const w of WORKS) {
+    const groups = new Map<string, string[]>();
+    for (const c of w.complements) if (c.group) groups.set(c.group, [...(groups.get(c.group) ?? []), c.id]);
+    for (const ids of groups.values()) {
+      let s = initialState(w.id);
+      for (const id of ids) s = reduce(s, { type: "extra", id, on: true });
+      assert.deepEqual(s.extras.filter((x) => ids.includes(x)), [ids[ids.length - 1]], w.id);
+      const parsed = parseState(params(`obra=${w.id}&extras=${ids.join(",")}`));
+      assert.equal(parsed.extras.filter((x) => ids.includes(x)).length, 1, `${w.id} from URL`);
+    }
+  }
+});
+
+test("Object.prototype keys never resolve as catalog ids", () => {
+  for (const key of ["constructor", "toString", "__proto__", "hasOwnProperty"]) {
+    assert.equal(WORK_BY_ID[key], undefined);
+    assert.equal(TRADITION_BY_ID[key], undefined);
+    const s = parseState(params(`obra=${key}&lenguaje=${key}&material=${key}&acabado=${key}`));
+    assert.equal(s.workId, WORKS[0].id);
+  }
+});
+
+test("the studio opens at exactly the price shown in the catalog for the same work and language", () => {
+  for (const w of WORKS) {
+    for (const t of [undefined, ...TRADITIONS]) {
+      const q = t ? `obra=${w.id}&lenguaje=${t.id}` : `obra=${w.id}`;
+      const studio = estimateFor(toSelection(parseState(params(q)))).central;
+      const catalog = typicalEstimate(w, t).central;
+      assert.equal(studio, catalog, q);
+    }
+  }
+});
+
+test("an empty cantidad param falls back to the default quantity", () => {
+  const w = WORKS[0];
+  assert.equal(parseState(params(`obra=${w.id}&cantidad=`)).quantity, w.quantity.default);
 });

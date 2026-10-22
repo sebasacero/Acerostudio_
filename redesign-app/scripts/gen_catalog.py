@@ -18,6 +18,18 @@ MOBILIZATION = {
     "senaletica-corten": 1_200_000, "marquesina": 1_800_000,
 }
 FIRE = {"mezzanine", "escalera", "kiosko-modular"}
+# Complement alternatives: (work, complement) -> extra fields.
+ALTERNATIVES = {
+    ("barra-cafe", "tablero-cuarzo"): {"replaces": "tablero-madera"},
+    ("mesa", "tablero-cuarzo"): {"replaces": "tablero-madera"},
+    ("pergola", "policarbonato"): {"group": "cubierta"},
+    ("pergola", "vidrio-templado"): {"group": "cubierta"},
+    ("marquesina", "policarbonato"): {"group": "cubierta"},
+    ("marquesina", "vidrio-templado"): {"group": "cubierta"},
+    ("marquesina", "lamina-perforada"): {"group": "cubierta"},
+    ("baranda", "vidrio-templado"): {"group": "relleno"},
+    ("baranda", "lamina-perforada"): {"group": "relleno"},
+}
 SHORT = {
     "acero-estructural": "acero estructural A36/A572",
     "acero-corten": "acero corten",
@@ -75,7 +87,8 @@ for w in steel["works"]:
         "kgPerUnit": {"low": w["kg_per_unit_low"], "high": w["kg_per_unit_high"]},
         "fabricationGrade": GRADE[w["id"]], "mobilization": MOBILIZATION[w["id"]],
         "finishAreaPerUnit": w["finish_area_m2_per_unit"],
-        "complements": [{"id": c["id"], "qtyPerUnit": c["qty_per_unit"], "optional": c["optional"]} for c in w["complements"]],
+        "complements": [{"id": c["id"], "qtyPerUnit": c["qty_per_unit"], "optional": c["optional"],
+                         **ALTERNATIVES.get((w["id"], c["id"]), {})} for c in w["complements"]],
         "fireProtectionApplies": w["id"] in FIRE,
         "nsr10": w["nsr10_notes"], "maintenance": w["maintenance_notes"],
         "fabricationDays": {"low": w["fabrication_days_low"], "high": w["fabrication_days_high"]},

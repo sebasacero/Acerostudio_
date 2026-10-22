@@ -48,6 +48,10 @@ const cop = (n: number) => `$${Math.round(n).toLocaleString("es-CO")}`;
 
 const u = (unit: string) => (unit === "m2" ? "m²" : unit);
 
+export function isReplaced(work: Work, complementId: string, selectedIds: string[]) {
+  return work.complements.some((o) => o.replaces === complementId && selectedIds.includes(o.id));
+}
+
 // Precio por kg fabricado e instalado (incluye anticorrosivo base, transporte y montaje).
 // La franja depende del tamaño y del detalle de la pieza: estructura repetitiva abajo,
 // carpintería metálica fina y a la vista arriba.
@@ -110,6 +114,7 @@ export function estimate(sel: Selection, catalog: PricingCatalog): Estimate {
 
   for (const wc of work.complements) {
     if (wc.optional && !sel.optionalComplementIds.includes(wc.id)) continue;
+    if (isReplaced(work, wc.id, sel.optionalComplementIds)) continue;
     const c = catalog.complements[wc.id];
     if (!c) continue;
     const qty = wc.qtyPerUnit * quantity;

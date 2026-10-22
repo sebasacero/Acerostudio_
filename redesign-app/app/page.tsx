@@ -2,7 +2,7 @@ import Link from "next/link";
 import WorldMap from "@/components/WorldMap";
 import { PriceNote, SectionHeader, WorkCard } from "@/components/ui";
 import { FEES, TRADITIONS, UNIT_LABEL, WORKS, typicalEstimate } from "@/lib/catalog";
-import { formatCopShort } from "@/lib/pricing";
+import { formatRangeShort } from "@/lib/pricing";
 
 const STEPS = [
   { n: "01", title: "Elige un lenguaje del mundo", body: "Doce tradiciones constructivas en acero, de Jean Prouvé a Glenn Murcutt, explicadas por sus detalles." },
@@ -66,7 +66,7 @@ export default function Home() {
             const e = typicalEstimate(w);
             return (
               <Link key={w.id} href={`/obras/${w.id}`} className="shrink-0 whitespace-nowrap text-muted hover:text-foreground">
-                <span className="text-foreground">{w.name}</span> · desde {formatCopShort(e.perUnit.low)}/{UNIT_LABEL[w.unit].short}
+                <span className="text-foreground">{w.name}</span> · {formatRangeShort(e.perUnit)}/{UNIT_LABEL[w.unit].short}
               </Link>
             );
           })}

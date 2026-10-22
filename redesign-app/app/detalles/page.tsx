@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { SectionHeader } from "@/components/ui";
 import { BOGOTA_NOTES, CODE_NOTES, CONNECTIONS, FINISHES, MATERIALS, PRICING_META, PROFILES } from "@/lib/catalog";
-import { formatCop } from "@/lib/pricing";
+
+const copExact = (n: number) => `$${Math.round(n).toLocaleString("es-CO")}`;
 
 export const metadata: Metadata = {
   title: "Detalles constructivos en acero",
@@ -77,10 +78,10 @@ export default function DetallesPage() {
                     <p className="mt-1 text-xs text-faint">Confianza {m.confidence}</p>
                   </td>
                   <td className="px-4 py-3 text-right font-mono text-xs tabular-nums whitespace-nowrap">
-                    {formatCop(m.materialPerKg.low)} – {formatCop(m.materialPerKg.high)}
+                    {copExact(m.materialPerKg.low)} – {copExact(m.materialPerKg.high)}
                   </td>
                   <td className="px-4 py-3 text-right font-mono text-xs tabular-nums whitespace-nowrap text-accent">
-                    {formatCop(m.installedPerKg.low)} – {formatCop(m.installedPerKg.high)}
+                    {copExact(m.installedPerKg.low)} – {copExact(m.installedPerKg.high)}
                   </td>
                 </tr>
               ))}
@@ -116,7 +117,7 @@ export default function DetallesPage() {
                 <div>
                   <dt className="inline text-foreground">Precio: </dt>
                   <dd className="inline font-mono">
-                    {formatCop(f.price.low)} – {formatCop(f.price.high)} / {f.unit === "kg" ? "kg" : "m²"}
+                    {copExact(f.price.low)} – {copExact(f.price.high)} / {f.unit === "kg" ? "kg" : "m²"}
                   </dd>
                 </div>
               </dl>

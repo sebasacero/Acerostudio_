@@ -19,6 +19,8 @@ function StudioFallback() {
 export default function EstudioPage() {
   return (
     <main>
+      {/* La barra de precio fija en móvil no debe tapar el pie de página. */}
+      <style>{"@media (max-width: 1023px) { body { padding-bottom: 5rem; } } @media print { body { padding-bottom: 0; } }"}</style>
       <Suspense fallback={<StudioFallback />}>
         <Studio />
       </Suspense>

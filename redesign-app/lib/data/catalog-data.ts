@@ -344,7 +344,8 @@ export const WORKS: Work[] = [
       {
         "id": "tablero-cuarzo",
         "qtyPerUnit": 0.65,
-        "optional": true
+        "optional": true,
+        "replaces": "tablero-madera"
       },
       {
         "id": "lamina-perforada",
@@ -506,12 +507,14 @@ export const WORKS: Work[] = [
       {
         "id": "policarbonato",
         "qtyPerUnit": 1.05,
-        "optional": true
+        "optional": true,
+        "group": "cubierta"
       },
       {
         "id": "vidrio-templado",
         "qtyPerUnit": 1,
-        "optional": true
+        "optional": true,
+        "group": "cubierta"
       },
       {
         "id": "tablero-madera",
@@ -912,7 +915,8 @@ export const WORKS: Work[] = [
       {
         "id": "tablero-cuarzo",
         "qtyPerUnit": 0.56,
-        "optional": true
+        "optional": true,
+        "replaces": "tablero-madera"
       }
     ],
     "fireProtectionApplies": false,
@@ -973,12 +977,14 @@ export const WORKS: Work[] = [
       {
         "id": "vidrio-templado",
         "qtyPerUnit": 0.9,
-        "optional": true
+        "optional": true,
+        "group": "relleno"
       },
       {
         "id": "lamina-perforada",
         "qtyPerUnit": 0.9,
-        "optional": true
+        "optional": true,
+        "group": "relleno"
       },
       {
         "id": "led-lineal",
@@ -1203,17 +1209,20 @@ export const WORKS: Work[] = [
       {
         "id": "vidrio-templado",
         "qtyPerUnit": 1,
-        "optional": true
+        "optional": true,
+        "group": "cubierta"
       },
       {
         "id": "policarbonato",
         "qtyPerUnit": 1.05,
-        "optional": true
+        "optional": true,
+        "group": "cubierta"
       },
       {
         "id": "lamina-perforada",
         "qtyPerUnit": 1,
-        "optional": true
+        "optional": true,
+        "group": "cubierta"
       },
       {
         "id": "led-lineal",

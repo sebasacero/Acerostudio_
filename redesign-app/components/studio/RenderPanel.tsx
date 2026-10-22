@@ -7,6 +7,7 @@ import type { Finish, Material, Tradition, Work } from "@/lib/types";
 export interface RenderResult {
   photoUrl: string;
   renderUrl: string;
+  configKey: string;
 }
 
 export default function RenderPanel({
@@ -14,18 +15,21 @@ export default function RenderPanel({
   material,
   finish,
   tradition,
+  configKey,
   onRender,
 }: {
   work: Work;
   material: Material;
   finish: Finish;
   tradition: Tradition;
+  configKey: string;
   onRender: (r: RenderResult) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [render, setRender] = useState<{ url: string; caption: string } | null>(null);
+  const [render, setRender] = useState<{ url: string; caption: string; configKey: string } | null>(null);
+  const outdated = render !== null && render.configKey !== configKey;
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,6 +37,8 @@ export default function RenderPanel({
 
   async function run() {
     if (!file) return;
+    const key = configKey;
+    const renderCaption = caption;
     setBusy(true);
     setError(null);
     try {
@@ -44,8 +50,8 @@ export default function RenderPanel({
         `Detalles constructivos visibles: ${tradition.signatureDetails.slice(0, 2).join("; ")}. ` +
         `Keywords: ${tradition.promptKeywords}.`;
       const renderUrl = await generateRender(file, prompt, "obra");
-      setRender({ url: renderUrl, caption });
-      onRender({ photoUrl, renderUrl });
+      setRender({ url: renderUrl, caption: renderCaption, configKey: key });
+      onRender({ photoUrl, renderUrl, configKey: key });
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo generar la propuesta.");
     } finally {
@@ -102,6 +108,11 @@ export default function RenderPanel({
               <p className="absolute bottom-0 left-0 right-0 bg-background/80 px-2 py-1 font-mono text-[0.6rem] uppercase tracking-wider text-accent">
                 FIG. 06 — {render.caption}
               </p>
+              {outdated && (
+                <p className="absolute left-0 right-0 top-0 bg-rust/90 px-2 py-1 text-center text-xs text-foreground">
+                  Cambiaste la configuración: genera otra versión
+                </p>
+              )}
             </>
           ) : (
             <p className="px-4 text-center text-sm text-faint">Aquí aparecerá la propuesta</p>
@@ -114,7 +125,7 @@ export default function RenderPanel({
         onClick={run}
         className="mt-3 w-full bg-accent py-2.5 font-medium text-background disabled:cursor-not-allowed disabled:opacity-40"
       >
-        {render ? "Generar otra versión" : "Generar propuesta con IA"}
+        {render && !outdated ? "Generar otra versión" : "Generar propuesta con IA"}
       </button>
     </section>
   );
