@@ -1,0 +1,401 @@
+{
+ "currency": "COP",
+ "as_of": "2026-10 (investigación web del 20-oct-2026, verificada el mismo día con búsquedas adicionales; las fuentes van de 2025 a 2026. WebFetch falló por DNS en la investigación original y en la verificación, así que las cifras salen de extractos del buscador y de estimaciones propias)",
+ "materials": [
+  {
+   "id": "acero-estructural",
+   "name": "Acero estructural ASTM A36 / A572 Gr50 (perfiles, tubería estructural HR50, platina, lámina HR)",
+   "material_cop_per_kg_low": 4000,
+   "material_cop_per_kg_high": 6500,
+   "fabricated_installed_cop_per_kg_low": 11000,
+   "fabricated_installed_cop_per_kg_high": 28000,
+   "notes": "Material: un distribuidor publica 4.200–5.200 COP/kg para perfilería y tubería (2026). Al detal, Homecenter Bogotá vende tubo HR50 de 6 m así: 120x60x2 mm a 174.300 COP (~33 kg, ≈5.250 COP/kg), 60x60x2 a 130.300 COP (≈5.950 COP/kg), 50x50x2 a 115.900 COP (≈6.400 COP/kg) y 70x70x2 a 189.900 COP (~25,6 kg, ≈7.400 COP/kg). El techo de 6.500 refleja la compra al detal o en volúmenes pequeños, que es lo típico de un estudio. Fabricado+instalado (con pintura, transporte y montaje): MEISA (fabricante, guía 2026) da 10.900–13.000 COP/kg para estructura estándar tipo bodega, 13.000–17.000 para edificación o entrepiso y 17.000–25.000 para estructura especial. MEISA advierte que el precio por kg sube con la complejidad y no con el peso, y que baja con el tonelaje. Por eso el trabajo arquitectónico pequeño y a la vista (barras, celosías, escaleras) queda en la franja alta o por encima, y el techo se fija en 28.000. El SMMLV 2026 subió ~23% (1.750.905 COP), lo que encarece la mano de obra frente a 2025.",
+   "confidence": "media",
+   "sources": [
+    "https://www.comandoconstrucciones.com/precios-acero-colombia-2026-tabla-actualizada-kilo/",
+    "https://meisa.com.co/precios-estructuras-metalicas",
+    "https://meisa.com.co/precio-cubierta-metalica-por-m2",
+    "https://www.homecenter.com.co/homecenter-co/product/156257/tubo-rectangular-120-x-60-x-20mm-x-6m-estructural-hr50/156257/",
+    "https://www.homecenter.com.co/homecenter-co/product/156253/tubo-cuadrado-70-x-70-x-20mm-x-6m-estructural-hr50/156253/",
+    "https://www.homecenter.com.co/homecenter-co/product/156251/tubo-cuadrado-50-x-50-x-20mm-x-6m-estructural-hr50/156251/",
+    "https://www.portafolio.co/economia/gobierno/salario-minimo-de-2026-sigue-en-1-750-905-millones-tras-aclaracion-sobre-fallos-del-consejo-de-estado-504236"
+   ]
+  },
+  {
+   "id": "acero-corten",
+   "name": "Acero patinable / corten ASTM A588 / A242 (lámina y platina)",
+   "material_cop_per_kg_low": 7500,
+   "material_cop_per_kg_high": 13000,
+   "fabricated_installed_cop_per_kg_low": 20000,
+   "fabricated_installed_cop_per_kg_high": 42000,
+   "notes": "No hay lista de precios colombiana: una búsqueda de verificación (oct-2026) solo devolvió proveedores mexicanos. En Colombia el corten casi no se produce en formatos arquitectónicos y se importa, o se pide a distribuidores de aceros planos. Lo estimé en 1,7–2,5 veces el precio del A36, más mínimos de compra por lámina. Para fabricarlo hacen falta electrodos o alambre compatibles (de baja aleación, patinables) y suele cortarse con láser; de ahí el rango fabricado más alto. No incluye pátina acelerada.",
+   "confidence": "baja",
+   "sources": []
+  },
+  {
+   "id": "acero-galvanizado",
+   "name": "Acero galvanizado (lámina/tubería galvanizada de fábrica o perfil galvanizado en caliente tras fabricación)",
+   "material_cop_per_kg_low": 5000,
+   "material_cop_per_kg_high": 7500,
+   "fabricated_installed_cop_per_kg_low": 14000,
+   "fabricated_installed_cop_per_kg_high": 30000,
+   "notes": "MinCIT fijó el 22-ene-2025 un antidumping definitivo a la lámina galvanizada y galvalume china: 41,74% en lámina lisa de hasta 2,5 mm y 94,64% en las subpartidas 7210.41 y 7210.61 (corrugada/bobina), sobre valor FOB. Aparte, un examen quinquenal mantiene 47,62% sobre la lámina lisa galvanizada 7210.49. Estas medidas sostienen el precio local. El rango fabricado+instalado supone galvanizado en caliente después de fabricar (≈2.000–3.800 COP/kg adicionales) y reparación de soldaduras con galvanizado en frío. El rango de material es estimado: no hay lista colombiana verificable.",
+   "confidence": "baja",
+   "sources": [
+    "https://www.yieh.com/en/colombia-makes-final-ad-ruling-on-chinas-galvanized-and-galvalume-steel-products/152660"
+   ]
+  },
+  {
+   "id": "acero-inox-304",
+   "name": "Acero inoxidable AISI 304 (lámina 2B/satinada, tubo, platina)",
+   "material_cop_per_kg_low": 13000,
+   "material_cop_per_kg_high": 20000,
+   "fabricated_installed_cop_per_kg_low": 45000,
+   "fabricated_installed_cop_per_kg_high": 95000,
+   "notes": "G&J (Bogotá) vende lámina 304 2B de 1220x2440. La de 1,5 mm cuesta 510.859 COP (~35,4 kg, ≈14.400 COP/kg) y la de 1,2 mm 413.729 COP (≈14.600 COP/kg), pero la publicación tiene ~340 días. El tubo ornamental y la lámina satinada o espejo cuestan más por kg, y el precio sigue al níquel. Fabricado: soldadura TIG, decapado y pulido, con mano de obra 2–3 veces la del acero al carbono. Referencia de mercado (Comando 2026): baranda en inox 304 instalada desde 280.000 COP/ml en Bogotá y 350.000–500.000 COP/ml en Medellín.",
+   "confidence": "baja",
+   "sources": [
+    "https://ofertas.gyj.com.co/producto/lamina-acero-inox-1-50/",
+    "https://www.comandoconstrucciones.com/precio-barandas-metalicas-colombia/",
+    "https://www.comandoconstrucciones.com/barandas-metalicas-medellin/"
+   ]
+  }
+ ],
+ "finishes": [
+  {
+   "id": "anticorrosivo-esmalte",
+   "name": "Anticorrosivo alquídico + esmalte sintético (2+2 manos, limpieza manual o mecánica SSPC-SP3)",
+   "unit": "m2",
+   "cop_low": 15000,
+   "cop_high": 38000,
+   "notes": "Acabado estándar de taller en Bogotá. A menudo ya viene dentro del precio por kg fabricado (en esos casos solo cuenta el anticorrosivo); se cobra aparte cuando el esmalte va a la vista con color de diseño. Referencia: CYPE Colombia da ≈35.800 COP/m² para esmalte de dos componentes sobre acero estructural, un sistema superior al alquídico, por lo que sirve como techo del rango.",
+   "confidence": "baja",
+   "sources": [
+    "http://www.colombia.generadordeprecios.info/obra_nueva/Revestimientos/Pinturas_sobre_soporte_metalico/Esmaltes/Esmalte_de_dos_componentes.html"
+   ]
+  },
+  {
+   "id": "epoxico-poliuretano",
+   "name": "Sistema epóxico (primer rico en zinc o epoxi-poliamida) + acabado poliuretano alifático",
+   "unit": "m2",
+   "cop_low": 38000,
+   "cop_high": 85000,
+   "notes": "El extremo alto incluye granallado o sandblasting SSPC-SP6/SP10. Es el sistema recomendado para fachadas y exteriores con radiación UV alta, como la de Bogotá a 2.600 m. El rango depende del espesor de película seca (200–300 µm) y de si se aplica en taller o en obra. Estimación propia.",
+   "confidence": "baja",
+   "sources": []
+  },
+  {
+   "id": "electrostatica",
+   "name": "Pintura electrostática en polvo (horneada), con desengrase/fosfatado",
+   "unit": "m2",
+   "cop_low": 25000,
+   "cop_high": 65000,
+   "notes": "Se aplica solo en taller y con piezas limitadas al tamaño del horno. Los talleres de Bogotá suelen cobrar por pieza o por m², con mínimos por lote. Los colores especiales, las texturas o la imprimación previa con zinc suben el precio. No encontré tarifa colombiana publicada; es una estimación propia.",
+   "confidence": "baja",
+   "sources": []
+  },
+  {
+   "id": "galvanizado-caliente",
+   "name": "Galvanizado por inmersión en caliente (servicio, ASTM A123)",
+   "unit": "kg",
+   "cop_low": 2000,
+   "cop_high": 3800,
+   "notes": "La única referencia colombiana es Quiminet (estimado de jul–ago 2023, ~1.500 COP/kg para 400 kg). Es poco fiable: la misma cifra aparece repetida en páginas de Quiminet que no tratan de galvanizado. Le apliqué inflación, el alza del zinc y el sobrecosto de piezas pequeñas o lotes mínimos. Las galvanizadoras cobran por kg de acero negro con un mínimo por lote. Hay que añadir 1–3 días hábiles de transporte y proceso. Toca cotizar con una planta.",
+   "confidence": "baja",
+   "sources": [
+    "https://www.quiminet.com/productos/servicios-de-galvanizado-por-inmersion-en-caliente-de-acero-117002010800/precios.htm"
+   ]
+  },
+  {
+   "id": "patina-corten",
+   "name": "Pátina acelerada de corten + sellado (laca o cera) para evitar escurrimientos",
+   "unit": "m2",
+   "cop_low": 25000,
+   "cop_high": 75000,
+   "notes": "Oxidación acelerada con solución química, varios ciclos de humectación y sellante. En interiores o en una barra hay que sellar siempre para que la pieza no manche. La pátina natural cuesta casi cero, pero tarda meses y escurre óxido sobre el piso, por lo que se necesitan goteros o canales. Estimación propia.",
+   "confidence": "baja",
+   "sources": []
+  },
+  {
+   "id": "inox-cepillado",
+   "name": "Acabado inoxidable cepillado/satinado (Scotch-Brite No.4) + pasivado de soldaduras",
+   "unit": "m2",
+   "cop_low": 30000,
+   "cop_high": 95000,
+   "notes": "Repaso de cordones TIG, satinado uniforme y pasivado. El acabado espejo (No.8) puede costar 2–3 veces más. Si se compra lámina ya satinada, sobre la superficie plana solo se cobra el repaso de las uniones. Estimación propia.",
+   "confidence": "baja",
+   "sources": []
+  },
+  {
+   "id": "intumescente",
+   "name": "Pintura intumescente (protección pasiva contra incendio) sobre primer compatible",
+   "unit": "m2",
+   "cop_low": 35000,
+   "cop_high": 240000,
+   "notes": "CYPE Colombia (generador de precios, sin fecha clara de actualización) da 30.531 COP/m² (RRI010, solo pintura), 31.415 (IOJ026) y 31.642 COP/m² (IOJ080). Esas partidas corresponden a EI 15 (≥299 µm) sobre imprimación epoxi con fosfato de zinc; el piso del rango se subió por la desactualización probable. Para R30–R60 en perfiles reales el espesor se multiplica (≈1–3 mm) y el costo sube en proporción; el techo del rango corresponde a R60. Debe definirlo un cálculo (factor de masividad) bajo NSR-10 Título J. En cafés pequeños rara vez se exige.",
+   "confidence": "baja",
+   "sources": [
+    "http://www.colombia.generadordeprecios.info/obra_nueva/Instalaciones/Contra_incendios/Proteccion_pasiva_contra_incendios/IOJ080_Proteccion_de_estructura_metalica__.html",
+    "http://www.colombia.generadordeprecios.info/obra_nueva/Revestimientos/Proteccion_contra_incendios/Pinturas_intumescentes/Pintura_intumescente.html"
+   ]
+  }
+ ],
+ "complements": [
+  {
+   "id": "tablero-madera",
+   "name": "Tablero de madera (maciza tipo flor morado/roble/teca o contrachapado premium, 30–50 mm, con laca o aceite)",
+   "unit": "m2",
+   "cop_low": 250000,
+   "cop_high": 950000,
+   "notes": "El extremo bajo es contrachapado o madera de reforestación (pino o eucalipto tratado); el alto, madera maciza tropical certificada con acabado poliuretano o aceite. Estimación propia, sin fuente directa.",
+   "confidence": "baja",
+   "sources": []
+  },
+  {
+   "id": "tablero-cuarzo",
+   "name": "Tablero / mesón de cuarzo aglomerado (12–30 mm) instalado",
+   "unit": "m2",
+   "cop_low": 900000,
+   "cop_high": 1900000,
+   "notes": "IKEA Colombia vende el mesón a medida en cuarzo de 1,2 cm de espesor, no de 20–30 mm, a 850.000–1.600.000 COP/m² (ODENSBERG blanco ≈1.250.000; RYDSNÄS 1.600.000), solo material: la instalación y la personalización se cobran aparte. Una guía de Ibagué de 2026 da 550.000–1.000.000+ COP por ml instalado (≈0,6 m de fondo, es decir ≈920.000–1.670.000 COP/m²; la conversión es mía). Las marcas premium, los espesores de 20–30 mm, los cantos especiales o el lavaplatos bajo cubierta suben al techo del rango.",
+   "confidence": "media",
+   "sources": [
+    "https://www.ikea.com/co/es/cat/mesones-de-cuarzo-46458/",
+    "https://espaciosplus.com/bitacora/que-precio-tiene-un-meson-cocina"
+   ]
+  },
+  {
+   "id": "vidrio-templado",
+   "name": "Vidrio templado o laminado de seguridad 8–10 mm (o 4+4 / 5+5 laminado) instalado",
+   "unit": "m2",
+   "cop_low": 280000,
+   "cop_high": 750000,
+   "notes": "Diseños y Estructuras JH (Bogotá) publica marquesina en vidrio laminado 3+3 desde 450.000 COP/m² + IVA, sobre aluminio, y ofrece templado de 8, 10 y 12 mm. El piso de 280.000 COP/m² (templado simple en puerta o divisiones) no se pudo verificar en la fuente. Para cubiertas o marquesinas conviene laminado templado (8+8 o más), que cuesta más. No incluye la estructura de acero ni los herrajes especiales tipo spider.",
+   "confidence": "media",
+   "sources": [
+    "https://disenosyestructurasjh.com/producto/marquesina/"
+   ]
+  },
+  {
+   "id": "policarbonato",
+   "name": "Policarbonato alveolar 6–10 mm o compacto 4–6 mm (solo cerramiento + perfilería de fijación)",
+   "unit": "m2",
+   "cop_low": 70000,
+   "cop_high": 300000,
+   "notes": "Incremento solo por la lámina. Según la tabla de pérgolas de Comando (2026), la pérgola abierta cuesta 300–420k/m², con alveolar 6 mm 480–600k/m² y con compacto 4 mm 580–720k/m²: el delta va de ≈180k (alveolar) a ≈300k/m² (compacto). El alveolar básico con perfil H/U parte de ~70k/m² (estimación propia).",
+   "confidence": "media",
+   "sources": [
+    "https://www.comandoconstrucciones.com/precio-pergola-metalica-colombia/"
+   ]
+  },
+  {
+   "id": "lamina-perforada",
+   "name": "Lámina perforada en acero (cal. 18–14), cortada, fijada a bastidor",
+   "unit": "m2",
+   "cop_low": 200000,
+   "cop_high": 520000,
+   "notes": "Vialambre (Bogotá) vende la lámina perforada cal. 18 de 2x1 m a 391.100 COP con IVA (≈195.000 COP/m², solo material); otra publicación la da a 365.099 COP. Es una lámina tipo exhibidor (cold rolled), no un panel arquitectónico. El extremo alto suma corte a medida, plegado de bordes e instalación sobre la subestructura. No incluye pintura; el bastidor estructural se cobra aparte.",
+   "confidence": "media",
+   "sources": [
+    "https://www.vialambre.com/lamina-perforada-madeflex-metalica-cal-18-de-200100/"
+   ]
+  },
+  {
+   "id": "steel-deck-concreto",
+   "name": "Losa en steel deck (lámina colaborante cal. 22–20) + malla electrosoldada + concreto 3000 psi, e≈10–12 cm",
+   "unit": "m2",
+   "cop_low": 150000,
+   "cop_high": 300000,
+   "notes": "Solo la losa, sin las vigas de acero (esas se cuentan por kg). No encontré precio colombiano publicado: es una estimación propia para Bogotá (lámina, malla, concreto, conectores y mano de obra). Se quitó la referencia brasileña (SINAPI) porque no se pudo verificar.",
+   "confidence": "baja",
+   "sources": []
+  },
+  {
+   "id": "led-lineal",
+   "name": "Iluminación LED lineal (perfil de aluminio con difusor + cinta 24V + driver + instalación)",
+   "unit": "ml",
+   "cop_low": 60000,
+   "cop_high": 220000,
+   "notes": "El extremo bajo es cinta comercial con perfil básico; el alto, cinta de alto CRI (≥90) con perfil empotrado o un sistema dimerizable. Estimación propia, sin fuente directa.",
+   "confidence": "baja",
+   "sources": []
+  },
+  {
+   "id": "anclajes-quimicos",
+   "name": "Anclaje químico (varilla roscada 1/2\"–5/8\" + adhesivo epóxico tipo HIT/Sikadur), perforación e instalación",
+   "unit": "und",
+   "cop_low": 35000,
+   "cop_high": 120000,
+   "notes": "Precio por punto de anclaje. Una placa base con 4 anclajes suele costar 150k–450k. Si el anclaje es estructural, lo tiene que definir un ingeniero bajo NSR-10. Estimación propia.",
+   "confidence": "baja",
+   "sources": []
+  },
+  {
+   "id": "corte-laser-cnc",
+   "name": "Corte láser / CNC de patrón decorativo en lámina de acero 2–6 mm (solo corte)",
+   "unit": "m2",
+   "cop_low": 70000,
+   "cop_high": 480000,
+   "notes": "Los talleres de Bogotá cobran por tiempo de corte, no por m². Magru (Fontibón) publica desde 75 COP por segundo sin material (≈4.500 COP/min, ≈270.000 COP/h) y corta CR cal. 24–14 y HR de 3 mm a 3/8\". La conversión a m² es mía: un patrón simple (~15 min/m²) sale en ≈70k/m², y uno denso con muchas perforaciones en 6 mm (60–100 min/m²) llega a 270–480k/m². Hay que sumar el material, el archivo vectorial y los mínimos por pedido.",
+   "confidence": "baja",
+   "sources": [
+    "https://magru.com.co/producto/servicio-de-corte-laser-de-laminas-de-metal-en-bogota-cold-rolled-y-hot-rolled/"
+   ]
+  }
+ ],
+ "work_benchmarks": [
+  {
+   "work_id": "barra-cafe",
+   "unit": "ml",
+   "all_in_cop_low": 1200000,
+   "all_in_cop_high": 5500000,
+   "notes": "Barra de café a medida (h≈1,0–1,1 m, fondo 0,6–0,8 m) con estructura de acero, revestimiento metálico o de madera y tablero de madera o cuarzo, instalada. Chequeo paramétrico del piso: ~30 kg/ml de estructura × 11.000 + frente en lámina de ~16 kg × 11.000 + 0,7 m² de tablero de madera × 250.000 + pintura ≈ 0,75 M/ml de costo directo; con baldas internas y margen de taller sale en ≈1,2 M. El techo corresponde a corten o inox con cuarzo y LED. Sin equipos (espresso, molinos), plomería ni electricidad. Una barra de 3–4 ml sale en ≈4–20 M COP. Estimación propia: no hay tabla publicada para Bogotá.",
+   "confidence": "baja",
+   "sources": []
+  },
+  {
+   "work_id": "fachada-celosia",
+   "unit": "m2",
+   "all_in_cop_low": 350000,
+   "all_in_cop_high": 1800000,
+   "notes": "Abajo: celosía de tubo o platina pintada sobre bastidor (10–20 kg/m² × 11–17k COP/kg + pintura). Como referencia, Comando da 120–280k por ml para reja perimetral. Medio: lámina perforada (200–520k/m²) o lamas con epóxico sobre subestructura. Alto: corten de 3–4 mm (≈24–31 kg/m² × 20–42k COP/kg) con corte láser y anclajes. El chequeo paramétrico de este caso da ≈1,2–1,8 M/m², por eso se subió el techo. Sin andamios para alturas mayores a 2 pisos.",
+   "confidence": "media",
+   "sources": [
+    "https://www.comandoconstrucciones.com/precio-rejas-metalicas-colombia/",
+    "https://www.vialambre.com/lamina-perforada-madeflex-metalica-cal-18-de-200100/"
+   ]
+  },
+  {
+   "work_id": "pergola",
+   "unit": "m2",
+   "all_in_cop_low": 300000,
+   "all_in_cop_high": 1300000,
+   "notes": "Tabla de Comando Construcciones, Bogotá 2026, con fabricación, transporte e instalación; no incluye obra civil, cimentación ni iluminación. Pérgola abierta en acero pintado 300–420k/m²; con policarbonato alveolar 6 mm 480–600k/m²; con compacto 4 mm 580–720k/m²; con vidrio templado 8 mm 900k–1,3M/m². Una pérgola abierta residencial de hasta 20 m² sale en 6–15 M. Las bioclimáticas en aluminio motorizado llegan a 2,4M/m² y quedan fuera del rango.",
+   "confidence": "media",
+   "sources": [
+    "https://www.comandoconstrucciones.com/precio-pergola-metalica-colombia/",
+    "https://www.comandoconstrucciones.com/pergolas-metalicas-colombia/"
+   ]
+  },
+  {
+   "work_id": "mezzanine",
+   "unit": "m2",
+   "all_in_cop_low": 420000,
+   "all_in_cop_high": 1100000,
+   "notes": "MEISA (2026): entrepisos a 13.000–17.000 COP/kg con 35–60 kg/m², es decir ≈455k–1,0M/m² de estructura instalada. Comando publica tarifas «desde» de 280k/m² (comercial), 320k (bodega de alta carga) y 350k (loft residencial), que parecen bajas: su propio ejemplo de 40 m² con escalera y barandas cuesta 13–16 M (≈325–400k/m²). Otra página suya estima un mezzanine interior de 20–40 m² en 15–35 M. Con piso en steel deck y concreto hay que sumar 150–300k/m². No incluye escalera, baranda ni diseño estructural (a menudo exigido por la curaduría).",
+   "confidence": "media",
+   "sources": [
+    "https://meisa.com.co/soluciones/mezzanines-entrepisos-metalicos",
+    "https://www.comandoconstrucciones.com/mezzanine-bogota/"
+   ]
+  },
+  {
+   "work_id": "escalera",
+   "unit": "und",
+   "all_in_cop_low": 3500000,
+   "all_in_cop_high": 16000000,
+   "notes": "Un tramo de ~3 m de altura (≈16–18 contrahuellas). Tabla de Comando 2026 (con fabricación, anticorrosivo e instalación, sin obra civil): recta con peldaños de lámina y baranda de tubo pintada 4–7 M; recta con baranda en inox 10–16 M; en L o U 6–22 M; caracol 5–13 M en la tabla nacional y 2,8–9 M en su página de Bogotá; con vidrio templado hasta 35 M. Se excluyen la L/U premium y el vidrio, que superan un tramo estándar. El techo corresponde a escalera de diseño con zanca en platina, peldaños en madera maciza y baranda en inox.",
+   "confidence": "media",
+   "sources": [
+    "https://www.comandoconstrucciones.com/precio-escaleras-metalicas-colombia/",
+    "https://www.comandoconstrucciones.com/escaleras-en-caracol-metalicas-bogota/",
+    "https://escalerasmetalicasbogota.com.co/cuanto-cuesta-una-escalera-metalica/"
+   ]
+  },
+  {
+   "work_id": "kiosko-modular",
+   "unit": "und",
+   "all_in_cop_low": 9000000,
+   "all_in_cop_high": 48000000,
+   "notes": "Módulo de 6–15 m². Modular Colombia (Tocancipá, Cundinamarca) publica desde 899.999 COP/m² en obra gris (sin transporte fuera de Cundinamarca ni cimentación especial); su nivel más alto («Full + Domótica y Paneles Solares») cuesta 3,9 M/m². Para un kiosko de café terminado (cerramiento, ventana de servicio, mesón, punto eléctrico, acabado de diseño) estimo 1,5–3,2 M/m², es decir 9 M (6 m²) a 48 M (15 m²). Sin equipos, licencias ni permiso de espacio público.",
+   "confidence": "baja",
+   "sources": [
+    "https://modularcolombia.com.co/",
+    "https://modularcolombia.com.co/casas-prefabricadas-en-metal.html"
+   ]
+  },
+  {
+   "work_id": "estanteria",
+   "unit": "ml",
+   "all_in_cop_low": 450000,
+   "all_in_cop_high": 1700000,
+   "notes": "Estantería o exhibidor a medida de ~2,0–2,4 m de alto con 4–5 niveles: marco de tubo o platina con baldas de madera o lámina plegada, pintura electrostática y anclaje a muro. El inox o el LED integrado suben al techo del rango. Estimación propia.",
+   "confidence": "baja",
+   "sources": []
+  },
+  {
+   "work_id": "mesa",
+   "unit": "und",
+   "all_in_cop_low": 700000,
+   "all_in_cop_high": 3800000,
+   "notes": "Mesa de café para 2–4 personas: base de acero (pata central de platina o marco de tubo, 15–25 kg) con electrostática y tablero de madera (bajo) o de cuarzo (alto). Las mesas comunales de 6–10 puestos pueden costar 4–9 M y quedan fuera del rango. Estimación propia.",
+   "confidence": "baja",
+   "sources": []
+  },
+  {
+   "work_id": "baranda",
+   "unit": "ml",
+   "all_in_cop_low": 150000,
+   "all_in_cop_high": 800000,
+   "notes": "Comando 2026, Bogotá: tubo negro pintado desde 90k/ml, galvanizada desde 130k/ml, inox 304 desde 280k/ml y vidrio templado con pasamanos de inox desde 380k/ml. En Medellín: inox 304 350–500k/ml e inox + vidrio 480–680k/ml; el diseño premium (700k–1,2M/ml) queda por encima del techo. Otra página de Comando da cifras mucho mayores sin unidad clara; no se usaron. El piso de 150k supone baranda comercial que cumple NSR-10 (h≥0,9–1,0 m, sin elementos escalables).",
+   "confidence": "media",
+   "sources": [
+    "https://www.comandoconstrucciones.com/barandas-en-bogota/",
+    "https://www.comandoconstrucciones.com/precio-barandas-metalicas-colombia/",
+    "https://www.comandoconstrucciones.com/barandas-metalicas-medellin/"
+   ]
+  },
+  {
+   "work_id": "porton",
+   "unit": "m2",
+   "all_in_cop_low": 400000,
+   "all_in_cop_high": 1600000,
+   "notes": "Comando 2026, Bogotá: portón batiente básico de 3x2 m por 2–3,5 M (≈330–580k/m²); corredizo residencial 3–5,5 M; automático con motor 4,5–8 M. Una puerta pivotante de diseño (bisagra pivote de piso, forro en corten, lámina perforada o inox, marco reforzado) sube a 0,9–1,6 M/m². La motorización va aparte: ≈+1,5–2,5 M, según la diferencia entre corredizo y automático.",
+   "confidence": "media",
+   "sources": [
+    "https://www.comandoconstrucciones.com/precio-portones-metalicos-colombia/",
+    "https://www.comandoconstrucciones.com/portones-metalicos-bogota/"
+   ]
+  },
+  {
+   "work_id": "senaletica-corten",
+   "unit": "und",
+   "all_in_cop_low": 1500000,
+   "all_in_cop_high": 6500000,
+   "notes": "Letrero de 1–2 m² en corten de 3–6 mm (≈24–94 kg) con letras caladas por láser, pátina sellada, separadores y anclaje a fachada. Chequeo paramétrico: 24–94 kg × 20–42k COP/kg + corte láser + pátina ≈ 0,7–5 M. El techo corresponde a letras corpóreas con retroiluminación LED. No incluye el registro y permiso de publicidad exterior visual ante la SDA de Bogotá, que limita tamaño y ubicación. Estimación propia.",
+   "confidence": "baja",
+   "sources": []
+  },
+  {
+   "work_id": "marquesina",
+   "unit": "m2",
+   "all_in_cop_low": 450000,
+   "all_in_cop_high": 1600000,
+   "notes": "Diseños y Estructuras JH (Bogotá) publica marquesinas en aluminio con policarbonato desde 380k/m² y en vidrio laminado 3+3 desde 450k/m² + IVA. En acero estructural con voladizo (ménsulas o tensores, ≈25–40 kg/m² × 13–25k COP/kg) y vidrio laminado templado (450–750k/m²), el chequeo paramétrico da ≈0,8–1,6 M/m². Los voladizos grandes necesitan diseño estructural y anclajes verificados.",
+   "confidence": "media",
+   "sources": [
+    "https://disenosyestructurasjh.com/producto/marquesina/",
+    "https://www.comandoconstrucciones.com/precio-pergola-metalica-colombia/"
+   ]
+  }
+ ],
+ "fees": {
+  "iva_pct": 19,
+  "design_fee_pct_low": 6,
+  "design_fee_pct_high": 12,
+  "contingency_pct": 10,
+  "transport_install_pct": 12,
+  "notes": "IVA general en Colombia: 19%. En contratos de obra bajo esquema AIU (Administración, Imprevistos y Utilidad, típicamente 20–30% sobre costo directo), el IVA puede liquidarse solo sobre la Utilidad; en la fabricación y suministro de mobiliario o carpintería metálica se cobra sobre el total. Hay que confirmarlo con el contador del estudio. Honorarios: el Decreto 2090 de 1989 (tarifas de la SCA) sigue siendo la referencia normativa y se calcula por categoría sobre el costo de obra. En el mercado se cobra 3–8% para edificaciones; para obras comerciales pequeñas como cafés (presupuesto bajo y mucho detalle) es razonable 6–12%, o un mínimo fijo por proyecto (estimación). Imprevistos: 10% (rango 8–15%; 15% si es remodelación sobre estructura existente o va a fachada). Transporte e instalación cuando el precio es solo de taller: 8–15%; ya están incluidos en los benchmarks por obra y en el COP/kg fabricado e instalado, así que no hay que sumarlos dos veces. Fuera de Bogotá y Cundinamarca hay recargos de transporte de ≈0,5–1,2 M COP por viaje (estimación)."
+ },
+ "caveats": [
+  "No pude abrir ninguna página directamente (WebFetch falló por DNS en la investigación y en la verificación). Las cifras salen de extractos del buscador y de conversiones o estimaciones propias. En la verificación se confirmó por búsqueda que existen las URL citadas y sus cifras principales; se quitaron las fuentes que no se pudieron confirmar.",
+  "Gran parte de los benchmarks de 2026 vienen de una sola fuente comercial (comandoconstrucciones.com) con intereses de venta. Sus páginas no siempre coinciden entre sí (escaleras en caracol: 2,8–9 M en una página y 5–13 M en otra; barandas: una sección da cifras ~10 veces mayores) y varias tienen 97–223 días. MEISA y Diseños y Estructuras JH también son fuentes comerciales. No encontré listas públicas de Ferrasa, Gerdau Diaco, Acesco ni Ternium, ni tablas de Construdata accesibles.",
+  "Corten, galvanizado en caliente, electrostática, epóxico, pátina, LED, anclajes, steel deck, barra de café, estantería, mesa y señalética no tienen fuente colombiana directa (o solo una poco fiable): son estimaciones propias, marcadas con confianza baja. Hay que validarlas con 2–3 cotizaciones de talleres de Bogotá antes de mostrarlas como precio firme.",
+  "El precio del acero es volátil. La salvaguardia al alambrón (Decreto 1294 del 18-oct-2024: 30% adicional al arancel NMF del 5%, para países sin TLC) rige dos años y vence alrededor del 19-oct-2026, así que hay que revisar si se prorrogó. A eso se suman el antidumping a la lámina galvanizada y galvalume china (41,74–94,64% desde ene-2025), el dólar, el níquel (inox) y el zinc (galvanizado). El precio por kg puede moverse ±10–20% en pocos meses.",
+  "Mano de obra: el SMMLV 2026 subió ~23% (1.750.905 COP, Decreto 1469/2025). El Consejo de Estado lo suspendió provisionalmente en feb-2026, el Gobierno expidió el Decreto 159/2026 como transitorio y luego se revocó la suspensión, sin cambiar el monto. El dato de ICOCED (DANE) de ~6,3–6,6% anual a mediados de 2026 no se pudo verificar. Las fuentes de 2025 o anteriores probablemente subestiman la mano de obra.",
+  "El COP/kg fabricado sube a medida que baja el peso de la pieza y crece la complejidad (MEISA lo dice expresamente): las obras pequeñas, a la vista y de alto detalle (barras, letreros, celosías caladas) pueden superar el techo del rango estructural. Un modelo paramétrico debería aplicar un factor de complejidad o un mínimo por obra (p. ej. 1,5–3 M COP de movilización y montaje).",
+  "No incluyen: diseño o revisión estructural por ingeniero con firma (NSR-10; Bogotá es zona de amenaza sísmica intermedia), licencias de construcción o curaduría, registro de publicidad exterior visual ante la SDA para letreros, permiso de espacio público para kioskos, obra civil y cimentaciones, instalaciones eléctricas o hidráulicas, equipos de café, ni desmontes.",
+  "No queda claro si las fuentes incluyen IVA: algunas lo incluyen (Vialambre) y otras dicen + IVA (JH). Lo prudente es tratar los benchmarks como valores antes de IVA y antes de honorarios de diseño.",
+  "Los rangos son referencias de orden de magnitud para un configurador (ROM, ±25–35%), no una cotización vinculante. La herramienta debe mostrarlos como «precio estimado desde/hasta» y remitir a una cotización formal (tabla quote_requests)."
+ ]
+}

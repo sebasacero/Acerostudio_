@@ -87,20 +87,28 @@ está conectado al sitio: catálogo/inventario de café, POS del café físico,
 configuración de WhatsApp, CMS de secciones, analítica propia y panel de
 insights de crecimiento.
 
-## Herramienta de rediseño en React (`redesign-app/`)
+## Estudio de arquitectura en acero en React (`redesign-app/`)
 
-A partir de esta tarea, la herramienta real de "sube una foto → elige
-estilo → recibe un rediseño generado con IA → cotiza" vive en una app
-Next.js aparte ([`redesign-app/README.md`](redesign-app/README.md)), para
-que la lógica sea reutilizable al migrar a React Native más adelante. El
-sitio estático (`index.html`) sigue igual; cuando `redesign-app` tenga una
-URL de despliegue, falta enlazarla desde el CTA de "Pruébalo ahora" del
-sitio principal.
+La app Next.js ([`redesign-app/README.md`](redesign-app/README.md)) es el
+estudio de arquitectura en acero de AceroStudio: un atlas de 12 lenguajes
+constructivos del mundo (de Jean Prouvé a Glenn Murcutt, con Colombia
+incluida), 12 obras en acero con su precio de referencia visible (barra,
+celosía, pérgola, mezzanine, escalera, kiosko, estantería, mesa, baranda,
+portón, señalética en corten, marquesina), una biblioteca de detalles
+constructivos (perfiles, uniones, acabados, NSR-10, clima de Bogotá) y un
+configurador con presupuesto por partidas, render con IA de la obra en el
+espacio del cliente y cotización. El rediseño rápido de espacio/producto
+sigue disponible en `/rediseno`.
 
-A diferencia del chat viejo (que solo mandaba la foto a un asesor humano
-por WhatsApp), esta versión sí llama a la Edge Function `generar-dise-o`,
-que genera el render con **Gemini 2.5 Flash Image** y ahora soporta tanto
-espacios como productos/empaques.
+Los precios son paramétricos (kg de acero × COP/kg instalado + oficio +
+acabado + complementos + movilización + imprevistos + diseño + IVA),
+calibrados contra benchmarks de Bogotá 2025–2026; la investigación con sus
+fuentes está en `redesign-app/research/`.
+
+El sitio estático (`index.html`) sigue igual; cuando `redesign-app` tenga
+una URL de despliegue, falta enlazarla desde el sitio principal. Está en
+React para poder reutilizar la lógica (precios, estado del estudio) en una
+futura app React Native.
 
 ## Notas para IA (del propio sitio, `llms.txt`)
 

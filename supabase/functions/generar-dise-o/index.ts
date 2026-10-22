@@ -9,9 +9,8 @@ export const corsHeaders = {
 }
 
 // Instrucciones fijas por modo — acotan el modelo sin importar que prompt
-// llegue desde el frontend. 'espacio' preserva el comportamiento original
-// (rediseno de interiores/fachadas de cafeterias); 'producto' es nuevo y
-// cubre empaques / mercancia manteniendo la forma real del producto.
+// llegue desde el frontend. 'espacio' y 'producto' solo transforman lo que ya
+// existe; 'obra' es el único que puede AGREGAR algo (la obra en acero pedida).
 const SYSTEM_RULES: Record<string, string> = {
   espacio: `
 Eres un generador de imagenes especializado UNICAMENTE en rediseno de
@@ -39,6 +38,25 @@ Reglas obligatorias, sin excepcion:
 - El resultado debe ser una variación visual realista del MISMO producto,
   no un producto distinto ni un render genérico.
 `,
+  obra: `
+Eres un generador de imagenes especializado UNICAMENTE en arquitectura en
+acero para locales comerciales (cafeterías, tiendas, terrazas, fachadas).
+
+Reglas obligatorias, sin excepcion:
+- Mantén la estructura existente: muros, ventanas, puertas, columnas y
+  proporciones del lugar NO se demuelen ni se mueven.
+- AGREGA o sustituye únicamente la obra en acero descrita en la instrucción
+  (barra, pérgola, celosía, mezzanine, escalera, baranda, portón, letrero,
+  marquesina, estantería, mesa o kiosko), integrada de forma constructivamente
+  creíble: apoyos, uniones y anclajes visibles y coherentes.
+- Representa con fidelidad el material y el acabado indicados (corten
+  oxidado, inoxidable cepillado, galvanizado, pintura) y el lenguaje
+  arquitectónico pedido.
+- Escala realista respecto al mobiliario existente. No agregues personas,
+  logos, marcas ni texto, salvo el letrero si esa es la obra pedida.
+- El resultado debe ser una fotografía realista del MISMO lugar con la nueva
+  obra, no un render genérico.
+`,
 }
 
 serve(async (req) => {
@@ -52,7 +70,7 @@ serve(async (req) => {
     if (!image_base64) throw new Error("Imagen Base64 requerida")
     if (!prompt) throw new Error("Prompt requerido")
 
-    const resolvedMode = mode === "producto" ? "producto" : "espacio"
+    const resolvedMode = mode === "producto" || mode === "obra" ? mode : "espacio"
     const systemRules = SYSTEM_RULES[resolvedMode]
 
     const geminiApiKey = Deno.env.get("GEMINI_API_KEY")

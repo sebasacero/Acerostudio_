@@ -1,22 +1,11 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { supabase, EDGE_FUNCTIONS_URL } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
+import { generateRender, uploadOriginal } from "@/lib/render";
 import { MODES, WHATSAPP_NUMBER, BUDGET_RANGES, type RedesignMode } from "@/lib/constants";
 
 type Step = "upload" | "style" | "generating" | "result" | "quote" | "done";
-
-function fileToBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      resolve(result.split(",")[1] ?? "");
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
 
 export default function RedesignTool() {
   const [step, setStep] = useState<Step>("upload");
@@ -54,37 +43,12 @@ export default function RedesignTool() {
     setError(null);
 
     try {
-      const ext = file.name.split(".").pop() || "jpg";
-      const path = `originales/${mode}_${Date.now()}.${ext}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("disenos-cafe")
-        .upload(path, file, { contentType: file.type || "image/jpeg" });
-      if (uploadError) throw new Error(`No se pudo subir la foto: ${uploadError.message}`);
-
-      const { data: publicUrlData } = supabase.storage.from("disenos-cafe").getPublicUrl(path);
-      setOriginalPhotoUrl(publicUrlData.publicUrl);
-
-      const image_base64 = await fileToBase64(file);
+      setOriginalPhotoUrl(await uploadOriginal(file, mode));
       const prompt =
         mode === "espacio"
           ? `Rediseña este espacio de cafetería en estilo ${style}.`
           : `Rediseña este producto/empaque en estilo ${style}.`;
-
-      const res = await fetch(`${EDGE_FUNCTIONS_URL}/generar-dise-o`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
-        },
-        body: JSON.stringify({ prompt, image_base64, mime_type: file.type, mode }),
-      });
-
-      const json = await res.json();
-      if (!res.ok || json.error) throw new Error(json.error || "No se pudo generar el diseño.");
-
-      setGeneratedImageUrl(json.imageUrl);
+      setGeneratedImageUrl(await generateRender(file, prompt, mode));
       setStep("result");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Algo salió mal. Intenta de nuevo.");

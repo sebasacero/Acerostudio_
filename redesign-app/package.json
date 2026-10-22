@@ -2,11 +2,15 @@
   "name": "redesign-app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --test lib/*.test.ts",
+    "gen:catalog": "python3 -I scripts/gen_catalog.py research/pricing.json research/steel.json > lib/data/catalog-data.ts",
+    "gen:traditions": "python3 -I scripts/gen_traditions.py research/world.json > lib/data/traditions.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",
