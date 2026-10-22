@@ -126,6 +126,12 @@ input[type="range"] {
   .print-sheet {
     color: #111 !important;
     border-color: #111 !important;
+    background: transparent !important;
+    break-inside: avoid;
+    margin-bottom: 8mm;
+  }
+  .print-sheet svg {
+    --steel: #333 !important;
   }
   .print-sheet * {
     color: #111 !important;

@@ -18,10 +18,11 @@ export default function WorldMap({
     <svg
       viewBox={`0 0 ${WORLD_VIEWBOX.width} ${WORLD_VIEWBOX.height}`}
       className={`w-full h-auto ${className}`}
-      role="img"
+      role="group"
       aria-label="Mapa de las tradiciones arquitectónicas en acero, conectadas con Bogotá"
     >
       <path
+        aria-hidden="true"
         d={WORLD_DOTS_PATH}
         fill="none"
         stroke="#4a443d"
@@ -34,6 +35,7 @@ export default function WorldMap({
         const selected = t.id === selectedId;
         return (
           <path
+            aria-hidden="true"
             key={`arc-${t.id}`}
             d={arcPath(BOGOTA, t)}
             fill="none"
@@ -51,7 +53,7 @@ export default function WorldMap({
         const selected = t.id === selectedId;
         return (
           <Link key={t.id} href={`/atlas/${t.id}`} aria-label={t.name}>
-            <circle cx={p.x} cy={p.y} r={5} fill="transparent" />
+            <circle cx={p.x} cy={p.y} r={5} fill="transparent" aria-hidden="true" />
             <circle
               cx={p.x}
               cy={p.y}
@@ -65,9 +67,10 @@ export default function WorldMap({
         );
       })}
 
-      <circle cx={origin.x} cy={origin.y} r={1.5} fill="var(--accent)" className="pulse-ring" fillOpacity={0.6} />
-      <circle cx={origin.x} cy={origin.y} r={2} fill="var(--accent)" />
-      <text
+      <g aria-hidden="true">
+        <circle cx={origin.x} cy={origin.y} r={1.5} fill="var(--accent)" className="pulse-ring" fillOpacity={0.6} />
+        <circle cx={origin.x} cy={origin.y} r={2} fill="var(--accent)" />
+        <text
         x={origin.x + 3.5}
         y={origin.y + 1.2}
         fill="var(--accent)"
@@ -75,8 +78,9 @@ export default function WorldMap({
         fontFamily="var(--font-jetbrains-mono), monospace"
         letterSpacing={0.3}
       >
-        BOG · 2.600 m
-      </text>
+          BOG · 2.600 m
+        </text>
+      </g>
     </svg>
   );
 }

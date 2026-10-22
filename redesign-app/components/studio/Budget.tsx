@@ -30,7 +30,7 @@ export default function Budget({
       <div className="p-5">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p id="presupuesto" className="fig mb-1">Presupuesto estimado · con IVA</p>
+            <p id="presupuesto" className="fig mb-1 scroll-mt-40">Presupuesto estimado · con IVA</p>
             <p className="text-3xl font-semibold tabular-nums tracking-tight md:text-4xl" aria-live="polite">
               {formatRangeShort(e.total)}
             </p>

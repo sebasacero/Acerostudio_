@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import type { Unit } from "@/lib/types";
 
 const STEEL_COLOR: Record<string, string> = {
@@ -65,7 +65,8 @@ export default function WorkDrawing({
   max: number;
   title: string;
 }) {
-  const s = STEEL_COLOR[materialId] ?? STEEL_COLOR["acero-estructural"];
+  const steel = STEEL_COLOR[materialId] ?? STEEL_COLOR["acero-estructural"];
+  const s = "var(--steel)";
   const u = unit === "m2" ? "m²" : unit;
   const label = `${fmt(quantity)} ${u}`;
   const w = span(quantity, min, max);
@@ -96,7 +97,7 @@ export default function WorkDrawing({
     }
     case "fachada-celosia": {
       const top = 40;
-      const n = Math.round(w / 9);
+      const n = Math.max(1, Math.floor((w - 4) / 9));
       body = (
         <>
           <rect x={x0} y={top} width={w} height={GROUND - top} fill="none" stroke={s} strokeWidth={1.6} />
@@ -131,6 +132,7 @@ export default function WorkDrawing({
     case "mezzanine": {
       const deck = 110;
       const cols = Math.max(2, Math.round(w / 100) + 1);
+      const nj = Math.max(1, Math.round(w / 40));
       body = (
         <>
           <rect x={x0} y={deck} width={w} height={8} fill="#5f5a54" />
@@ -140,10 +142,11 @@ export default function WorkDrawing({
             return <rect key={i} x={x - 3} y={deck + 18} width={6} height={GROUND - deck - 18} fill={s} />;
           })}
           <line x1={x0} y1={deck - 30} x2={x1} y2={deck - 30} stroke={s} strokeWidth={1.2} />
-          {range(Math.round(w / 40) + 1).map((i) => (
-            <line key={i} x1={x0 + i * 40} y1={deck - 30} x2={x0 + i * 40} y2={deck} stroke={s} strokeWidth={0.8} />
-          ))}
-          <line x1={x1 + 6} y1={deck} x2={x1 + 50} y2={GROUND} stroke={s} strokeWidth={2} />
+          {range(nj + 1).map((i) => {
+            const x = x0 + (w * i) / nj;
+            return <line key={i} x1={x} y1={deck - 30} x2={x} y2={deck} stroke={s} strokeWidth={0.8} />;
+          })}
+          <line x1={x1 + 6} y1={deck} x2={Math.min(W - 6, x1 + 50)} y2={GROUND} stroke={s} strokeWidth={2} />
           <Dim x1={x0} x2={x1} y={deck - 42} label={label} />
           <VDim x={x0 - 14} y1={deck} y2={GROUND} label="2,6 m" />
         </>
@@ -307,7 +310,13 @@ export default function WorkDrawing({
   }
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="mx-auto h-auto max-h-[300px] w-full" role="img" aria-label={`Esquema de ${title}, ${label}`}>
+    <svg
+      viewBox={`0 0 ${W} ${H}`}
+      className="mx-auto h-auto max-h-[300px] w-full"
+      style={{ "--steel": steel } as CSSProperties}
+      role="img"
+      aria-label={`Esquema de ${title}, ${label}`}
+    >
       <defs>
         <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
           <line x1="0" y1="0" x2="0" y2="6" stroke="#4a443d" strokeWidth="1" />

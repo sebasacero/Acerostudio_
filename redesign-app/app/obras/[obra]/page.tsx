@@ -17,7 +17,7 @@ import {
   pickFinish,
   typicalEstimate,
 } from "@/lib/catalog";
-import { formatCopShort, formatRangeShort } from "@/lib/pricing";
+import { formatRangeShort } from "@/lib/pricing";
 
 export function generateStaticParams() {
   return WORKS.map((w) => ({ obra: w.id }));
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: PageProps<"/obras/[obra]">): 
   const e = typicalEstimate(work);
   return {
     title: work.name,
-    description: `${work.description} Desde ${formatCopShort(e.perUnit.low)}/${UNIT_LABEL[work.unit].short}.`,
+    description: `${work.description} Proyecto típico: ${formatRangeShort(e.perUnit)} por ${UNIT_LABEL[work.unit].long}.`,
   };
 }
 

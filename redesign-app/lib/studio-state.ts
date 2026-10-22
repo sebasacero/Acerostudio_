@@ -32,7 +32,8 @@ export function clampQuantity(workId: string, q: number): number {
 export function initialState(workId?: string, traditionId?: string): StudioState {
   const work = WORK_BY_ID[workId ?? ""] ?? WORKS[0];
   const tradition = TRADITION_BY_ID[traditionId ?? ""] ?? BASELINE_TRADITION;
-  const material = pickMaterial(work, tradition);
+  // Mismo material que el "proyecto típico" del catálogo; el del lenguaje se adopta a pedido.
+  const material = MATERIAL_BY_ID[work.defaultMaterialId] ?? pickMaterial(work, tradition);
   return {
     workId: work.id,
     traditionId: tradition.id,
@@ -58,20 +59,19 @@ export function parseState(params: Params): StudioState {
     finishId && material.finishIds.includes(finishId) ? FINISH_BY_ID[finishId] : pickFinish(work, material, tradition);
 
   const q = params.get("cantidad");
-  const optionalIds = new Set(work.complements.filter((c) => c.optional).map((c) => c.id));
-  const extras = (params.get("extras") ?? "")
-    .split(",")
-    .filter((id) => optionalIds.has(id));
-
-  return {
+  let state: StudioState = {
     workId: work.id,
     traditionId: tradition.id,
     materialId: material.id,
     finishId: finish.id,
-    quantity: q === null ? work.quantity.default : clampQuantity(work.id, Number(q)),
-    extras: Array.from(new Set(extras)),
+    quantity: q === null || q.trim() === "" ? work.quantity.default : clampQuantity(work.id, Number(q)),
+    extras: [],
     fire: work.fireProtectionApplies && params.get("fuego") === "1",
   };
+  for (const id of (params.get("extras") ?? "").split(",")) {
+    state = reduce(state, { type: "extra", id, on: true });
+  }
+  return state;
 }
 
 export function serializeState(s: StudioState): string {
@@ -119,9 +119,13 @@ export function reduce(s: StudioState, a: StudioAction): StudioState {
     case "quantity":
       return { ...s, quantity: clampQuantity(s.workId, a.quantity) };
     case "extra": {
-      if (!work.complements.some((c) => c.id === a.id && c.optional)) return s;
-      const extras = a.on ? Array.from(new Set([...s.extras, a.id])) : s.extras.filter((x) => x !== a.id);
-      return { ...s, extras };
+      const wc = work.complements.find((c) => c.id === a.id && c.optional);
+      if (!wc) return s;
+      if (!a.on) return { ...s, extras: s.extras.filter((x) => x !== a.id) };
+      const sameGroup = new Set(
+        wc.group ? work.complements.filter((c) => c.group === wc.group && c.id !== wc.id).map((c) => c.id) : [],
+      );
+      return { ...s, extras: [...s.extras.filter((x) => !sameGroup.has(x) && x !== a.id), a.id] };
     }
     case "fire":
       return { ...s, fire: work.fireProtectionApplies && a.on };

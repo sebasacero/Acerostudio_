@@ -37,8 +37,9 @@ function studioReducer(s: StudioState, a: Action): StudioState {
   return a.type === "reset" ? a.state : reduce(s, a);
 }
 
-function Delta({ value }: { value: number }) {
-  if (Math.abs(value) < 1000) return <span className="font-mono text-[0.65rem] text-faint">actual</span>;
+function Delta({ value, selected }: { value: number; selected?: boolean }) {
+  if (selected) return <span className="font-mono text-[0.65rem] text-faint">actual</span>;
+  if (Math.abs(value) < 1000) return <span className="whitespace-nowrap font-mono text-[0.65rem] text-faint">mismo precio</span>;
   const up = value > 0;
   return (
     <span className={`whitespace-nowrap font-mono text-[0.65rem] tabular-nums ${up ? "text-rust" : "text-accent"}`}>
@@ -103,7 +104,9 @@ export default function Studio() {
     dispatch(a);
   };
 
-  const suggested = pickMaterial(work, tradition);
+  const preferred = tradition.preferredMaterialIds.filter((id) => work.materialIds.includes(id));
+  const suggested = preferred.length > 0 && !preferred.includes(state.materialId) ? pickMaterial(work, tradition) : null;
+  const renderUrl = render && render.configKey === qs ? render.renderUrl : null;
   const shareUrl = typeof window === "undefined" ? `/estudio?${qs}` : `${window.location.origin}/estudio?${qs}`;
   const today = new Date().toLocaleDateString("es-CO", { day: "2-digit", month: "short", year: "numeric" });
 
@@ -137,7 +140,7 @@ export default function Studio() {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)]">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)] print:block">
         {/* Controles */}
         <aside className="no-print border border-border bg-panel p-5 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
           <Step n="01" title="¿Qué quieres construir?">
@@ -164,7 +167,7 @@ export default function Studio() {
                   <button type="button" aria-pressed={t.id === state.traditionId} onClick={() => act({ type: "tradition", traditionId: t.id })} className={optionCls(t.id === state.traditionId)}>
                     <span className="flex items-center justify-between gap-2">
                       <span className="text-sm leading-tight">{t.name}</span>
-                      <Delta value={deltaFor({ type: "tradition", traditionId: t.id })} />
+                      <Delta value={deltaFor({ type: "tradition", traditionId: t.id })} selected={t.id === state.traditionId} />
                     </span>
                     <span className="mt-1.5 flex items-center gap-2">
                       <span className="w-20"><Palette colors={t.palette} /></span>
@@ -174,7 +177,7 @@ export default function Studio() {
                 </li>
               ))}
             </ul>
-            {suggested.id !== state.materialId && (
+            {suggested && (
               <button
                 type="button"
                 onClick={() => act({ type: "tradition", traditionId: tradition.id, adoptMaterial: true })}
@@ -217,7 +220,7 @@ export default function Studio() {
                 <button key={m.id} type="button" aria-pressed={m.id === state.materialId} onClick={() => act({ type: "material", materialId: m.id })} className={optionCls(m.id === state.materialId)}>
                   <span className="flex items-center justify-between gap-2 text-sm">
                     <span>{m.short}</span>
-                    <Delta value={deltaFor({ type: "material", materialId: m.id })} />
+                    <Delta value={deltaFor({ type: "material", materialId: m.id })} selected={m.id === state.materialId} />
                   </span>
                 </button>
               ))}
@@ -229,7 +232,7 @@ export default function Studio() {
                 <button key={f.id} type="button" aria-pressed={f.id === state.finishId} onClick={() => act({ type: "finish", finishId: f.id })} className={optionCls(f.id === state.finishId)}>
                   <span className="flex items-center justify-between gap-2 text-sm">
                     <span>{f.name}</span>
-                    <Delta value={deltaFor({ type: "finish", finishId: f.id })} />
+                    <Delta value={deltaFor({ type: "finish", finishId: f.id })} selected={f.id === state.finishId} />
                   </span>
                   <span className="font-mono text-[0.6rem] text-faint">
                     {f.durabilityYears.low}–{f.durabilityYears.high} años · {formatCopShort(mid(f.price))}/{f.unit === "kg" ? "kg" : "m²"}
@@ -249,7 +252,17 @@ export default function Studio() {
                   {work.complements.map((wc) => {
                     const c = COMPLEMENT_BY_ID[wc.id];
                     if (!c) return null;
-                    const on = !wc.optional || state.extras.includes(wc.id);
+                    const replacedBy = work.complements.find((o) => o.replaces === wc.id && state.extras.includes(o.id));
+                    const on = wc.optional ? state.extras.includes(wc.id) : !replacedBy;
+                    const status = replacedBy
+                      ? `reemplazado por ${COMPLEMENT_BY_ID[replacedBy.id].name.split("(")[0].trim().toLowerCase()}`
+                      : wc.replaces
+                        ? `en lugar de ${COMPLEMENT_BY_ID[wc.replaces].name.split("(")[0].trim().toLowerCase()}`
+                        : wc.optional
+                          ? wc.group
+                            ? "opcional · una opción"
+                            : "opcional"
+                          : "incluido";
                     return (
                       <li key={wc.id}>
                         <label className={`flex cursor-pointer items-start gap-2 border px-3 py-2 text-sm ${on ? "border-accent/40" : "border-border"} ${wc.optional ? "" : "cursor-default opacity-80"}`}>
@@ -262,7 +275,7 @@ export default function Studio() {
                           />
                           <span className="flex-1">
                             <span className="block leading-tight">{c.name.split("(")[0].trim()}</span>
-                            <span className="font-mono text-[0.6rem] text-faint">{wc.optional ? "opcional" : "incluido"}</span>
+                            <span className="font-mono text-[0.6rem] text-faint">{status}</span>
                           </span>
                           {wc.optional && (
                             <Delta
@@ -295,9 +308,7 @@ export default function Studio() {
           <div className="no-print sticky top-[57px] z-30 hidden items-center justify-between gap-6 border border-border bg-background/95 px-5 py-3 backdrop-blur lg:flex">
             <div>
               <p className="font-mono text-[0.6rem] uppercase tracking-widest text-faint">Presupuesto estimado · con IVA</p>
-              <p className="text-2xl font-semibold tabular-nums tracking-tight" aria-live="polite">
-                {formatRangeShort(est.total)}
-              </p>
+              <p className="text-2xl font-semibold tabular-nums tracking-tight">{formatRangeShort(est.total)}</p>
             </div>
             <p className="font-mono text-xs text-muted">
               {formatRangeShort(est.perUnit)} / {unit.short}
@@ -344,12 +355,19 @@ export default function Studio() {
 
           <TechSheet work={work} material={material} finish={finish} tradition={tradition} />
 
-          <div className="grid gap-6 xl:grid-cols-2">
+          <div className="no-print grid gap-6 xl:grid-cols-2">
             <div>
               <h2 className="fig mb-3">04 — Tu espacio</h2>
-              <RenderPanel work={work} material={material} finish={finish} tradition={tradition} onRender={setRender} />
+              <RenderPanel
+                work={work}
+                material={material}
+                finish={finish}
+                tradition={tradition}
+                configKey={qs}
+                onRender={setRender}
+              />
             </div>
-            <div>
+            <div id="cotizar" className="scroll-mt-40">
               <h2 className="fig mb-3">05 — Cotizar</h2>
               <QuoteForm
                 state={state}
@@ -361,7 +379,7 @@ export default function Studio() {
                 unitShort={unit.short}
                 shareUrl={shareUrl}
                 photoUrl={render?.photoUrl ?? null}
-                renderUrl={render?.renderUrl ?? null}
+                renderUrl={renderUrl}
               />
             </div>
           </div>

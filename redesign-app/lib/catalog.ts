@@ -23,7 +23,9 @@ export const FEES: Fees = {
   bandHighPct: 30,
 };
 
-const byId = <T extends { id: string }>(list: T[]) => Object.fromEntries(list.map((x) => [x.id, x])) as Record<string, T>;
+// Sin prototipo: ids que vienen de la URL como "constructor" o "toString" no deben resolver.
+const byId = <T extends { id: string }>(list: T[]) =>
+  Object.assign(Object.create(null), Object.fromEntries(list.map((x) => [x.id, x]))) as Record<string, T>;
 
 export const WORK_BY_ID = byId(WORKS);
 export const MATERIAL_BY_ID = byId(MATERIALS);
@@ -70,7 +72,7 @@ export function pickFinish(work: Work, material: Material, tradition?: Tradition
 }
 
 export function defaultSelection(work: Work, tradition: Tradition = BASELINE_TRADITION): Selection {
-  const material = pickMaterial(work, tradition);
+  const material = MATERIAL_BY_ID[work.defaultMaterialId] ?? pickMaterial(work, tradition);
   return {
     work,
     material,
@@ -87,8 +89,5 @@ export function estimateFor(sel: Selection): Estimate {
 }
 
 export function typicalEstimate(work: Work, tradition: Tradition = BASELINE_TRADITION): Estimate {
-  const sel = defaultSelection(work, tradition);
-  // Respeta el material de la obra por defecto para comparar lenguajes con la misma base.
-  const material = MATERIAL_BY_ID[work.defaultMaterialId];
-  return estimateFor({ ...sel, material, finish: pickFinish(work, material, tradition) });
+  return estimateFor(defaultSelection(work, tradition));
 }

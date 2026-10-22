@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { formatCopShort, formatRangeShort } from "@/lib/pricing";
+import { formatRangeShort } from "@/lib/pricing";
 import { UNIT_LABEL, typicalEstimate } from "@/lib/catalog";
 import type { Range, Tradition, Work } from "@/lib/types";
 
@@ -52,7 +52,7 @@ export function WorkCard({ work, index, tradition }: { work: Work; index: number
       <p className="mt-2 line-clamp-2 text-sm text-muted">{work.description}</p>
       <div className="mt-auto pt-5">
         <p className="font-mono text-[0.7rem] text-muted">
-          desde <span className="text-foreground">{formatCopShort(e.perUnit.low)}</span> / {unit}
+          <span className="text-foreground">{formatRangeShort(e.perUnit)}</span> / {unit} · típico
         </p>
         <div className="mt-1 flex items-baseline justify-between gap-2">
           <PriceRange range={e.total} />

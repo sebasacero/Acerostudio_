@@ -39,6 +39,10 @@ export interface WorkComplement {
   id: string;
   qtyPerUnit: number;
   optional: boolean;
+  // Alternativa a un complemento incluido (p. ej. cuarzo en lugar de madera).
+  replaces?: string;
+  // Opcionales mutuamente excluyentes (p. ej. cubierta de vidrio o de policarbonato).
+  group?: string;
 }
 
 export interface Work {
