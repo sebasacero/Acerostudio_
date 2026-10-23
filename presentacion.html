@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presentaciones — AceroStudio</title>
+  <!-- Herramienta interna del estudio: no se indexa -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0f1216">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/presentacion.css">
+</head>
+<body>
+
+<header class="pz-header">
+  <a href="index.html" class="pz-logo"><img src="images/logo.png" alt="AceroStudio"></a>
+  <div class="pz-head-txt">
+    <span class="pz-fig">FIG. 07 — PRESENTACIÓN</span>
+    <h1>Outputs para presentaciones</h1>
+  </div>
+</header>
+
+<main class="pz-grid">
+
+  <!-- ================= ENTRADAS ================= -->
+  <form class="pz-panel pz-inputs" id="pzForm" onsubmit="return false;">
+
+    <div class="pz-lbl">01 · Imágenes</div>
+    <div class="pz-drops">
+      <label class="pz-drop" id="dropAntes">
+        <input type="file" accept="image/*" id="fileAntes" hidden>
+        <img alt="" hidden>
+        <span class="pz-drop-tag">ANTES</span>
+        <span class="pz-drop-hint">Foto del estado actual o maqueta "antes"</span>
+      </label>
+      <label class="pz-drop" id="dropDespues">
+        <input type="file" accept="image/*" id="fileDespues" hidden>
+        <img alt="" hidden>
+        <span class="pz-drop-tag">DESPUÉS</span>
+        <span class="pz-drop-hint">Render o maqueta de la propuesta</span>
+      </label>
+    </div>
+    <p class="pz-note">Para que la transición se vea como una sola toma, las dos imágenes deben tener el mismo encuadre. Los prompts de abajo lo piden así.</p>
+
+    <div class="pz-lbl">02 · Formato</div>
+    <div class="pz-seg" role="radiogroup">
+      <label><input type="radio" name="pzFormat" value="reel" checked><span>Reel 9:16</span></label>
+      <label><input type="radio" name="pzFormat" value="post"><span>Post 4:5</span></label>
+      <label><input type="radio" name="pzFormat" value="slide"><span>Slide 16:9</span></label>
+    </div>
+
+    <div class="pz-lbl">03 · Textos</div>
+    <label class="pz-field"><span>Proyecto</span><input type="text" id="pzTitle" value="Parque bajo el viaducto" maxlength="60"></label>
+    <label class="pz-field"><span>Frase</span><input type="text" id="pzCaption" value="Diseñando espacios que conectan" maxlength="80"></label>
+    <label class="pz-field"><span>Ubicación</span><input type="text" id="pzPlace" value="Bogotá · 2.600 msnm" maxlength="60"></label>
+    <label class="pz-field"><span>Datos (opcional)</span><input type="text" id="pzData" placeholder="1.850 m² · 3 zonas · 120 árboles" maxlength="80"></label>
+    <label class="pz-field"><span>Cuenta</span><input type="text" id="pzHandle" value="@acero.press" maxlength="40"></label>
+
+    <div class="pz-lbl">04 · Animación</div>
+    <div class="pz-seg pz-seg-row" role="radiogroup">
+      <label><input type="radio" name="pzTransition" value="wipe" checked><span>Barrido</span></label>
+      <label><input type="radio" name="pzTransition" value="dissolve"><span>Disolvencia</span></label>
+    </div>
+    <label class="pz-check"><input type="checkbox" id="pzLabels" checked><span>Rótulos: ANTES / DESPUÉS, proyecto y ubicación</span></label>
+    <label class="pz-check"><input type="checkbox" id="pzEndCard" checked><span>Cierre con logo y frase</span></label>
+  </form>
+
+  <!-- ================= VISTA PREVIA ================= -->
+  <section class="pz-panel pz-preview">
+    <div class="pz-stage" id="pzStage">
+      <canvas id="pzCanvas" width="1080" height="1920"></canvas>
+      <div class="pz-empty" id="pzEmpty">Sube las imágenes ANTES y DESPUÉS para ver la vista previa</div>
+    </div>
+    <div class="pz-timeline"><div class="pz-timeline-bar" id="pzBar"></div></div>
+
+    <div class="pz-actions">
+      <button type="button" class="pz-btn" id="pzPlay">▶ Reproducir</button>
+      <button type="button" class="pz-btn hot" id="pzVideo">Exportar video</button>
+      <button type="button" class="pz-btn" id="pzSheet">Lámina PNG</button>
+      <button type="button" class="pz-btn" id="pzCover">Portada PNG</button>
+    </div>
+    <div class="pz-status" id="pzStatus" aria-live="polite"></div>
+  </section>
+
+  <!-- ================= PROMPTS MAQUETA ================= -->
+  <section class="pz-panel pz-prompts">
+    <div class="pz-lbl">05 · Prompts para generar las imágenes</div>
+    <p class="pz-note">Estilo de referencia: maqueta física a escala, fotografiada desde arriba como un dron. Usa el mismo encuadre en las dos imágenes. Funcionan con Gemini, Midjourney, Firefly u otro generador que acepte una foto de referencia.</p>
+
+    <div class="pz-seg pz-seg-row" role="radiogroup">
+      <label><input type="radio" name="pzStyle" value="maqueta" checked><span>Maqueta física</span></label>
+      <label><input type="radio" name="pzStyle" value="foto"><span>Render fotorrealista</span></label>
+    </div>
+    <label class="pz-field"><span>¿Qué hay hoy?</span><input type="text" id="pzSite" value="un parqueadero abandonado bajo un viaducto de concreto, rodeado de edificios de ladrillo"></label>
+    <label class="pz-field"><span>¿Qué se propone?</span><input type="text" id="pzProgram" value="un parque lineal con cancha de baloncesto, pérgolas de madera, bancas, juegos infantiles y jardines de plantas nativas"></label>
+
+    <div class="pz-prompt">
+      <div class="pz-prompt-head"><span>Imagen ANTES</span><button type="button" class="pz-copy" data-target="pzPromptAntes">Copiar</button></div>
+      <textarea id="pzPromptAntes" rows="6" readonly></textarea>
+    </div>
+    <div class="pz-prompt">
+      <div class="pz-prompt-head"><span>Imagen DESPUÉS</span><button type="button" class="pz-copy" data-target="pzPromptDespues">Copiar</button></div>
+      <textarea id="pzPromptDespues" rows="6" readonly></textarea>
+    </div>
+  </section>
+
+</main>
+
+<script src="js/presentacion.js"></script>
+</body>
+</html>
