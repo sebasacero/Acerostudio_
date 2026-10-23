@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import BlueprintReveal from "@/components/BlueprintReveal";
+import WorkDrawing from "@/components/studio/WorkDrawing";
 import { PriceNote, PriceRange, Tag } from "@/components/ui";
 import {
   COMPLEMENT_BY_ID,
@@ -82,6 +84,20 @@ export default async function ObraPage({ params }: PageProps<"/obras/[obra]">) {
             </Link>
           </div>
         </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pt-14">
+        <BlueprintReveal>
+          <WorkDrawing
+            workId={work.id}
+            materialId={work.defaultMaterialId}
+            quantity={work.quantity.default}
+            unit={work.unit}
+            min={work.quantity.min}
+            max={work.quantity.max}
+            title={work.name}
+          />
+        </BlueprintReveal>
       </section>
 
       <section className="mx-auto grid max-w-6xl gap-10 px-4 py-14 lg:grid-cols-2">

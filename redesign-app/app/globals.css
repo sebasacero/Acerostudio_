@@ -72,6 +72,75 @@ body {
   height: 1px;
 }
 
+/* Presentación plano → estructura → obra (BlueprintReveal). */
+.reveal svg {
+  transition: filter 0.9s ease;
+}
+.reveal-plano svg {
+  --steel: var(--accent);
+  filter: saturate(0.6);
+}
+.reveal-plano svg [fill]:not([fill="none"]):not([fill="transparent"]):not([fill="var(--accent)"]) {
+  fill: transparent !important;
+  stroke: var(--rust);
+  stroke-width: 0.8;
+  stroke-dasharray: 3 2;
+}
+.reveal-plano svg rect,
+.reveal-plano svg line,
+.reveal-plano svg path {
+  transition: fill 0.9s ease, stroke 0.9s ease;
+}
+.reveal-estructura svg {
+  --steel: #cfd3d6;
+}
+.reveal-estructura svg line,
+.reveal-estructura svg rect,
+.reveal-estructura svg path {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: trace 2.6s ease-out forwards;
+}
+.reveal-obra svg {
+  filter: saturate(1) drop-shadow(0 0 10px rgba(0, 229, 255, 0.12));
+}
+.reveal-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  top: 0;
+  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.7), transparent);
+  opacity: 0;
+}
+.reveal-estructura .reveal-scan {
+  animation: scan 2.6s ease-in-out forwards;
+}
+@keyframes trace {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes scan {
+  0% {
+    top: 0;
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-estructura svg * {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .reveal-scan {
+    display: none;
+  }
+}
+
 .fig {
   font-family: var(--font-mono), monospace;
   font-size: 0.68rem;
