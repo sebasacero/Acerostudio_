@@ -17,6 +17,9 @@ export default function RedisenoPage() {
           cotiza directo con nuestro equipo.
         </p>
       </div>
+      <div className="mx-auto mb-8 max-w-3xl overflow-hidden border border-border">
+        <video className="h-56 w-full object-cover opacity-80" src="/rediseno.mp4" autoPlay muted loop playsInline aria-hidden="true" />
+      </div>
       <RedesignTool />
     </main>
   );

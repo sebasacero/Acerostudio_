@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "AceroStudio",
+    "slug": "acerostudio",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0a0806",
+    "ios": {
+      "bundleIdentifier": "co.acerostudio.app",
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Usamos la cámara y el sensor LiDAR para escanear tu espacio y proponer su rediseño.",
+        "NSPhotoLibraryAddUsageDescription": "Para guardar la propuesta generada en tu galería.",
+        "UIRequiredDeviceCapabilities": ["arkit"]
+      }
+    }
+  }
+}
