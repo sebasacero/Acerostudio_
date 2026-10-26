@@ -34,7 +34,7 @@ svg{display:block}
 .views{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:3px}
 .views button{all:unset;cursor:pointer;padding:5px 12px;border-radius:999px;font-size:13px}
 .views button[aria-pressed="true"]{background:var(--tx);color:var(--bg);font-weight:600}
-.pill{all:unset;cursor:pointer;border:1.5px solid var(--red);color:var(--red-l);border-radius:999px;padding:6px 14px;font-weight:600}
+.pill{all:unset;cursor:pointer;white-space:nowrap;border:1.5px solid var(--red);color:var(--red-l);border-radius:999px;padding:6px 14px;font-weight:600}
 .pill[aria-pressed="true"]{background:var(--red);color:#fff}
 .menu{position:relative}
 .menu summary{list-style:none;cursor:pointer;padding:6px 14px;border-radius:999px;border:1px solid var(--line2);font-weight:600}
@@ -73,6 +73,26 @@ svg{display:block}
 .cursorTag{position:absolute;z-index:6;pointer-events:none;background:var(--red);color:#fff;border-radius:6px;padding:2px 7px;transform:translate(12px,-28px);white-space:nowrap}
 .dim-label{font-family:var(--mono);font-size:11px;color:var(--red);background:#fff;border:1px solid var(--red);border-left:3px solid var(--red);padding:1px 6px;white-space:nowrap;transform:translateY(-12px)}
 .live-label{font-family:var(--mono);font-size:12px;color:#fff;background:var(--red);border-radius:5px;padding:2px 7px;white-space:nowrap;transform:translateY(-16px)}
+
+/* recorrido y modo caminar */
+.pill.ghost{border-color:var(--line2);color:var(--tx)}
+.pill.ghost:hover{border-color:var(--red)}
+.cine{position:absolute;inset:0;z-index:8;pointer-events:none;display:none}
+.cine[data-mode]:not([data-mode=""]){display:block}
+.cine .bar{position:absolute;left:0;right:0;height:0;background:#0f1113;transition:height .6s ease}
+.cine .bar-t{top:0}.cine .bar-b{bottom:0}
+.cine[data-mode=cine] .bar{height:9%}
+.cine .cap{position:absolute;left:16px;bottom:calc(9% + 12px);color:#fff;background:rgba(15,17,19,.7);border-left:3px solid var(--red);padding:6px 11px;border-radius:0 8px 8px 0}
+.cine[data-mode=walk] .cap{bottom:16px}
+.cine .cap b{font-family:var(--display);font-weight:800;letter-spacing:-.02em}
+.cine .cap i{font-style:normal;color:var(--red-l)}
+.cine .exit{all:unset;pointer-events:auto;cursor:pointer;position:absolute;right:16px;top:calc(9% + 12px);background:rgba(15,17,19,.8);color:#fff;border:1px solid var(--line2);border-radius:999px;padding:6px 12px}
+.cine[data-mode=walk] .exit{top:16px}
+.walkpad{display:none;position:absolute;right:16px;bottom:16px;flex-direction:column;gap:8px}
+.cine[data-mode=walk] .walkpad{display:flex}
+.walkpad button{all:unset;pointer-events:auto;cursor:pointer;width:52px;height:52px;display:grid;place-items:center;border-radius:50%;background:rgba(15,17,19,.8);color:#fff;border:1.5px solid var(--red);font-size:18px;touch-action:none}
+body.touring .hint,body.touring .hud,body.touring .vcb,body.touring .sun,body.touring #snapTag{display:none!important}
+@media (hover:hover) and (pointer:fine){.walkpad{opacity:.6}}
 
 /* panel lateral */
 .side{background:var(--panel);border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
@@ -124,7 +144,7 @@ svg{display:block}
 
 /* móvil y tablet */
 @media (max-width:900px){
-  .tag,.pname{display:none}
+  .tag,.pname,#walkBtn{display:none}
   .top{gap:6px;overflow-x:auto}
   .app{grid-template-columns:1fr;grid-template-rows:auto 1fr auto}
   .tools{flex-direction:row;border-right:0;border-bottom:1px solid var(--line);overflow-x:auto;padding:4px 6px}
@@ -143,4 +163,4 @@ svg{display:block}
   .hide-sm{display:none!important}
   .lg{font-size:18px}
 }
-@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+@media (prefers-reduced-motion:reduce){.toast,.cine .bar{transition:none}}

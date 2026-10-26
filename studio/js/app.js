@@ -9,6 +9,7 @@ import { MATERIALS } from './materials.js';
 import { buildElement, setEdgesVisible, settings, parseAsset, registerAsset, setOnAssetReady } from './builders.js';
 import { planGeometry, columnSection } from './plan.js';
 import { createTools, DEFAULTS } from './tools.js';
+import { createTour } from './tour.js';
 import { download, slug, exportJSON, exportGLB, exportOBJ, planDXF, planSVG, exportPNG } from './exporters.js';
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -282,6 +283,7 @@ function attachSelection() {
 }
 
 function pick(ray) {
+  if (tour.active) return;
   if (tc.dragging || tc.axis) return;
   const objs = root.children.filter((o) => o.visible && !model.layer(model.get(o.userData.elId)?.layer)?.locked);
   const hit = ray.intersectObjects(objs, true).find((h) => !h.object.userData.isEdge);
@@ -330,7 +332,7 @@ function renderProps() {
     p.innerHTML = `<span class="k">Nada seleccionado</span><h3>${esc(model.doc.name)}</h3>
       <p class="empty">Elige una herramienta y dibuja sobre la rejilla. Haz clic en un elemento con <b>Seleccionar</b> para editar sus medidas, su material y su capa.</p>
       ${d ? `<div class="card"><span class="k">Valores por defecto · ${{ wall: 'muro', slab: 'losa', box: 'volumen', column: 'columna', door: 'puerta', window: 'ventana' }[tool]}</span><div class="fields" data-defaults="${tool}">${Object.entries(d).map(([k, v]) => k === 'material' ? matSelect(v) : k === 'profile' ? sel('profile', 'Perfil', v, [['I', 'Perfil I (IPE)'], ['rect', 'Rectangular'], ['round', 'Circular']]) : num(k, { height: 'Altura', thickness: 'Espesor', h: 'Altura', w: 'Ancho', d: 'Fondo', width: 'Ancho', sill: 'Antepecho' }[k] || k, v)).join('')}</div></div>` : ''}
-      <div class="card"><span class="k">Atajos</span><p class="empty mono">V seleccionar · W muro · L losa · B volumen · C columna · P puerta · N ventana · M cota · G mover · R rotar · Supr eliminar · Ctrl+Z deshacer · Ctrl+D duplicar · 1-4 vistas · F encuadrar</p></div>`;
+      <div class="card"><span class="k">Atajos</span><p class="empty mono">V seleccionar · W muro · L losa · B volumen · C columna · P puerta · N ventana · M cota · G mover · R rotar · Supr eliminar · Ctrl+Z deshacer · Ctrl+D duplicar · K caminar · 1-4 vistas · F encuadrar</p></div>`;
     return;
   }
   const layerOpts = model.doc.layers.map((l) => [l.id, l.name]);
@@ -622,6 +624,7 @@ addEventListener('keydown', (e) => {
   if (document.activeElement.id === 'vcbIn') { if (e.key === 'Escape') { $('#vcbIn').blur(); tools.cancel(); } return; }
   if (e.key === 'Escape') { tools.cancel(); if (tools.name === 'select') model.select(null); return; }
   if (e.key === 'Delete' || e.key === 'Backspace') return deleteSelection();
+  if (k === 'k') return $('#walkBtn').click();
   if (KEYS[k]) return setTool(KEYS[k]);
   if (k === 'g') tc.setMode('translate');
   if (k === 'r') { const el = model.get(model.selection); if (el && ['box', 'column', 'import'].includes(el.type)) { tc.setMode('rotate'); tc.showX = tc.showZ = false; tc.showY = true; } }
@@ -643,11 +646,24 @@ setTool('select');
 setView('3d');
 if (!restored) toast('Abrimos el local de ejemplo · 38 m²');
 
+const tour = createTour({
+  camera: persp, orbit: orbit3d, dom: renderer.domElement, root,
+  bounds: modelBounds,
+  elev: () => model.level().elev,
+  setView: (v) => { setTool('select'); model.select(null); setView(v); },
+  isRender: () => renderMode,
+  setRender,
+  setSunHour: (h) => { $('#sunH').value = h; updateSun(); },
+});
+$('#tourBtn').addEventListener('click', () => tour.play());
+$('#walkBtn').addEventListener('click', () => { setTool('select'); model.select(null); setView('3d', false); tour.walk(false); });
+
+const clock = new THREE.Clock();
 renderer.setAnimationLoop(() => {
-  orbit.update();
+  if (!tour.update(Math.min(clock.getDelta(), 0.1))) orbit.update();
   renderer.render(scene, camera);
   labels.render(scene, camera);
 });
 
 // Para pruebas y depuración desde la consola.
-window.studio = { model, scene, cam: () => camera, setView, setTool, setRender, planSVG: () => planSVG(model.doc, model.doc.activeLevel), planDXF: () => planDXF(model.doc, model.doc.activeLevel) };
+window.studio = { model, scene, cam: () => camera, tour: () => tour, setView, setTool, setRender, planSVG: () => planSVG(model.doc, model.doc.activeLevel), planDXF: () => planDXF(model.doc, model.doc.activeLevel) };

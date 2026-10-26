@@ -16,6 +16,7 @@ Se abre en `/studio/` (por ejemplo `https://www.acerostudio.com/studio/`).
 | Organización | Capas (mostrar, bloquear, renombrar, capa activa) y niveles (cota, altura libre, duplicar nivel para armar edificios piso por piso) |
 | Vistas | 3D en perspectiva, planta con corte a +1,20 m y poché negro, alzado y lateral ortogonales, plano de corte ajustable en 3D, aristas tipo dibujo |
 | Documentación | Cotas en lápiz rojo; planta exportable a SVG 1:100 y DXF (AutoCAD, Revit, ArchiCAD, LibreCAD, Rhino) |
+| Recorrido | Sobrevuelo cinemático de 18 s con el sol avanzando de 7:00 a 17:00 que aterriza dentro del espacio; modo caminar a 1,60 m con colisiones contra muros, vidrios y muebles (WASD o flechas, arrastrar para mirar, Shift corre, botones táctiles en celular) |
 | Render | Modo render con sombras suaves, materiales PBR (aceros revenidos, corten, concreto, ladrillo, maderas, vidrio) y sol real de Bogotá por hora y fecha |
 | Datos | Cuantificación en vivo: m² de losa, metros y área neta de muro, concreto, kg de acero, puertas y ventanas; descarga en CSV |
 | Archivos | Proyecto `.acero.json`, importar GLB / glTF / OBJ (se convierte mm o cm a m y se guarda en el navegador), exportar GLB, OBJ y PNG |
@@ -24,7 +25,7 @@ Se abre en `/studio/` (por ejemplo `https://www.acerostudio.com/studio/`).
 ## Atajos
 
 `V` seleccionar · `W` muro · `L` losa · `B` volumen · `C` columna · `P` puerta · `N` ventana · `M` cota ·
-`G` mover · `R` rotar · `Supr` eliminar · `Ctrl+Z` / `Ctrl+Y` · `Ctrl+D` duplicar · `Ctrl+S` guardar · `1`-`4` vistas · `F` encuadrar · `Esc` terminar
+`K` caminar · `G` mover · `R` rotar · `Supr` eliminar · `Ctrl+Z` / `Ctrl+Y` · `Ctrl+D` duplicar · `Ctrl+S` guardar · `1`-`4` vistas · `F` encuadrar · `Esc` terminar
 
 ## Hoja de ruta
 
