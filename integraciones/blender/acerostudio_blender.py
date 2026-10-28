@@ -38,7 +38,7 @@ AMBIENTES = {
     # elevación del sol (°), color y fuerza del sol, fuerza del cielo, exposición, luz interior (W/m²)
     "dorada": {"sun_el": 8, "sun_color": (1.0, 0.55, 0.26), "sun": 5.5, "sky": 0.22, "exposure": -0.85, "interior": 4},
     "mediodia": {"sun_el": 62, "sun_color": (1.0, 0.97, 0.92), "sun": 4.2, "sky": 0.35, "exposure": -1.2, "interior": 0},
-    "azul": {"sun_el": -3.5, "sun_color": (0.55, 0.65, 1.0), "sun": 0.0, "sky": 1.2, "exposure": 0.6, "interior": 3.5},
+    "azul": {"sun_el": -3.5, "sun_color": (0.55, 0.65, 1.0), "sun": 0.0, "sky": 1.2, "exposure": 0.6, "interior": 6},
 }
 
 
@@ -374,10 +374,15 @@ def setup_camera(lo, hi, toma, sun_az, col, aspect):
     cam_data.lens = 24 if toma == "heroe" else 28
     eye = lo.z + 1.6
     sw, sh = 36, 36 / aspect
-    D = max(half_w * 2 * 1.12 * cam_data.lens / sw, H * 1.14 * cam_data.lens / sh)
-    front = Vector((center.x, lo.y, eye))
+    # Que quepa el alto; el ancho cabe salvo que obligue a ver el edificio diminuto (naves y pabellones
+    # largos se dejan salir un poco del cuadro, como en la fotografía de arquitectura).
+    Dw = half_w * 2 * 1.08 * cam_data.lens / sw
+    Dv = H * 1.14 * cam_data.lens / sh
+    Dlow = H * cam_data.lens / (0.42 * sh)
+    D = max(Dv, min(Dw, Dlow))
     target = Vector((center.x, center.y, eye))
-    cam.location = target + dir_xy * (D + (center.y - lo.y) * abs(dir_xy.y) + (size.x / 2) * abs(dir_xy.x) * 0.4)
+    half_depth = (abs(dir_xy.x) * size.x + abs(dir_xy.y) * size.y) / 2
+    cam.location = target + dir_xy * (D + half_depth)
     cam.location.z = eye
     look = (target - cam.location)
     look.z = 0
@@ -385,7 +390,6 @@ def setup_camera(lo, hi, toma, sun_az, col, aspect):
     dist = (target - cam.location).length
     zc = (lo.z + hi.z) / 2 - eye
     cam_data.shift_y = cam_data.lens * zc / (dist * sw) + 0.02
-    del front
     return cam
 
 
