@@ -159,6 +159,15 @@ body.touring .hint,body.touring .hud,body.touring .vcb,body.touring .sun,body.to
   .hud input[type=range]{width:80px}
   .sun{bottom:58px}
   .vcb input{width:80px}
+  /* en render el edificio manda: la barra de ambiente queda en una fila deslizable y se ocultan los demás paneles */
+  main:has(#sunBox:not([hidden])) :is(.hint,.hud,.vcb){display:none}
+  .sun{bottom:10px;left:10px;right:10px;max-width:none;flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;white-space:nowrap;gap:8px;scrollbar-width:none}
+  .sun::-webkit-scrollbar{display:none}
+  .sun .mute{display:none}
+  .sun>*{order:2}
+  .sun>#sheetBtn{order:0}
+  .sun>#mood,.sun>.shots{order:1}
+  .sun input[type=range]{width:90px}
 }
 @media (max-width:520px){
   .views button{padding:5px 8px}
