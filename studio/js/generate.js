@@ -1,6 +1,7 @@
 // Generadores de modelo: muros detectados (plano/boceto) → elementos, y edificio paramétrico
 // (lo que devuelve la IA al leer una foto de fachada, o lo que el usuario llena a mano).
 import { emptyDoc, uid } from './model.js';
+import { steelColumn, columnFor } from './steel.js';
 
 const r3 = (v) => +(+v).toFixed(3);
 
@@ -88,7 +89,7 @@ export function buildingFromParams(params = {}) {
       if (v.structure === 'acero' && v.depth > 7) {
         const n = Math.ceil(v.depth / 6);
         for (let k = 1; k < n; k++) {
-          el({ type: 'column', layer: 'c_est', material: 'acero_azul', profile: 'I', x: r3((x0 + x1) / 2), z: r3(z0 + (v.depth * k) / n), w: 0.15, d: 0.3, height: fh, rotY: 0 });
+          el(steelColumn(columnFor(v.floors), (x0 + x1) / 2, z0 + (v.depth * k) / n, fh));
         }
       }
     }

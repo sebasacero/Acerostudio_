@@ -1,5 +1,6 @@
 // Geometría 2D de la planta (corte a 1,20 m): la usan el poché en pantalla y los exportadores SVG/DXF.
 import { wallLength, fmt } from './model.js';
+import { PROFILES, sectionOutline, memberFrame } from './steel.js';
 
 const near = (p, q) => Math.hypot(p[0] - q[0], p[1] - q[1]) < 0.02;
 
@@ -46,6 +47,7 @@ function rectPoly(cx, cz, w, d, rot = 0) {
 export const iProfile = (el) => ({ tf: Math.max(0.006, el.d * 0.036), tw: Math.max(0.004, el.d * 0.024) });
 
 export function columnSection(el) {
+  if (PROFILES[el.profile]) return PROFILES[el.profile].kg / 7850;
   if (el.profile === 'round') return Math.PI * (el.w / 2) ** 2;
   if (el.profile === 'I') { const { tf, tw } = iProfile(el); return 2 * el.w * tf + (el.d - 2 * tf) * tw; }
   return el.w * el.d;
@@ -53,6 +55,11 @@ export function columnSection(el) {
 
 export function columnPoly(el) {
   const rot = el.rotY || 0;
+  if (PROFILES[el.profile]) {
+    // Perfil del catálogo: el alma del HEB/IPE queda en Z (fondo), como el perfil I genérico.
+    const c = Math.cos(rot), s = Math.sin(rot);
+    return sectionOutline(PROFILES[el.profile], 28).map(([u, v]) => [el.x + u * c - v * s, el.z + u * s + v * c]);
+  }
   if (el.profile === 'round') {
     return Array.from({ length: 28 }, (_, i) => {
       const a = (i / 28) * Math.PI * 2;
@@ -103,6 +110,15 @@ export function planGeometry(doc, levelId = doc.activeLevel) {
       }
     } else if (el.type === 'column') out.cut.push({ layer: 'ESTRUCTURA', pts: columnPoly(el) });
     else if (el.type === 'slab') out.outline.push({ layer: 'LOSAS', pts: el.points });
+    else if (el.type === 'member' && el.role !== 'parteluz') {
+      // Barras en planta: contorno de su proyección (vigas por encima del corte, en capa ESTRUCTURA).
+      const { u } = memberFrame(el), half = (PROFILES[el.profile]?.b ?? el.w ?? 0.1) / 2;
+      const a = [el.p0[0], el.p0[2]], b = [el.p1[0], el.p1[2]];
+      if (Math.hypot(b[0] - a[0], b[1] - a[1]) > 0.05) {
+        const o = [u[0] * half, u[2] * half];
+        out.outline.push({ layer: 'ESTRUCTURA', pts: [[a[0] - o[0], a[1] - o[1]], [b[0] - o[0], b[1] - o[1]], [b[0] + o[0], b[1] + o[1]], [a[0] + o[0], a[1] + o[1]]] });
+      }
+    }
     else if (el.type === 'box') out.outline.push({ layer: 'MOBILIARIO', pts: boxPoly(el) });
     else if (el.type === 'dim') {
       const g = dimGeometry(el);

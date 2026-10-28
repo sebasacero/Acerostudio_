@@ -4,6 +4,7 @@ import { openDialog, selField, numField, readFields, esc } from './ui.js';
 import { SHOTS, SEQUENCES, FORMATS, videoPrompt } from './animator.js';
 import { download, slug, planDXF, exportableClone } from './exporters.js';
 import { solidsDocument, modelDXF3D } from './solids.js';
+import { modelIFC } from './ifc.js';
 import { polygonArea, fmt } from './model.js';
 
 // --- animación automática ---
@@ -156,11 +157,12 @@ async function downloadScript(key, toast) {
 export function openIntegrations(ctx) {
   const name = slug(ctx.model.doc.name);
   const cards = [
-    { k: 'revit', t: 'Revit', d: 'Muros, losas, columnas, puertas y ventanas nativos de Revit con pyRevit o RevitPythonShell.', files: [['json', 'Proyecto .acero.json'], ['script:revit', 'Conector acerostudio_revit.py'], ['dxf', 'Planta DXF (vincular CAD)']] },
+    { k: 'revit', t: 'Revit', d: 'IFC 4 con columnas, vigas y barras de acero con su perfil real (Abrir o Vincular IFC), o elementos nativos con pyRevit: niveles, muros, losas, columnas, vigas y vanos.', files: [['ifc', 'Modelo BIM .ifc'], ['json', 'Proyecto .acero.json'], ['script:revit', 'Conector acerostudio_revit.py'], ['dxf', 'Planta DXF (vincular CAD)']] },
+    { k: 'bim', t: 'ArchiCAD · Tekla · visores BIM', d: 'El mismo IFC 4: estructura de acero como IfcColumn, IfcBeam e IfcMember, material S355, peso por pieza y niveles.', files: [['ifc', 'Modelo BIM .ifc']] },
     { k: 'autocad', t: 'AutoCAD', d: 'Planta 2D por capas (muros, puertas, ventanas, cotas) y modelo 3D en caras 3DFACE.', files: [['dxf', 'Planta 2D (.dxf)'], ['dxf3d', 'Modelo 3D (.dxf)']] },
     { k: 'sketchup', t: 'SketchUp', d: 'Grupos por elemento, materiales y etiquetas por nivel. Ventana › Consola de Ruby o Extension Manager.', files: [['solids', 'Modelo .acero-solids.json'], ['script:sketchup', 'Conector acerostudio_sketchup.rb']] },
     { k: 'max', t: '3ds Max', d: 'Cajas y prismas editables con materiales físicos, por capas de nivel. Scripting › Run Script.', files: [['solids', 'Modelo .acero-solids.json'], ['script:max', 'Conector acerostudio_3dsmax.py'], ['glb', 'GLB (glTF)']] },
-    { k: 'blender', t: 'Blender', d: 'Colecciones por nivel, materiales PBR y cámara; también corre sin ventana para renders por lote.', files: [['solids', 'Modelo .acero-solids.json'], ['script:blender', 'Conector acerostudio_blender.py'], ['glb', 'GLB (glTF)']] },
+    { k: 'blender', t: 'Blender · render fotorrealista', d: 'Escena comercial lista: acero PBR, vidrio, cielo de hora dorada o azul, entorno, cámara con perspectiva de dos puntos y Cycles. También corre sin ventana para renders por lote.', files: [['solids', 'Modelo .acero-solids.json'], ['script:blender', 'Conector acerostudio_blender.py'], ['glb', 'GLB (glTF)']] },
   ];
   const mcp = `{
   "mcpServers": {
@@ -182,6 +184,7 @@ export function openIntegrations(ctx) {
     solids: () => download(JSON.stringify(solidsDocument(doc)), `${name}.acero-solids.json`, 'application/json'),
     dxf: () => download(planDXF(doc, doc.activeLevel), `${name}-planta.dxf`, 'application/dxf'),
     dxf3d: () => download(modelDXF3D(doc), `${name}-3d.dxf`, 'application/dxf'),
+    ifc: () => download(modelIFC(doc), `${name}.ifc`, 'application/x-step'),
     glb: () => ctx.exportGLB(),
   };
   dlg.$$('[data-f]').forEach((b) => b.addEventListener('click', () => {

@@ -4,6 +4,7 @@
 // Convención: X este, Y norte, Z arriba. En el Studio la planta es XZ con Z al sur, así que Y = -z.
 import { MATERIALS } from './palette.js';
 import { wallFrame, wallSpans, columnPoly, boxPoly } from './plan.js';
+import { profileOf, sectionOutline, memberFrame } from './steel.js';
 
 const toZup = ([x, z]) => [x, -z];
 
@@ -35,11 +36,29 @@ export function modelSolids(doc) {
       out.push({ ...base, kind: 'losa', shape: 'prism', material: el.material, points: el.points.map(toZup), z: elev - el.thickness, height: el.thickness });
     } else if (el.type === 'column') {
       out.push({ ...base, kind: 'columna', shape: 'prism', material: el.material, points: columnPoly(el).map(toZup), z: elev, height: el.height });
+    } else if (el.type === 'member') {
+      out.push({ ...base, kind: el.role || 'barra', shape: 'mesh', material: el.material, profile: el.profile, ...memberMesh(el, elev) });
     } else if (el.type === 'box') {
       out.push({ ...base, kind: 'volumen', shape: 'prism', material: el.material, points: boxPoly(el).map(toZup), z: elev + (el.y || 0), height: el.h });
     }
   }
   return out;
+}
+
+// Barra de acero como malla cerrada (sección del perfil extruida entre p0 y p1), en Z arriba.
+export function memberMesh(el, elev = 0) {
+  const { u, v } = memberFrame(el);
+  const sec = sectionOutline(profileOf(el), 16);
+  const at = (p, [a, b]) => {
+    const x = p[0] + u[0] * a + v[0] * b, y = p[1] + elev + u[1] * a + v[1] * b, z = p[2] + u[2] * a + v[2] * b;
+    return [+x.toFixed(4), +(-z).toFixed(4), +y.toFixed(4)];
+  };
+  const n = sec.length;
+  const vertices = [...sec.map((q) => at(el.p0, q)), ...sec.map((q) => at(el.p1, q))];
+  const faces = [];
+  for (const [a, b, c] of triangulate(sec)) { faces.push([c, b, a]); faces.push([a + n, b + n, c + n]); }
+  for (let i = 0; i < n; i++) { const j = (i + 1) % n; faces.push([i, j, j + n, i + n]); }
+  return { vertices, faces };
 }
 
 export function solidsDocument(doc) {
@@ -50,7 +69,7 @@ export function solidsDocument(doc) {
     return [k, { name: m.name, color: m.color, roughness: m.roughness, metalness: m.metalness, opacity: m.opacity ?? 1 }];
   }));
   return {
-    format: 'acero-solids', version: 1, units: 'm', up: 'Z',
+    format: 'acero-solids', version: 2, system: 'acero', units: 'm', up: 'Z',
     project: doc.name,
     levels: doc.levels.map((l) => ({ name: l.name, elevation: l.elev, height: l.height })),
     materials, solids,
@@ -59,6 +78,7 @@ export function solidsDocument(doc) {
 
 // Vértices 3D de un sólido (para DXF 3D u otros formatos de malla).
 export function solidFaces(s) {
+  if (s.shape === 'mesh') return s.faces.map((f) => f.map((i) => s.vertices[i]));
   if (s.shape === 'box') {
     const [cx, cy, cz] = s.center, [L, T, H] = s.size, c = Math.cos(s.rotZ), n = Math.sin(s.rotZ);
     const P = (a, b, h) => [cx + a * c - b * n, cy + a * n + b * c, cz + h];

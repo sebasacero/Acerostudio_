@@ -8,11 +8,14 @@ import { model, sampleDoc, emptyDoc, uid, fmt, wallLength, polygonArea, translat
 import { MATERIALS } from './materials.js';
 import { buildElement, setEdgesVisible, settings, parseAsset, registerAsset, setOnAssetReady } from './builders.js';
 import { planGeometry, columnSection } from './plan.js';
+import { PROFILES, PROFILE_GROUPS, profileLabel, steelTakeoff, memberLength } from './steel.js';
 import { createTools, DEFAULTS } from './tools.js';
 import { createTour } from './tour.js';
 import { download, slug, exportJSON, exportGLB, exportOBJ, planDXF, planSVG, exportPNG } from './exporters.js';
 import { modelDXF3D, solidsDocument } from './solids.js';
+import { modelIFC } from './ifc.js';
 import { createAnimator } from './animator.js';
+import { createLook, MOODS } from './look.js';
 import { openCreate } from './vision-ui.js';
 import { openAnimate, exportViewer, openIntegrations } from './panels.js';
 
@@ -36,7 +39,8 @@ const BG = new THREE.Color('#e9ebed'), BG_PLAN = new THREE.Color('#ffffff');
 scene.background = BG;
 scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
 scene.environmentIntensity = 0.7;
-scene.add(new THREE.HemisphereLight(0xffffff, 0x8d969e, 0.8));
+const hemi = new THREE.HemisphereLight(0xffffff, 0x8d969e, 0.8);
+scene.add(hemi);
 const sun = new THREE.DirectionalLight(0xfff1dc, 2.4);
 sun.shadow.mapSize.set(4096, 4096);
 sun.shadow.bias = -0.0004;
@@ -65,6 +69,8 @@ const root = new THREE.Group(); root.name = 'Modelo';
 const poche = new THREE.Group();
 const overlay = new THREE.Group();
 scene.add(root, poche, overlay);
+const look = createLook({ renderer, scene, sun, hemi, catcher, grid, root, bounds: () => modelBounds() });
+const draw = () => look.render(camera);
 const selBox = new THREE.BoxHelper(undefined, 0xcf2a1f);
 selBox.material.depthTest = false;
 selBox.renderOrder = 30;
@@ -228,6 +234,7 @@ function updateSun() {
   const s = sun.shadow.camera;
   s.left = s.bottom = -r; s.right = s.top = r; s.near = 0.1; s.far = r * 4;
   s.updateProjectionMatrix();
+  look.updateSky(d);
 }
 function setRender(on) {
   renderMode = on;
@@ -235,10 +242,80 @@ function setRender(on) {
   $('#sunBox').hidden = !on;
   renderer.shadowMap.enabled = on;
   sun.castShadow = on;
-  catcher.visible = on;
   catcher.position.y = model.level().elev - 0.002;
+  look.setOn(on);
+  if (!on) setEdgesVisible(root, $('#edgesOn').checked);
   scene.traverse((o) => { if (o.material) o.material.needsUpdate = true; });
   updateSun();
+}
+function setMood(m) {
+  look.setMood(m);
+  $('#mood').value = m;
+  $('#sunH').value = MOODS[m].hour;
+  // Render comercial: la fecha en que el sol baña la fachada principal (sur, +z).
+  const best = [355, 172, 80].reduce((a, d) => (sunDir(MOODS[m].hour, d).z > sunDir(MOODS[m].hour, a).z ? d : a));
+  $('#sunD').value = best;
+  updateSun();
+}
+
+// Imagen HD (3840 × 2160) o lámina de venta con la ficha del proyecto en acero.
+function renderHD(sheet) {
+  if (!renderMode) setRender(true);
+  selBox.visible = false; tc.detach();
+  const W = 3840, H = 2160;
+  renderer.setPixelRatio(1);
+  renderer.setSize(W, H, false);
+  persp.aspect = W / H;
+  persp.updateProjectionMatrix();
+  draw();
+  const c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const g = c.getContext('2d');
+  g.drawImage(renderer.domElement, 0, 0);
+  if (sheet) drawSheet(g, W, H);
+  resize();
+  attachSelection();
+  c.toBlob((b) => download(b, `${slug(model.doc.name)}-${sheet ? 'lamina-venta' : 'render-hd'}.png`, 'image/png'), 'image/png');
+}
+function drawSheet(g, W, H) {
+  const q = quantities(), d = model.doc, u = W / 1920;
+  const grd = g.createLinearGradient(0, H * 0.55, 0, H);
+  grd.addColorStop(0, 'rgba(10,11,13,0)'); grd.addColorStop(1, 'rgba(10,11,13,.82)');
+  g.fillStyle = grd; g.fillRect(0, H * 0.55, W, H * 0.45);
+  const brand = (x, y, size) => {
+    g.font = `800 ${size}px "Bricolage Grotesque", system-ui, sans-serif`;
+    const w1 = g.measureText('acero').width, w2 = g.measureText('.').width;
+    g.fillStyle = '#fff'; g.fillText('acero', x, y);
+    g.fillStyle = '#cf2a1f'; g.fillText('.', x + w1, y);
+    g.fillStyle = '#fff'; g.fillText('studio', x + w1 + w2, y);
+  };
+  g.shadowColor = 'rgba(0,0,0,.35)'; g.shadowBlur = 12 * u;
+  brand(64 * u, 92 * u, Math.round(44 * u));
+  g.shadowBlur = 0;
+  const x = 72 * u;
+  g.fillStyle = '#cf2a1f'; g.fillRect(x, H - 330 * u, 70 * u, 6 * u);
+  g.fillStyle = '#fff';
+  g.font = `800 ${Math.round(84 * u)}px "Bricolage Grotesque", system-ui, sans-serif`;
+  g.fillText(d.name, x, H - 220 * u);
+  const levels = d.levels.filter((l) => d.elements.some((e) => e.level === l.id && e.type === 'slab')).length;
+  const facts = [
+    q.steelKg ? `${fmt(q.steelKg / 1000, 1)} t de acero estructural` : null,
+    q.steel.area || q.area ? `${fmt(q.steel.area || q.area, 0)} m² construidos` : null,
+    levels > 1 ? `${levels} niveles` : null,
+  ].filter(Boolean);
+  const profiles = d.meta?.perfiles ? Object.values(d.meta.perfiles).flat().filter((v, i, a) => a.indexOf(v) === i).slice(0, 3) : [];
+  g.font = `500 ${Math.round(30 * u)}px "DM Mono", ui-monospace, monospace`;
+  g.fillStyle = 'rgba(255,255,255,.9)';
+  g.fillText(facts.join('   ·   '), x, H - 150 * u);
+  g.font = `500 ${Math.round(24 * u)}px "DM Mono", ui-monospace, monospace`;
+  g.fillStyle = 'rgba(255,255,255,.62)';
+  g.fillText(['ESTRUCTURA EN ACERO', ...profiles, 'DISEÑO, CÁLCULO Y MONTAJE'].join(' · '), x, H - 96 * u);
+  const cta = 'Cotiza tu proyecto en acerostudio.com';
+  g.font = `600 ${Math.round(26 * u)}px "Bricolage Grotesque", system-ui, sans-serif`;
+  const cw = g.measureText(cta).width + 60 * u;
+  g.fillStyle = '#cf2a1f';
+  g.beginPath(); g.roundRect(W - cw - 64 * u, 48 * u, cw, 64 * u, 32 * u); g.fill();
+  g.fillStyle = '#fff'; g.fillText(cta, W - cw - 34 * u, 89 * u);
 }
 
 // --- construcción del modelo ---
@@ -259,6 +336,7 @@ function rebuild() {
   const lvl = model.level();
   grid.position.y = lvl.elev + 0.001;
   setEdgesVisible(root, settings.edges);
+  look.refresh();
   attachSelection();
   updateSection();
   updateSun();
@@ -321,7 +399,10 @@ function setTool(name) {
 }
 
 // --- panel lateral ---
-const TYPE = { wall: 'Muro', slab: 'Losa', column: 'Columna', box: 'Volumen', dim: 'Cota', import: 'Modelo importado' };
+const TYPE = { wall: 'Muro', slab: 'Losa', column: 'Columna', box: 'Volumen', dim: 'Cota', import: 'Modelo importado', member: 'Barra de acero' };
+const ROLE = { viga: 'Viga', vigueta: 'Vigueta', diagonal: 'Diagonal', cordon: 'Cordón de cercha', montante: 'Montante', correa: 'Correa', parteluz: 'Parteluz', lamina: 'Lámina / panel', baranda: 'Baranda' };
+const LEGACY = [['I', 'Perfil I genérico'], ['rect', 'Rectangular'], ['round', 'Circular']];
+const profSel = (v, extra = LEGACY) => `<label class="f"><span>Perfil</span><select data-k="profile">${PROFILE_GROUPS.map(([g, ks]) => `<optgroup label="${g}">${ks.map((k) => `<option value="${k}" ${k === v ? 'selected' : ''}>${profileLabel(k)}</option>`).join('')}</optgroup>`).join('')}<optgroup label="Otros">${extra.map(([k, t]) => `<option value="${k}" ${k === v ? 'selected' : ''}>${t}</option>`).join('')}</optgroup></select></label>`;
 const esc = (t) => String(t ?? '').replace(/[<>&"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
 const num = (k, label, v, step = 0.01, extra = '') => `<label class="f"><span>${label}</span><input type="number" step="${step}" data-k="${k}" value="${+(+v).toFixed(4)}" ${extra}></label>`;
 const matSelect = (v) => `<label class="f full"><span>Material</span><select data-k="material">${Object.entries(MATERIALS).map(([k, m]) => `<option value="${k}" ${k === v ? 'selected' : ''}>${m.name}</option>`).join('')}</select></label>`;
@@ -335,8 +416,8 @@ function renderProps() {
     const d = DEFAULTS[tool];
     p.innerHTML = `<span class="k">Nada seleccionado</span><h3>${esc(model.doc.name)}</h3>
       <p class="empty">Elige una herramienta y dibuja sobre la rejilla. Haz clic en un elemento con <b>Seleccionar</b> para editar sus medidas, su material y su capa.</p>
-      ${d ? `<div class="card"><span class="k">Valores por defecto · ${{ wall: 'muro', slab: 'losa', box: 'volumen', column: 'columna', door: 'puerta', window: 'ventana' }[tool]}</span><div class="fields" data-defaults="${tool}">${Object.entries(d).map(([k, v]) => k === 'material' ? matSelect(v) : k === 'profile' ? sel('profile', 'Perfil', v, [['I', 'Perfil I (IPE)'], ['rect', 'Rectangular'], ['round', 'Circular']]) : num(k, { height: 'Altura', thickness: 'Espesor', h: 'Altura', w: 'Ancho', d: 'Fondo', width: 'Ancho', sill: 'Antepecho' }[k] || k, v)).join('')}</div></div>` : ''}
-      <div class="card"><span class="k">Atajos</span><p class="empty mono">V seleccionar · W muro · L losa · B volumen · C columna · P puerta · N ventana · M cota · G mover · R rotar · Supr eliminar · Ctrl+Z deshacer · Ctrl+D duplicar · K caminar · 1-4 vistas · F encuadrar</p></div>`;
+      ${d ? `<div class="card"><span class="k">Valores por defecto · ${{ wall: 'muro', slab: 'losa', box: 'volumen', column: 'columna de acero', beam: 'viga de acero', door: 'puerta', window: 'ventana' }[tool]}</span><div class="fields" data-defaults="${tool}">${Object.entries(d).map(([k, v]) => k === 'material' ? matSelect(v) : k === 'profile' ? profSel(v, tool === 'beam' ? [] : LEGACY) : num(k, { height: 'Altura', thickness: 'Espesor', h: 'Altura', w: 'Ancho', d: 'Fondo', width: 'Ancho', sill: 'Antepecho' }[k] || k, v)).join('')}</div></div>` : ''}
+      <div class="card"><span class="k">Atajos</span><p class="empty mono">V seleccionar · W muro · L losa · B volumen · C columna · J viga · P puerta · N ventana · M cota · G mover · R rotar · Supr eliminar · Ctrl+Z deshacer · Ctrl+D duplicar · K caminar · 1-4 vistas · F encuadrar</p></div>`;
     return;
   }
   const layerOpts = model.doc.layers.map((l) => [l.id, l.name]);
@@ -347,8 +428,16 @@ function renderProps() {
   } else if (el.type === 'slab') {
     f += num('thickness', 'Espesor', el.thickness) + `<label class="f"><span>Área</span><input disabled value="${fmt(polygonArea(el.points))} m²"></label>` + matSelect(el.material);
   } else if (el.type === 'column') {
-    f += sel('profile', 'Perfil', el.profile, [['I', 'Perfil I (IPE)'], ['rect', 'Rectangular'], ['round', 'Circular']]) + num('height', 'Altura', el.height)
-      + num('w', el.profile === 'round' ? 'Diámetro' : 'Ancho (ala)', el.w) + num('d', 'Fondo (alto perfil)', el.d) + num('rotDeg', 'Rotación °', (el.rotY || 0) * 180 / Math.PI, 1) + matSelect(el.material);
+    const cat = PROFILES[el.profile];
+    f += profSel(el.profile) + num('height', 'Altura', el.height)
+      + (cat ? `<label class="f"><span>Peso</span><input disabled value="${fmt(cat.kg * el.height, 0)} kg · ${cat.kg} kg/m"></label>` : num('w', el.profile === 'round' ? 'Diámetro' : 'Ancho (ala)', el.w) + num('d', 'Fondo (alto perfil)', el.d))
+      + num('rotDeg', 'Rotación °', (el.rotY || 0) * 180 / Math.PI, 1) + matSelect(el.material);
+  } else if (el.type === 'member') {
+    const cat = PROFILES[el.profile], L = memberLength(el);
+    f += `<label class="f"><span>Función</span><input disabled value="${ROLE[el.role] || el.role}"></label>`
+      + (cat ? profSel(el.profile, []) : num('w', 'Ancho', el.w) + num('h', 'Espesor / canto', el.h))
+      + `<label class="f"><span>Longitud</span><input disabled value="${fmt(L)} m"></label>`
+      + (cat ? `<label class="f"><span>Peso</span><input disabled value="${fmt(cat.kg * L, 0)} kg"></label>` : '') + matSelect(el.material);
   } else if (el.type === 'box') {
     f += num('w', 'Ancho', el.w) + num('d', 'Fondo', el.d) + num('h', 'Altura', el.h) + num('y', 'Elevación', el.y || 0) + num('rotDeg', 'Rotación °', (el.rotY || 0) * 180 / Math.PI, 1) + matSelect(el.material);
   } else if (el.type === 'dim') {
@@ -387,6 +476,7 @@ $('#props').addEventListener('change', (e) => {
       const L = wallLength(el) || 1, s = v / L;
       el.b = [el.a[0] + (el.b[0] - el.a[0]) * s, el.a[1] + (el.b[1] - el.a[1]) * s];
     } else if (k === 'rotDeg') el.rotY = v * Math.PI / 180;
+    else if (k === 'profile' && el.type === 'column' && PROFILES[v]) { el.profile = v; el.w = PROFILES[v].b; el.d = PROFILES[v].h; }
     else el[k] = v;
   });
 });
@@ -473,7 +563,7 @@ $('#levels').addEventListener('change', (e) => {
 
 function quantities() {
   const els = model.doc.elements;
-  const q = { area: 0, wallLen: 0, wallArea: 0, wallVol: 0, doors: 0, windows: 0, cols: 0, steelKg: 0, concrete: 0, boxes: 0 };
+  const q = { area: 0, wallLen: 0, wallArea: 0, wallVol: 0, doors: 0, windows: 0, cols: 0, members: 0, steelKg: 0, concrete: 0, boxes: 0 };
   for (const e of els) {
     if (e.type === 'slab') { const a = polygonArea(e.points); q.area += a; q.concrete += a * e.thickness; }
     if (e.type === 'wall') {
@@ -483,29 +573,34 @@ function quantities() {
     }
     if (e.type === 'column') {
       q.cols++;
-      const sec = columnSection(e);
-      if (e.material.startsWith('acero') || e.material === 'corten') q.steelKg += sec * e.height * 7850; else q.concrete += sec * e.height;
+      if (!(e.material.startsWith('acero') || e.material === 'corten')) q.concrete += columnSection(e) * e.height;
     }
+    if (e.type === 'member') q.members++;
     if (e.type === 'box') q.boxes++;
   }
+  q.steel = steelTakeoff(model.doc);
+  q.steelKg = q.steel.kg;
   return q;
 }
 function renderQty() {
   const q = quantities();
   $('#qty').innerHTML = `<span class="k">Cuantificación en vivo · todo el proyecto</span>
-    <div class="big"><div><strong>${fmt(q.area, 1)}</strong><span class="mono">m² de losa</span></div><div><strong>${fmt(q.wallLen, 1)}</strong><span class="mono">m lineales de muro</span></div>
-    <div><strong>${q.doors + q.windows}</strong><span class="mono">vanos</span></div><div><strong>${fmt(q.steelKg, 0)}</strong><span class="mono">kg de acero</span></div></div>
+    <div class="big"><div><strong>${fmt(model.doc.meta?.area || q.area, 1)}</strong><span class="mono">${model.doc.meta?.area ? 'm² construidos' : 'm² de losa'}</span></div><div><strong>${fmt(q.wallLen, 1)}</strong><span class="mono">m lineales de muro</span></div>
+    <div><strong>${q.doors + q.windows}</strong><span class="mono">vanos</span></div><div><strong>${fmt(q.steelKg / 1000, 1)}</strong><span class="mono">t de acero estructural</span></div></div>
     <div class="qty"><div>Área neta de muro</div><div>${fmt(q.wallArea)} m²</div><div>Volumen de muro</div><div>${fmt(q.wallVol)} m³</div>
     <div>Concreto (losas y columnas)</div><div>${fmt(q.concrete)} m³</div><div>Puertas</div><div>${q.doors}</div><div>Ventanas</div><div>${q.windows}</div>
-    <div>Columnas</div><div>${q.cols}</div><div>Volúmenes / mobiliario</div><div>${q.boxes}</div><div>Niveles</div><div>${model.doc.levels.length}</div></div>
+    <div>Columnas</div><div>${q.cols}</div><div>Vigas, diagonales y cerchas</div><div>${q.members}</div>
+    ${q.steel.area ? `<div>Acero por m² construido</div><div>${fmt(q.steel.kgm2, 0)} kg/m²</div>` : ''}${q.steel.cladding ? `<div>Cubierta y fachada metálica</div><div>${fmt(q.steel.cladding, 0)} m²</div>` : ''}<div>Volúmenes / mobiliario</div><div>${q.boxes}</div><div>Niveles</div><div>${model.doc.levels.length}</div></div>
+    ${q.steel.rows.length ? `<span class="k">Despiece de acero por perfil</span><div class="qty">${q.steel.rows.map((r) => `<div>${esc(r.perfil)} · ${r.piezas} pzs · ${fmt(r.metros, 1)} m</div><div>${fmt(r.kg, 0)} kg</div>`).join('')}</div>` : ''}
     <button class="btn" data-csv>Descargar cantidades (.csv)</button>
-    <p class="empty">Las cantidades son estimadas a partir del modelo (acero a 7.850 kg/m³). Sirven para cotizar, no reemplazan el presupuesto de obra.</p>`;
+    <p class="empty">Las cantidades son estimadas a partir del modelo (perfiles con su peso de catálogo, acero a 7.850 kg/m³) y el predimensionamiento es orientativo: no reemplaza el cálculo estructural. Sirven para cotizar, no reemplazan el presupuesto de obra.</p>`;
 }
 $('#qty').addEventListener('click', (e) => {
   if (!e.target.closest('[data-csv]')) return;
   const q = quantities();
   const rows = [['Concepto', 'Cantidad', 'Unidad'], ['Losas', q.area, 'm2'], ['Muros (longitud)', q.wallLen, 'm'], ['Muros (área neta)', q.wallArea, 'm2'], ['Muros (volumen)', q.wallVol, 'm3'],
-    ['Concreto', q.concrete, 'm3'], ['Acero estructural', q.steelKg, 'kg'], ['Puertas', q.doors, 'un'], ['Ventanas', q.windows, 'un'], ['Columnas', q.cols, 'un']];
+    ['Concreto', q.concrete, 'm3'], ['Acero estructural', q.steelKg, 'kg'], ['Cubierta y fachada metálica', q.steel.cladding, 'm2'], ['Puertas', q.doors, 'un'], ['Ventanas', q.windows, 'un'], ['Columnas', q.cols, 'un'],
+    ...q.steel.rows.map((r) => [`Acero ${r.perfil} (${r.piezas} pzs, ${r.metros.toFixed(1)} m)`, r.kg, 'kg'])];
   download('﻿' + rows.map((r) => r.map((v) => (typeof v === 'number' ? v.toFixed(2).replace('.', ',') : v)).join(';')).join('\n'), `${slug(model.doc.name)}-cantidades.csv`, 'text/csv');
 });
 
@@ -586,8 +681,11 @@ const ACTIONS = {
   obj: () => exportOBJ(root, model.doc),
   dxf: () => download(planDXF(model.doc, model.doc.activeLevel), `${slug(model.doc.name)}-${slug(model.level().name)}.dxf`, 'application/dxf'),
   svg: () => download(planSVG(model.doc, model.doc.activeLevel), `${slug(model.doc.name)}-${slug(model.level().name)}.svg`, 'image/svg+xml'),
-  png: () => { selBox.visible = false; tc.detach(); exportPNG(renderer, scene, camera, model.doc); attachSelection(); },
+  png: () => { selBox.visible = false; tc.detach(); exportPNG(renderer, draw, model.doc); attachSelection(); },
+  hd: () => renderHD(false),
+  sheet: () => renderHD(true),
   dxf3d: () => download(modelDXF3D(model.doc), `${slug(model.doc.name)}-3d.dxf`, 'application/dxf'),
+  ifc: () => download(modelIFC(model.doc), `${slug(model.doc.name)}.ifc`, 'application/x-step'),
   solids: () => download(JSON.stringify(solidsDocument(model.doc)), `${slug(model.doc.name)}.acero-solids.json`, 'application/json'),
 };
 $$('[data-act]', $('#fileMenu')).forEach((b) => b.addEventListener('click', () => { b.closest('details').open = false; ACTIONS[b.dataset.act](); }));
@@ -608,6 +706,12 @@ $$('[data-tool]').forEach((b) => b.addEventListener('click', () => setTool(b.dat
 $('#renderBtn').addEventListener('click', () => setRender(!renderMode));
 $('#sunH').addEventListener('input', updateSun);
 $('#sunD').addEventListener('change', updateSun);
+$('#mood').addEventListener('change', (e) => setMood(e.target.value));
+$('#envOn').addEventListener('change', (e) => look.setEntourage(e.target.checked));
+$$('[data-shot]').forEach((b) => b.addEventListener('click', () => { setTool('select'); model.select(null); if (view !== '3d') setView('3d', false); look.frame(b.dataset.shot, persp, orbit3d); }));
+$('#hdBtn').addEventListener('click', () => renderHD(false));
+$('#sheetBtn').addEventListener('click', () => renderHD(true));
+orbit3d.addEventListener('start', () => persp.clearViewOffset());
 $('#secOn').addEventListener('change', updateSection);
 $('#secH').addEventListener('input', updateSection);
 $('#edgesOn').addEventListener('change', (e) => setEdgesVisible(root, e.target.checked));
@@ -615,7 +719,7 @@ $('#grid').addEventListener('change', () => { tc.setTranslationSnap(gridStep());
 $('#pname').addEventListener('change', (e) => model.change((d) => { d.name = e.target.value || 'Proyecto sin título'; }));
 $('#vcb').addEventListener('submit', (e) => { e.preventDefault(); tools.vcb($('#vcbIn').value); $('#vcbIn').value = ''; });
 
-const KEYS = { v: 'select', w: 'wall', l: 'slab', b: 'box', c: 'column', p: 'door', n: 'window', m: 'dim' };
+const KEYS = { v: 'select', w: 'wall', l: 'slab', b: 'box', c: 'column', j: 'beam', p: 'door', n: 'window', m: 'dim' };
 addEventListener('keydown', (e) => {
   const typing = /INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName) && document.activeElement.id !== 'vcbIn';
   if (typing) return;
@@ -671,12 +775,14 @@ const anim = createAnimator({
   isRender: () => renderMode,
   setRender,
   setSunHour: (h) => { $('#sunH').value = h; updateSun(); },
-  prepare: () => { tour.stop(false); setTool('select'); model.select(null); setView('3d', false); orbit3d.enabled = false; },
+  draw,
+  prepare: () => { persp.clearViewOffset(); tour.stop(false); setTool('select'); model.select(null); setView('3d', false); orbit3d.enabled = false; },
   resize: () => { renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); resize(); orbit3d.enabled = true; },
   docName: () => model.doc.name,
   toast,
 });
 const IA = {
+  acero: () => openCreate(iaCtx, 'acero'),
   plano: () => openCreate(iaCtx, 'plano'),
   foto: () => openCreate(iaCtx, 'foto'),
   param: () => openCreate(iaCtx, 'param'),
@@ -684,7 +790,9 @@ const IA = {
   visor: () => exportViewer(root, model.doc).then(() => toast('Visor 3D descargado: ábrelo o súbelo a tu web')).catch((e) => { console.error(e); toast('No se pudo crear el visor'); }),
   conectar: () => openIntegrations(iaCtx),
 };
-const iaCtx = { model, toast, anim, after: () => setView('3d'), exportGLB: () => ACTIONS.glb() };
+const iaCtx = { model, toast, anim, after: () => setView('3d'), exportGLB: () => ACTIONS.glb(),
+  // Recién creado en acero: render comercial en hora dorada con la toma héroe.
+  showcase: () => { setRender(true); setMood('dorada'); look.frame('heroe', persp, orbit3d); } };
 $$('[data-ia]').forEach((b) => b.addEventListener('click', () => { b.closest('details').open = false; IA[b.dataset.ia](); }));
 addEventListener('keydown', (e) => { if (anim.active && e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); anim.stop(); } }, true);
 
@@ -693,10 +801,10 @@ renderer.setAnimationLoop(() => {
   const raw = clock.getDelta(), dt = Math.min(raw, 0.1);
   // Al grabar se usa el tiempo real aunque el equipo vaya lento: el video dura lo pedido.
   if (!anim.update(anim.recording ? Math.min(raw, 0.5) : dt) && !tour.update(dt)) orbit.update();
-  renderer.render(scene, camera);
+  draw();
   labels.render(scene, camera);
   anim.afterRender();
 });
 
 // Para pruebas y depuración desde la consola.
-window.studio = { model, scene, root, cam: () => camera, tour: () => tour, anim, IA, setView, setTool, setRender, planSVG: () => planSVG(model.doc, model.doc.activeLevel), planDXF: () => planDXF(model.doc, model.doc.activeLevel) };
+window.studio = { model, scene, root, look, setMood, renderHD, renderer, draw, frame: (k) => look.frame(k, persp, orbit3d), cam: () => camera, tour: () => tour, anim, IA, setView, setTool, setRender, planSVG: () => planSVG(model.doc, model.doc.activeLevel), planDXF: () => planDXF(model.doc, model.doc.activeLevel) };

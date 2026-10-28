@@ -41,12 +41,12 @@ export function exportOBJ(root, doc) {
   download(new OBJExporter().parse(exportableClone(root)), `${slug(doc.name)}.obj`, 'text/plain');
 }
 
-export function exportPNG(renderer, scene, camera, doc, scale = 2) {
+export function exportPNG(renderer, draw, doc, scale = 2) {
   const w = renderer.domElement.width, h = renderer.domElement.height;
   const prev = renderer.getPixelRatio();
   renderer.setPixelRatio(prev * scale);
   renderer.setSize(w / prev, h / prev, false);
-  renderer.render(scene, camera);
+  draw();
   renderer.domElement.toBlob((b) => {
     download(b, `${slug(doc.name)}-render.png`, 'image/png');
     renderer.setPixelRatio(prev);

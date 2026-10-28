@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 # AceroStudio → Revit
 # Lee un proyecto .acero.json de AceroStudio y crea elementos nativos de Revit:
-# niveles, muros (con el tipo de espesor más cercano), losas, columnas estructurales,
-# puertas y ventanas alojadas en sus muros, y volúmenes como DirectShape (modelo genérico).
+# niveles, muros (con el tipo de espesor más cercano), losas, columnas estructurales (con la familia
+# cuyo nombre coincide con el perfil HEB/IPE si está cargada), vigas, diagonales y cerchas de acero como
+# DirectShape de armazón estructural con su sección real, puertas y ventanas alojadas en sus muros,
+# y volúmenes como DirectShape (modelo genérico).
+# Para la estructura con familias paramétricas de Revit también puedes abrir el .ifc que exporta el Studio.
 #
 # Uso con pyRevit: guárdalo como script.py de un botón en tu extensión, o ejecútalo desde
 # RevitPythonShell. Pide el archivo y hace todo en una sola transacción (Ctrl+Z la deshace).
@@ -20,6 +23,56 @@ from Autodesk.Revit.DB import (  # noqa: E402
 from Autodesk.Revit.DB.Structure import StructuralType  # noqa: E402
 
 FT = 1 / 0.3048  # metros → pies
+
+# Perfiles del catálogo de AceroStudio (m): forma, alto h, ancho b, alma tw, ala tf / espesor t.
+_I = lambda h, b, tw, tf: ("I", h / 1000.0, b / 1000.0, tw / 1000.0, tf / 1000.0)
+PROFILES = {
+    "IPE200": _I(200, 100, 5.6, 8.5), "IPE240": _I(240, 120, 6.2, 9.8), "IPE270": _I(270, 135, 6.6, 10.2),
+    "IPE300": _I(300, 150, 7.1, 10.7), "IPE360": _I(360, 170, 8, 12.7), "IPE400": _I(400, 180, 8.6, 13.5),
+    "IPE450": _I(450, 190, 9.4, 14.6), "IPE500": _I(500, 200, 10.2, 16), "IPE600": _I(600, 220, 12, 19),
+    "HEB160": _I(160, 160, 8, 13), "HEB200": _I(200, 200, 9, 15), "HEB240": _I(240, 240, 10, 17),
+    "HEB280": _I(280, 280, 10.5, 18), "HEB300": _I(300, 300, 11, 19), "HEB360": _I(360, 300, 12.5, 22.5),
+    "HEB400": _I(400, 300, 13.5, 24), "HEB500": _I(500, 300, 14.5, 28),
+    "SHS100": ("SHS", 0.1, 0.1, 0.006, 0), "SHS120": ("SHS", 0.12, 0.12, 0.006, 0), "SHS150": ("SHS", 0.15, 0.15, 0.008, 0),
+    "SHS200": ("SHS", 0.2, 0.2, 0.01, 0), "SHS250": ("SHS", 0.25, 0.25, 0.01, 0), "SHS300": ("SHS", 0.3, 0.3, 0.012, 0),
+    "CHS114": ("CHS", 0.1143, 0.1143, 0.006, 0), "CHS168": ("CHS", 0.1683, 0.1683, 0.008, 0), "CHS219": ("CHS", 0.2191, 0.2191, 0.01, 0),
+    "CHS273": ("CHS", 0.273, 0.273, 0.01, 0), "CHS323": ("CHS", 0.3239, 0.3239, 0.012, 0),
+}
+
+
+def section(el):
+    # Contorno (u = ancho, v = alto) de la sección en metros.
+    p = PROFILES.get(el.get("profile"))
+    if not p:
+        b, h = el.get("w", 0.2) / 2.0, el.get("h", 0.01) / 2.0
+        return [(-b, -h), (b, -h), (b, h), (-b, h)]
+    kind, h, b, tw, tf = p
+    if kind == "CHS":
+        return [(math.cos(a) * h / 2, math.sin(a) * h / 2) for a in [i * math.pi * 2 / 20 for i in range(20)]]
+    if kind == "SHS":
+        return [(-b / 2, -h / 2), (b / 2, -h / 2), (b / 2, h / 2), (-b / 2, h / 2)]
+    b2, h2, w2 = b / 2, h / 2, tw / 2
+    return [(-b2, -h2), (b2, -h2), (b2, -h2 + tf), (w2, -h2 + tf), (w2, h2 - tf), (b2, h2 - tf), (b2, h2),
+            (-b2, h2), (-b2, h2 - tf), (-w2, h2 - tf), (-w2, -h2 + tf), (-b2, -h2 + tf)]
+
+
+def member_frame(el):
+    # Igual que memberFrame de steel.js: t = eje, v = alto del perfil, u = ancho (coordenadas del Studio).
+    p0, p1 = el["p0"], el["p1"]
+    d = [p1[i] - p0[i] for i in range(3)]
+    L = math.sqrt(sum(c * c for c in d)) or 1e-6
+    t = [c / L for c in d]
+    ref = [0, 0, 1] if abs(t[1]) > 0.98 else [0, 1, 0]
+    k = sum(ref[i] * t[i] for i in range(3))
+    v = [ref[i] - k * t[i] for i in range(3)]
+    n = math.sqrt(sum(c * c for c in v)) or 1
+    v = [c / n for c in v]
+    u = [v[1] * t[2] - v[2] * t[1], v[2] * t[0] - v[0] * t[2], v[0] * t[1] - v[1] * t[0]]
+    r = el.get("roll") or 0
+    if r:
+        c, s = math.cos(r), math.sin(r)
+        u, v = [u[i] * c + v[i] * s for i in range(3)], [-u[i] * s + v[i] * c for i in range(3)]
+    return t, u, v, L
 
 
 def P(x, z, y=0.0):
@@ -87,7 +140,7 @@ def build(doc, data):
     doors, windows = symbols(doc, BuiltInCategory.OST_Doors), symbols(doc, BuiltInCategory.OST_Windows)
     columns = symbols(doc, BuiltInCategory.OST_StructuralColumns)
     floor_type = FilteredElementCollector(doc).OfClass(FloorType).FirstElement()
-    made = {"muros": 0, "vanos": 0, "losas": 0, "columnas": 0, "volúmenes": 0}
+    made = {"muros": 0, "vanos": 0, "losas": 0, "columnas": 0, "barras de acero": 0, "volúmenes": 0}
 
     for el in data["elements"]:
         level = levels.get(el.get("level")) or list(levels.values())[0]
@@ -127,8 +180,24 @@ def build(doc, data):
                     arr.Append(c)
                 doc.Create.NewFloor(arr, False)
             made["losas"] += 1
+        elif t == "member":
+            # Viga, diagonal, cordón o correa: la sección real extruida por su eje, como armazón estructural.
+            tv, u, v, L = member_frame(el)
+            p0 = el["p0"]
+            V = lambda x, y, z: XYZ(x * FT, -z * FT, (y + lv["elev"]) * FT)
+            pts = [V(p0[0] + u[0] * a + v[0] * b, p0[1] + u[1] * a + v[1] * b, p0[2] + u[2] * a + v[2] * b) for a, b in section(el)]
+            loop = CurveLoop()
+            for i in range(len(pts)):
+                loop.Append(Line.CreateBound(pts[i], pts[(i + 1) % len(pts)]))
+            solid = GeometryCreationUtilities.CreateExtrusionGeometry([loop], XYZ(tv[0], -tv[2], tv[1]), L * FT)
+            cat = BuiltInCategory.OST_StructuralFraming if el.get("role") not in ("parteluz", "lamina", "baranda") else BuiltInCategory.OST_GenericModel
+            ds = DirectShape.CreateElement(doc, ElementId(cat))
+            ds.SetShape([solid])
+            ds.Name = "{} {}".format(el.get("role", "barra"), el.get("profile", ""))
+            made["barras de acero"] += 1
         elif t == "column" and columns:
-            sym = columns[0]
+            named = [c for c in columns if el.get("profile") and el["profile"].replace("HEB", "HE") in (c.Family.Name + c.Name).replace(" ", "").upper()]
+            sym = (named or columns)[0]
             if not sym.IsActive:
                 sym.Activate()
                 doc.Regenerate()

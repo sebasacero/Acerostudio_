@@ -89,7 +89,7 @@ Une los muros en las esquinas (los extremos deben coincidir). Ignora mobiliario,
   fachada: {
     schema: FACHADA_SCHEMA,
     pedido: (b) => `Esta imagen es una fotografía o render de un edificio. Descompónlo en volúmenes prismáticos (torres o cuerpos) vistos en planta, con su posición (x, z de la esquina noroeste, la calle queda al sur), ancho, fondo, número de pisos, crujías de ventanas en la fachada, medidas de ventana y material principal de fachada (elige de la lista).
-Estima el fondo aunque no se vea. En "prompt_render" escribe en inglés un prompt fotorrealista para generar la imagen final o un video de cámara del edificio (materiales, luz, hora, lente, entorno).${b.notas ? ` Indicaciones del usuario: ${b.notas}` : ""}`,
+Estima el fondo aunque no se vea. En "prompt_render" escribe en inglés un prompt fotorrealista para generar la imagen final o un video de cámara del edificio reinterpretado con estructura de acero a la vista (columnas HEB, vigas IPE, vidrio de piso a techo, uniones limpias), nivel fotografía de arquitectura para venta: hora dorada o azul, lente 24 mm con perspectiva de dos puntos, entorno, personas.${b.notas ? ` Indicaciones del usuario: ${b.notas}` : ""}`,
   },
 };
 

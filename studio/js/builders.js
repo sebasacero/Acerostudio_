@@ -6,10 +6,12 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { getMaterial } from './materials.js';
 import { model, getAsset, fmt } from './model.js';
 import { wallFrame, wallSpans, columnPoly, dimGeometry } from './plan.js';
+import { profileOf, sectionOutline, sectionHole, memberFrame } from './steel.js';
 
 const INK = new THREE.LineBasicMaterial({ color: 0x16191c, transparent: true, opacity: 0.55 });
 const RED = new THREE.LineBasicMaterial({ color: 0xcf2a1f, depthTest: false, transparent: true });
 export const settings = { edges: true };
+const memberGeo = new Map(); // geometrías de barras repetidas (mismo perfil y largo) se comparten
 
 // UV a escala real (1 unidad de textura ≈ 0,6 m) para que ladrillo y madera no se estiren.
 function worldUV(geo, w, h, d, size = 0.6) {
@@ -91,6 +93,30 @@ const B = {
     g.rotation.y = -(el.rotY || 0);
     return g;
   },
+  // Barra de acero: la sección del perfil (I, tubo o lámina) extruida a lo largo del eje p0 → p1.
+  member(el, elev) {
+    const p = profileOf(el), { t, u, v, L } = memberFrame(el);
+    const key = `${el.profile}|${p.b}|${p.h}|${L.toFixed(3)}`;
+    let geo = memberGeo.get(key);
+    if (!geo) {
+      const shape = new THREE.Shape(sectionOutline(p, 24).map(([a, b]) => new THREE.Vector2(a, b)));
+      const hole = sectionHole(p, 24);
+      if (hole) shape.holes.push(new THREE.Path(hole.reverse().map(([a, b]) => new THREE.Vector2(a, b))));
+      geo = new THREE.ExtrudeGeometry(shape, { depth: L, bevelEnabled: false, curveSegments: 12 });
+      geo.userData.cached = true;
+      if (memberGeo.size > 3000) memberGeo.clear();
+      memberGeo.set(key, geo);
+    }
+    const m = new THREE.Mesh(geo, getMaterial(el.material));
+    m.castShadow = m.receiveShadow = true;
+    m.userData.shared = true;
+    m.matrixAutoUpdate = false;
+    m.matrix.makeBasis(new THREE.Vector3(...u), new THREE.Vector3(...v), new THREE.Vector3(...t));
+    m.matrix.setPosition(el.p0[0], elev + el.p0[1], el.p0[2]);
+    const g = new THREE.Group();
+    g.add(['parteluz', 'lamina', 'baranda'].includes(el.role) ? m : addEdges(m));
+    return g;
+  },
   box(el, elev) {
     const g = new THREE.Group();
     g.add(box(el.w, el.h, el.d, 0, el.h / 2, 0, getMaterial(el.material)));
@@ -133,6 +159,7 @@ export function buildElement(el) {
   const lvl = model.level(el.level);
   const obj = (B[el.type] || (() => new THREE.Group()))(el, lvl ? lvl.elev : 0);
   obj.userData.elId = el.id;
+  if (el.ground) obj.userData.ground = true; // plaza o plataforma: no cuenta para encuadrar el edificio
   return obj;
 }
 

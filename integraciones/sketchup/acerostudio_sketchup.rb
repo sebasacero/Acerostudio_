@@ -1,6 +1,6 @@
 # AceroStudio → SketchUp
 # Importa un modelo .acero-solids.json (exportado desde AceroStudio Studio o el servidor MCP):
-# un grupo por elemento, etiquetas (capas) por nivel y materiales con la paleta de AceroStudio.
+# un grupo por elemento (columnas, vigas y barras de acero con su perfil), etiquetas por nivel y materiales.
 #
 # Uso rápido: Ventana › Consola de Ruby › load "C:/ruta/acerostudio_sketchup.rb"
 # Como extensión: copia este archivo en la carpeta Plugins de SketchUp; queda en
@@ -55,17 +55,26 @@ module AceroStudio
       root = model.active_entities.add_group
       root.name = data['project'] || 'AceroStudio'
       data['solids'].each_with_index do |s, i|
-        pts, z0, h = footprint(s)
-        next if h <= 0 || pts.length < 3
-
         g = root.entities.add_group
-        g.name = [s['kind'], s['name']].reject { |v| v.nil? || v.empty? }.join(' ')
+        g.name = [s['kind'], s['profile'] || s['name']].reject { |v| v.nil? || v.empty? }.join(' ')
         g.layer = tags[s['level']] if tags[s['level']]
-        face = g.entities.add_face(pts.map { |x, y| pt(x, y, z0) })
-        next unless face
+        if s['shape'] == 'mesh'
+          # Barra de acero (perfil extruido a lo largo de su eje): caras de la malla cerrada.
+          s['faces'].each do |f|
+            g.entities.add_face(f.map { |k| pt(*s['vertices'][k]) })
+          rescue ArgumentError
+            next
+          end
+        else
+          pts, z0, h = footprint(s)
+          next if h <= 0 || pts.length < 3
 
-        face.reverse! if face.normal.z < 0
-        face.pushpull(h * M_TO_IN)
+          face = g.entities.add_face(pts.map { |x, y| pt(x, y, z0) })
+          next unless face
+
+          face.reverse! if face.normal.z < 0
+          face.pushpull(h * M_TO_IN)
+        end
         g.material = mats[s['material']]
         g.set_attribute('acerostudio', 'element', s['element'])
         g.set_attribute('acerostudio', 'type', s['type'])

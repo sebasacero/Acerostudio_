@@ -151,6 +151,7 @@ export function translateElement(el, dx, dz) {
   const mv = (p) => [p[0] + dx, p[1] + dz];
   if (el.type === 'wall' || el.type === 'dim') { el.a = mv(el.a); el.b = mv(el.b); }
   else if (el.type === 'slab') el.points = el.points.map(mv);
+  else if (el.type === 'member') { el.p0 = [el.p0[0] + dx, el.p0[1], el.p0[2] + dz]; el.p1 = [el.p1[0] + dx, el.p1[1], el.p1[2] + dz]; }
   else { el.x += dx; el.z += dz; }
 }
 

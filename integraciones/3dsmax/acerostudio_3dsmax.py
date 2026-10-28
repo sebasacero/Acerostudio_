@@ -44,6 +44,16 @@ def prism(points, z0, h, k):
     return shp
 
 
+def mesh(vertices, faces, k):
+    # Barra de acero: malla cerrada (los cuadriláteros se parten en dos triángulos).
+    verts = [rt.Point3(x * k, y * k, z * k) for x, y, z in vertices]
+    tris = []
+    for f in faces:
+        for j in range(1, len(f) - 1):
+            tris.append(rt.Point3(f[0] + 1, f[j] + 1, f[j + 1] + 1))
+    return rt.mesh(vertices=verts, faces=tris)
+
+
 def import_solids(path):
     with open(path, encoding="utf-8") as f:
         data = json.load(f)
@@ -59,9 +69,11 @@ def import_solids(path):
             obj = rt.Box(length=T * k, width=L * k, height=H * k)  # pivote en el centro de la base
             rt.rotate(obj, rt.EulerAngles(0, 0, math.degrees(s["rotZ"])))
             obj.position = rt.Point3(cx * k, cy * k, (cz - H / 2) * k)
+        elif s["shape"] == "mesh":
+            obj = mesh(s["vertices"], s["faces"], k)
         else:
             obj = prism(s["points"], s["z"], s["height"], k)
-        obj.name = "{}_{:04d}{}".format(s["kind"], i, " " + s["name"] if s.get("name") else "")
+        obj.name = "{}_{:04d}{}".format(s["kind"], i, " " + (s.get("profile") or s.get("name") or "") if (s.get("profile") or s.get("name")) else "")
         obj.material = mats[s["material"]]
         rt.setUserProp(obj, "acero_element", s["element"])
         lyr = layers.get(s["level"])

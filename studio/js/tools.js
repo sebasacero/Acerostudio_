@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { model, uid, fmt, wallLength } from './model.js';
 import { wallFrame } from './plan.js';
+import { PROFILES, member } from './steel.js';
 
 const RED = 0xcf2a1f;
 const ghostMat = new THREE.MeshBasicMaterial({ color: RED, transparent: true, opacity: 0.28, depthWrite: false });
@@ -14,10 +15,16 @@ export const DEFAULTS = {
   wall: { height: 3, thickness: 0.15, material: 'yeso' },
   slab: { thickness: 0.15, material: 'concreto' },
   box: { h: 1, material: 'roble' },
-  column: { profile: 'I', w: 0.15, d: 0.3, material: 'acero_azul' },
+  column: { profile: 'HEB240', material: 'acero_grafito' },
+  beam: { profile: 'IPE300', material: 'acero_grafito' },
   door: { width: 0.9, height: 2.1, sill: 0 },
   window: { width: 1.2, height: 1.4, sill: 0.9 },
 };
+
+function colDims() {
+  const d = DEFAULTS.column, p = PROFILES[d.profile];
+  return p ? { profile: d.profile, w: p.b, d: p.h } : { profile: d.profile, w: d.w || 0.2, d: d.d || 0.2 };
+}
 
 // "4,5" → 4.5 · "4x3" / "4;3" → [4, 3]
 export function parseVCB(text) {
@@ -214,10 +221,10 @@ export function createTools(ctx) {
 
   T.column = {
     hint: '<b>Columna</b> · clic para ubicarla (perfil I de acero por defecto; cámbialo en Propiedades)',
-    start() { const d = DEFAULTS.column; this.mesh = new THREE.Mesh(new THREE.BoxGeometry(d.w, model.level().height, d.d), ghostMat); overlay.add(this.mesh); },
+    start() { const d = colDims(); this.mesh = new THREE.Mesh(new THREE.BoxGeometry(d.w, model.level().height, d.d), ghostMat); overlay.add(this.mesh); },
     move(p) { this.mesh.position.set(p.x, ctx.elev() + model.level().height / 2, p.z); },
     click(p) {
-      const d = DEFAULTS.column;
+      const d = colDims();
       model.add({ type: 'column', profile: d.profile, x: p.x, z: p.z, w: d.w, d: d.d, height: model.level().height, rotY: 0, material: d.material, layer: 'c_est' });
     },
   };
@@ -261,6 +268,33 @@ export function createTools(ctx) {
   T.door = openingTool('door');
   T.window = openingTool('window');
 
+  // Viga de acero entre dos puntos, colgada bajo el nivel superior (cara superior a 12 cm de la losa).
+  T.beam = {
+    hint: '<b>Viga de acero</b> · clic en el primer apoyo y clic en el segundo · el perfil se elige en el panel',
+    start() {
+      this.a = null;
+      this.line = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]), lineMat);
+      this.line.renderOrder = 20;
+      this.line.visible = false;
+      overlay.add(this.line);
+    },
+    y() { return model.level().height - (PROFILES[DEFAULTS.beam.profile]?.h || 0.3) / 2 - 0.12; },
+    move(p) {
+      if (!this.a) return;
+      const y = ctx.elev() + this.y();
+      this.line.geometry.setFromPoints([new THREE.Vector3(this.a[0], y, this.a[1]), new THREE.Vector3(p.x, y, p.z)]);
+      this.line.visible = true;
+      setLive(`${DEFAULTS.beam.profile} · ${fmt(Math.hypot(p.x - this.a[0], p.z - this.a[1]))} m`, new THREE.Vector3((this.a[0] + p.x) / 2, y, (this.a[1] + p.z) / 2));
+    },
+    click(p) {
+      if (!this.a) { this.a = [p.x, p.z]; return; }
+      if (Math.hypot(p.x - this.a[0], p.z - this.a[1]) < 0.05) return;
+      const y = this.y();
+      model.add(member('viga', DEFAULTS.beam.profile, [this.a[0], y, this.a[1]], [p.x, y, p.z], { material: DEFAULTS.beam.material }));
+      this.a = [p.x, p.z]; // encadena vigas como los muros
+    },
+    finish() { this.a = null; this.line.visible = false; setLive(null); },
+  };
   T.dim = {
     hint: '<b>Cota</b> · clic en el primer punto, clic en el segundo y clic para separar la línea de cota',
     start() {

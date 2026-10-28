@@ -34,7 +34,9 @@ writeFileSync(join(dir, 'plano.png'), PNG.sync.write(png));
 console.log(await call('plano_a_modelo', { imagen: join(dir, 'plano.png'), pisos: 2 }).then((t) => t.split('\n')[0]));
 
 console.log((await call('generar_edificio', { pisos: 5, frente: 7 })).split('\n')[0]);
-for (const f of ['json', 'solidos', 'dxf', 'dxf3d', 'svg']) console.log(await call('exportar', { formato: f }));
+for (const tipo of ['nave', 'pabellon', 'casa', 'edificio']) console.log((await call('generar_estructura_acero', { tipo })).split('\n')[0]);
+console.log(await call('agregar_viga', { desde: [0, 0], hasta: [7.5, 0], perfil: 'IPE360' }));
+for (const f of ['ifc', 'json', 'solidos', 'dxf', 'dxf3d', 'svg']) console.log(await call('exportar', { formato: f }));
 for (const p of ['blender', 'revit', 'sketchup', '3dsmax', 'autocad']) {
   const t = await call('enviar_a', { programa: p });
   const files = JSON.parse(t.slice(t.indexOf('{'))).archivos;

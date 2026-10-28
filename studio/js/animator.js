@@ -169,7 +169,7 @@ export function createAnimator(ctx) {
     cam.updateProjectionMatrix();
     const s = sample(id, 0, geometry());
     cam.position.copy(s.pos); cam.lookAt(s.look); ctx.setSunHour(s.hour);
-    ctx.renderer.render(ctx.scene, cam);
+    ctx.draw();
     ctx.renderer.domElement.toBlob((b) => {
       download(b, `${slug(ctx.docName())}-${slug(id)}-fotograma.png`, 'image/png');
       if (!wasRender) ctx.setRender(false);
