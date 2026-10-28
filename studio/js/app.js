@@ -11,6 +11,10 @@ import { planGeometry, columnSection } from './plan.js';
 import { createTools, DEFAULTS } from './tools.js';
 import { createTour } from './tour.js';
 import { download, slug, exportJSON, exportGLB, exportOBJ, planDXF, planSVG, exportPNG } from './exporters.js';
+import { modelDXF3D, solidsDocument } from './solids.js';
+import { createAnimator } from './animator.js';
+import { openCreate } from './vision-ui.js';
+import { openAnimate, exportViewer, openIntegrations } from './panels.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -583,8 +587,10 @@ const ACTIONS = {
   dxf: () => download(planDXF(model.doc, model.doc.activeLevel), `${slug(model.doc.name)}-${slug(model.level().name)}.dxf`, 'application/dxf'),
   svg: () => download(planSVG(model.doc, model.doc.activeLevel), `${slug(model.doc.name)}-${slug(model.level().name)}.svg`, 'image/svg+xml'),
   png: () => { selBox.visible = false; tc.detach(); exportPNG(renderer, scene, camera, model.doc); attachSelection(); },
+  dxf3d: () => download(modelDXF3D(model.doc), `${slug(model.doc.name)}-3d.dxf`, 'application/dxf'),
+  solids: () => download(JSON.stringify(solidsDocument(model.doc)), `${slug(model.doc.name)}.acero-solids.json`, 'application/json'),
 };
-$$('[data-act]', $('.dd')).forEach((b) => b.addEventListener('click', () => { b.closest('details').open = false; ACTIONS[b.dataset.act](); }));
+$$('[data-act]', $('#fileMenu')).forEach((b) => b.addEventListener('click', () => { b.closest('details').open = false; ACTIONS[b.dataset.act](); }));
 $('#fileJSON').addEventListener('change', (e) => { if (e.target.files[0]) readJSON(e.target.files[0]); e.target.value = ''; });
 $('#fileModel').addEventListener('change', (e) => { if (e.target.files[0]) importModel(e.target.files[0]); e.target.value = ''; });
 vp.addEventListener('dragover', (e) => e.preventDefault());
@@ -658,12 +664,39 @@ const tour = createTour({
 $('#tourBtn').addEventListener('click', () => tour.play());
 $('#walkBtn').addEventListener('click', () => { setTool('select'); model.select(null); setView('3d', false); tour.walk(false); });
 
+// Animación automática, crear con IA, visor e integraciones.
+const anim = createAnimator({
+  renderer, scene, camera: persp, orbit: orbit3d,
+  bounds: modelBounds,
+  isRender: () => renderMode,
+  setRender,
+  setSunHour: (h) => { $('#sunH').value = h; updateSun(); },
+  prepare: () => { tour.stop(false); setTool('select'); model.select(null); setView('3d', false); orbit3d.enabled = false; },
+  resize: () => { renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); resize(); orbit3d.enabled = true; },
+  docName: () => model.doc.name,
+  toast,
+});
+const IA = {
+  plano: () => openCreate(iaCtx, 'plano'),
+  foto: () => openCreate(iaCtx, 'foto'),
+  param: () => openCreate(iaCtx, 'param'),
+  animar: () => openAnimate(iaCtx),
+  visor: () => exportViewer(root, model.doc).then(() => toast('Visor 3D descargado: ábrelo o súbelo a tu web')).catch((e) => { console.error(e); toast('No se pudo crear el visor'); }),
+  conectar: () => openIntegrations(iaCtx),
+};
+const iaCtx = { model, toast, anim, after: () => setView('3d'), exportGLB: () => ACTIONS.glb() };
+$$('[data-ia]').forEach((b) => b.addEventListener('click', () => { b.closest('details').open = false; IA[b.dataset.ia](); }));
+addEventListener('keydown', (e) => { if (anim.active && e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); anim.stop(); } }, true);
+
 const clock = new THREE.Clock();
 renderer.setAnimationLoop(() => {
-  if (!tour.update(Math.min(clock.getDelta(), 0.1))) orbit.update();
+  const raw = clock.getDelta(), dt = Math.min(raw, 0.1);
+  // Al grabar se usa el tiempo real aunque el equipo vaya lento: el video dura lo pedido.
+  if (!anim.update(anim.recording ? Math.min(raw, 0.5) : dt) && !tour.update(dt)) orbit.update();
   renderer.render(scene, camera);
   labels.render(scene, camera);
+  anim.afterRender();
 });
 
 // Para pruebas y depuración desde la consola.
-window.studio = { model, scene, cam: () => camera, tour: () => tour, setView, setTool, setRender, planSVG: () => planSVG(model.doc, model.doc.activeLevel), planDXF: () => planDXF(model.doc, model.doc.activeLevel) };
+window.studio = { model, scene, root, cam: () => camera, tour: () => tour, anim, IA, setView, setTool, setRender, planSVG: () => planSVG(model.doc, model.doc.activeLevel), planDXF: () => planDXF(model.doc, model.doc.activeLevel) };

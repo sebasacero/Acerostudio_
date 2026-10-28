@@ -22,7 +22,7 @@
 <body>
   <header class="top">
     <a class="lg" href="../index.html" title="Volver a acerostudio.com">acero<i>.</i>studio</a>
-    <span class="tag mono">Studio · v0.1</span>
+    <span class="tag mono">Studio · v0.2</span>
     <input class="pname" id="pname" aria-label="Nombre del proyecto" spellcheck="false">
     <div class="grp">
       <button class="ic" id="undo" title="Deshacer (Ctrl+Z)" aria-label="Deshacer"><svg viewBox="0 0 24 24"><path d="M9 7 4 12l5 5M4 12h10a6 6 0 0 1 0 12"/></svg></button>
@@ -35,7 +35,21 @@
       <button data-view="lateral" title="Alzado este (4)">Lateral</button>
     </div>
     <div class="grp right">
-      <details class="menu">
+      <details class="menu ia">
+        <summary>Crear ✦</summary>
+        <div class="dd">
+          <span class="k">Imagen o dibujo → 3D</span>
+          <button data-ia="plano">Plano o boceto → modelo 3D…</button>
+          <button data-ia="foto">Foto de edificio → modelo 3D…</button>
+          <button data-ia="param">Edificio paramétrico…</button>
+          <hr><span class="k">Presentar</span>
+          <button data-ia="animar">Animación automática (video)…</button>
+          <button data-ia="visor">Visor 3D interactivo (.html)</button>
+          <hr><span class="k">Complementos y MCP</span>
+          <button data-ia="conectar">Revit, AutoCAD, SketchUp, 3ds Max, Blender…</button>
+        </div>
+      </details>
+      <details class="menu" id="fileMenu">
         <summary>Archivo</summary>
         <div class="dd">
           <button data-act="new">Nuevo proyecto</button>
@@ -48,6 +62,8 @@
           <button data-act="glb">Exportar GLB (Blender, SketchUp, web)</button>
           <button data-act="obj">Exportar OBJ</button>
           <button data-act="dxf">Exportar planta DXF (AutoCAD, Revit)</button>
+          <button data-act="dxf3d">Exportar modelo 3D DXF (AutoCAD, 3ds Max)</button>
+          <button data-act="solids">Exportar sólidos (.acero-solids.json)</button>
           <button data-act="svg">Exportar planta SVG 1:100</button>
           <button data-act="png">Exportar render PNG</button>
         </div>
