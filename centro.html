@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Centro de mando — AceroStudio</title>
+  <meta name="description" content="Gemelo digital de un proyecto en acero: corte por piso, obra por fases, ventas por apartamento y recorrido en dron, en el navegador.">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <meta name="theme-color" content="#16191c">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/centro.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+<div id="app">
+  <div id="escena" aria-label="Modelo 3D del proyecto"></div>
+  <div id="etiquetas" aria-hidden="true"></div>
+
+  <header class="cm-top">
+    <a href="index.html" class="cm-logo">ACERO<span>.</span>STUDIO</a>
+    <div class="cm-titulo"><strong id="nombreProyecto">Torres del Parque</strong> <span>Centro de mando</span></div>
+    <div class="cm-acciones">
+      <button type="button" class="cm-btn" id="btnReel" title="Reproduce un reel vertical de 30 s para grabar en pantalla">
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10.5 9.5v5l4-2.5z" fill="currentColor"/></svg>
+        <span>Modo reel</span>
+      </button>
+      <button type="button" class="cm-btn" id="btnPantalla" aria-label="Pantalla completa">
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <nav class="cm-tabs" role="tablist" aria-label="Vistas">
+    <button type="button" role="tab" data-modo="aerea" aria-selected="true">Aérea</button>
+    <button type="button" role="tab" data-modo="corte">Corte</button>
+    <button type="button" role="tab" data-modo="obra">Obra</button>
+    <button type="button" role="tab" data-modo="ventas">Ventas</button>
+    <button type="button" role="tab" data-modo="dron">Dron</button>
+  </nav>
+  <div class="cm-sim">Ventas y obra simuladas</div>
+
+  <div class="cm-caption" id="caption" aria-live="polite"></div>
+
+  <aside class="cm-regla" id="regla" aria-label="Niveles">
+    <ul id="listaNiveles"></ul>
+  </aside>
+
+  <section class="cm-card" id="card" aria-live="polite"></section>
+
+  <div class="cm-cargando" id="cargando"><span>Levantando la estructura…</span></div>
+</div>
+
+<script type="module" src="js/centro.js"></script>
+</body>
+</html>

@@ -284,6 +284,10 @@ h2{font-size:clamp(40px,6vw,88px);font-weight:800;letter-spacing:-.045em;line-he
 .appcard .tx{padding:16px 20px 20px;display:flex;flex-direction:column;gap:8px;flex:1}
 .appcard h3{font-size:26px;letter-spacing:-.025em;line-height:1.02}
 .appcard .go{margin-top:auto;padding-top:6px;font-weight:600;color:var(--red)}
+.appcard.wide{grid-column:1/-1;flex-direction:row}
+.appcard.wide .shot{flex:1.4;aspect-ratio:auto;min-height:320px;border-bottom:0;border-right:2px solid var(--ink)}
+.appcard.wide .tx{flex:1;justify-content:center;padding:24px 28px}
+@media (max-width:820px){.appcard.wide{flex-direction:column}.appcard.wide .shot{aspect-ratio:16/10;min-height:0;border-right:0;border-bottom:2px solid var(--ink)}}
 .appcard ul{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
 .appcard li{font-family:var(--mono);font-size:11px;border:1.2px solid var(--ink);border-radius:999px;padding:3px 9px}
 .works{display:flex;flex-direction:column;gap:12px;border-top:2px solid var(--ink);padding-top:16px}
