@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explorador 3D — AceroStudio</title>
+  <meta name="description" content="Explora un edificio en 3D piso por piso: corte, planta y recorrido guiado. AceroStudio, inteligencia de diseño para arquitectura.">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <meta name="theme-color" content="#e9e6df">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/explorador.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="escena" aria-label="Modelo 3D del edificio"></div>
+  <div id="etiquetas" aria-hidden="true"></div>
+
+  <!-- Marca + proyecto -->
+  <header class="ex-marca">
+    <a href="index.html" class="ex-logo">ACERO<span class="ex-punto">.</span>STUDIO</a>
+    <div class="ex-proyecto">
+      <span data-i18n="proyecto">Edificio Taller · Bogotá</span>
+      <span class="ex-migas" id="migas">—</span>
+    </div>
+  </header>
+
+  <!-- Acciones superiores -->
+  <div class="ex-acciones">
+    <button class="ex-btn" id="btnIdioma" type="button">EN</button>
+    <button class="ex-btn" id="btnBrujula" type="button">
+      <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 5l3 7h-6z" fill="#cf2a1f"/><path d="M12 19l-3-7h6z" fill="currentColor"/></svg>
+      <span data-i18n="brujula">Brújula</span>
+    </button>
+    <button class="ex-btn" id="btnPantalla" type="button">
+      <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+      <span data-i18n="pantalla">Pantalla completa</span>
+    </button>
+  </div>
+
+  <!-- Selector de pisos -->
+  <nav class="ex-pisos" aria-label="Pisos">
+    <ul id="listaPisos"></ul>
+    <div class="ex-modos" role="group" aria-label="Vista">
+      <button type="button" data-modo="exterior" class="activo" title="Exterior">
+        <svg viewBox="0 0 24 24" width="16" height="16"><path d="M5 21V8l7-5 7 5v13z M9 21v-6h6v6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      </button>
+      <button type="button" data-modo="corte" title="Corte">
+        <svg viewBox="0 0 24 24" width="16" height="16"><rect x="4" y="4" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 12h16M12 4v16" stroke="currentColor" stroke-width="1.6"/></svg>
+      </button>
+      <button type="button" data-modo="planta" title="Planta">
+        <svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 4h16v16H4zM4 10h8v10M12 4v6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Ficha del piso -->
+  <section class="ex-ficha" id="ficha" aria-live="polite">
+    <div class="ex-ficha-tag" id="fichaTag">VISTA GENERAL</div>
+    <h1 id="fichaTitulo">Edificio Taller</h1>
+    <p id="fichaTexto">Cuatro niveles en acero y vidrio. Elige un piso o inicia el recorrido.</p>
+    <dl class="ex-datos" id="fichaDatos"></dl>
+    <button type="button" class="ex-cta" id="btnRuta">
+      <span data-i18n="iniciarRuta">Iniciar recorrido</span><span aria-hidden="true">→</span>
+    </button>
+  </section>
+
+  <!-- Aviso de recorrido -->
+  <div class="ex-aviso" id="aviso" role="status"></div>
+
+  <!-- Zoom -->
+  <div class="ex-zoom">
+    <button type="button" id="zoomMas" aria-label="Acercar">+</button>
+    <button type="button" id="zoomMenos" aria-label="Alejar">−</button>
+  </div>
+
+  <div class="ex-cargando" id="cargando">
+    <span>CARGANDO MODELO</span>
+  </div>
+
+  <script type="module" src="js/explorador.js"></script>
+</body>
+</html>
