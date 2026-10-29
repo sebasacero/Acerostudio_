@@ -24,3 +24,21 @@ plaza y césped, árboles, cámara a 1,60 m con perspectiva de dos puntos (verti
 El conector de Blender se probó con Blender 5.2 (bpy) importando, armando la escena comercial y renderizando con Cycles.
 El IFC se validó con IfcOpenShell 0.9 (esquema IFC4 sin errores y toda la geometría construida); falta abrirlo en Revit.
 Los de Revit, SketchUp y 3ds Max pasan revisión de sintaxis pero falta probarlos dentro de cada programa.
+
+### Bogotá futuro (conceptos en acero)
+`blender/bogota_futuro.py` genera cinco conceptos de arquitectura del futuro en acero, mezclados con la tradición
+bogotana (celosías y curvas de ladrillo de Rogelio Salmona, canales de agua, casas coloniales de La Candelaria,
+ladrillo inglés de Chapinero, culatas, tanques negros y varillas en las cubiertas, cables, taxis amarillos, cerros
+orientales y Monserrate). Cada uno es una calle completa con cámara vertical de reel (1080×1920, verticales rectas):
+
+| Concepto | Qué es |
+|---|---|
+| `faro` | Faro de La Candelaria: torre cilíndrica con núcleo de vidrio, anillos de acero en cada losa, celosía de ladrillo y óculo de acero rojo |
+| `silo` | Silo de Chapinero: cilindro de acero inoxidable corrugado con cajas de vidrio enmarcadas en acero en voladizo |
+| `bloque` | Bloque Salmona: caja de acero forrada en ladrillo rojo con esquinas curvas, ventanas cuadradas, pórticos HEB a la vista y canal de agua |
+| `terrazas` | Terrazas de los Cerros: seis cajas de pórticos de acero apiladas y desplazadas, con ladrillo, vidrio, diagonales y jardineras |
+| `portal` | Portal de Teusaquillo: pórtico gigante forrado en ladrillo con una casa de vidrio colgada de tensores y escalera roja |
+| `cenital` | El faro visto desde arriba, con el cruce de cebra |
+
+`blender -b -P bogota_futuro.py -- --concepto=todos --carpeta=renders/ --muestras=96` (o `python3 bogota_futuro.py …` con el módulo `bpy`).
+Probado con Blender 5.2 (bpy) y Cycles en CPU.
