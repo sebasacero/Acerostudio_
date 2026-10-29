@@ -288,8 +288,8 @@
       <nav class="nav-links">
         <a href="#inicio" data-i18n="nav_home">Inicio</a>
         <a href="#tecnologia" data-i18n="nav_tech">Tecnología</a>
-        <a href="#cafe" data-i18n="nav_coffee">Café</a>
-        <a href="#proyectos" data-i18n="nav_projects">Proyectos</a>
+        <a href="#rediseno" data-i18n="nav_redesign">Rediseño IA</a>
+        <a href="#calculadora" data-i18n="nav_calc">Calculadora</a>
         <a href="#b2b" data-i18n="nav_b2b">B2B</a>
         <a href="#blog" data-i18n="nav_blog">Blog</a>
         <a href="studio/">Studio 3D</a>
@@ -313,31 +313,21 @@
   <div class="fs-annot tr" data-i18n-html="hero_annot_tr">Reto activo · #aceropress50k<br>抽出 / extracción<br>反転式 / inversión</div>
   <div class="fs-top">
     <div class="fs-eyebrow"><span class="live-dot"></span> <span data-i18n="hero_eyebrow">Reto activo · Bogotá, 2.600 msnm</span></div>
-    <div class="fs-h1" ><br><br><span color"white">DESING YOUR SPACE.</span></div>
+    <div class="fs-h1"><br><br><span style="color:#fff" data-i18n="hero_h1">DESIGN YOUR SPACE.</span></div>
     <div class="pj-bottom">
-        <div class="logo-unit" style="display:flex;align-items:center;justify-content:center;width:100%;">
-          <img src="images/logo.png" alt="ACERO.press" class="logo-acero1">
-          <span class="logo-studio">.STUDIO</span>
-        </div>
-    <div class="fs-sub" data-i18n="hero_sub">Sigue nuestras publicaciones en Instagram.</div>
+      <div class="logo-unit" style="display:flex;align-items:center;justify-content:center;width:100%;">
+        <img src="images/logo.png" alt="ACERO.studio" class="logo-acero1">
+        <span class="logo-studio">.STUDIO</span>
+      </div>
+      <div class="fs-sub" data-i18n="hero_sub">Rediseño arquitectónico con IA para cafeterías y locales comerciales.</div>
+    </div>
   </div>
   <div class="fs-bottom" style="padding-bottom:2rem;">
-    <div class="hero-odo">
-      <div>
-        <div class="odo-lbl" style="margin-bottom:.4rem;" data-i18n="hero_odo_label"></div>
-        
-          
-        </div>
-        <div style="display:flex;align-items:center;gap:.8rem;">
-    </div>
     <div class="fs-actions">
-      <a href="https://www.aceropress.com/" class="btn-glass hot" target="_blank" rel="noopener noreferrer">
-    <span>ACEROPRESS</span>
-</a>
-      <a href="#tecnologia" class="btn-outro"> <span>STUDIO</span></a>
-      
+      <a href="#rediseno" class="btn-glass hot"><span data-i18n="hero_cta_primary">REDISEÑA TU ESPACIO</span></a>
+      <a href="#calculadora" class="btn-outro"><span data-i18n="hero_cta_secondary">CALCULA TU LOCAL</span></a>
+      <a href="https://www.aceropress.com/" class="btn-outro" target="_blank" rel="noopener noreferrer"><span>ACEROPRESS</span></a>
     </div>
-      
     <div class="scroll-hint" data-i18n="hero_scroll_hint">Explora</div>
   </div>
 </section>
@@ -415,8 +405,7 @@
 
     <!-- FONDO PANEL 2 — Carta -->
     <div class="tec-bg" id="tec-bg2" style="opacity:0;z-index:1">
-      <video autoplay muted loop playsinline src=""></video>
-      <div class="ph" style="background:#12100e">
+            <div class="ph" style="background:#12100e">
         <div class="ph-ico"></div>
         <span style="color:rgba(255,255,255,.2)"></span>
         <span style="font-size:9px;color:rgba(255,255,255,.12)"></span>
@@ -455,7 +444,7 @@
 </div>
 <div class="thermal-bar"></div>
 <!-- ── chat TECNOLOGÍA ── -->
-<div class="layout">
+<div class="layout" id="rediseno">
  
 
   <!-- ============ IZQUIERDA: SCROLLYTELLING ============ -->
@@ -781,12 +770,74 @@
   </div>
 </section>
 
+<!-- ========== CALCULADORA ESPACIAL ========== -->
+<section class="calc-section" id="calculadora">
+  <div class="section-label">
+    <span class="num thermal-num">06</span><span class="ttl" data-i18n="nav_calc">Calculadora</span>
+    <span class="rule"></span>
+    <span class="sub" data-i18n="calc_fig">FIG. 06 — PRE-DIMENSIONAMIENTO</span>
+  </div>
+  <div class="sec-lbl" data-i18n="calc_sec_lbl">// Programa arquitectónico en segundos</div>
+  <h2 class="sec-h2" data-i18n="calc_h2">CALCULADORA ESPACIAL</h2>
+  <p class="sec-desc" data-i18n="calc_desc">Ingresa el área de tu local y el formato de negocio. Te damos un primer programa arquitectónico: zonas, aforo, mesas y metros de barra.</p>
+
+  <div class="calc-grid">
+    <form class="calc-inputs" id="calcForm" onsubmit="return false;">
+      <label class="calc-field">
+        <span class="calc-lbl" data-i18n="calc_area">Área útil del local</span>
+        <div class="calc-area-row">
+          <input type="range" id="calcAreaRange" min="15" max="400" step="1" value="80">
+          <div class="calc-area-num"><input type="number" id="calcAreaNum" min="15" max="2000" step="1" value="80" inputmode="numeric"><span>m²</span></div>
+        </div>
+      </label>
+
+      <fieldset class="calc-field">
+        <legend class="calc-lbl" data-i18n="calc_format">Formato</legend>
+        <div class="calc-seg" role="radiogroup">
+          <label><input type="radio" name="calcFormat" value="takeaway"><span data-i18n="calc_fmt_takeaway">Para llevar / barra</span></label>
+          <label><input type="radio" name="calcFormat" value="tables" checked><span data-i18n="calc_fmt_tables">Café con mesas</span></label>
+          <label><input type="radio" name="calcFormat" value="cowork"><span data-i18n="calc_fmt_cowork">Café + coworking</span></label>
+        </div>
+      </fieldset>
+
+      <label class="calc-check">
+        <input type="checkbox" id="calcKitchen">
+        <span data-i18n="calc_kitchen">Incluye cocina de producción</span>
+      </label>
+
+      <p class="calc-disclaimer" data-i18n="calc_disclaimer">Estimación orientativa basada en ratios de diseño comercial. No reemplaza la verificación de norma local (NSR-10, POT, bomberos) ni el levantamiento en sitio.</p>
+    </form>
+
+    <div class="calc-output" aria-live="polite">
+      <div class="calc-kpis">
+        <div class="calc-kpi"><div class="calc-kpi-v" id="calcSeats">–</div><div class="calc-kpi-l" data-i18n="calc_out_seats">Puestos</div></div>
+        <div class="calc-kpi"><div class="calc-kpi-v" id="calcTables">–</div><div class="calc-kpi-l" data-i18n="calc_out_tables">Mesas aprox.</div></div>
+        <div class="calc-kpi"><div class="calc-kpi-v" id="calcBar">–</div><div class="calc-kpi-l" data-i18n="calc_out_bar">Barra lineal</div></div>
+        <div class="calc-kpi"><div class="calc-kpi-v" id="calcWc">–</div><div class="calc-kpi-l" data-i18n="calc_out_wc">Baños</div></div>
+      </div>
+
+      <div class="calc-plan" id="calcPlan" aria-hidden="true"></div>
+      <ul class="calc-legend" id="calcLegend"></ul>
+
+      <div class="calc-notes">
+        <div class="calc-lbl" data-i18n="calc_notes_title">Recomendaciones</div>
+        <ul id="calcNotes"></ul>
+      </div>
+
+      <div class="calc-actions">
+        <button type="button" class="calc-btn hot" id="calcWaBtn" data-i18n="calc_cta_wa">Enviar a un asesor</button>
+        <button type="button" class="calc-btn" id="calcChatBtn" data-i18n="calc_cta_chat">Usarlo en mi rediseño IA</button>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ========== BLOG ========== -->
 <section class="blog-section" id="blog">
   <div class="section-label" style="margin-bottom:2rem;">
-    <span class="num thermal-num">06</span><span class="ttl" data-i18n="nav_blog">Blog</span>
+    <span class="num thermal-num">07</span><span class="ttl" data-i18n="nav_blog">Blog</span>
     <span class="rule" style="border-color:rgba(255,255,255,.15);background:rgba(255,255,255,.08);"></span>
-    <span class="sub" data-i18n="blog_fig">FIG. 06 — CONTENIDO TÉCNICO</span>
+    <span class="sub" data-i18n="blog_fig">FIG. 07 — CONTENIDO TÉCNICO</span>
   </div>
   <div class="sec-lbl" data-i18n="blog_sec_lbl">// Arquitectura, IA y rediseño · jobs to be done</div>
   <h2 class="sec-h2" style="color:#fff;" data-i18n="blog_h2">Conocimiento</h2>
@@ -804,8 +855,8 @@
 <!-- ========== FOOTER ========== -->
 <footer class="hero-footer">
   <!-- Vídeo de Fondo -->
-  <video class="footer-video-bg" autoplay loop muted playsinline>
-    <source src="image/hero_main1.mp4" type="video/mp4" />
+  <video class="footer-video-bg" autoplay loop muted playsinline preload="none">
+    <source src="images/hero_main1.mp4" type="video/mp4" />
     Tu navegador no soporta vídeos en HTML5.
   </video>
 
@@ -823,7 +874,7 @@
         </svg>
       </a>
 
-      <a href="#" aria-label="Instagram">
+      <a href="https://instagram.com/acero.press" target="_blank" rel="noopener" aria-label="Instagram">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
         </svg>
@@ -845,42 +896,13 @@
   
 </footer>
 <!-- ========== WHATSAPP ========== -->
-<a href="https://wa.me/57XXXXXXXXXX" id="wa-float-btn" class="wa-float" target="_blank" rel="noopener" data-i18n-aria="wa_aria" aria-label="Escríbenos por WhatsApp" data-wa-trigger data-wa-message="Hola, quiero información sobre el rediseño de mi cafetería con IA.">
+<a href="https://wa.me/573152125327" id="wa-float-btn" class="wa-float" target="_blank" rel="noopener" data-i18n-aria="wa_aria" aria-label="Escríbenos por WhatsApp" data-wa-trigger data-wa-message="Hola, quiero información sobre el rediseño de mi cafetería con IA.">
   <span class="wa-float-pulse"></span>
   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" fill="white">
     <path d="M16.04 4C9.37 4 3.98 9.36 3.98 15.99c0 2.27.63 4.4 1.73 6.23L4 28l6.02-1.58a12.1 12.1 0 0 0 6.02 1.59h.01c6.67 0 12.06-5.36 12.06-11.99C28.1 9.36 22.71 4 16.04 4zm0 21.94h-.01a9.9 9.9 0 0 1-5.06-1.39l-.36-.21-3.58.94.96-3.5-.24-.36a9.86 9.86 0 0 1-1.52-5.27c0-5.49 4.49-9.96 10.02-9.96 5.52 0 10.01 4.47 10.01 9.96 0 5.5-4.49 9.95-10.02 9.95zm5.48-7.45c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.47-.89-.79-1.49-1.76-1.66-2.06-.17-.3-.02-.46.13-.61.14-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.06 2.87 1.21 3.07.15.2 2.09 3.2 5.08 4.48.71.31 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.08 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.13-.27-.2-.57-.35z"/>
   </svg>
 </a>
-<script>
-function initBannerModal() {
-  const bannerModal = document.getElementById('bannerModal');
-  const closeBannerBtn = document.getElementById('closeBannerBtn');
 
-  if (!bannerModal || !closeBannerBtn) {
-    console.warn('[Banner] bannerModal o closeBannerBtn no existen en el DOM');
-    return;
-  }
-
-  function closeBanner() { bannerModal.classList.add('hidden'); }
-  function openBanner()  { bannerModal.classList.remove('hidden'); }
-
-  closeBannerBtn.addEventListener('click', closeBanner);
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeBanner();
-  });
-
-  // Necesario porque tu HTML llama a closeBanner()/openBanner() vía onclick="" inline
-  window.closeBanner = closeBanner;
-  window.openBanner  = openBanner;
-}
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initBannerModal);
-} else {
-  initBannerModal();
-}
-</script>
    
 
   <!-- ===== i18n: auto-detect + manual toggle, + menú hamburguesa ===== -->
@@ -890,11 +912,12 @@ if (document.readyState === "loading") {
       es: {
         meta_title: "AceroStudio — Diseño, Código y Café",
         meta_description: "Estudio de diseño digital, desarrollo web y automatización con alma de café filtrado. Proyectamos marcas con estética técnica y funcional desde Bogotá.",
-        nav_home: "Inicio", nav_tech: "Tecnología", nav_coffee: "Café", nav_projects: "Proyectos", nav_b2b: "B2B", nav_blog: "Blog",
+        nav_home: "Inicio", nav_tech: "Tecnología", nav_redesign: "Rediseño IA", nav_calc: "Calculadora", nav_b2b: "B2B", nav_blog: "Blog",
         hero_annot_tr: "Reto activo · #aceropress50k<br>抽出 / extracción<br>反転式 / inversión",
         hero_eyebrow: "Reto activo · Bogotá, 2.600 msnm",
-        hero_h1: '.<br><br><span class="hot">ONE SHOT TO REDESING.</span>',
-        hero_sub: "Sigue nuestras publicaciones en Instagram.",
+        hero_h1: "DISEÑA TU ESPACIO.",
+        hero_sub: "Rediseño arquitectónico con IA para cafeterías y locales comerciales.",
+        hero_cta_primary: "REDISEÑA TU ESPACIO", hero_cta_secondary: "CALCULA TU LOCAL",
         hero_odo_label: "",
         hero_scroll_hint: "Explora",
         marquee: '<span class="mh">· Taza #012.847 </span><span>· Etiopía Yirgacheffe</span><span class="mc"> · 1:15 · 92°C </span><span>· Colombia Huila</span><span class="mh"> · 抽出 / extracción </span><span>· Brasil Cerrado</span><span class="mc"> · #aceropress50k </span><span>· Bourbon Rosado</span><span class="mh"> · 372 días restantes · </span><span>AeroPress Go™</span><span class="mc"> · Pink Bourbon · </span><span class="mh">· Taza #012.847 </span><span>· Etiopía Yirgacheffe</span><span class="mc"> · 1:15 · 92°C </span><span>· Colombia Huila</span><span class="mh"> · 抽出 / extracción </span><span>· Brasil Cerrado</span><span class="mc"> · #aceropress50k </span><span>· Bourbon Rosado</span><span class="mh"> · 372 días restantes · </span><span>AeroPress Go™</span><span class="mc"> · Pink Bourbon · </span>',
@@ -951,12 +974,20 @@ if (document.readyState === "loading") {
         ig4_lbl: "Reel — sesión 5 tazas · time-lapse", ig4_cap: "5 tazas · curvas de extracción",
         allies_title: "ALIADOS",
         ally_alt1: "Aliado 1", ally_alt2: "Aliado 2", ally_alt3: "Aliado 3", ally_alt4: "Aliado 4", ally_alt5: "Aliado 5",
-        b2b_fig: "FIG. 05 — PROGRAMA COMERCIAL", b2b_sec_lbl: "// Para empresas y profesionales", b2b_h2: "ALIANZAS COMERCIALES",
-        b2b_desc: "Programa comercial para restaurantes, hoteles, oficinas y baristas que necesitan trazabilidad completa y consistencia en cada entrega.",
-        b2b_card1_title: "Restaurantes", b2b_card1_desc: "Variedades curadas para carta de café. Ficha técnica, capacitación y entregas semanales.",
-        b2b_card2_title: "Hoteles", b2b_card2_desc: "Amenities con café de especialidad. Storytelling del productor para el huésped.",
-        b2b_card3_title: "Oficinas", b2b_card3_desc: "Café de especialidad como beneficio corporativo. Entregas quincenales y variedad rotativa.",
-        b2b_card4_title: "Baristas", b2b_card4_desc: "Acceso directo a lotes especiales. Especificaciones técnicas completas y precios de tostador.",
+        b2b_fig: "FIG. 05 — SERVICIOS CORPORATIVOS", b2b_sec_lbl: "// Para empresas, arquitectos y marcas", b2b_h2: "SOLUCIONES ENTERPRISE",
+        b2b_desc: "Infraestructura visual e inteligencia espacial para cadenas comerciales, firmas de arquitectura y desarrolladores que buscan acelerar la conversión de sus proyectos.",
+        b2b_card1_title: "Cadenas y Franquicias", b2b_card1_desc: "Estandarización de imagen e interiorismo para múltiples sedes. Análisis visual automatizado y propuestas conceptuales masivas.",
+        b2b_card2_title: "Estudios de Arquitectura", b2b_card2_desc: "Aceleración de anteproyectos con IA. Generación rápida de iteraciones estéticas y análisis de flujos comerciales para presentación a clientes.",
+        b2b_card3_title: "Real Estate & Commercial", b2b_card3_desc: "Visualización de potencial para locales desocupados. Renders comerciales inmediatos para agilizar el arrendamiento o venta de inmuebles.",
+        b2b_card4_title: "Gastronomía & Hospitality", b2b_card4_desc: "Optimización visual de barras, zonas de alto tráfico y comedores. Layouts técnicos enfocados en maximizar la capacidad y la experiencia del usuario.",
+        calc_fig: "FIG. 06 — PRE-DIMENSIONAMIENTO", calc_sec_lbl: "// Programa arquitectónico en segundos", calc_h2: "CALCULADORA ESPACIAL",
+        calc_desc: "Ingresa el área de tu local y el formato de negocio. Te damos un primer programa arquitectónico: zonas, aforo, mesas y metros de barra.",
+        calc_area: "Área útil del local", calc_format: "Formato", calc_fmt_takeaway: "Para llevar / barra", calc_fmt_tables: "Café con mesas", calc_fmt_cowork: "Café + coworking",
+        calc_kitchen: "Incluye cocina de producción", calc_out_seats: "Puestos", calc_out_tables: "Mesas aprox.", calc_out_bar: "Barra lineal", calc_out_wc: "Baños",
+        calc_zone_foh: "Salón", calc_zone_bar: "Barra / servicio", calc_zone_boh: "Cocina / bodega", calc_zone_wc: "Baños", calc_zone_circ: "Circulación",
+        calc_notes_title: "Recomendaciones",
+        calc_disclaimer: "Estimación orientativa basada en ratios de diseño comercial. No reemplaza la verificación de norma local (NSR-10, POT, bomberos) ni el levantamiento en sitio.",
+        calc_cta_wa: "Enviar a un asesor", calc_cta_chat: "Usarlo en mi rediseño IA",
         blog_fig: "FIG. 06 — CONTENIDO TÉCNICO", blog_sec_lbl: "// Arquitectura, IA y rediseño · jobs to be done", blog_h2: "Conocimiento",
         blog_desc: "Arquitectura, diseño de interiores y rediseño con inteligencia artificial aplicados al café de especialidad — pensado y escrito desde Bogotá.",
         blog1_tag: "Arquitectura", blog1_title: "Los 6 principios de arquitectura que hacen que una cafetería se sienta bien", blog1_ex: "Flujo de circulación, zonificación barra-mesas, acústica y luz natural definen la experiencia antes que cualquier elección de color. Un espacio bien zonificado reduce fricción en hora pico y hace que los clientes se queden más tiempo.",
@@ -965,6 +996,7 @@ if (document.readyState === "loading") {
         blog4_tag: "Tendencias 2026", blog4_title: "Las 5 tendencias de diseño de interiores que van a dominar las cafeterías en 2026", blog4_ex: "Minimalismo cálido, materiales honestos como acero y madera, iluminación circadiana y biofilia urbana lideran el cambio. La tendencia no es decorar más, es comunicar mejor con menos elementos.",
         blog5_tag: "Luz + Acústica", blog5_title: "Por qué el ruido y la luz importan más que la decoración en una cafetería", blog5_ex: "Un espacio con mala acústica se siente caótico aunque el diseño visual sea impecable, y la temperatura de color de la luz cambia cuánto tiempo percibe quedarse un cliente. Son de las primeras variables que un rediseño con IA debería resolver, antes que el color de las paredes.",
         blog6_tag: "Automatización", blog6_title: "n8n para negocios pequeños: automatizar redes sociales sin contratar un equipo de marketing", blog6_ex: "Un flujo simple conecta Telegram, almacenamiento en la nube y publicación nativa en Instagram, TikTok y YouTube. La automatización no reemplaza la creatividad, elimina el trabajo repetitivo.",
+        blog_fig: "FIG. 07 — CONTENIDO TÉCNICO",
         foot1_fig: "FIG. 07.1 — IDENTIDAD", foot1_body: "Startup aplicada al DISEÑO.  Finish: Brushed Chrome. Tolerancias: ±0.5mm.",
         foot2_fig: "FIG. 07.2 — ECOSISTEMA", foot2_h4: "Proyectos activos", foot2_line1: "Red hidropónica", foot2_line2: "Diario 50k tazas",
         foot3_body: "Packaging specs — layered storage & logistics data. Brand identification sistema activo.",
@@ -974,11 +1006,12 @@ if (document.readyState === "loading") {
       en: {
         meta_title: "AceroStudio — Design, Code & Coffee",
         meta_description: "A digital design, web development and automation studio with the soul of filter coffee. We build brands with technical, functional aesthetics from Bogotá.",
-        nav_home: "Home", nav_tech: "Technology", nav_coffee: "Coffee", nav_projects: "Projects", nav_b2b: "B2B", nav_blog: "Blog",
+        nav_home: "Home", nav_tech: "Technology", nav_redesign: "AI Redesign", nav_calc: "Calculator", nav_b2b: "B2B", nav_blog: "Blog",
         hero_annot_tr: "Active challenge · #aceropress50k<br>抽出 / extraction<br>反転式 / inversion",
         hero_eyebrow: "Active challenge · Bogotá, 2,600 masl",
-        hero_h1: '<br><br><span class="hot">ONE SHOT TO REDESING.</span>',
-        hero_sub: "Follow our posts on Instagram.",
+        hero_h1: "DESIGN YOUR SPACE.",
+        hero_sub: "AI-powered architectural redesign for coffee shops and retail spaces.",
+        hero_cta_primary: "REDESIGN YOUR SPACE", hero_cta_secondary: "SIZE YOUR SPACE",
         hero_odo_label: "",
         hero_scroll_hint: "Explore",
         marquee: '<span class="mh">· Cup #012.847 </span><span>· Ethiopia Yirgacheffe</span><span class="mc"> · 1:15 · 92°C </span><span>· Colombia Huila</span><span class="mh"> · 抽出 / extraction </span><span>· Brazil Cerrado</span><span class="mc"> · #aceropress50k </span><span>· Pink Bourbon</span><span class="mh"> · 372 days left · </span><span>AeroPress Go™</span><span class="mc"> · Pink Bourbon · </span><span class="mh">· Cup #012.847 </span><span>· Ethiopia Yirgacheffe</span><span class="mc"> · 1:15 · 92°C </span><span>· Colombia Huila</span><span class="mh"> · 抽出 / extraction </span><span>· Brazil Cerrado</span><span class="mc"> · #aceropress50k </span><span>· Pink Bourbon</span><span class="mh"> · 372 days left · </span><span>AeroPress Go™</span><span class="mc"> · Pink Bourbon · </span>',
@@ -1035,12 +1068,20 @@ if (document.readyState === "loading") {
         ig4_lbl: "Reel — 5-cup session · time-lapse", ig4_cap: "5 cups · extraction curves",
         allies_title: "PARTNERS",
         ally_alt1: "Partner 1", ally_alt2: "Partner 2", ally_alt3: "Partner 3", ally_alt4: "Partner 4", ally_alt5: "Partner 5",
-        b2b_fig: "FIG. 05 — COMMERCIAL PROGRAM", b2b_sec_lbl: "// For businesses and professionals", b2b_h2: "COMMERCIAL PARTNERSHIPS",
-        b2b_desc: "Commercial program for restaurants, hotels, offices and baristas who need full traceability and consistency in every delivery.",
-        b2b_card1_title: "Restaurants", b2b_card1_desc: "Curated varieties for your coffee menu. Technical sheet, training and weekly deliveries.",
-        b2b_card2_title: "Hotels", b2b_card2_desc: "Specialty-coffee amenities. Producer storytelling for your guests.",
-        b2b_card3_title: "Offices", b2b_card3_desc: "Specialty coffee as a corporate perk. Biweekly deliveries and rotating variety.",
-        b2b_card4_title: "Baristas", b2b_card4_desc: "Direct access to special lots. Full technical specs and roaster pricing.",
+        b2b_fig: "FIG. 05 — CORPORATE SERVICES", b2b_sec_lbl: "// For companies, architects and brands", b2b_h2: "ENTERPRISE SOLUTIONS",
+        b2b_desc: "Visual infrastructure and spatial intelligence for retail chains, architecture firms and developers looking to speed up project conversion.",
+        b2b_card1_title: "Chains & Franchises", b2b_card1_desc: "Consistent brand image and interiors across multiple locations. Automated visual analysis and concept proposals at scale.",
+        b2b_card2_title: "Architecture Studios", b2b_card2_desc: "AI-accelerated schematic design. Fast aesthetic iterations and retail flow analysis for client presentations.",
+        b2b_card3_title: "Real Estate & Commercial", b2b_card3_desc: "Show the potential of vacant units. Instant commercial renders to speed up leasing or sale.",
+        b2b_card4_title: "Food & Hospitality", b2b_card4_desc: "Visual optimization of bars, high-traffic zones and dining rooms. Technical layouts that maximize capacity and guest experience.",
+        calc_fig: "FIG. 06 — SPACE PLANNING", calc_sec_lbl: "// An architectural program in seconds", calc_h2: "SPACE CALCULATOR",
+        calc_desc: "Enter your space's area and business format. We give you a first architectural program: zones, capacity, tables and bar length.",
+        calc_area: "Usable floor area", calc_format: "Format", calc_fmt_takeaway: "Takeaway / bar", calc_fmt_tables: "Café with tables", calc_fmt_cowork: "Café + coworking",
+        calc_kitchen: "Includes production kitchen", calc_out_seats: "Seats", calc_out_tables: "Tables approx.", calc_out_bar: "Linear bar", calc_out_wc: "Restrooms",
+        calc_zone_foh: "Dining", calc_zone_bar: "Bar / service", calc_zone_boh: "Kitchen / storage", calc_zone_wc: "Restrooms", calc_zone_circ: "Circulation",
+        calc_notes_title: "Recommendations",
+        calc_disclaimer: "Indicative estimate based on commercial design ratios. It does not replace checking local building codes or an on-site survey.",
+        calc_cta_wa: "Send to an advisor", calc_cta_chat: "Use it in my AI redesign",
         blog_fig: "FIG. 06 — TECHNICAL CONTENT", blog_sec_lbl: "// Architecture, AI and redesign · jobs to be done", blog_h2: "Knowledge",
         blog_desc: "Architecture, interior design and AI-powered redesign applied to specialty coffee — thought and written from Bogotá.",
         blog1_tag: "Architecture", blog1_title: "The 6 architecture principles that make a coffee shop feel right", blog1_ex: "Circulation flow, bar-to-table zoning, acoustics and natural light shape the experience before any color choice does. A well-zoned space reduces friction at peak hours and keeps customers around longer.",
@@ -1049,6 +1090,7 @@ if (document.readyState === "loading") {
         blog4_tag: "2026 Trends", blog4_title: "The 5 interior design trends set to dominate coffee shops in 2026", blog4_ex: "Warm minimalism, honest materials like steel and wood, circadian lighting and urban biophilia lead the shift. The trend isn't decorating more, it's communicating better with less.",
         blog5_tag: "Light + Acoustics", blog5_title: "Why noise and light matter more than décor in a coffee shop", blog5_ex: "A space with poor acoustics feels chaotic even when the visual design is flawless, and light color temperature changes how long a customer feels like staying. These are among the first variables an AI redesign should solve, before wall color.",
         blog6_tag: "Automation", blog6_title: "n8n for small businesses: automating social media without hiring a marketing team", blog6_ex: "A simple flow connects Telegram, cloud storage and native publishing on Instagram, TikTok and YouTube. Automation doesn't replace creativity — it removes repetitive work.",
+        blog_fig: "FIG. 07 — TECHNICAL CONTENT",
         foot1_fig: "FIG. 07.1 — IDENTITY", foot1_body: "AI startup applied to DESING. Finish: Brushed Chrome. Tolerances: ±0.5mm.",
         foot2_fig: "FIG. 07.2 — ECOSYSTEM", foot2_h4: "Active projects", foot2_line1: "Hydroponic network", foot2_line2: "50k Cups diary",
         foot3_body: "Packaging specs — layered storage & logistics data. Brand identification system active.",
@@ -1160,8 +1202,8 @@ if (document.readyState === "loading") {
   <script>
   (function () {
     // ── ÚNICA FUENTE DE VERDAD ──
-    // TODO: reemplazar por el número real de AceroStudio, formato 57XXXXXXXXXX (código país + número, sin +, sin espacios).
-    window.ACERO_WHATSAPP_NUMBER = "57XXXXXXXXXX";
+    // Formato: código país + número, sin +, sin espacios.
+    window.ACERO_WHATSAPP_NUMBER = "573152125327";
     window.ACERO_WHATSAPP_DEFAULT_MESSAGE = "Hola, quiero información sobre el rediseño de mi cafetería con IA.";
 
     function buildWaLink(message) {
@@ -1204,7 +1246,7 @@ if (document.readyState === "loading") {
   })();
   </script>
 
-    <script src="js/main.js"></script>
+  <script src="js/calculadora.js"></script>
   <script src="js/rediseno-ia.js"></script>
   <script src="js/social-feed.js"></script>
 </body>
