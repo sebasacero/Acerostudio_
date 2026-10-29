@@ -338,14 +338,7 @@
   };
   function drawPics() { document.querySelectorAll('[data-iso]').forEach(function (el) { var fn = PICS[el.dataset.iso]; if (fn) el.innerHTML = fn(); }); }
 
-  /* ---------- lápiz de carpintero y leyenda de marcas ---------- */
-  var PENCIL = '<svg viewBox="0 0 620 90" role="img" aria-label="Lápiz rojo de carpintero dibujado en líneas rojas luminosas">' +
-    '<g filter="url(#rglow)" fill="none" stroke="#cf2a1f" stroke-linejoin="miter"><path d="M40 22 H520 V68 H40 Z" stroke-width="2"/><path d="M58 22 V68 M40 45 H520" stroke-width="1" opacity=".55"/>' +
-    '<path d="M520 22 L571 38 M520 68 L571 51" stroke-width="2"/><path d="M571 38 L582 45 L571 51 Z" fill="#cf2a1f" stroke-width="1.6"/><path d="M590 45 H612" stroke-width="2.4" stroke-dasharray="1" pathLength="1" class="dr"/></g>' +
-    '<path d="M532 26 L532 64 M546 30 L546 60" stroke="#cf2a1f" stroke-width="1" stroke-dasharray="3 3" opacity=".6"/><path d="M612 39 L618 45 L612 51 L606 45 Z" fill="#cf2a1f" filter="url(#rglow)"/>' +
-    '<text x="76" y="37" font-family="DM Mono,monospace" font-size="11" letter-spacing="3" fill="#cf2a1f">ACERO · STUDIO · TALLER · BOGOTÁ</text>' +
-    '<text x="76" y="61" font-family="DM Mono,monospace" font-size="10" letter-spacing="2" fill="#5f666d">LÁPIZ ROJO · CARPINTERO · 2H</text></svg>';
-  document.querySelectorAll('[data-pencil]').forEach(function (el) { el.classList.add('pencil'); el.innerHTML = PENCIL; });
+  /* ---------- leyenda de marcas ---------- */
   function drawMarks() {
     var box = $('marks'); if (!box) return;
     var st = 'fill="none" stroke="' + RED + '" stroke-width="1.8" stroke-linejoin="miter"';

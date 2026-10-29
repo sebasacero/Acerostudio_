@@ -13,6 +13,8 @@
   <meta name="keywords" content="AceroStudio, arquitectura en acero, estructuras metálicas, diseño arquitectónico con IA, render arquitectónico, Studio 3D, modelado 3D en el navegador, IFC, Revit, SketchUp, Blender, rediseño de espacios, interiorismo, Bogotá">
   <meta name="author" content="AceroStudio">
   <meta name="robots" content="index, follow">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="images/app/apple-touch-icon.png">
   <link rel="canonical" href="https://www.acerostudio.com/">
 
   <!-- Idiomas disponibles (contenido bilingüe ES/EN servido vía JS en la misma URL) -->
@@ -144,6 +146,7 @@
     <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú" aria-expanded="false" aria-controls="siteNav" data-i18n-attr="aria-label:nav_open"><span></span><span></span><span></span></button>
     <nav class="nav" id="siteNav" aria-label="Principal">
       <div class="nav-links">
+        <a href="#app" data-i18n="nav_appvid">La app</a>
         <a href="#como" data-i18n="nav_how">Cómo funciona</a>
         <a href="#proyectos" data-i18n="nav_projects">Proyectos</a>
         <a href="#plataforma" data-i18n="nav_platform">Plataforma</a>
@@ -167,7 +170,6 @@
   <div class="hero-c">
     <span class="pill mono"><b>IA</b><span data-i18n="hero_pill">Inteligencia de diseño para arquitectura · Bogotá</span></span>
     <h1 data-i18n="hero_h1">Diseña tu<br><span class="u">espacio</span><i>.</i></h1>
-    <div class="hero-pencil" data-pencil></div>
     <p class="lead" data-i18n="hero_lead">Subes una foto del espacio como está hoy y recibes una propuesta que respeta muros, ventanas y columnas. Y si vas a construir, lo diseñamos en acero: estructura, cantidades y un render que vende.</p>
     <div class="btns">
       <a class="btn pri" href="#rediseno" data-upload data-i18n="hero_cta1">Sube una foto →</a>
@@ -188,6 +190,36 @@
     <p class="hero-desc mute" id="heroDesc" aria-live="polite"></p>
   </div>
 </div></section>
+
+<!-- ========== 01b · LA APP: video de rediseño al instante ========== -->
+<section class="sec appvid" id="app" aria-labelledby="appTitle"><div class="w"><div class="appvid-g">
+  <div class="appvid-c">
+    <span class="fig" data-i18n="app_fig">Fig. 01 · La app acero.studio</span>
+    <h2 id="appTitle" data-i18n="app_h2">Apunta, toma la foto y tu diseño aparece al instante.</h2>
+    <p class="lead" data-i18n="app_lead">Instala acero.studio en tu celular, enfoca el espacio como está hoy y la IA lo rediseña completo: muros, vidrio, luz, mobiliario y estructura en acero.</p>
+    <ol class="appvid-steps" id="appSteps">
+      <li data-t="0"><span>1</span><div><b data-i18n="app_s1">Apunta al espacio</b><span data-i18n="app_s1p">Abre la app y enfoca el local tal como está.</span></div></li>
+      <li data-t="2"><span>2</span><div><b data-i18n="app_s2">La IA lo escanea</b><span data-i18n="app_s2p">Lee muros, vidrio, columnas y medidas.</span></div></li>
+      <li data-t="4"><span>3</span><div><b data-i18n="app_s3">Rediseña todo</b><span data-i18n="app_s3p">Estilo, materiales, luz y estructura en acero.</span></div></li>
+      <li data-t="6.5"><span>4</span><div><b data-i18n="app_s4">Diseño al instante</b><span data-i18n="app_s4p">Lo ves en tu pantalla y lo cotizas por WhatsApp.</span></div></li>
+    </ol>
+    <div class="btns">
+      <button type="button" class="btn pri" id="installBtn" data-i18n="app_install">Instala la app ↓</button>
+      <a class="btn" href="#rediseno" data-upload data-i18n="app_try">Pruébala aquí mismo</a>
+    </div>
+    <p class="mono appvid-note" id="installNote" data-i18n="app_note">Sin tiendas ni registro: se instala desde el navegador del celular.</p>
+  </div>
+  <figure class="phone" id="appPhone">
+    <div class="phone-scr">
+      <video id="appVideo" muted loop playsinline preload="metadata" poster="images/app/rediseno-app.webp" aria-label="Video: una persona fotografía un local vacío con la app y aparece el rediseño terminado" data-i18n-attr="aria-label:app_video_alt">
+        <source src="images/app/rediseno-app.mp4" type="video/mp4">
+      </video>
+      <div class="phone-hud mono"><span class="rec"></span><span>acero.studio</span><span id="appHudStep">1/4</span></div>
+      <div class="phone-cap"><b id="appCap">Apunta al espacio</b><i id="appBar"></i></div>
+      <button type="button" class="phone-play" id="appPlay" aria-label="Pausar video" data-i18n-attr="aria-label:app_pause">❚❚</button>
+    </div>
+  </figure>
+</div></div></section>
 
 <div class="band" aria-hidden="true"></div>
 <div class="ticker mono" aria-hidden="true"><div class="row">
@@ -496,6 +528,7 @@
 <!-- Idioma ES/EN, menú y WhatsApp (va primero: define buildWaLink y <html lang>) -->
 <script src="js/i18n.js"></script>
 <script src="js/acero.js"></script>
+<script src="js/app-video.js"></script>
 <script src="js/rediseno-ia.js"></script>
 <script type="module" src="js/calculadora-acero.js"></script>
 </body>
