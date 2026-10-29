@@ -1,17 +1,17 @@
 /**
  * js/rediseno-ia.js
  * ─────────────────────────────────────────────────────────────
- * Chat de rediseño — sección "story/chat" de acero.press
+ * Chat de rediseño — sección "Sube una foto" (#rediseno) de acero.studio
  * Flujo: foto → estilo → tipo de espacio → sube a Supabase Storage
  *        → botón WhatsApp (con el brief + pre-dimensionamiento si existe)
  * (sin IA — el rediseño lo hace el equipo manualmente al recibir
  * el mensaje de WhatsApp con la foto).
  *
- * Usa el sistema de diseño YA existente en css/chat.css:
+ * Usa el sistema de diseño de css/acero.css (Lápiz Rojo):
  * .row / .bubble (bot|user), .chips / .chip, .cta-btn (+ .ghost),
  * .scan-wrap / .scan-line / .scan-label, .result-tag, .fig-tag.
  * No se inventan clases nuevas de color — todo hereda las
- * variables --accent / --cyan / --panel / --ink del sitio.
+ * variables --red / --ink / --steel-l del sitio.
  * ─────────────────────────────────────────────────────────────
  */
 
@@ -34,7 +34,7 @@ const IA_JPEG_QUALITY = 0.85;
 const IA_TEXT = {
   es: {
     styles: ["Industrial", "Minimalista", "Cálido / Madera", "Escandinavo", "Tropical"],
-    spaces: ["Interior completo", "Fachada", "Barra", "Interior + fachada"],
+    spaces: ["Interior completo", "Fachada", "Estructura en acero", "Interior + fachada"],
     state: 'estado', st_photo: 'foto recibida', st_space: 'tipo de espacio', st_upload: 'subiendo foto',
     st_contact: 'contacto', st_welcome: 'bienvenida',
     photo_alt: 'Foto subida',
@@ -63,7 +63,7 @@ const IA_TEXT = {
   },
   en: {
     styles: ["Industrial", "Minimalist", "Warm / Wood", "Scandinavian", "Tropical"],
-    spaces: ["Full interior", "Façade", "Bar", "Interior + façade"],
+    spaces: ["Full interior", "Façade", "Steel structure", "Interior + façade"],
     state: 'status', st_photo: 'photo received', st_space: 'space type', st_upload: 'uploading photo',
     st_contact: 'contact', st_welcome: 'welcome',
     photo_alt: 'Uploaded photo',

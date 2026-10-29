@@ -8,21 +8,21 @@
   </url>
 
   <url>
-    <loc>https://www.acerostudio.com/cafe.html</loc>
+    <loc>https://www.acerostudio.com/studio/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://www.acerostudio.com/press.html</loc>
-    <changefreq>weekly</changefreq>
+    <loc>https://www.acerostudio.com/explorador.html</loc>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://www.acerostudio.com/floatgardens.html</loc>
+    <loc>https://www.acerostudio.com/presentacion.html</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.6</priority>
   </url>
 
   <!--
@@ -30,7 +30,7 @@
     agrégalo aquí con su URL real, por ejemplo:
 
   <url>
-    <loc>https://www.acerostudio.com/blog/principios-arquitectura-cafeteria.html</loc>
+    <loc>https://www.acerostudio.com/blog/por-que-construir-en-acero.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

@@ -8,7 +8,7 @@ import { model, sampleDoc, emptyDoc, uid, fmt, wallLength, polygonArea, translat
 import { MATERIALS } from './materials.js';
 import { buildElement, setEdgesVisible, settings, parseAsset, registerAsset, setOnAssetReady } from './builders.js';
 import { planGeometry, columnSection } from './plan.js';
-import { PROFILES, PROFILE_GROUPS, profileLabel, steelTakeoff, memberLength } from './steel.js';
+import { PROFILES, PROFILE_GROUPS, profileLabel, steelTakeoff, memberLength, steelBuilding, STEEL_DEFAULTS, STEEL_TYPES } from './steel.js';
 import { createTools, DEFAULTS } from './tools.js';
 import { createTour } from './tour.js';
 import { download, slug, exportJSON, exportGLB, exportOBJ, planDXF, planSVG, exportPNG } from './exporters.js';
@@ -794,6 +794,23 @@ const iaCtx = { model, toast, anim, after: () => setView('3d'), exportGLB: () =>
   // Recién creado en acero: render comercial en hora dorada con la toma héroe.
   showcase: () => { setRender(true); setMood('dorada'); look.frame('heroe', persp, orbit3d); } };
 $$('[data-ia]').forEach((b) => b.addEventListener('click', () => { b.closest('details').open = false; IA[b.dataset.ia](); }));
+
+// Enlaces desde la web: ?tipo=edificio&floors=5&spanX=7.5… crea la estructura en acero y abre el render
+// comercial; ?crear=acero|plano|foto|param abre "Crear ✦" en esa pestaña.
+const qs = new URLSearchParams(location.search);
+if (qs.has('tipo') && STEEL_TYPES[qs.get('tipo')]) {
+  const p = {};
+  for (const [k, v] of qs) if (k in STEEL_DEFAULTS) {
+    const def = STEEL_DEFAULTS[k];
+    p[k] = typeof def === 'number' ? +v || def : typeof def === 'boolean' ? !['0', 'false', ''].includes(v) : v;
+  }
+  const d = steelBuilding(p), t = steelTakeoff(d);
+  model.load(d);
+  iaCtx.after();
+  iaCtx.showcase();
+  toast(`${d.name} · ${fmt(t.kg / 1000, 1)} t de acero · ${fmt(t.area, 0)} m²`);
+} else if (IA[qs.get('crear')]) IA[qs.get('crear')]();
+if (qs.has('tipo') || qs.has('crear')) history.replaceState(null, '', location.pathname);
 addEventListener('keydown', (e) => { if (anim.active && e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); anim.stop(); } }, true);
 
 const clock = new THREE.Clock();
