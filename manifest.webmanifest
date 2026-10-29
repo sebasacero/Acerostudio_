@@ -1,0 +1,16 @@
+{
+  "name": "acero.studio · Rediseño con IA",
+  "short_name": "acero.studio",
+  "description": "Toma una foto de tu espacio y recibe al instante un rediseño con estructura en acero.",
+  "lang": "es-CO",
+  "start_url": "./?app=1#rediseno",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#cf2a1f",
+  "icons": [
+    { "src": "images/app/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "images/app/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "images/app/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

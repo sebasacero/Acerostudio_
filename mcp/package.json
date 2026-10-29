@@ -1,0 +1,23 @@
+{
+  "name": "acerostudio-mcp",
+  "version": "0.1.0",
+  "description": "Servidor MCP de AceroStudio: crea y edita modelos arquitectónicos, lee planos y los envía a Blender, Revit, SketchUp, 3ds Max y AutoCAD.",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "acerostudio-mcp": "server.mjs"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "jpeg-js": "^0.4.4",
+    "pngjs": "^7.0.0",
+    "zod": "^4.6.7"
+  }
+}

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>AceroStudio · Studio</title>
+  <meta name="description" content="Software de diseño arquitectónico en el navegador: muros, losas, columnas, vanos, niveles, capas, cortes, cotas y exportación GLB, OBJ, DXF y SVG.">
+  <link rel="icon" href="../images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=DM+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="css/studio.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <header class="top">
+    <a class="lg" href="../index.html" title="Volver a acerostudio.com">acero<i>.</i>studio</a>
+    <span class="tag mono">Studio · v0.3</span>
+    <input class="pname" id="pname" aria-label="Nombre del proyecto" spellcheck="false">
+    <div class="grp">
+      <button class="ic" id="undo" title="Deshacer (Ctrl+Z)" aria-label="Deshacer"><svg viewBox="0 0 24 24"><path d="M9 7 4 12l5 5M4 12h10a6 6 0 0 1 0 12"/></svg></button>
+      <button class="ic" id="redo" title="Rehacer (Ctrl+Y)" aria-label="Rehacer"><svg viewBox="0 0 24 24"><path d="m15 7 5 5-5 5M20 12H10a6 6 0 0 0 0 12"/></svg></button>
+    </div>
+    <div class="grp views" role="group" aria-label="Vistas">
+      <button data-view="3d" aria-pressed="true" title="Vista 3D (1)">3D</button>
+      <button data-view="planta" title="Planta (2)">Planta</button>
+      <button data-view="alzado" title="Alzado sur (3)">Alzado</button>
+      <button data-view="lateral" title="Alzado este (4)">Lateral</button>
+    </div>
+    <div class="grp right">
+      <details class="menu ia">
+        <summary>Crear ✦</summary>
+        <div class="dd">
+          <span class="k">Imagen o dibujo → 3D</span>
+          <button data-ia="acero">Estructura en acero (edificio, nave, pabellón, casa)…</button>
+          <button data-ia="plano">Plano o boceto → modelo 3D…</button>
+          <button data-ia="foto">Foto de edificio → modelo 3D…</button>
+          <button data-ia="param">Edificio paramétrico…</button>
+          <hr><span class="k">Presentar</span>
+          <button data-ia="animar">Animación automática (video)…</button>
+          <button data-ia="visor">Visor 3D interactivo (.html)</button>
+          <hr><span class="k">Complementos y MCP</span>
+          <button data-ia="conectar">Revit, AutoCAD, SketchUp, 3ds Max, Blender…</button>
+        </div>
+      </details>
+      <details class="menu" id="fileMenu">
+        <summary>Archivo</summary>
+        <div class="dd">
+          <button data-act="new">Nuevo proyecto</button>
+          <button data-act="sample">Abrir local de ejemplo</button>
+          <button data-act="open">Abrir proyecto (.json)…</button>
+          <button data-act="save">Guardar proyecto (.json)</button>
+          <hr>
+          <button data-act="import">Importar modelo 3D (GLB, glTF, OBJ)…</button>
+          <hr>
+          <button data-act="glb">Exportar GLB (Blender, SketchUp, web)</button>
+          <button data-act="obj">Exportar OBJ</button>
+          <button data-act="ifc">Exportar IFC 4 (Revit, ArchiCAD, Tekla)</button>
+          <button data-act="dxf">Exportar planta DXF (AutoCAD, Revit)</button>
+          <button data-act="dxf3d">Exportar modelo 3D DXF (AutoCAD, 3ds Max)</button>
+          <button data-act="solids">Exportar sólidos (.acero-solids.json)</button>
+          <button data-act="svg">Exportar planta SVG 1:100</button>
+          <button data-act="png">Exportar vista PNG</button>
+          <button data-act="hd">Render HD 4K (PNG)</button>
+          <button data-act="sheet">Lámina de venta (PNG)</button>
+        </div>
+      </details>
+      <button class="pill ghost" id="walkBtn" title="Camina por el modelo a la altura de los ojos (K)">Caminar</button>
+      <button class="pill ghost" id="tourBtn" title="Sobrevuelo cinemático con el sol de 7:00 a 17:00">▶ Recorrido</button>
+      <button class="pill" id="renderBtn" aria-pressed="false" title="Sombras, sol y materiales realistas">Render</button>
+    </div>
+  </header>
+  <div class="band" aria-hidden="true"></div>
+
+  <div class="app">
+    <nav class="tools" aria-label="Herramientas">
+      <button data-tool="select" title="Seleccionar y mover (V)"><svg viewBox="0 0 24 24"><path d="M5 3l14 8-6 2-2 6z"/></svg><span>Selec.</span><kbd>V</kbd></button>
+      <button data-tool="wall" title="Muro (W)"><svg viewBox="0 0 24 24"><path d="M3 18h18M3 13h18M7 13v5M15 13v5M11 8v5M3 8h18v10H3z"/></svg><span>Muro</span><kbd>W</kbd></button>
+      <button data-tool="slab" title="Losa / piso (L)"><svg viewBox="0 0 24 24"><path d="M2 14l10-5 10 5-10 5z M2 14v2l10 5 10-5v-2"/></svg><span>Losa</span><kbd>L</kbd></button>
+      <button data-tool="box" title="Volumen (B)"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9zM12 12l8-4.5M12 12v9M12 12 4 7.5"/></svg><span>Volumen</span><kbd>B</kbd></button>
+      <button data-tool="column" title="Columna de acero (C)"><svg viewBox="0 0 24 24"><path d="M7 3h10M7 21h10M12 3v18M7 3v2h10V3M7 21v-2h10v2"/></svg><span>Columna</span><kbd>C</kbd></button>
+      <button data-tool="beam" title="Viga de acero (J)"><svg viewBox="0 0 24 24"><path d="M2 8h20M2 16h20M12 8v8M2 8v1.5h20V8M2 16v-1.5h20V16"/></svg><span>Viga</span><kbd>J</kbd></button>
+      <button data-tool="door" title="Puerta (P)"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V4h9v16M12 12h1"/></svg><span>Puerta</span><kbd>P</kbd></button>
+      <button data-tool="window" title="Ventana (N)"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM12 4v16M4 12h16"/></svg><span>Ventana</span><kbd>N</kbd></button>
+      <button data-tool="dim" title="Cota en lápiz rojo (M)"><svg viewBox="0 0 24 24"><path d="M3 16h18M3 12v8M21 12v8M8 16l-2-1.5M8 16l-2 1.5"/></svg><span>Cota</span><kbd>M</kbd></button>
+    </nav>
+
+    <main class="vp" id="vp">
+      <div class="hint mono" id="hint"></div>
+      <div class="cursorTag mono" id="snapTag" hidden></div>
+      <div class="hud mono">
+        <label class="tg"><input type="checkbox" id="secOn"> Corte</label>
+        <input type="range" id="secH" min="0.1" max="12" step="0.05" value="1.2" aria-label="Altura del corte">
+        <span id="secVal">1,20 m</span>
+        <label class="tg hide-sm"><input type="checkbox" id="edgesOn" checked> Aristas</label>
+        <label class="hide-sm">Rejilla
+          <select id="grid"><option value="0.01">1 cm</option><option value="0.05" selected>5 cm</option><option value="0.1">10 cm</option><option value="0.5">50 cm</option><option value="1">1 m</option></select>
+        </label>
+      </div>
+      <div class="sun mono" id="sunBox" hidden>
+        <label>Sol <input type="range" id="sunH" min="6" max="18" step="0.25" value="10"></label><span id="sunVal">10:00</span>
+        <select id="sunD" aria-label="Fecha"><option value="80">21 mar</option><option value="172" selected>21 jun</option><option value="266">23 sep</option><option value="355">21 dic</option></select>
+        <span class="mute">Bogotá 4,6° N</span>
+        <select id="mood" aria-label="Ambiente"><option value="dorada" selected>Hora dorada</option><option value="mediodia">Mediodía</option><option value="azul">Hora azul</option></select>
+        <label class="tg"><input type="checkbox" id="envOn" checked> Entorno</label>
+        <span class="shots"><button class="btn sm" data-shot="heroe" title="Peatón 3/4 con verticales rectas">Héroe</button><button class="btn sm" data-shot="frontal">Frontal</button><button class="btn sm" data-shot="aerea">Aérea</button><button class="btn sm" data-shot="detalle" title="Detalle de la estructura">Detalle</button></span>
+        <button class="btn sm" id="hdBtn" title="Imagen 3840 × 2160">Imagen HD</button>
+        <button class="pill sm" id="sheetBtn" title="Render con la ficha del proyecto para el cliente">Lámina de venta</button>
+      </div>
+      <form class="vcb mono" id="vcb" autocomplete="off">
+        <label for="vcbIn" id="vcbLbl">Medida</label>
+        <input id="vcbIn" inputmode="decimal" placeholder="—">
+      </form>
+    </main>
+
+    <aside class="side" id="side">
+      <div class="tabs" role="tablist">
+        <button role="tab" data-tab="props" aria-selected="true">Propiedades</button>
+        <button role="tab" data-tab="layers">Capas</button>
+        <button role="tab" data-tab="levels">Niveles</button>
+        <button role="tab" data-tab="qty">Cantidades</button>
+      </div>
+      <section class="pane" data-pane="props" id="props"></section>
+      <section class="pane" data-pane="layers" id="layers" hidden></section>
+      <section class="pane" data-pane="levels" id="levels" hidden></section>
+      <section class="pane" data-pane="qty" id="qty" hidden></section>
+    </aside>
+  </div>
+
+  <footer class="status mono">
+    <span id="coords">x 0,00 · z 0,00</span>
+    <span id="stat"></span>
+    <span class="mute">Arrastra para orbitar · clic derecho para desplazar · rueda para zoom · escribe una medida y Enter</span>
+  </footer>
+
+  <input type="file" id="fileJSON" accept=".json,application/json" hidden>
+  <input type="file" id="fileModel" accept=".glb,.gltf,.obj" hidden>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
