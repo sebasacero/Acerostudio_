@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- ================================================================= -->
+  <!-- SEO, METADATOS Y RECURSOS — ACEROSTUDIO                            -->
+  <!-- ================================================================= -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>AceroStudio — Inteligencia de diseño para arquitectura en acero</title>
+
+  <!-- SEO Orgánico Estándar -->
+  <meta name="description" content="AceroStudio es inteligencia de diseño para arquitectura: estructuras en acero, renders comerciales, Studio 3D en el navegador y rediseño de espacios a partir de una foto. Desde Bogotá." id="metaDescription">
+  <meta name="keywords" content="AceroStudio, arquitectura en acero, estructuras metálicas, diseño arquitectónico con IA, render arquitectónico, Studio 3D, modelado 3D en el navegador, IFC, Revit, SketchUp, Blender, rediseño de espacios, interiorismo, Bogotá">
+  <meta name="author" content="AceroStudio">
+  <meta name="robots" content="noindex, follow">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="images/app/apple-touch-icon.png">
+  <link rel="canonical" href="https://www.acerostudio.com/clasico.html">
+
+  <!-- Idiomas disponibles (contenido bilingüe ES/EN servido vía JS en la misma URL) -->
+  <link rel="alternate" hreflang="es" href="https://www.acerostudio.com/">
+  <link rel="alternate" hreflang="en" href="https://www.acerostudio.com/">
+  <link rel="alternate" hreflang="x-default" href="https://www.acerostudio.com/">
+
+  <!-- Open Graph / Facebook / LinkedIn -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.acerostudio.com/">
+  <meta property="og:site_name" content="AceroStudio">
+  <meta property="og:locale" content="es_CO">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:title" content="AceroStudio — Diseña tu espacio en acero">
+  <meta property="og:description" content="Estructuras en acero predimensionadas, renders que venden y un Studio 3D en el navegador. Sube una foto de tu espacio y recibe la propuesta marcada con el lápiz rojo.">
+  <meta property="og:image" content="https://www.acerostudio.com/images/og-preview.jpg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://www.acerostudio.com/">
+  <meta name="twitter:title" content="AceroStudio — Diseña tu espacio en acero">
+  <meta name="twitter:description" content="Estructuras en acero, renders comerciales y Studio 3D en el navegador. Desde Bogotá.">
+  <meta name="twitter:image" content="https://www.acerostudio.com/images/og-preview.jpg">
+
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <meta name="theme-color" content="#ffffff">
+
+  <!-- Fuentes: Bricolage Grotesque (títulos), DM Mono (etiquetas técnicas), Permanent Marker (".studio") -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,800&family=DM+Mono:wght@400;500&family=Permanent+Marker&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="images/acero/edificio-hora-dorada.webp" fetchpriority="high">
+
+  <link rel="stylesheet" href="css/acero.css">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6F6S72KWWQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-6F6S72KWWQ');
+  </script>
+
+  <!-- Datos estructurados schema.org — ayuda a Google (rich results) y a los LLMs a entender qué es AceroStudio -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "LocalBusiness",
+        "@id": "https://www.acerostudio.com/#organization",
+        "name": "AceroStudio",
+        "alternateName": "Acero.studio",
+        "url": "https://www.acerostudio.com/",
+        "logo": "https://www.acerostudio.com/images/logo.png",
+        "image": "https://www.acerostudio.com/images/og-preview.jpg",
+        "description": "Inteligencia de diseño para arquitectura en Bogotá: estructuras en acero predimensionadas, renders comerciales, un Studio 3D en el navegador y rediseño de espacios a partir de una foto.",
+        "address": { "@type": "PostalAddress", "addressLocality": "Bogotá", "addressCountry": "CO" },
+        "areaServed": { "@type": "City", "name": "Bogotá" },
+        "telephone": "+57 315 212 5327",
+        "priceRange": "$$"
+      },
+      {
+        "@type": "Service",
+        "@id": "https://www.acerostudio.com/#service-acero",
+        "name": "Diseño de estructuras en acero",
+        "serviceType": "Arquitectura y predimensionamiento de estructuras metálicas",
+        "provider": { "@id": "https://www.acerostudio.com/#organization" },
+        "areaServed": { "@type": "City", "name": "Bogotá" },
+        "description": "Edificios, casas, naves y pabellones en acero: perfiles HEB, IPE y tubulares predimensionados, cantidades de acero, render comercial y exportación a IFC, Revit, SketchUp y Blender."
+      },
+      {
+        "@type": "Service",
+        "@id": "https://www.acerostudio.com/#service-rediseno",
+        "name": "Rediseño de espacios con IA",
+        "serviceType": "Diseño de interiores y fachadas con inteligencia artificial",
+        "provider": { "@id": "https://www.acerostudio.com/#organization" },
+        "description": "Subes una foto real del espacio, eliges un estilo y recibes una propuesta que respeta muros, ventanas y columnas, con acompañamiento por WhatsApp hasta la obra."
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://www.acerostudio.com/#studio",
+        "name": "AceroStudio Studio 3D",
+        "applicationCategory": "DesignApplication",
+        "operatingSystem": "Web",
+        "url": "https://www.acerostudio.com/studio/",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "COP" }
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://www.acerostudio.com/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "¿Cómo funciona el rediseño con IA de AceroStudio?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Subes una foto real de tu espacio, eliges un estilo y el alcance (interior, fachada o estructura en acero), y nuestro equipo te escribe por WhatsApp con la propuesta. La estructura real se respeta: muros, ventanas y columnas no se mueven." }
+          },
+          {
+            "@type": "Question",
+            "name": "¿AceroStudio diseña en acero?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Sí. Todo lo que genera AceroStudio es estructura en acero: columnas HEB, vigas IPE, tubos, cerchas y losa sobre steel deck, con cantidades de acero en toneladas y kg/m². El predimensionamiento es orientativo y no reemplaza el cálculo estructural." }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Con qué programas es compatible?",
+            "acceptedAnswer": { "@type": "Answer", "text": "El Studio 3D exporta IFC 4 para Revit y ArchiCAD, DXF para AutoCAD, GLB y OBJ, y tiene conectores para SketchUp, Blender y 3ds Max, además de un servidor MCP para asistentes de IA." }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Dónde está ubicado AceroStudio?",
+            "acceptedAnswer": { "@type": "Answer", "text": "AceroStudio opera desde Bogotá, Colombia, a 2.600 metros sobre el nivel del mar." }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+<!-- Filtro de brillo del lápiz rojo (lo usan los diagramas) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rglow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.4" result="b"/><feComponentTransfer in="b" result="bb"><feFuncA type="linear" slope=".75"/></feComponentTransfer><feMerge><feMergeNode in="bb"/><feMergeNode in="SourceGraphic"/></feMerge></filter></svg>
+
+<!-- ========== CABECERA ========== -->
+<header class="site-hdr" id="main-header">
+  <div class="w">
+    <a class="lg" href="#inicio" aria-label="ACERO.studio, inicio"><img src="images/logo-web.png" alt="ACERO" width="118" height="44"><span>.studio</span></a>
+    <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú" aria-expanded="false" aria-controls="siteNav" data-i18n-attr="aria-label:nav_open"><span></span><span></span><span></span></button>
+    <nav class="nav" id="siteNav" aria-label="Principal">
+      <div class="nav-links">
+        <a href="#app" data-i18n="nav_appvid">La app</a>
+        <a href="#como" data-i18n="nav_how">Cómo funciona</a>
+        <a href="#proyectos" data-i18n="nav_projects">Proyectos</a>
+        <a href="#plataforma" data-i18n="nav_platform">Plataforma</a>
+        <a href="#calculadora" data-i18n="nav_calc">Calculadora</a>
+        <a href="#acero" data-i18n="nav_steel">Acero</a>
+        <a href="#b2b" data-i18n="nav_b2b">Empresas</a>
+        <a href="studio/" class="nav-app">Studio 3D</a>
+      </div>
+      <div class="lang-switch" id="langSwitch" role="group" aria-label="Idioma / Language">
+        <button type="button" class="lang-btn" data-lang="es">ES</button>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
+      </div>
+      <a class="btn pri sm" href="#rediseno" data-upload data-i18n="cta_upload">Sube una foto</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<!-- ========== 01 · INICIO ========== -->
+<section class="hero" id="inicio"><div class="w">
+  <div class="hero-c">
+    <span class="pill mono"><b>IA</b><span data-i18n="hero_pill">Inteligencia de diseño para arquitectura · Bogotá</span></span>
+    <h1 data-i18n="hero_h1">Diseña tu<br><span class="u">espacio</span><i>.</i></h1>
+    <p class="lead" data-i18n="hero_lead">Subes una foto del espacio como está hoy y recibes una propuesta que respeta muros, ventanas y columnas. Y si vas a construir, lo diseñamos en acero: estructura, cantidades y un render que vende.</p>
+    <div class="btns">
+      <a class="btn pri" href="#rediseno" data-upload data-i18n="hero_cta1">Sube una foto →</a>
+      <a class="btn" href="studio/?crear=acero" data-i18n="hero_cta2">Crea tu estructura en acero</a>
+    </div>
+    <div class="meta mono">
+      <span data-i18n="hero_m1k">Ejemplo</span><span data-i18n="hero_m1v">Local de ~38 m² · columna de acero · 2 ventanas</span>
+      <span data-i18n="hero_m2k">Entrega</span><span data-i18n="hero_m2v">Diagnóstico → propuesta · 72 h</span>
+    </div>
+  </div>
+  <div class="stage">
+    <div class="model brushed" id="heroModel">
+      <div class="cap"><span class="mono" id="heroStep">Paso 1 de 4</span><b id="heroTitle">Tu espacio hoy</b></div>
+      <div class="legend mono" id="heroLegend"></div>
+      <div id="heroSvg"></div>
+    </div>
+    <div class="seq" id="seq" role="group" aria-label="Secuencia del rediseño" data-i18n-attr="aria-label:hero_seq"></div>
+    <p class="hero-desc mute" id="heroDesc" aria-live="polite"></p>
+  </div>
+</div></section>
+
+<!-- ========== 01b · LA APP: video de rediseño al instante ========== -->
+<section class="sec appvid" id="app" aria-labelledby="appTitle"><div class="w"><div class="appvid-g">
+  <div class="appvid-c">
+    <span class="fig" data-i18n="app_fig">Fig. 01 · La app acero.studio</span>
+    <h2 id="appTitle" data-i18n="app_h2">Apunta, toma la foto y tu diseño aparece al instante.</h2>
+    <p class="lead" data-i18n="app_lead">Instala acero.studio en tu celular, enfoca el espacio como está hoy y la IA lo rediseña completo: muros, vidrio, luz, mobiliario y estructura en acero.</p>
+    <ol class="appvid-steps" id="appSteps">
+      <li data-t="0"><span>1</span><div><b data-i18n="app_s1">Apunta al espacio</b><span data-i18n="app_s1p">Abre la app y enfoca el local tal como está.</span></div></li>
+      <li data-t="2"><span>2</span><div><b data-i18n="app_s2">La IA lo escanea</b><span data-i18n="app_s2p">Lee muros, vidrio, columnas y medidas.</span></div></li>
+      <li data-t="4"><span>3</span><div><b data-i18n="app_s3">Rediseña todo</b><span data-i18n="app_s3p">Estilo, materiales, luz y estructura en acero.</span></div></li>
+      <li data-t="6.5"><span>4</span><div><b data-i18n="app_s4">Diseño al instante</b><span data-i18n="app_s4p">Lo ves en tu pantalla y lo cotizas por WhatsApp.</span></div></li>
+    </ol>
+    <div class="btns">
+      <button type="button" class="btn pri" id="installBtn" data-i18n="app_install">Instala la app ↓</button>
+      <a class="btn" href="#rediseno" data-upload data-i18n="app_try">Pruébala aquí mismo</a>
+    </div>
+    <p class="mono appvid-note" id="installNote" data-i18n="app_note">Sin tiendas ni registro: se instala desde el navegador del celular.</p>
+  </div>
+  <figure class="phone" id="appPhone">
+    <div class="phone-scr">
+      <video id="appVideo" muted loop playsinline preload="metadata" poster="images/app/rediseno-app.webp" aria-label="Video: una persona fotografía un local vacío con la app y aparece el rediseño terminado" data-i18n-attr="aria-label:app_video_alt">
+        <source src="images/app/rediseno-app.mp4" type="video/mp4">
+      </video>
+      <div class="phone-hud mono"><span class="rec"></span><span>acero.studio</span><span id="appHudStep">1/4</span></div>
+      <div class="phone-cap"><b id="appCap">Apunta al espacio</b><i id="appBar"></i></div>
+      <button type="button" class="phone-play" id="appPlay" aria-label="Pausar video" data-i18n-attr="aria-label:app_pause">❚❚</button>
+    </div>
+  </figure>
+</div></div></section>
+
+<div class="band" aria-hidden="true"></div>
+<div class="ticker mono" aria-hidden="true"><div class="row">
+  <span>Acero estructural A36</span><span><b>7.850 kg/m³</b></span><span>Módulo de elasticidad <b>200 GPa</b></span><span>Columnas <b>HEB</b> · vigas <b>IPE</b></span><span>Losa sobre <b>steel deck</b></span><span>Revenido <b>204–330 °C</b></span><span>IFC 4 · DXF · GLB</span><span>100 % reciclable</span>
+  <span>Acero estructural A36</span><span><b>7.850 kg/m³</b></span><span>Módulo de elasticidad <b>200 GPa</b></span><span>Columnas <b>HEB</b> · vigas <b>IPE</b></span><span>Losa sobre <b>steel deck</b></span><span>Revenido <b>204–330 °C</b></span><span>IFC 4 · DXF · GLB</span><span>100 % reciclable</span>
+</div></div>
+
+<!-- ========== 02 · VISOR: render comercial con marcas rojas ========== -->
+<section class="visor" aria-labelledby="visorTitle">
+  <figure class="visor-fig" id="visorFig">
+    <img src="images/acero/edificio-hora-dorada.webp" width="1920" height="1080" alt="Render en hora dorada de un edificio de cinco pisos en acero, con pórticos HEB, vigas IPE, cruces de San Andrés, muro cortina y pérgola" data-i18n-attr="alt:visor_alt">
+    <div class="hs-panel" id="hsPanel" hidden aria-live="polite"></div>
+  </figure>
+  <div class="visor-top"><div class="w">
+    <div>
+      <span class="mono kick" data-i18n="visor_kick">Fig. 02 · Render comercial · toca los rombos</span>
+      <h2 id="visorTitle" data-i18n="visor_h2">Todo lo que diseñamos es <i>acero</i>.</h2>
+    </div>
+    <div class="visor-stats">
+      <span><b>94,5 t</b><span data-i18n="visor_s1">de acero</span></span>
+      <span><b>1.566 m²</b><span data-i18n="visor_s2">construidos</span></span>
+      <span><b>60</b><span>kg/m²</span></span>
+    </div>
+  </div></div>
+  <div class="visor-bar"><div class="w">
+    <p data-i18n="visor_p">Edificio de 5 pisos generado en el Studio 3D: columnas HEB 300, vigas IPE 400 y losa sobre steel deck, renderizado en Blender a la hora dorada.</p>
+    <div class="btns">
+      <a class="btn pri" href="studio/?tipo=edificio" data-i18n="visor_cta1">Ábrelo en el Studio 3D</a>
+      <a class="btn" href="#calculadora" data-i18n="visor_cta2">Calcula tu estructura</a>
+    </div>
+  </div></div>
+</section>
+
+<!-- ========== 03 · CÓMO FUNCIONA ========== -->
+<section class="sec brushed" id="como"><div class="w">
+  <div class="head"><div><span class="fig" data-i18n="how_fig">Fig. 03 · Cómo funciona</span><h2 data-i18n="how_h2">Tu espacio, reinventado antes de mover un ladrillo.</h2></div><p class="lead" data-i18n="how_lead">acero.studio convierte una foto real de tu espacio en una propuesta de rediseño, y te conecta directo con un asesor para llevarla a obra en acero.</p></div>
+  <div class="comic">
+    <div class="panel"><div class="pic"><span class="n">1</span><div data-iso="camera"></div></div><div class="tx"><h3 data-i18n="how1_t">Sube una foto real</h3><p data-i18n="how1_p">Desde la cámara o la galería. Interior o fachada, tal como está hoy, sin planos ni medidas.</p></div></div>
+    <div class="panel"><div class="pic"><span class="n">2</span><div data-iso="palette"></div></div><div class="tx"><h3 data-i18n="how2_t">Elige estilo y alcance</h3><p data-i18n="how2_p">Minimalista, industrial, cálido, escandinavo o tropical. Interior, fachada o una estructura nueva en acero.</p></div></div>
+    <div class="panel"><div class="pic"><span class="n">3</span><div data-iso="frame"></div></div><div class="tx"><h3 data-i18n="how3_t">Lo marcamos con el lápiz rojo</h3><p data-i18n="how3_p">Lo que no se mueve, lo que cambia y la estructura en acero predimensionada, con su render.</p></div></div>
+    <div class="panel"><div class="pic"><span class="n">4</span><div data-iso="phone"></div></div><div class="tx"><h3 data-i18n="how4_t">Cotiza por WhatsApp</h3><p data-i18n="how4_p">Hablas directo con un asesor: materiales, toneladas de acero, tiempos y presupuesto.</p><button type="button" class="cta-wa" data-wa-trigger data-wa-message="Hola, quiero cotizar un proyecto con acero.studio." data-i18n="how4_cta">Enviar a WhatsApp →</button></div></div>
+  </div>
+</div></section>
+
+<!-- ========== 04 · EL LÁPIZ ROJO ========== -->
+<section class="sec" id="lapiz"><div class="w">
+  <div class="head"><div><span class="fig" data-i18n="pen_fig">Fig. 04 · Origen · El taller</span><h2 data-i18n="pen_h2">Antes de cortar, se marca.</h2></div><p class="lead" data-i18n="pen_lead">El lápiz rojo es la herramienta más vieja del estudio. Hoy marca lo que la IA propone cambiar: todo lo rojo en esta página es una decisión de diseño.</p></div>
+  <div class="story">
+    <div>
+      <p class="quote" data-i18n="pen_quote">«En el taller de herrería de mi abuelo utilizábamos un <b>lápiz rojo</b>.»</p>
+      <p class="mute" data-i18n="pen_p">Sobre el acero, el rojo se ve aunque haya grasa, polvo u óxido. Por eso las marcas del taller son las mismas que usamos en cada propuesta:</p>
+      <div class="marks" id="marks"></div>
+    </div>
+    <div class="plate brushed"><div data-iso="plate"></div></div>
+  </div>
+</div></section>
+
+<!-- ========== 05 · ESTILOS ========== -->
+<section class="sec brushed" id="estilos"><div class="w">
+  <div class="head"><div><span class="fig" data-i18n="sty_fig">Fig. 05 · Estilo</span><h2 data-i18n="sty_h2">Mismo espacio, cinco estilos.</h2></div><p class="lead" data-i18n="sty_lead">Toca un estilo y mira cómo cambia el mismo local: la columna de acero, los muros y las ventanas no se mueven, lo demás sí.</p></div>
+  <div class="styler">
+    <div style="display:flex;flex-direction:column;gap:20px;min-width:0">
+      <div class="chips-s" id="styleChips" role="group" aria-label="Estilos" data-i18n-attr="aria-label:sty_group"></div>
+      <div class="mats" id="mats"></div>
+      <p class="mute" id="styleNote"></p>
+      <a class="btn pri" href="#rediseno" id="styleTry" data-upload data-i18n="sty_cta" style="align-self:flex-start">Probar con este estilo →</a>
+    </div>
+    <div class="model"><div class="cap"><span class="mono" data-i18n="sty_cap">Propuesta · vista axonométrica</span><b id="styleTitle"></b></div><div id="styleSvg"></div></div>
+  </div>
+</div></section>
+
+<!-- ========== 06 · LA APP: SUBE UNA FOTO (chat de rediseño, Supabase → WhatsApp) ========== -->
+<section class="sec" id="rediseno"><div class="w"><div class="chat-sec">
+  <div class="chat-l">
+    <span class="fig" data-i18n="chat_fig_l">Fig. 06 · Asistente</span>
+    <h2 data-i18n="chat_h2">Pruébalo con tu espacio.</h2>
+    <p class="lead" data-i18n="chat_lead">Mándale una foto al asistente: elige estilo y alcance, y nuestro equipo te escribe por WhatsApp con la propuesta marcada en rojo.</p>
+    <ol>
+      <li><span>1</span><div><b data-i18n="chat_s1">Foto</b><span class="mute" data-i18n="chat_s1p">Cámara o galería, tal como está hoy.</span></div></li>
+      <li><span>2</span><div><b data-i18n="chat_s2">Estilo y alcance</b><span class="mute" data-i18n="chat_s2p">Interior, fachada o estructura en acero.</span></div></li>
+      <li><span>3</span><div><b data-i18n="chat_s3">WhatsApp</b><span class="mute" data-i18n="chat_s3p">Te escribimos con la propuesta y la cotización.</span></div></li>
+    </ol>
+    <p class="mono mute" data-i18n="chat_scope">Interiores, fachadas y estructuras en acero · locales, oficinas, vivienda y bodegas</p>
+  </div>
+
+  <div class="app story-active" id="appShell">
+    <div class="app-top">
+      <span class="lg" aria-hidden="true"><img src="images/logo-web.png" alt="" width="80" height="30"><span>.studio</span></span>
+      <div class="h-fig">
+        <span data-i18n="chat_fig">Asistente de rediseño</span>
+        <span id="stateTag" data-i18n="chat_state">estado: bienvenida</span>
+      </div>
+    </div>
+
+    <div class="story-inline" id="storyInline">
+      <div class="si-read"><div data-iso="chatread"></div></div>
+      <p data-i18n="si_lead">Así leo tu espacio: muros, ventanas y la columna de acero (en azul y rojo) no se mueven. Lo demás se puede rediseñar.</p>
+      <div class="si-steps">
+        <div class="si-step"><span class="si-num">01</span><div><b data-i18n="si_step1_title">Sube una foto</b><p data-i18n="si_step1_body">Cámara o galería, tal como está hoy.</p></div></div>
+        <div class="si-step"><span class="si-num">02</span><div><b data-i18n="si_step2_title">Elige un estilo</b><p data-i18n="si_step2_body">Minimalista, industrial, cálido, escandinavo…</p></div></div>
+        <div class="si-step"><span class="si-num">03</span><div><b data-i18n="si_step3_title">Elige el alcance</b><p data-i18n="si_step3_body">Interior, fachada o estructura en acero.</p></div></div>
+        <div class="si-step"><span class="si-num">04</span><div><b data-i18n="si_step4_title">Cotiza por WhatsApp</b><p data-i18n="si_step4_body">Habla directo con un asesor real.</p></div></div>
+      </div>
+      <div class="si-cta" data-i18n="si_cta">↓ Usa los botones de abajo para empezar</div>
+    </div>
+
+    <div class="chat" id="chat"></div>
+
+    <div class="composer">
+      <div class="composer-row">
+        <button type="button" class="icon-btn" id="btnCamera" title="Tomar foto" aria-label="Tomar foto" data-i18n-attr="title:btn_camera;aria-label:btn_camera">📷</button>
+        <button type="button" class="icon-btn main" id="btnGallery" title="Subir de galería" aria-label="Subir de galería" data-i18n-attr="title:btn_gallery;aria-label:btn_gallery">🖼️ <span data-i18n="btn_photo">Foto</span></button>
+        <input type="text" class="text-input" id="textInput" placeholder="Escribe un mensaje…" aria-label="Mensaje" data-i18n-attr="placeholder:input_placeholder;aria-label:input_aria">
+        <button type="button" class="send-btn" id="btnSend" aria-label="Enviar" data-i18n-attr="aria-label:btn_send">➤</button>
+      </div>
+      <div class="composer-hint" data-i18n="composer_hint">Rediseño de interiores, fachadas y estructuras en acero</div>
+    </div>
+    <!-- Inputs invisibles que usa js/rediseno-ia.js -->
+    <input type="file" id="fileCamera" accept="image/*" capture="environment" hidden>
+    <input type="file" id="fileGallery" accept="image/*" hidden>
+  </div>
+</div></div></section>
+
+<!-- ========== 07 · PROYECTOS EN ACERO ========== -->
+<section class="sec brushed" id="proyectos"><div class="w">
+  <div class="head"><div><span class="fig" data-i18n="proj_fig">Fig. 07 · Proyectos en acero</span><h2 data-i18n="proj_h2">Renders que venden el proyecto.</h2></div><p class="lead" data-i18n="proj_lead">Cada tipología sale del mismo motor de acero del Studio 3D y se renderiza en Blender a la hora dorada o a la hora azul, lista para la lámina de venta.</p></div>
+  <div class="projects">
+    <figure class="proj">
+      <img src="images/acero/casa-hora-dorada.webp" width="1600" height="900" loading="lazy" alt="Casa en acero de dos pisos con voladizo de 4 metros a la hora dorada" data-i18n-attr="alt:proj1_alt">
+      <span class="t" data-i18n="proj1_tag">Casa · hora dorada</span>
+      <figcaption><div><h3 data-i18n="proj1_t">Casa con voladizo</h3><div class="spec">HEB 200 · IPE 360 · 19 t · 330 m²</div></div><a class="open" href="studio/?tipo=casa" data-i18n="proj_open">Ábrela en 3D</a></figcaption>
+    </figure>
+    <figure class="proj">
+      <img src="images/acero/nave-hora-dorada.webp" width="1600" height="900" loading="lazy" alt="Nave industrial en acero con cerchas tubulares a la hora dorada" data-i18n-attr="alt:proj2_alt">
+      <span class="t" data-i18n="proj2_tag">Nave · hora dorada</span>
+      <figcaption><div><h3 data-i18n="proj2_t">Nave con cerchas</h3><div class="spec">HEB 300 · cercha SHS · 44,6 t · 720 m²</div></div><a class="open" href="studio/?tipo=nave" data-i18n="proj_open">Ábrela en 3D</a></figcaption>
+    </figure>
+    <figure class="proj">
+      <img src="images/acero/pabellon-hora-azul.webp" width="1600" height="900" loading="lazy" alt="Pabellón de acero y vidrio con alero en voladizo a la hora azul" data-i18n-attr="alt:proj3_alt">
+      <span class="t" data-i18n="proj3_tag">Pabellón · hora azul</span>
+      <figcaption><div><h3 data-i18n="proj3_t">Pabellón showroom</h3><div class="spec">CHS 219 · IPE 400 · 20,6 t · 360 m²</div></div><a class="open" href="studio/?tipo=pabellon" data-i18n="proj_open">Ábrela en 3D</a></figcaption>
+    </figure>
+    <figure class="proj">
+      <img src="images/acero/edificio-hora-azul.webp" width="1600" height="900" loading="lazy" alt="Edificio de cinco pisos en acero iluminado a la hora azul" data-i18n-attr="alt:proj4_alt">
+      <span class="t" data-i18n="proj4_tag">Edificio · hora azul</span>
+      <figcaption><div><h3 data-i18n="proj4_t">Edificio de pórticos</h3><div class="spec">HEB 300 · IPE 400 · 94,5 t · 1.566 m²</div></div><a class="open" href="studio/?tipo=edificio" data-i18n="proj_open">Ábrela en 3D</a></figcaption>
+    </figure>
+  </div>
+  <div class="stats">
+    <div><strong>60</strong><span class="mono" data-i18n="stat_designs">Diseños</span></div>
+    <div><strong>4</strong><span class="mono" data-i18n="stat_types">Tipologías en acero</span></div>
+    <div><strong>~20</strong><span class="mono" data-i18n="stat_clients">Clientes</span></div>
+    <div><strong>72 h</strong><span class="mono" data-i18n="stat_time">Foto → propuesta</span></div>
+  </div>
+</div></section>
+
+<!-- ========== 08 · PLATAFORMA (Studio 3D, Explorador, Astra, presentaciones) ========== -->
+<section class="sec" id="plataforma"><div class="w">
+  <div class="head"><div><span class="fig" data-i18n="plat_fig">Fig. 08 · Plataforma · IA aplicada</span><h2 data-i18n="plat_h2">Del dibujo al edificio, en el navegador.</h2></div><p class="lead" data-i18n="plat_lead">Las herramientas con las que hacemos cada proyecto, abiertas para ti. Sin instalar nada, en el computador o en el celular.</p></div>
+  <div class="apps">
+    <a class="appcard" href="studio/">
+      <div class="shot"><img src="images/plataforma/studio-render.webp" width="904" height="624" loading="lazy" alt="Studio 3D con un edificio en acero renderizado a la hora dorada" data-i18n-attr="alt:app1_alt"><span class="tag solid">Studio 3D</span></div>
+      <div class="tx"><h3 data-i18n="app1_t">Editor de arquitectura 3D</h3><p class="mute" data-i18n="app1_p">Muros, losas, columnas y vigas de acero; recorrido cinemático, modo caminar y render comercial con sol real.</p><ul><li>HEB · IPE · SHS</li><li>Render 4K</li><li>IFC · DXF · GLB</li></ul><span class="go" data-i18n="app1_go">Abrir el Studio →</span></div>
+    </a>
+    <a class="appcard" href="studio/?crear=plano">
+      <div class="shot"><img src="images/plataforma/plano-a-3d.webp" width="1200" height="750" loading="lazy" alt="Un plano dibujado convertido en modelo 3D con muros y vanos" data-i18n-attr="alt:app2_alt"><span class="tag solid" data-i18n="app2_tag">Imagen → 3D</span></div>
+      <div class="tx"><h3 data-i18n="app2_t">Plano, boceto o foto → modelo</h3><p class="mute" data-i18n="app2_p">Sube un plano o un boceto a mano y levantamos los muros; de una foto de edificio salen pisos, crujías y la estructura en acero.</p><ul><li data-i18n="app2_l1">Plano → muros</li><li data-i18n="app2_l2">Foto → volúmenes</li><li data-i18n="app2_l3">Paramétrico</li></ul><span class="go" data-i18n="app2_go">Probar con un plano →</span></div>
+    </a>
+    <a class="appcard" href="explorador.html">
+      <div class="shot"><img src="images/plataforma/explorador.webp" width="1200" height="750" loading="lazy" alt="Explorador 3D de un edificio con selector de pisos y rombos rojos" data-i18n-attr="alt:app3_alt"><span class="tag solid" data-i18n="app3_tag">Explorador por pisos</span></div>
+      <div class="tx"><h3 data-i18n="app3_t">Recorre el edificio piso por piso</h3><p class="mute" data-i18n="app3_p">Para constructoras e inmobiliarias: corte por niveles, planta, rombos con cada espacio y una ruta guiada hasta el ascensor.</p><ul><li data-i18n="app3_l1">Corte por piso</li><li data-i18n="app3_l2">Ruta guiada</li><li>ES / EN</li></ul><span class="go" data-i18n="app3_go">Abrir el explorador →</span></div>
+    </a>
+    <a class="appcard" href="presentacion.html">
+      <div class="shot"><img src="images/plataforma/presentacion.webp" width="1200" height="675" loading="lazy" alt="Lámina de presentación con el antes y el después de un proyecto" data-i18n-attr="alt:app4_alt"><span class="tag solid" data-i18n="app4_tag">Presentaciones</span></div>
+      <div class="tx"><h3 data-i18n="app4_t">Láminas, reels y visor 3D</h3><p class="mute" data-i18n="app4_p">Antes y después en reel vertical, láminas de venta, animación automática de cámara y un visor 3D de un solo archivo para tu web.</p><ul><li data-i18n="app4_l1">Reel 9:16</li><li data-i18n="app4_l2">Lámina de venta</li><li data-i18n="app4_l3">Visor .html</li></ul><span class="go" data-i18n="app4_go">Crear una presentación →</span></div>
+    </a>
+  </div>
+  <div class="works">
+    <span class="fig" data-i18n="works_t">Funciona con tu flujo de trabajo</span>
+    <div class="works-row">
+      <span><b>IFC 4</b> · Revit · ArchiCAD</span><span><b>DXF</b> · AutoCAD</span><span>SketchUp</span><span>Blender · Cycles</span><span>3ds Max</span><span><b>MCP</b> · <span data-i18n="works_mcp">asistentes de IA</span></span>
+      <img src="images/logo5.png" alt="Claude" width="140" height="34" loading="lazy"><img src="images/logo3.png" alt="Gemini" width="133" height="34" loading="lazy">
+    </div>
+  </div>
+</div></section>
+
+<!-- ========== 09 · CALCULADORA DE ACERO ========== -->
+<section class="sec brushed" id="calculadora"><div class="w">
+  <div class="head"><div><span class="fig" data-i18n="calc_fig">Fig. 09 · Predimensionamiento</span><h2 data-i18n="calc_h2">¿Cuánto acero lleva tu proyecto?</h2></div><p class="lead" data-i18n="calc_lead">Elige la tipología y las medidas. Usamos el mismo motor del Studio 3D: perfiles, toneladas y kg/m² al instante, y la estructura lista para abrir en 3D.</p></div>
+  <div class="calc">
+    <form class="calc-in" id="steelCalc">
+      <fieldset style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+        <legend class="fld"><span class="lbl" data-i18n="calc_type">Tipología</span></legend>
+        <div class="seg">
+          <label><input type="radio" name="sc_tipo" value="edificio" checked><span><span data-i18n="calc_t1">Edificio</span><small data-i18n="calc_t1s">Pórticos HEB + IPE</small></span></label>
+          <label><input type="radio" name="sc_tipo" value="casa"><span><span data-i18n="calc_t2">Casa</span><small data-i18n="calc_t2s">Con voladizo</small></span></label>
+          <label><input type="radio" name="sc_tipo" value="nave"><span><span data-i18n="calc_t3">Nave / bodega</span><small data-i18n="calc_t3s">Cerchas tubulares</small></span></label>
+          <label><input type="radio" name="sc_tipo" value="pabellon"><span><span data-i18n="calc_t4">Pabellón</span><small data-i18n="calc_t4s">Showroom, alero</small></span></label>
+        </div>
+      </fieldset>
+      <label class="fld" data-for="edificio casa pabellon"><span class="lbl"><span data-i18n="calc_front">Frente</span><output id="sc_frente_o"></output></span><input type="range" id="sc_frente" min="8" max="45" step="0.5" value="22.5"></label>
+      <label class="fld" data-for="edificio casa pabellon"><span class="lbl"><span data-i18n="calc_depth">Fondo</span><output id="sc_fondo_o"></output></span><input type="range" id="sc_fondo" min="8" max="36" step="0.5" value="12"></label>
+      <label class="fld" data-for="edificio casa"><span class="lbl"><span data-i18n="calc_floors">Pisos</span><output id="sc_pisos_o"></output></span><input type="range" id="sc_pisos" min="1" max="15" step="1" value="5"></label>
+      <label class="fld" data-for="nave" hidden><span class="lbl"><span data-i18n="calc_span">Luz libre</span><output id="sc_luz_o"></output></span><input type="range" id="sc_luz" min="12" max="40" step="1" value="20"></label>
+      <label class="fld" data-for="nave" hidden><span class="lbl"><span data-i18n="calc_length">Largo</span><output id="sc_largo_o"></output></span><input type="range" id="sc_largo" min="18" max="96" step="6" value="36"></label>
+      <p class="calc-note" data-i18n="calc_note">Predimensionamiento orientativo (luz/20 en vigas, columnas por número de pisos). No reemplaza el cálculo estructural ni la revisión de la NSR-10.</p>
+    </form>
+    <div class="calc-out" aria-live="polite">
+      <div class="kpis">
+        <div><strong id="scTon">–</strong><span class="mono" data-i18n="calc_k1">Acero</span></div>
+        <div><strong id="scArea">–</strong><span class="mono" data-i18n="calc_k2">Área construida</span></div>
+        <div><strong id="scKgm2">–</strong><span class="mono">kg/m²</span></div>
+        <div><strong id="scPieces">–</strong><span class="mono" data-i18n="calc_k4">Piezas</span></div>
+      </div>
+      <div class="calc-model"><div class="cap"><span class="mono" data-i18n="calc_cap">Esquema · lápiz rojo</span><b id="scName"></b></div><div id="scModel"></div></div>
+      <ul class="perfiles" id="scList"></ul>
+      <div class="btns">
+        <a class="btn pri" id="scOpen" href="studio/" data-i18n="calc_open">Ábrelo en 3D con render →</a>
+        <button type="button" class="btn" id="scWa" data-i18n="calc_wa">Cotizar por WhatsApp</button>
+        <button type="button" class="btn" id="scChat" data-i18n="calc_chat">Adjuntar a mi solicitud</button>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ========== 10 · ACERO ========== -->
+<section class="sec" id="acero"><div class="w">
+  <div class="head"><div><span class="fig" data-i18n="steel_fig">Fig. 10 · Material · El acero en el nombre</span><h2 data-i18n="steel_h2">Los colores del acero.</h2></div><p class="lead" data-i18n="steel_lead">Al recalentar el acero aparece una capa de óxido tan fina que cambia de color con la temperatura: pajizo, bronce, púrpura y azul. Esa escala es la paleta de AceroStudio, siempre detrás del rojo del lápiz.</p></div>
+  <div class="temper">
+    <div class="scale-card">
+      <div class="swatches" id="swatches" role="group" aria-label="Escala de revenido" data-i18n-attr="aria-label:steel_scale"></div>
+      <div class="range"><label class="mono" for="temp" data-i18n="steel_temp">Temperatura de revenido</label><input type="range" id="temp" min="0" max="8" step="1" value="5"><div class="ends mono mute"><span>204 °C</span><span>330 °C</span></div></div>
+      <div class="readout"><strong id="tVal">266 °C</strong><div><b id="tName">Púrpura</b><span class="mute" id="tUse"></span></div></div>
+    </div>
+    <div class="beam-card brushed">
+      <span class="mono" data-i18n="steel_beam">Perfil IPE 300 · teñido a la temperatura elegida</span>
+      <div id="beam"></div>
+      <div class="props"><div><strong>300 mm</strong><span class="mono" data-i18n="steel_h">altura h</span></div><div><strong>150 mm</strong><span class="mono" data-i18n="steel_b">ala b</span></div><div><strong>7,1 mm</strong><span class="mono" data-i18n="steel_tw">alma</span></div><div><strong>42,2 kg/m</strong><span class="mono" data-i18n="steel_kg">peso</span></div></div>
+    </div>
+  </div>
+  <div class="head" style="margin-top:20px"><div><span class="fig" data-i18n="refs_fig">Referencias · arquitectura en acero</span><h2 style="font-size:clamp(34px,4.4vw,60px)" data-i18n="refs_h2">De dónde viene la idea.</h2></div><p class="lead" data-i18n="refs_lead">Obras donde el acero no se esconde: la estructura es la arquitectura.</p></div>
+  <div class="refs">
+    <article><div class="pic"><div data-iso="crown"></div></div><div class="tx"><div class="yr mono"><span>Chicago</span><span>1956</span></div><h3>Crown Hall</h3><p class="mute" data-i18n="ref1">Mies van der Rohe. Una sola sala libre colgada de cuatro pórticos de acero exteriores.</p></div></article>
+    <article><div class="pic"><div data-iso="pompidou"></div></div><div class="tx"><div class="yr mono"><span>París</span><span>1977</span></div><h3>Centre Pompidou</h3><p class="mute" data-i18n="ref2">Piano y Rogers. Estructura y ductos por fuera, pintados por color según su función.</p></div></article>
+    <article><div class="pic"><div data-iso="corten"></div></div><div class="tx"><div class="yr mono"><span data-i18n="ref3_k">Material</span><span>1933 →</span></div><h3 data-i18n="ref3_t">Acero corten</h3><p class="mute" data-i18n="ref3">Se protege con su propia capa de óxido. Fachadas que cambian de color con los años.</p></div></article>
+    <article><div class="pic"><div data-iso="via"></div></div><div class="tx"><div class="yr mono"><span>Nueva York</span><span>2016</span></div><h3>VIA 57 West</h3><p class="mute" data-i18n="ref4">BIG. Una fachada de acero inoxidable que se tuerce entre manzana y rascacielos.</p></div></article>
+  </div>
+</div></section>
+
+<!-- ========== 11 · EMPRESAS (B2B) ========== -->
+<section class="sec brushed" id="b2b"><div class="w">
+  <div class="head"><div><span class="fig" data-i18n="b2b_fig">Fig. 11 · Servicios corporativos</span><h2 data-i18n="b2b_h2">Para empresas.</h2></div><p class="lead" data-i18n="b2b_lead">Infraestructura visual e inteligencia espacial para constructoras, firmas de arquitectura, cadenas y desarrolladores que buscan vender sus proyectos antes de construirlos.</p></div>
+  <div class="b2b">
+    <article><div class="pic"><div data-iso="towers"></div></div><div class="tx"><span class="mono">B2B-01</span><h3 data-i18n="b2b1_t">Constructoras e inmobiliarias</h3><p class="mute" data-i18n="b2b1_p">Explorador 3D por pisos, renders de venta y cantidades de acero para preventas y salas de ventas.</p></div></article>
+    <article><div class="pic"><div data-iso="arq"></div></div><div class="tx"><span class="mono">B2B-02</span><h3 data-i18n="b2b2_t">Estudios de arquitectura</h3><p class="mute" data-i18n="b2b2_p">Del boceto a la estructura en acero en minutos, con IFC para Revit y láminas listas para presentar al cliente.</p></div></article>
+    <article><div class="pic"><div data-iso="chain"></div></div><div class="tx"><span class="mono">B2B-03</span><h3 data-i18n="b2b3_t">Cadenas y franquicias</h3><p class="mute" data-i18n="b2b3_p">Estandarización de imagen e interiorismo para múltiples sedes. Propuestas conceptuales a escala.</p></div></article>
+    <article><div class="pic"><div data-iso="tables"></div></div><div class="tx"><span class="mono">B2B-04</span><h3 data-i18n="b2b4_t">Hospitality</h3><p class="mute" data-i18n="b2b4_p">Zonas de alto tráfico, recepciones y comedores pensados para capacidad y experiencia.</p></div></article>
+  </div>
+  <div class="b2b-cta"><p data-i18n="b2b_cta_p">¿Tienes varios proyectos o sedes? Armamos un plan a la medida.</p><button type="button" class="btn dark" data-wa-trigger data-wa-message="Hola, escribo desde una empresa y quiero hablar con acero.studio sobre varios proyectos." data-i18n="b2b_cta">Hablar con el estudio</button></div>
+</div></section>
+
+<!-- ========== 12 · BLOG ========== -->
+<section class="sec" id="blog"><div class="w">
+  <div class="head"><div><span class="fig" data-i18n="blog_fig">Fig. 12 · Contenido técnico</span><h2 data-i18n="blog_h2">Conocimiento.</h2></div><p class="lead" data-i18n="blog_lead">Arquitectura en acero, diseño de interiores y diseño con inteligencia artificial, pensado y escrito desde Bogotá.</p></div>
+  <div class="blog">
+    <article><span class="tagc" style="background:var(--blue)" data-i18n="blog1_tag">Acero</span><h3 data-i18n="blog1_t">Por qué construir en acero: tiempos de obra, luces libres y reciclaje</h3><p class="mute" data-i18n="blog1_p">Estructura prefabricada, menos peso sobre la cimentación y plantas libres de muros.</p></article>
+    <article><span class="tagc" style="background:var(--purple)" data-i18n="blog2_tag">IA + Diseño</span><h3 data-i18n="blog2_t">Cómo funciona un rediseño con IA: de la foto a la propuesta</h3><p class="mute" data-i18n="blog2_p">Foto real, estilo y propuesta que mantiene paredes, ventanas y columnas.</p></article>
+    <article><span class="tagc" style="background:var(--bronze)" data-i18n="blog3_tag">Render</span><h3 data-i18n="blog3_t">Hora dorada y hora azul: la luz que vende un proyecto</h3><p class="mute" data-i18n="blog3_p">Cómo elegir la hora, la cámara a dos puntos de fuga y el entorno de un render comercial.</p></article>
+    <article><span class="tagc" style="background:var(--ink)" data-i18n="blog4_tag">Flujo BIM</span><h3 data-i18n="blog4_t">Del navegador a Revit: IFC 4, DXF y conectores</h3><p class="mute" data-i18n="blog4_p">Qué exporta el Studio 3D y cómo llevarlo a Revit, AutoCAD, SketchUp o Blender.</p></article>
+    <article><span class="tagc" style="background:var(--blue)" data-i18n="blog5_tag">Arquitectura</span><h3 data-i18n="blog5_t">Los 6 principios de arquitectura que hacen que un espacio se sienta bien</h3><p class="mute" data-i18n="blog5_p">Circulación, zonificación, acústica y luz natural definen la experiencia antes que el color.</p></article>
+    <article><span class="tagc" style="background:var(--purple)" data-i18n="blog6_tag">Automatización</span><h3 data-i18n="blog6_t">n8n para negocios pequeños: automatizar redes sin un equipo de marketing</h3><p class="mute" data-i18n="blog6_p">La automatización no reemplaza la creatividad, elimina el trabajo repetitivo.</p></article>
+  </div>
+</div></section>
+</main>
+
+<div class="band" aria-hidden="true"></div>
+
+<!-- ========== PIE ========== -->
+<footer><div class="w">
+  <div class="flogo"><img src="images/logo-web.png" alt="ACERO" width="376" height="140" loading="lazy"><span>.studio</span></div>
+  <div class="fcta">
+    <span class="mono" data-i18n="foot_wa">Cotiza por WhatsApp</span>
+    <span class="num" id="waNum">+57 315 212 5327</span>
+    <div class="btns">
+      <a class="btn pri" href="#rediseno" data-upload data-i18n="cta_upload">Sube una foto</a>
+      <button class="copy" type="button" id="copyBtn" data-i18n="foot_copy">Copiar número</button>
+    </div>
+  </div>
+  <nav class="flinks" aria-label="Enlaces" data-i18n-attr="aria-label:foot_links">
+    <a href="studio/">Studio 3D</a><a href="explorador.html" data-i18n="foot_l2">Explorador 3D</a><a href="presentacion.html" data-i18n="foot_l3">Presentaciones</a><a href="#calculadora" data-i18n="foot_l4">Calculadora de acero</a><a href="#blog">Blog</a>
+  </nav>
+  <div class="fine mono">
+    <span data-i18n="foot_meta">ACEROSTUDIO © 2026 · Bogotá · 2.600 msnm</span>
+    <div class="social">
+      <a href="https://instagram.com/acero.press" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.64.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85C2.38 3.92 3.9 2.38 7.15 2.23 8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 2.7.27.27 2.69.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.2 4.36 2.62 6.78 6.98 6.98C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c4.35-.2 6.78-2.62 6.98-6.98.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.2-4.35-2.62-6.78-6.98-6.98C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.41-11.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></svg></a>
+    </div>
+  </div>
+</div></footer>
+
+<!-- ========== ACCIONES FIJAS ========== -->
+<div class="mbar" id="mbar"><a class="btn pri" href="#rediseno" data-upload data-i18n="mbar_cta">📷 Sube una foto de tu espacio</a></div>
+<a href="https://wa.me/573152125327" id="wa-float-btn" class="wa-float" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp" data-i18n-attr="aria-label:wa_aria" data-wa-trigger data-wa-message="Hola, quiero información sobre un proyecto con acero.studio.">
+  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" fill="white" aria-hidden="true"><path d="M16.04 4C9.37 4 3.98 9.36 3.98 15.99c0 2.27.63 4.4 1.73 6.23L4 28l6.02-1.58a12.1 12.1 0 0 0 6.02 1.59h.01c6.67 0 12.06-5.36 12.06-11.99C28.1 9.36 22.71 4 16.04 4zm0 21.94h-.01a9.9 9.9 0 0 1-5.06-1.39l-.36-.21-3.58.94.96-3.5-.24-.36a9.86 9.86 0 0 1-1.52-5.27c0-5.49 4.49-9.96 10.02-9.96 5.52 0 10.01 4.47 10.01 9.96 0 5.5-4.49 9.95-10.02 9.95zm5.48-7.45c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.47-.89-.79-1.49-1.76-1.66-2.06-.17-.3-.02-.46.13-.61.14-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.06 2.87 1.21 3.07.15.2 2.09 3.2 5.08 4.48.71.31 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.08 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.13-.27-.2-.57-.35z"/></svg>
+</a>
+
+<!-- Idioma ES/EN, menú y WhatsApp (va primero: define buildWaLink y <html lang>) -->
+<script src="js/i18n.js"></script>
+<script src="js/acero.js"></script>
+<script src="js/app-video.js"></script>
+<script src="js/rediseno-ia.js"></script>
+<script type="module" src="js/calculadora-acero.js"></script>
+</body>
+</html>
