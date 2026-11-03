@@ -1,0 +1,85 @@
+:root {
+  --pizarra: #363d56;
+  --pizarra-2: #2c3247;
+  --pizarra-3: #424a66;
+  --linea: rgba(var(--tinta-rgb), .14);
+  --texto: #eef1f8;
+  --suave: #aab3c9;
+  --coral: #ee7f74;
+  --coral-osc: #b45a56;
+  --celeste: #b6dbf8;
+  --negro: #0b0d14;
+  --rojo: #cf2a1f;
+  --disp: 'Antonio', 'Arial Narrow', sans-serif;
+  --sans: 'Outfit', system-ui, sans-serif;
+  --mono: 'DM Mono', ui-monospace, monospace;
+  --tinta: #ffffff;
+  --tinta-rgb: 255, 255, 255;
+  --vidrio-rgb: 36, 41, 60;
+  --fondo-rgb: 54, 61, 86;
+  --sombra-texto: rgba(30, 30, 55, .5);
+  --amarillo: #ffd700;
+  --celeste-txt: #b6dbf8;
+  color-scheme: dark;
+}
+/* modo día: maqueta blanca y paneles claros */
+body.dia {
+  --celeste-txt: #2a6aa6;
+  --pizarra: #eceef2;
+  --pizarra-2: #ffffff;
+  --pizarra-3: #e8ebf1;
+  --linea: rgba(26, 30, 44, .07);
+  --texto: #1a1e2c;
+  --suave: #5f6679;
+  --coral: #e8736a;
+  --celeste: #8fc6f0;
+  --tinta: #1a1e2c;
+  --tinta-rgb: 26, 30, 44;
+  --vidrio-rgb: 255, 255, 255;
+  --fondo-rgb: 236, 238, 242;
+  --sombra-texto: rgba(255, 255, 255, .7);
+  --amarillo: #d9a400;
+  color-scheme: light;
+}
+body { transition: background-color .6s, color .6s; }
+.sol, .luna { width: 30px; height: 30px; color: var(--tinta); }
+.sol { display: none; }
+body.dia .sol { display: block; } body.dia .luna { display: none; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--pizarra); color: var(--texto); font-family: var(--sans); font-weight: 300; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+/* ---------- anotaciones sobre la ciudad ---------- */
+.iso-capa { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.iso-lineas { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.iso-guia { fill: none; stroke: currentColor; stroke-width: 1.3; stroke-dasharray: 4 4; opacity: .95; }
+.iso-punto { fill: currentColor; }
+.iso-nota { position: absolute; white-space: nowrap; color: var(--tinta); font-family: var(--sans); text-shadow: 0 1px 8px var(--sombra-texto); }
+.iso-lineas { color: var(--tinta); }
+.iso-callout { font-size: 15px; font-style: italic; font-weight: 400; letter-spacing: .02em; pointer-events: auto; cursor: pointer; }
+.iso-callout small { display: block; font-style: normal; font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--celeste-txt); margin-top: 3px; }
+.iso-callout.activa { color: var(--celeste-txt); }
+.iso-zona { font-size: 14px; letter-spacing: .06em; font-weight: 400; }
+.iso-dato { font-size: 12.5px; font-weight: 400; }
+.iso-dato small { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: rgba(var(--tinta-rgb), .8); margin-top: 2px; }
+
+/* ---------- marca ---------- */
+.marca { display: inline-flex; align-items: center; gap: 2px; }
+.marca img { height: 26px; display: block; border-radius: 4px; }
+.marca span { font-family: 'Permanent Marker', cursive; color: var(--amarillo); font-size: 17px; transform: rotate(-6deg) translateY(-2px); display: inline-block; margin-left: 2px; }
+
+/* ---------- etiquetas tipo plano ---------- */
+.meta { font-size: 11.5px; line-height: 1.35; }
+.meta dt { opacity: .85; }
+.meta dt::after { content: '/.'; }
+.meta dd { font-weight: 600; margin-bottom: 10px; }
+.tag { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--suave); }
+.boton { display: inline-flex; align-items: center; gap: 10px; padding: 13px 20px; border-radius: 2px; font-weight: 500; font-size: 15px; letter-spacing: .01em; transition: transform .2s, background .2s; }
+.boton.coral { background: var(--coral); color: #1d1420; }
+.boton.coral:hover { background: #f59a90; transform: translateY(-1px); }
+.boton.linea { border: 1px solid rgba(var(--tinta-rgb), .5); }
+.boton.linea:hover { background: rgba(var(--tinta-rgb), .08); }
+.flecha-punteada { display: inline-block; width: 46px; height: 1px; border-top: 1.4px dashed currentColor; position: relative; vertical-align: middle; }
+.flecha-punteada::after { content: ''; position: absolute; right: -1px; top: -4.5px; width: 7px; height: 7px; border-top: 1.4px solid currentColor; border-right: 1.4px solid currentColor; transform: rotate(45deg); }
+.luna { width: 30px; height: 30px; }
