@@ -687,6 +687,7 @@ const ACTIONS = {
   dxf3d: () => download(modelDXF3D(model.doc), `${slug(model.doc.name)}-3d.dxf`, 'application/dxf'),
   ifc: () => download(modelIFC(model.doc), `${slug(model.doc.name)}.ifc`, 'application/x-step'),
   solids: () => download(JSON.stringify(solidsDocument(model.doc)), `${slug(model.doc.name)}.acero-solids.json`, 'application/json'),
+  fabricar: () => { model.save(); window.open('../fabrica/?fuente=studio', '_blank'); },
 };
 $$('[data-act]', $('#fileMenu')).forEach((b) => b.addEventListener('click', () => { b.closest('details').open = false; ACTIONS[b.dataset.act](); }));
 $('#fileJSON').addEventListener('change', (e) => { if (e.target.files[0]) readJSON(e.target.files[0]); e.target.value = ''; });

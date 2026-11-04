@@ -37,6 +37,8 @@ console.log((await call('generar_edificio', { pisos: 5, frente: 7 })).split('\n'
 for (const tipo of ['nave', 'pabellon', 'casa', 'edificio']) console.log((await call('generar_estructura_acero', { tipo })).split('\n')[0]);
 console.log(await call('agregar_viga', { desde: [0, 0], hasta: [7.5, 0], perfil: 'IPE360' }));
 for (const f of ['ifc', 'json', 'solidos', 'dxf', 'dxf3d', 'svg']) console.log(await call('exportar', { formato: f }));
+console.log((await call('fabricar', { carpeta: join(dir, 'taller'), orden: 'OP-TEST' })).split('\n')[0]);
+if (!existsSync(join(dir, 'taller', 'OP-TEST', 'orden.json'))) throw new Error('fabricar no escribió orden.json');
 for (const p of ['blender', 'revit', 'sketchup', '3dsmax', 'autocad']) {
   const t = await call('enviar_a', { programa: p });
   const files = JSON.parse(t.slice(t.indexOf('{'))).archivos;

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AceroStudio · Fábrica</title>
+<meta name="description" content="Del modelo de acero a la planta: despiece, nesting, DSTV/NC1, DXF para plasma, planos de taller, etiquetas QR, planta autónoma con control de calidad y seguimiento de montaje.">
+<meta name="theme-color" content="#2c3247">
+<link rel="icon" type="image/png" href="../images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Antonio:wght@300;500;700&family=DM+Mono:wght@400;500&family=Outfit:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Permanent+Marker&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/volumetrico.css">
+<link rel="stylesheet" href="css/fabrica.css">
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <a class="marca" href="../index.html"><img src="../images/logo-web.png" alt="ACERO"><span>.studio</span></a>
+    <div class="ruta">Proyectos / <select id="fuente" aria-label="Proyecto"></select> / <b>Fábrica</b></div>
+    <nav class="modos" id="modos">
+      <button data-tab="planta" class="on">Planta</button>
+      <button data-tab="piezas">Piezas</button>
+      <button data-tab="corte">Corte</button>
+      <button data-tab="cnc">Máquinas</button>
+      <button data-tab="montaje">Montaje</button>
+    </nav>
+    <div class="der">
+      <span class="chip" id="chip-orden">OP-—</span>
+      <button class="dianoche" id="dianoche" aria-label="Modo día o noche">
+        <svg class="luna" viewBox="0 0 30 30"><circle cx="15" cy="15" r="14" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M18.5 8.5a7 7 0 1 0 3 10.5 6 6 0 0 1-3-10.5z" fill="currentColor"/></svg>
+        <svg class="sol" viewBox="0 0 30 30"><circle cx="15" cy="15" r="14" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="15" cy="15" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M15 6.5v2M15 21.5v2M6.5 15h2M21.5 15h2M9 9l1.4 1.4M19.6 19.6 21 21M9 21l1.4-1.4M19.6 10.4 21 9"/></g></svg>
+      </button>
+      <button class="boton coral chico" id="btn-zip">Paquete de taller</button>
+    </div>
+  </header>
+
+  <aside class="riel" aria-label="Secciones">
+    <a href="../studio/" title="Volver al Studio"><svg viewBox="0 0 24 24"><path d="M12 3 3 8l9 5 9-5-9-5zM3 8v8l9 5 9-5V8"/></svg><span>Studio</span></a>
+    <button data-tab="planta" class="on"><svg viewBox="0 0 24 24"><path d="M3 20V10l5 3V10l5 3V10l5 3V5h3v15z"/></svg><span>Planta</span></button>
+    <button data-tab="piezas"><svg viewBox="0 0 24 24"><path d="M5 4h14M5 20h14M12 4v16"/></svg><span>Piezas</span></button>
+    <button data-tab="corte"><svg viewBox="0 0 24 24"><path d="M3 7h18M3 12h12M3 17h16M16 10v4M20 15v4"/></svg><span>Corte</span></button>
+    <button data-tab="cnc"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="12" rx="1"/><path d="M8 20h8M12 16v4M8 9l2 2-2 2M12 13h4"/></svg><span>Máquinas</span></button>
+    <button data-tab="montaje"><svg viewBox="0 0 24 24"><path d="M6 21V3h12M6 8h12M18 3v10M15 13h6M12 13v3"/></svg><span>Montaje</span></button>
+  </aside>
+
+  <main class="lienzo" id="lienzo">
+    <canvas id="gemelo"></canvas>
+    <div class="capa-svg" id="capa-svg" hidden></div>
+    <div class="leyenda" id="leyenda"></div>
+    <div class="eventos" id="eventos" aria-live="polite"></div>
+    <div class="reproductor" id="reproductor">
+      <button id="play" aria-label="Reproducir">▶</button>
+      <input type="range" id="tiempo" min="0" max="1000" value="0" aria-label="Tiempo de taller">
+      <span class="reloj" id="reloj">0 min</span>
+      <div class="velocidades" id="velocidades"><button data-v="300">×300</button><button data-v="1200" class="on">×1200</button><button data-v="6000">×6000</button></div>
+    </div>
+  </main>
+
+  <section class="ficha" id="ficha"></section>
+</div>
+
+<dialog id="tarjeta" class="tarjeta"></dialog>
+<dialog id="escaner" class="tarjeta escaner">
+  <h3>Escanear pieza</h3>
+  <video id="cam" playsinline muted></video>
+  <form method="dialog" id="form-codigo"><input id="codigo" placeholder="o escribe el código, ej. V3-007" autocomplete="off"><button class="boton coral chico">Abrir</button></form>
+  <button class="cerrar" data-cerrar>×</button>
+</dialog>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
