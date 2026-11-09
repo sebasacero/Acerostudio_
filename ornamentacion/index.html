@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Portón Eléctrico AceroStudio</title>
-<meta name="description" content="Simulador 3D de portones eléctricos en acero: corredizo, batiente y levadizo, con motor, fotocelda, cierre automático y despiece de acero.">
+<title>Acceso Celosía AceroStudio</title>
+<meta name="description" content="Diseña y simula un acceso completo en acero: portón eléctrico con celosía de corte láser, puerta peatonal y pórtico, con montaje paso a paso, energía y presupuesto.">
 <link rel="icon" type="image/png" href="../images/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@300;500;700&family=DM+Mono:wght@400;500&family=Outfit:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Permanent+Marker&display=swap" rel="stylesheet">
@@ -15,6 +15,7 @@
   :root { --ok: #7fd6a4; --alerta: #ffb04a; --lado: max(18px, env(safe-area-inset-left, 0px)); --lado-d: max(18px, env(safe-area-inset-right, 0px)); }
   body.dia { --ok: #1f8a55; --alerta: #b86a00; }
   html, body { height: 100%; }
+  [hidden] { display: none !important; }
   body { overflow: hidden; font-size: 14px; }
   .app { height: 100%; display: grid; grid-template-rows: 54px minmax(0, 1fr); grid-template-columns: 300px minmax(0, 1fr) 336px; grid-template-areas: "top top top" "dis lienzo mot"; }
   .top { grid-area: top; display: flex; align-items: center; gap: 18px; padding: 0 var(--lado-d) 0 var(--lado); background: var(--pizarra-2); border-bottom: 1px solid rgba(var(--tinta-rgb), .1); }
@@ -89,18 +90,50 @@
   .titulo em { font-style: italic; font-size: 15px; color: var(--tinta); }
   .titulo h1 { font-family: var(--disp); font-weight: 700; font-size: clamp(30px, 4.4vw, 58px); line-height: .95; text-transform: uppercase; letter-spacing: .005em; color: var(--tinta); margin-top: 4px; }
   .titulo p { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); margin-top: 8px; }
-  .vistas { position: absolute; left: 26px; bottom: 22px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .vistas { position: absolute; left: 26px; right: 286px; bottom: 22px; display: flex; gap: 6px; flex-wrap: wrap; }
   .vistas button { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; padding: 7px 10px; border: 1px solid rgba(var(--tinta-rgb), .28); border-radius: 3px; background: rgba(var(--vidrio-rgb), .6); backdrop-filter: blur(6px); }
   .vistas button:hover { background: rgba(var(--vidrio-rgb), .9); }
-  .ayuda { position: absolute; right: 22px; bottom: 26px; font-family: var(--mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--suave); pointer-events: none; }
   .iso-callout { cursor: default; pointer-events: none; }
 
+
+  /* pestañas, escenarios, energía y presupuesto */
+  .tabs { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border-bottom: 1px solid rgba(var(--tinta-rgb), .14); margin-top: -6px; }
+  .tabs button { padding: 9px 2px; font-size: 13px; color: var(--suave); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tabs button[aria-selected="true"] { color: var(--texto); border-color: var(--coral); font-weight: 500; }
+  .hoja-tab { display: flex; flex-direction: column; gap: 22px; }
+  .esc { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .esc button { text-align: left; padding: 10px 11px; border: 1px solid rgba(var(--tinta-rgb), .25); border-radius: 3px; font-size: 13.5px; line-height: 1.2; }
+  .esc button small { display: block; font-family: var(--mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--suave); margin-top: 4px; }
+  .esc button:hover { background: rgba(var(--tinta-rgb), .07); }
+  .esc button[aria-pressed="true"] { background: var(--alerta); border-color: var(--alerta); color: #1d1420; } .esc button[aria-pressed="true"] small { color: #1d1420; }
+  .pila { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; align-items: end; }
+  .pila b { font-family: var(--disp); font-weight: 700; font-size: 42px; line-height: 1; font-variant-numeric: tabular-nums; } .pila b span { font-size: 18px; color: var(--suave); font-weight: 500; }
+  .pila em { font-family: var(--mono); font-style: normal; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ok); } .pila em.bat { color: var(--alerta); }
+  .pila .barra { grid-column: 1 / -1; height: 10px; margin: 0; } .pila .barra i { background: var(--ok); }
+  .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 8px; }
+  .presu { list-style: none; font-size: 13px; }
+  .presu li { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 8px 0; border-bottom: 1px solid var(--linea); }
+  .presu li small { grid-column: 1; font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--suave); }
+  .presu li b { grid-row: 1 / span 2; grid-column: 2; align-self: center; font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .total { display: flex; justify-content: space-between; align-items: baseline; }
+  .total b { font-family: var(--disp); font-weight: 700; font-size: 34px; font-variant-numeric: tabular-nums; }
+  .celo { background: rgba(var(--tinta-rgb), .05); border-radius: 3px; padding: 12px; gap: 10px; }
+  .fila { display: flex; gap: 6px; } .fila button { flex: 1; padding: 9px 6px; font-size: 13px; border: 1px solid rgba(var(--tinta-rgb), .25); border-radius: 3px; } .fila button:hover { background: rgba(var(--tinta-rgb), .07); }
+  .herr { position: absolute; right: 22px; bottom: 22px; display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid rgba(var(--tinta-rgb), .28); border-radius: 3px; background: rgba(var(--vidrio-rgb), .7); backdrop-filter: blur(6px); font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; }
+  .herr button { font: inherit; letter-spacing: inherit; text-transform: inherit; padding: 6px 10px; border-radius: 2px; background: var(--coral); color: #1d1420; font-weight: 500; }
+  .herr input { width: 110px; }
+  .pasoinfo { position: absolute; left: 50%; top: 22px; transform: translateX(-50%); text-align: center; pointer-events: none; text-shadow: 0 1px 8px var(--sombra-texto); white-space: nowrap; }
+  .pasoinfo small { font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--celeste-txt); display: block; }
+  .pasoinfo b { font-family: var(--disp); font-weight: 500; font-size: 26px; text-transform: uppercase; letter-spacing: .03em; color: var(--tinta); }
+  .placa { position: absolute; transform: translate(-50%, -130%); background: #ffd400; color: #111; font-family: var(--mono); font-weight: 500; font-size: 13px; letter-spacing: .08em; padding: 5px 9px; border-radius: 3px; border: 2px solid #111; pointer-events: none; white-space: nowrap; }
+  .placa small { display: block; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
+  .aviso { position: absolute; left: 50%; bottom: 76px; transform: translateX(-50%); background: var(--negro); color: #fff; font-size: 13px; padding: 9px 14px; border-radius: 3px; pointer-events: none; }
   @media (max-width: 1080px) { .app { grid-template-columns: 264px minmax(0, 1fr) 300px; } }
   @media (max-width: 860px) {
     body { overflow: auto; }
     .app { height: auto; grid-template-columns: minmax(0, 1fr); grid-template-rows: 54px 56svh auto auto; grid-template-areas: "top" "lienzo" "mot" "dis"; }
     .panel { overflow: visible; border: 0; border-top: 1px solid rgba(var(--tinta-rgb), .1); padding-left: var(--lado); padding-right: var(--lado-d); }
-    .titulo { left: 16px; top: 14px; } .vistas { left: 16px; bottom: 14px; } .ayuda, .chip { display: none; }
+    .titulo { left: 16px; top: 14px; } .vistas { left: 16px; right: 16px; bottom: 58px; } .chip { display: none; } .herr { right: auto; left: 16px; bottom: 12px; } .pasoinfo { top: auto; bottom: 104px; }
     .lienzo { position: sticky; top: 0; z-index: 2; }
     .top { position: relative; z-index: 3; }
   }
@@ -110,7 +143,7 @@
 <div class="app">
   <header class="top">
     <a class="marca" href="../"><img src="../images/logo-web.png" alt="ACERO"><span>.studio</span></a>
-    <div class="ruta">Ornamentación / <b>Portón eléctrico</b></div>
+    <div class="ruta">Ornamentación / <b>Acceso en acero</b></div>
     <div class="der">
       <span class="chip">simulador</span>
       <button id="tema" type="button" aria-label="Cambiar entre día y noche">
@@ -122,75 +155,127 @@
   </header>
 
   <main class="lienzo" id="lienzo">
-    <canvas id="c" aria-label="Vista 3D del portón. Arrastra para girar."></canvas>
-    <div class="iso-capa" id="capa"><svg class="iso-lineas" id="lineas"></svg></div>
+    <canvas id="c" aria-label="Vista 3D del acceso. Arrastra para girar."></canvas>
+    <div class="iso-capa" id="capa"><svg class="iso-lineas" id="lineas"></svg><div class="placa" id="placa" hidden>ACR·247<small>placa autorizada</small></div></div>
     <div class="titulo">
-      <em>portón/.</em>
+      <em>acceso/.</em>
       <h1 id="tTipo">Corredizo</h1>
-      <p id="tMedida">4,00 × 2,20 m · lanzas</p>
+      <p id="tMedida"></p>
     </div>
+    <div class="pasoinfo" id="pasoinfo" hidden><small id="pasoN"></small><b id="pasoT"></b></div>
     <div class="vistas" role="group" aria-label="Vistas de cámara">
-      <button type="button" data-vista="calle">calle</button><button type="button" data-vista="predio">predio</button><button type="button" data-vista="motor">motor</button><button type="button" data-vista="aerea">aérea</button>
+      <button type="button" data-vista="calle">calle</button><button type="button" data-vista="frente">frente</button><button type="button" data-vista="predio">predio</button><button type="button" data-vista="motor">motor</button><button type="button" data-vista="aerea">aérea</button>
     </div>
-    <div class="ayuda">arrastra para girar · rueda para acercar</div>
+    <div class="herr">
+      <button type="button" id="bMontaje">▶ montaje</button>
+      <label for="despiece">despiece</label><input type="range" id="despiece" min="0" max="1" step="0.01" value="0">
+    </div>
+    <div class="aviso" id="aviso" hidden></div>
   </main>
 
   <aside class="panel mot" aria-label="Automatismo">
     <h2>Automatismo <small id="motorChip">motor</small></h2>
-    <div class="mando">
-      <button id="pulso" type="button">Control<small>un pulso</small></button>
-      <div>
-        <div class="estado" id="estado" data-e="cerrado" aria-live="polite">Cerrado</div>
-        <div class="barra"><i id="barra"></i></div>
-        <div class="sub" id="sub">apertura 0 %</div>
+    <div class="tabs" role="tablist"><button type="button" role="tab" data-tab="control" aria-selected="true">Control</button><button type="button" role="tab" data-tab="energia" aria-selected="false">Energía</button><button type="button" role="tab" data-tab="presu" aria-selected="false">Presupuesto</button></div>
+
+    <div class="hoja-tab" id="tab-control">
+      <div class="mando">
+        <button id="pulso" type="button">Control<small>un pulso</small></button>
+        <div>
+          <div class="estado" id="estado" data-e="cerrado" aria-live="polite">Cerrado</div>
+          <div class="barra"><i id="barra"></i></div>
+          <div class="sub" id="sub">apertura 0 %</div>
+        </div>
+      </div>
+      <div class="tresb"><button type="button" data-cmd="abrir">Abrir</button><button type="button" data-cmd="detener">Detener</button><button type="button" data-cmd="cerrar">Cerrar</button></div>
+      <div class="grupo">
+        <span class="rot">Escenarios</span>
+        <div class="esc">
+          <button type="button" id="bCarro">Llega un carro<small>lectura de placa</small></button>
+          <button type="button" id="bVisita">Visitante a pie<small>clave en el teclado</small></button>
+          <button type="button" id="bPrueba">Algo se cruza<small>prueba de fotocelda</small></button>
+          <button type="button" id="bCorte" aria-pressed="false">Corte de energía<small>batería de respaldo</small></button>
+        </div>
+      </div>
+      <div class="grupo">
+        <div class="tele">
+          <div class="dato"><small>velocidad</small><span id="vVel">0</span></div>
+          <div class="dato"><small>corriente</small><span id="vCor">0,0 A</span></div>
+          <div class="dato"><small>potencia</small><span id="vPot">0 W</span></div>
+          <div class="dato"><small>ciclos</small><span id="vCic">0</span></div>
+        </div>
+        <canvas id="onda" width="600" height="108" aria-label="Corriente del motor en los últimos segundos"></canvas>
+      </div>
+      <div class="grupo">
+        <label for="tiempo">Tiempo de apertura <output id="oTiempo">9 s</output></label>
+        <input type="range" id="tiempo" min="5" max="20" step="1" value="9">
+        <label class="inter" for="fotocelda">Fotocelda de seguridad <input type="checkbox" id="fotocelda" checked></label>
+        <label class="inter" for="autocierre">Cierre automático <input type="checkbox" id="autocierre" checked></label>
+        <label for="pausa">Pausa antes de cerrar <output id="oPausa">5 s</output></label>
+        <input type="range" id="pausa" min="3" max="20" step="1" value="5">
+        <label class="inter" for="lampara">Lámpara destellante <input type="checkbox" id="lampara" checked></label>
+      </div>
+      <div class="grupo">
+        <span class="rot">Registro del tablero</span>
+        <ul class="registro" id="registro"></ul>
       </div>
     </div>
-    <div class="tresb"><button type="button" data-cmd="abrir">Abrir</button><button type="button" data-cmd="detener">Detener</button><button type="button" data-cmd="cerrar">Cerrar</button></div>
 
-    <div class="grupo">
-      <div class="tele">
-        <div class="dato"><small>velocidad</small><span id="vVel">0</span></div>
-        <div class="dato"><small>corriente</small><span id="vCor">0,0 A</span></div>
-        <div class="dato"><small>potencia</small><span id="vPot">0 W</span></div>
-        <div class="dato"><small>ciclos</small><span id="vCic">0</span></div>
+    <div class="hoja-tab" id="tab-energia" hidden>
+      <div class="grupo">
+        <span class="rot">Batería de respaldo · 24 V 7 Ah</span>
+        <div class="pila"><b><span id="eBat">92</span><span>%</span></b><em id="eFuente">red eléctrica</em><div class="barra"><i id="eBarra"></i></div></div>
       </div>
-      <canvas id="onda" width="600" height="108" aria-label="Corriente del motor en los últimos segundos"></canvas>
+      <div class="grupo">
+        <label class="inter" for="bateria">Batería de respaldo <input type="checkbox" id="bateria" checked></label>
+        <label class="inter" for="solar">Panel solar de 50 W <input type="checkbox" id="solar" checked></label>
+        <label for="ciclos">Usos al día <output id="oCiclos">12</output></label>
+        <input type="range" id="ciclos" min="2" max="80" step="1" value="12">
+      </div>
+      <div class="dos">
+        <div class="dato"><small>consumo por ciclo</small><span id="eWh"></span></div>
+        <div class="dato"><small>consumo al mes</small><span id="eKwh"></span></div>
+        <div class="dato"><small>costo de energía al mes</small><span id="eCosto"></span></div>
+        <div class="dato"><small>ciclos sin red</small><span id="eAuto"></span></div>
+      </div>
+      <p class="nota">Con batería el portón sigue funcionando en un corte de energía, un poco más lento. Sin batería queda el desbloqueo manual con llave. Consumos estimados para un motor de 24 V.</p>
     </div>
 
-    <div class="grupo">
-      <span class="rot">Prueba con un carro</span>
-      <div class="dosb"><button type="button" id="bCarro">Entrar carro</button><button type="button" id="bPrueba">Probar fotocelda</button></div>
-    </div>
-
-    <div class="grupo">
-      <label for="tiempo">Tiempo de apertura <output id="oTiempo">9 s</output></label>
-      <input type="range" id="tiempo" min="5" max="20" step="1" value="9">
-      <label class="inter" for="fotocelda">Fotocelda de seguridad <input type="checkbox" id="fotocelda" checked></label>
-      <label class="inter" for="autocierre">Cierre automático <input type="checkbox" id="autocierre" checked></label>
-      <label for="pausa">Pausa antes de cerrar <output id="oPausa">5 s</output></label>
-      <input type="range" id="pausa" min="3" max="20" step="1" value="5">
-      <label class="inter" for="lampara">Lámpara destellante <input type="checkbox" id="lampara" checked></label>
-    </div>
-
-    <div class="grupo">
-      <span class="rot">Registro del tablero</span>
-      <ul class="registro" id="registro"></ul>
+    <div class="hoja-tab" id="tab-presu" hidden>
+      <div class="grupo">
+        <span class="rot">Presupuesto de ejemplo</span>
+        <ul class="presu" id="pLista"></ul>
+        <div class="total"><span class="rot">Total estimado</span><b id="pTotal"></b></div>
+      </div>
+      <div class="grupo">
+        <label for="pKg">Acero fabricado, por kg <output id="oKg"></output></label>
+        <input type="range" id="pKg" min="9000" max="30000" step="500" value="17500">
+      </div>
+      <p class="nota">Son precios de ejemplo en pesos colombianos, puestos para que la cuenta funcione. Ajústalos con los de tu taller antes de cotizar a un cliente.</p>
     </div>
   </aside>
 
-  <aside class="panel dis" aria-label="Diseño del portón">
+  <aside class="panel dis" aria-label="Diseño del acceso">
     <h2>Diseño <small>acero</small></h2>
     <div class="grupo"><span class="rot">Tipo de apertura</span>
       <div class="seg" data-k="tipo"><button type="button" data-v="corredizo">Corredizo</button><button type="button" data-v="batiente">Batiente</button><button type="button" data-v="levadizo">Levadizo</button></div>
     </div>
     <div class="grupo"><span class="rot">Diseño de la hoja</span>
-      <div class="seg" data-k="diseno"><button type="button" data-v="lanzas">Lanzas</button><button type="button" data-v="listones">Listones</button><button type="button" data-v="lamina">Rombos</button></div>
+      <div class="seg" data-k="diseno"><button type="button" data-v="celosia">Celosía</button><button type="button" data-v="lanzas">Lanzas</button><button type="button" data-v="listones">Listones</button><button type="button" data-v="lamina">Rombos</button></div>
+    </div>
+    <div class="grupo celo" id="celo">
+      <span class="rot">Celosía de corte láser <output id="oAbierto"></output></span>
+      <div class="seg" data-k="motivo"><button type="button" data-v="cerros">Cerros</button><button type="button" data-v="hojas">Hojas</button><button type="button" data-v="ondas">Ondas</button><button type="button" data-v="trama">Trama</button></div>
+      <label for="densidad">Tamaño del módulo <output id="oDens"></output></label>
+      <input type="range" id="densidad" min="0.05" max="0.14" step="0.005" value="0.075">
+      <label for="apertura">Transparencia <output id="oAper"></output></label>
+      <input type="range" id="apertura" min="0.3" max="0.85" step="0.01" value="0.7">
+      <div class="fila"><button type="button" id="bSemilla">Otra variación</button><button type="button" id="bDxf">Archivo de corte DXF</button></div>
     </div>
     <div class="grupo">
-      <label for="ancho">Ancho del vano <output id="oAncho">4,00 m</output></label>
+      <label for="ancho">Ancho del vano <output id="oAncho"></output></label>
       <input type="range" id="ancho" min="2.6" max="6" step="0.1" value="4">
-      <label for="alto">Alto <output id="oAlto">2,20 m</output></label>
-      <input type="range" id="alto" min="1.8" max="3" step="0.05" value="2.2">
+      <label for="alto">Alto <output id="oAlto"></output></label>
+      <input type="range" id="alto" min="1.8" max="3" step="0.05" value="2.3">
     </div>
     <div class="grupo"><span class="rot">Acabado <output id="oAcabado">Grafito</output></span>
       <div class="muestras" id="muestras"></div>
@@ -198,27 +283,28 @@
     <div class="grupo ficha">
       <span class="rot">Ficha de acero</span>
       <div class="kilos"><b id="fKg">0</b><span>kg</span></div>
-      <div class="tres"><div><small>piezas</small><span id="fPz">0</span></div><div><small>perfil</small><span id="fM">0 m</span></div><div><small>hojas</small><span id="fH">1</span></div></div>
+      <div class="tres"><div><small>piezas</small><span id="fPz">0</span></div><div><small>perfil</small><span id="fM">0 m</span></div><div><small>corte láser</small><span id="fC">0 m</span></div></div>
       <ul class="perfiles" id="fLista"></ul>
       <div class="rec"><small class="rot" style="margin-bottom:5px">Motor recomendado</small><b id="fMotor"></b><span id="fMotorDato"></span></div>
-      <p class="nota">Pesos calculados con perfiles comerciales reales. El motor y los consumos son un predimensionado de referencia: la instalación final la define el taller.</p>
+      <p class="nota">Incluye portón, puerta peatonal y pórtico, con perfiles comerciales reales. El motor es un predimensionado de referencia: la instalación final la define el taller.</p>
     </div>
   </aside>
 </div>
 
 <script type="module">
-import { crearSimulador, ACABADOS, TIPOS, DISENOS } from './js/porton.js';
+import { crearSimulador, ACABADOS, TIPOS, DISENOS, MOTIVOS, PASOS, PRECIOS } from './js/porton.js';
 
-const $ = id => document.getElementById(id), es = (n, d = 0) => n.toLocaleString('es-CO', { minimumFractionDigits: d, maximumFractionDigits: d });
+const $ = id => document.getElementById(id), es = (n, d = 0) => n.toLocaleString('es-CO', { minimumFractionDigits: d, maximumFractionDigits: d }), cop = n => '$ ' + es(Math.round(n / 1000) * 1000);
 const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }, leer = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
 const q = new URLSearchParams(location.search), raiz = document.documentElement;
 const temaIni = q.has('dia') ? 'dia' : q.has('noche') ? 'noche' : leer('acero-tema') || (raiz.dataset.theme === 'light' || (!raiz.dataset.theme && matchMedia('(prefers-color-scheme: light)').matches) ? 'dia' : 'noche');
 const cfg0 = { dia: temaIni === 'dia' };
-for (const k of ['tipo', 'diseno', 'acabado']) if (q.get(k)) cfg0[k] = q.get(k);
-for (const k of ['ancho', 'alto']) if (q.get(k)) cfg0[k] = +q.get(k);
+for (const k of ['tipo', 'diseno', 'acabado', 'motivo']) if (q.get(k)) cfg0[k] = q.get(k);
+for (const k of ['ancho', 'alto', 'semilla']) if (q.get(k)) cfg0[k] = +q.get(k);
 
 const lienzo = $('lienzo'), sim = crearSimulador($('c'), { cfg: cfg0 });
 window.sim = sim;
+let tAviso = 0; const aviso = t => { $('aviso').textContent = t; $('aviso').hidden = false; tAviso = 3; };
 
 /* ----- tema ----- */
 function ponerTema(dia) { document.body.classList.toggle('dia', dia); raiz.style.colorScheme = dia ? 'light' : 'dark'; $('temaTxt').textContent = dia ? 'día' : 'noche'; sim.tema(dia); }
@@ -230,29 +316,49 @@ for (const [k, a] of Object.entries(ACABADOS)) {
   const b = document.createElement('button'); b.type = 'button'; b.dataset.v = k; b.title = a.nombre; b.setAttribute('aria-label', a.nombre);
   b.style.setProperty('--c', '#' + a.color.toString(16).padStart(6, '0')); b.onclick = () => { sim.set({ acabado: k }); pintar(); }; $('muestras').append(b);
 }
-document.querySelectorAll('.seg').forEach(s => s.querySelectorAll('button').forEach(b => b.onclick = () => { sim.set({ [s.dataset.k]: b.dataset.v }); sim.vista('calle'); pintar(); }));
-$('ancho').oninput = e => { sim.set({ ancho: +e.target.value }); pintar(); };
-$('alto').oninput = e => { sim.set({ alto: +e.target.value }); pintar(); };
+document.querySelectorAll('.seg').forEach(s => s.querySelectorAll('button').forEach(b => b.onclick = () => { sim.set({ [s.dataset.k]: b.dataset.v }); if (s.dataset.k === 'tipo') sim.vista('calle'); pintar(); }));
+for (const k of ['ancho', 'alto', 'densidad', 'apertura']) $(k).oninput = e => { sim.set({ [k]: +e.target.value }); pintar(); };
+$('bSemilla').onclick = () => { sim.set({ semilla: sim.cfg.semilla + 1 }); pintar(); };
+$('bDxf').onclick = async () => {
+  const dxf = sim.dxf(), nombre = `celosia_${sim.cfg.motivo}_${Math.round(sim.geo.patron.L * 1000)}x${Math.round(sim.geo.patron.H * 1000)}.dxf`;
+  if (window.__ARTIFACT) { try { await navigator.clipboard.writeText(dxf); aviso('DXF copiado: pégalo en un archivo .dxf'); } catch (e) { aviso('Abre el simulador en acerostudio.com para descargar el DXF'); } return; }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([dxf], { type: 'application/dxf' })); a.download = nombre; a.click(); aviso('Descargado ' + nombre);
+};
 function pintar() {
   const c = sim.cfg, f = sim.ficha;
   document.querySelectorAll('.seg').forEach(s => s.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === c[s.dataset.k])));
   $('muestras').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === c.acabado));
-  $('ancho').value = c.ancho; $('alto').value = c.alto;
+  for (const k of ['ancho', 'alto', 'densidad', 'apertura']) $(k).value = c[k];
+  $('celo').hidden = c.diseno !== 'celosia';
   $('oAncho').textContent = es(c.ancho, 2) + ' m'; $('oAlto').textContent = es(c.alto, 2) + ' m'; $('oAcabado').textContent = ACABADOS[c.acabado].nombre;
-  $('tTipo').textContent = TIPOS[c.tipo]; $('tMedida').textContent = `${es(c.ancho, 2)} × ${es(c.alto, 2)} m · ${DISENOS[c.diseno].toLowerCase()}`;
-  $('fKg').textContent = es(Math.round(f.kg)); $('fPz').textContent = es(f.piezas); $('fM').textContent = es(f.metros, 1) + ' m'; $('fH').textContent = f.hojas;
+  $('oDens').textContent = es(c.densidad * 100, 1) + ' cm'; $('oAper').textContent = es(f.abierto * 100) + ' % abierto'; $('oAbierto').textContent = MOTIVOS[c.motivo].toLowerCase();
+  $('tTipo').textContent = TIPOS[c.tipo]; $('tMedida').textContent = `${es(c.ancho, 2)} × ${es(c.alto, 2)} m · ${DISENOS[c.diseno].toLowerCase()} · puerta peatonal`;
+  $('fKg').textContent = es(Math.round(f.kg)); $('fPz').textContent = es(f.piezas); $('fM').textContent = es(f.metros, 1) + ' m'; $('fC').textContent = es(f.corte, 0) + ' m';
   $('fLista').innerHTML = f.lista.map(p => `<li><span>${p.nombre}</span><span>${es(p.cantidad, 1)} ${p.unidad} · ${es(p.kg, 1)} kg</span></li>`).join('');
   $('fMotor').textContent = f.motor.modelo; $('fMotorDato').textContent = f.motor.dato; $('motorChip').textContent = f.motor.modelo;
-  notas = null;
+  cuentas(); notas.forEach(n => { n.d.remove(); n.l.remove(); n.p.remove(); }); notas.clear();
+}
+function cuentas() {
+  const k = sim.cuentas();
+  $('eWh').textContent = es(k.whCiclo, 2) + ' Wh'; $('eKwh').textContent = es(k.kwhMes, 1) + ' kWh'; $('eCosto').textContent = cop(k.costoMes); $('eAuto').textContent = sim.cfg.bateria ? '≈ ' + es(k.ciclosBat) : 'sin batería';
+  $('pLista').innerHTML = k.items.map(i => `<li><span>${i[0]}</span><small>${i[1]}</small><b>${cop(i[2])}</b></li>`).join(''); $('pTotal').textContent = cop(k.total); $('oKg').textContent = cop(PRECIOS.aceroKg);
 }
 
-/* ----- automatismo ----- */
+/* ----- pestañas ----- */
+document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { document.querySelectorAll('[data-tab]').forEach(o => { o.setAttribute('aria-selected', o === b); $('tab-' + o.dataset.tab).hidden = o !== b; }); });
+
+/* ----- automatismo y escenarios ----- */
 $('pulso').onclick = () => sim.cmd('pulso', 'Control remoto');
 document.querySelectorAll('[data-cmd]').forEach(b => b.onclick = () => sim.cmd(b.dataset.cmd, 'Tablero'));
-$('bCarro').onclick = () => sim.carro('auto'); $('bPrueba').onclick = () => { sim.prueba(); $('fotocelda').checked = true; };
-$('tiempo').oninput = e => { sim.cfg.tiempo = +e.target.value; $('oTiempo').textContent = e.target.value + ' s'; };
+$('bCarro').onclick = () => sim.carro('auto'); $('bPrueba').onclick = () => { sim.prueba(); $('fotocelda').checked = true; }; $('bVisita').onclick = () => { sim.visitante(); sim.vista('frente'); };
+$('bCorte').onclick = e => { const corte = sim.S.red; sim.energia(!corte); e.currentTarget.setAttribute('aria-pressed', corte); };
+$('tiempo').oninput = e => { sim.cfg.tiempo = +e.target.value; $('oTiempo').textContent = e.target.value + ' s'; cuentas(); };
 $('pausa').oninput = e => { sim.cfg.pausa = +e.target.value; $('oPausa').textContent = e.target.value + ' s'; };
+$('ciclos').oninput = e => { sim.cfg.ciclosDia = +e.target.value; $('oCiclos').textContent = e.target.value; cuentas(); };
+$('pKg').oninput = e => { PRECIOS.aceroKg = +e.target.value; cuentas(); };
 for (const k of ['fotocelda', 'autocierre', 'lampara']) $(k).onchange = e => { sim.cfg[k] = e.target.checked; };
+$('bateria').onchange = e => { sim.cfg.bateria = e.target.checked; sim.tema(sim.cfg.dia); cuentas(); };
+$('solar').onchange = e => { sim.set({ solar: e.target.checked }); pintar(); };
 document.querySelectorAll('[data-vista]').forEach(b => b.onclick = () => sim.vista(b.dataset.vista));
 sim.alEvento((tipo, texto, t) => {
   const li = document.createElement('li'); if (tipo === 'alerta') li.className = 'alerta';
@@ -260,28 +366,44 @@ sim.alEvento((tipo, texto, t) => {
   $('registro').prepend(li); while ($('registro').children.length > 6) $('registro').lastChild.remove();
 });
 
+/* ----- montaje y despiece ----- */
+let montando = false, tPaso = 0;
+$('bMontaje').onclick = () => { montando = !montando; tPaso = 0; sim.montaje(montando, montando ? 0 : PASOS.length - 1); $('bMontaje').textContent = montando ? '■ detener' : '▶ montaje'; if (montando) { sim.vista('despiece'); } };
+$('despiece').oninput = e => { sim.vis.despiece = +e.target.value; };
+function montaje(dt) {
+  $('pasoinfo').hidden = !montando; if (!montando) return;
+  tPaso += dt; if (tPaso > 1.5 && sim.vis.paso < PASOS.length - 1) { tPaso = 0; sim.montaje(true, sim.vis.paso + 1); }
+  if (tPaso > 3 && sim.vis.paso === PASOS.length - 1) { montando = false; sim.montaje(false); $('bMontaje').textContent = '▶ montaje'; }
+  $('pasoN').textContent = `paso ${sim.vis.paso} de ${PASOS.length - 1}`; $('pasoT').textContent = PASOS[sim.vis.paso];
+}
+
 /* ----- anotaciones estilo plano ----- */
-let notas = null, nCuadro = 0;
-function anotar(w, h) {
-  const capa = $('capa'), g = sim.geo, f = sim.ficha;
-  if (!notas) {
-    capa.querySelectorAll('.iso-nota').forEach(n => n.remove()); $('lineas').innerHTML = '';
-    notas = [['anclaMotor', 'motor/.', f.motor.modelo, -1], ['anclaFoto', 'fotocelda/.', 'haz infrarrojo', 1], ['anclaBaliza', 'lámpara/.', 'destella al mover', 1]].map(([ancla, txt, sub, lado]) => {
-      const d = document.createElement('div'); d.className = 'iso-nota iso-callout'; d.innerHTML = `${txt}<small>${sub}</small>`; capa.append(d);
-      const l = document.createElementNS('http://www.w3.org/2000/svg', 'path'); l.setAttribute('class', 'iso-guia');
-      const p = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); p.setAttribute('class', 'iso-punto'); p.setAttribute('r', 3); $('lineas').append(l, p);
-      return { ancla, d, l, p, lado };
-    });
+const notas = new Map(); let nCuadro = 0;
+function nota(clave, txt, sub, pos, w, h, i, lado, chico) {
+  let n = notas.get(clave);
+  if (!n) {
+    const d = document.createElement('div'); d.className = 'iso-nota iso-callout'; d.innerHTML = '<span></span><small></small>'; $('capa').append(d);
+    const l = document.createElementNS('http://www.w3.org/2000/svg', 'path'); l.setAttribute('class', 'iso-guia');
+    const p = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); p.setAttribute('class', 'iso-punto'); p.setAttribute('r', 3); $('lineas').append(l, p);
+    notas.set(clave, n = { d, l, p, tapada: false });
   }
-  const chico = w < 560; nCuadro++;
-  notas.forEach((n, i) => {
-    if (nCuadro % 8 === 1) n.tapada = sim.tapado(g[n.ancla]);
-    const s = sim.aPantalla(g[n.ancla], w, h), ver = s.visible && !n.tapada && !(chico && i > 0);
-    n.d.hidden = !ver; n.l.style.display = n.p.style.display = ver ? '' : 'none'; if (!ver) return;
-    const dx = (chico ? 34 : 70) * n.lado, dy = -(chico ? 46 : 64) - i * 14, tx = s.x + dx, ty = s.y + dy;
-    n.p.setAttribute('cx', s.x); n.p.setAttribute('cy', s.y); n.l.setAttribute('d', `M${s.x} ${s.y} L${tx} ${ty + 8}`);
-    n.d.style.left = (n.lado > 0 ? tx + 6 : tx - n.d.offsetWidth - 6) + 'px'; n.d.style.top = (ty - 6) + 'px';
-  });
+  n.viva = nCuadro; n.d.firstChild.textContent = txt; n.d.lastChild.textContent = sub;
+  if (nCuadro % 8 === 1) n.tapada = sim.tapado(pos);
+  const s = sim.aPantalla(pos, w, h), ver = s.visible && !n.tapada;
+  n.d.hidden = !ver; n.l.style.display = n.p.style.display = ver ? '' : 'none'; if (!ver) return;
+  const dx = (chico ? 30 : 64) * lado, dy = -(chico ? 40 : 58) - (i % 3) * 16, tx = s.x + dx, ty = s.y + dy;
+  n.p.setAttribute('cx', s.x); n.p.setAttribute('cy', s.y); n.l.setAttribute('d', `M${s.x} ${s.y} L${tx} ${ty + 8}`);
+  n.d.style.left = (lado > 0 ? tx + 6 : tx - n.d.offsetWidth - 6) + 'px'; n.d.style.top = (ty - 6) + 'px';
+}
+function anotar(w, h) {
+  const g = sim.geo, chico = w < 560; nCuadro++;
+  if (montando || sim.vis.despiece > .25) sim.etiquetas().filter(e => !montando || e.paso === sim.vis.paso || !chico).forEach((e, i) => nota('g' + e.nombre, e.nombre.toLowerCase() + '/.', e.detalle, e.pos, w, h, i, i % 2 ? 1 : -1, chico));
+  else {
+    nota('motor', 'motor/.', sim.ficha.motor.modelo, g.anclaMotor, w, h, 0, -1, chico);
+    if (!chico) { nota('foto', 'fotocelda/.', 'haz infrarrojo', g.anclaFoto, w, h, 1, 1, chico); nota('cam', 'cámara/.', 'lee la placa y abre', g.anclaCam, w, h, 2, 1, chico); nota('tecla', 'teclado/.', 'clave para la puerta', g.anclaTecla, w, h, 1, -1, chico); }
+  }
+  for (const [k, n] of notas) if (n.viva !== nCuadro) { n.d.remove(); n.l.remove(); n.p.remove(); notas.delete(k); }
+  const pl = $('placa'), s = sim.aPantalla(g.anclaCam, w, h); pl.hidden = !(sim.S.placa > 0 && s.visible); pl.style.left = s.x + 'px'; pl.style.top = s.y + 'px';
 }
 
 /* ----- telemetría ----- */
@@ -290,10 +412,12 @@ const hist = new Array(180).fill(.05); let tHist = 0;
 function tele(dt) {
   const t = sim.telemetria();
   $('estado').textContent = NOMBRE[t.estado]; $('estado').dataset.e = t.estado; $('barra').style.width = (t.apertura * 100).toFixed(1) + '%';
-  $('sub').textContent = t.bloqueada && sim.cfg.fotocelda ? 'fotocelda ocupada' : t.pausa !== null ? `cierra en ${Math.ceil(t.pausa)} s` : `apertura ${Math.round(t.apertura * 100)} %`;
+  $('sub').textContent = !t.red ? (sim.cfg.bateria ? 'funcionando con batería' : 'sin energía') : t.bloqueada && sim.cfg.fotocelda ? 'fotocelda ocupada' : t.pausa !== null ? `cierra en ${Math.ceil(t.pausa)} s` : `apertura ${Math.round(t.apertura * 100)} %`;
   $('vVel').textContent = es(t.velocidad, t.velocidad < 10 ? 1 : 0) + ' ' + t.unidadVel; $('vCor').textContent = es(t.corriente, 1) + ' A'; $('vPot').textContent = es(Math.round(t.potencia)) + ' W'; $('vCic').textContent = t.ciclos;
-  $('bCarro').textContent = t.carroDentro ? 'Salir carro' : 'Entrar carro';
+  $('bCarro').firstChild.textContent = t.carroDentro ? 'Sale el carro' : 'Llega un carro'; $('bCarro').lastChild.textContent = t.carroDentro ? 'sensor de salida' : 'lectura de placa';
+  $('eBat').textContent = es(t.bat * 100, t.red ? 0 : 1); $('eBarra').style.width = (t.bat * 100) + '%'; $('eFuente').textContent = t.red ? (sim.cfg.solar && sim.cfg.dia ? 'red + sol cargando' : 'red eléctrica') : 'batería'; $('eFuente').className = t.red ? '' : 'bat';
   tHist += dt; if (tHist > 1 / 15) { tHist = 0; hist.push(t.corriente); hist.shift(); onda(); }
+  if (tAviso > 0) { tAviso -= dt; if (tAviso <= 0) $('aviso').hidden = true; }
 }
 function onda() {
   const c = $('onda'), x = c.getContext('2d'), W = c.width, H = c.height, cs = getComputedStyle(document.body), max = sim.ficha.motor.inom * 2.3;
@@ -305,12 +429,13 @@ function onda() {
 }
 
 /* ----- bucle ----- */
-let w = 0, h = 0, antes = performance.now();
+let w = 0, h = 0, antes = performance.now(), lentos = 0;
 function medir() { const r = lienzo.getBoundingClientRect(); if (r.width !== w || r.height !== h) { const primera = !w; w = r.width; h = r.height; sim.medida(w, h); if (primera) sim.vista('calle', true); } }
 new ResizeObserver(medir).observe(lienzo);
 function cuadro(ahora) {
-  const dt = Math.min(.05, (ahora - antes) / 1000); antes = ahora; medir();
-  if (w && !window.__congelado) { sim.step(dt); sim.render(dt); anotar(w, h); tele(dt); }
+  const real = (ahora - antes) / 1000, dt = Math.min(.05, real); antes = ahora; medir();
+  if (sim.cfg.brillo && !sim.cfg.dia && !window.__congelado) { lentos = real > .07 ? lentos + 1 : Math.max(0, lentos - 1); if (lentos > 40) sim.cfg.brillo = false; } // equipos lentos: sin resplandor
+  if (w && !window.__congelado) { sim.step(dt); montaje(dt); sim.render(dt); anotar(w, h); tele(dt); }
   requestAnimationFrame(cuadro);
 }
 pintar(); medir(); requestAnimationFrame(cuadro);
