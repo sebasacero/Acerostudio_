@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portón Eléctrico AceroStudio</title>
+<meta name="description" content="Simulador 3D de portones eléctricos en acero: corredizo, batiente y levadizo, con motor, fotocelda, cierre automático y despiece de acero.">
+<link rel="icon" type="image/png" href="../images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Antonio:wght@300;500;700&family=DM+Mono:wght@400;500&family=Outfit:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Permanent+Marker&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/volumetrico.css">
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/" } }</script>
+<style>
+  /* Tablero de taller: lienzo 3D al centro, diseño a la izquierda, automatismo a la derecha. Tokens de css/volumetrico.css */
+  :root { --ok: #7fd6a4; --alerta: #ffb04a; --lado: max(18px, env(safe-area-inset-left, 0px)); --lado-d: max(18px, env(safe-area-inset-right, 0px)); }
+  body.dia { --ok: #1f8a55; --alerta: #b86a00; }
+  html, body { height: 100%; }
+  body { overflow: hidden; font-size: 14px; }
+  .app { height: 100%; display: grid; grid-template-rows: 54px minmax(0, 1fr); grid-template-columns: 300px minmax(0, 1fr) 336px; grid-template-areas: "top top top" "dis lienzo mot"; }
+  .top { grid-area: top; display: flex; align-items: center; gap: 18px; padding: 0 var(--lado-d) 0 var(--lado); background: var(--pizarra-2); border-bottom: 1px solid rgba(var(--tinta-rgb), .1); }
+  .ruta { font-size: 13px; color: var(--suave); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .ruta b { color: var(--texto); font-weight: 500; }
+  .top .der { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+  .chip { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; padding: 6px 9px; border: 1px solid rgba(var(--tinta-rgb), .25); border-radius: 3px; text-transform: uppercase; white-space: nowrap; }
+  #tema { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--suave); padding: 6px 4px; }
+  #tema svg { width: 20px; height: 20px; }
+  :focus-visible { outline: 2px solid var(--celeste-txt); outline-offset: 2px; }
+
+  .panel { background: var(--pizarra-2); overflow: auto; min-height: 0; display: flex; flex-direction: column; gap: 22px; padding-block: 20px 28px; }
+  .dis { grid-area: dis; border-right: 1px solid rgba(var(--tinta-rgb), .1); padding-left: var(--lado); padding-right: 18px; }
+  .mot { grid-area: mot; border-left: 1px solid rgba(var(--tinta-rgb), .1); padding-left: 18px; padding-right: var(--lado-d); }
+  .panel h2 { font-style: italic; font-weight: 400; font-size: 17px; display: flex; justify-content: space-between; align-items: baseline; }
+  .panel h2 small { font-family: var(--mono); font-style: normal; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); }
+  .grupo { display: flex; flex-direction: column; gap: 9px; }
+  .grupo > label, .rot { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); display: flex; justify-content: space-between; }
+  .grupo > label output, .rot output { color: var(--texto); font-variant-numeric: tabular-nums; }
+  .seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 2px; background: rgba(var(--tinta-rgb), .06); padding: 3px; border-radius: 4px; }
+  .seg button { font-size: 13px; padding: 8px 4px; border-radius: 3px; color: var(--suave); }
+  .seg button[aria-pressed="true"] { background: var(--celeste); color: var(--negro); font-weight: 500; }
+  input[type=range] { width: 100%; accent-color: var(--coral); height: 22px; }
+  .muestras { display: flex; gap: 9px; }
+  .muestras button { width: 30px; height: 30px; border-radius: 50%; background: var(--c); border: 2px solid var(--pizarra-2); box-shadow: 0 0 0 1px rgba(var(--tinta-rgb), .3); }
+  .muestras button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--coral); }
+
+  .ficha { border-top: 1px dashed rgba(var(--tinta-rgb), .28); padding-top: 18px; gap: 12px; }
+  .kilos { font-family: var(--disp); font-weight: 700; font-size: 46px; line-height: 1; letter-spacing: .01em; font-variant-numeric: tabular-nums; }
+  .kilos span { font-size: 20px; font-weight: 500; margin-left: 4px; color: var(--suave); }
+  .tres { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .tres div, .dato { font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .tres small, .dato small { display: block; font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); font-weight: 400; margin-bottom: 2px; }
+  .perfiles { list-style: none; font-size: 12.5px; }
+  .perfiles li { display: flex; justify-content: space-between; gap: 10px; padding: 5px 0; border-bottom: 1px solid var(--linea); }
+  .perfiles li span:last-child { font-family: var(--mono); font-size: 11.5px; color: var(--suave); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .rec { background: rgba(var(--tinta-rgb), .06); border-radius: 3px; padding: 11px 12px; font-size: 13.5px; }
+  .rec b { font-weight: 500; color: var(--celeste-txt); display: block; }
+  .nota { font-size: 11.5px; color: var(--suave); line-height: 1.45; }
+
+  /* automatismo */
+  .mando { display: grid; grid-template-columns: 92px 1fr; gap: 14px; align-items: center; }
+  #pulso { width: 92px; height: 92px; border-radius: 50%; background: var(--coral); color: #1d1420; font-family: var(--disp); font-weight: 700; font-size: 15px; letter-spacing: .06em; text-transform: uppercase; line-height: 1.05; box-shadow: 0 5px 0 var(--coral-osc), 0 12px 22px rgba(0, 0, 0, .25); transition: transform .08s, box-shadow .08s; }
+  #pulso:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--coral-osc); }
+  #pulso small { display: block; font-family: var(--mono); font-weight: 400; font-size: 8.5px; letter-spacing: .1em; margin-top: 3px; }
+  .estado { font-family: var(--disp); font-weight: 500; font-size: 30px; line-height: 1; text-transform: uppercase; letter-spacing: .02em; }
+  .estado[data-e="abriendo"], .estado[data-e="cerrando"] { color: var(--alerta); }
+  .estado[data-e="abierto"] { color: var(--ok); }
+  .barra { height: 6px; background: rgba(var(--tinta-rgb), .12); border-radius: 3px; margin-top: 10px; overflow: hidden; }
+  .barra i { display: block; height: 100%; width: 0; background: var(--celeste); }
+  .sub { font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em; color: var(--suave); margin-top: 7px; min-height: 1.3em; text-transform: uppercase; }
+  .tresb { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .tresb button, .dosb button { padding: 10px 6px; font-size: 13.5px; border: 1px solid rgba(var(--tinta-rgb), .25); border-radius: 3px; }
+  .tresb button:hover, .dosb button:hover { background: rgba(var(--tinta-rgb), .07); }
+  .dosb { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .tele { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  #onda { width: 100%; height: 54px; display: block; background: rgba(var(--tinta-rgb), .05); border-radius: 3px; }
+  .inter { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 13.5px; cursor: pointer; }
+  .inter input { appearance: none; width: 38px; height: 22px; border-radius: 11px; background: rgba(var(--tinta-rgb), .2); position: relative; cursor: pointer; flex: none; transition: background .2s; }
+  .inter input::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--pizarra-2); transition: transform .2s; }
+  .inter input:checked { background: var(--celeste); }
+  .inter input:checked::after { transform: translateX(16px); }
+  .registro { list-style: none; font-family: var(--mono); font-size: 11px; line-height: 1.5; color: var(--suave); min-height: 7.5em; }
+  .registro li { display: grid; grid-template-columns: 40px 1fr; gap: 6px; }
+  .registro li:first-child { color: var(--texto); }
+  .registro li.alerta span:last-child { color: var(--alerta); }
+
+  /* lienzo */
+  .lienzo { grid-area: lienzo; position: relative; min-width: 0; min-height: 0; overflow: hidden; background: var(--pizarra); }
+  #c { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+  .titulo { position: absolute; left: 26px; top: 22px; pointer-events: none; }
+  .titulo em { font-style: italic; font-size: 15px; color: var(--tinta); }
+  .titulo h1 { font-family: var(--disp); font-weight: 700; font-size: clamp(30px, 4.4vw, 58px); line-height: .95; text-transform: uppercase; letter-spacing: .005em; color: var(--tinta); margin-top: 4px; }
+  .titulo p { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); margin-top: 8px; }
+  .vistas { position: absolute; left: 26px; bottom: 22px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .vistas button { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; padding: 7px 10px; border: 1px solid rgba(var(--tinta-rgb), .28); border-radius: 3px; background: rgba(var(--vidrio-rgb), .6); backdrop-filter: blur(6px); }
+  .vistas button:hover { background: rgba(var(--vidrio-rgb), .9); }
+  .ayuda { position: absolute; right: 22px; bottom: 26px; font-family: var(--mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--suave); pointer-events: none; }
+  .iso-callout { cursor: default; pointer-events: none; }
+
+  @media (max-width: 1080px) { .app { grid-template-columns: 264px minmax(0, 1fr) 300px; } }
+  @media (max-width: 860px) {
+    body { overflow: auto; }
+    .app { height: auto; grid-template-columns: minmax(0, 1fr); grid-template-rows: 54px 56svh auto auto; grid-template-areas: "top" "lienzo" "mot" "dis"; }
+    .panel { overflow: visible; border: 0; border-top: 1px solid rgba(var(--tinta-rgb), .1); padding-left: var(--lado); padding-right: var(--lado-d); }
+    .titulo { left: 16px; top: 14px; } .vistas { left: 16px; bottom: 14px; } .ayuda, .chip { display: none; }
+    .lienzo { position: sticky; top: 0; z-index: 2; }
+    .top { position: relative; z-index: 3; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <a class="marca" href="../"><img src="../images/logo-web.png" alt="ACERO"><span>.studio</span></a>
+    <div class="ruta">Ornamentación / <b>Portón eléctrico</b></div>
+    <div class="der">
+      <span class="chip">simulador</span>
+      <button id="tema" type="button" aria-label="Cambiar entre día y noche">
+        <svg class="luna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+        <svg class="sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>
+        <span id="temaTxt">noche</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="lienzo" id="lienzo">
+    <canvas id="c" aria-label="Vista 3D del portón. Arrastra para girar."></canvas>
+    <div class="iso-capa" id="capa"><svg class="iso-lineas" id="lineas"></svg></div>
+    <div class="titulo">
+      <em>portón/.</em>
+      <h1 id="tTipo">Corredizo</h1>
+      <p id="tMedida">4,00 × 2,20 m · lanzas</p>
+    </div>
+    <div class="vistas" role="group" aria-label="Vistas de cámara">
+      <button type="button" data-vista="calle">calle</button><button type="button" data-vista="predio">predio</button><button type="button" data-vista="motor">motor</button><button type="button" data-vista="aerea">aérea</button>
+    </div>
+    <div class="ayuda">arrastra para girar · rueda para acercar</div>
+  </main>
+
+  <aside class="panel mot" aria-label="Automatismo">
+    <h2>Automatismo <small id="motorChip">motor</small></h2>
+    <div class="mando">
+      <button id="pulso" type="button">Control<small>un pulso</small></button>
+      <div>
+        <div class="estado" id="estado" data-e="cerrado" aria-live="polite">Cerrado</div>
+        <div class="barra"><i id="barra"></i></div>
+        <div class="sub" id="sub">apertura 0 %</div>
+      </div>
+    </div>
+    <div class="tresb"><button type="button" data-cmd="abrir">Abrir</button><button type="button" data-cmd="detener">Detener</button><button type="button" data-cmd="cerrar">Cerrar</button></div>
+
+    <div class="grupo">
+      <div class="tele">
+        <div class="dato"><small>velocidad</small><span id="vVel">0</span></div>
+        <div class="dato"><small>corriente</small><span id="vCor">0,0 A</span></div>
+        <div class="dato"><small>potencia</small><span id="vPot">0 W</span></div>
+        <div class="dato"><small>ciclos</small><span id="vCic">0</span></div>
+      </div>
+      <canvas id="onda" width="600" height="108" aria-label="Corriente del motor en los últimos segundos"></canvas>
+    </div>
+
+    <div class="grupo">
+      <span class="rot">Prueba con un carro</span>
+      <div class="dosb"><button type="button" id="bCarro">Entrar carro</button><button type="button" id="bPrueba">Probar fotocelda</button></div>
+    </div>
+
+    <div class="grupo">
+      <label for="tiempo">Tiempo de apertura <output id="oTiempo">9 s</output></label>
+      <input type="range" id="tiempo" min="5" max="20" step="1" value="9">
+      <label class="inter" for="fotocelda">Fotocelda de seguridad <input type="checkbox" id="fotocelda" checked></label>
+      <label class="inter" for="autocierre">Cierre automático <input type="checkbox" id="autocierre" checked></label>
+      <label for="pausa">Pausa antes de cerrar <output id="oPausa">5 s</output></label>
+      <input type="range" id="pausa" min="3" max="20" step="1" value="5">
+      <label class="inter" for="lampara">Lámpara destellante <input type="checkbox" id="lampara" checked></label>
+    </div>
+
+    <div class="grupo">
+      <span class="rot">Registro del tablero</span>
+      <ul class="registro" id="registro"></ul>
+    </div>
+  </aside>
+
+  <aside class="panel dis" aria-label="Diseño del portón">
+    <h2>Diseño <small>acero</small></h2>
+    <div class="grupo"><span class="rot">Tipo de apertura</span>
+      <div class="seg" data-k="tipo"><button type="button" data-v="corredizo">Corredizo</button><button type="button" data-v="batiente">Batiente</button><button type="button" data-v="levadizo">Levadizo</button></div>
+    </div>
+    <div class="grupo"><span class="rot">Diseño de la hoja</span>
+      <div class="seg" data-k="diseno"><button type="button" data-v="lanzas">Lanzas</button><button type="button" data-v="listones">Listones</button><button type="button" data-v="lamina">Rombos</button></div>
+    </div>
+    <div class="grupo">
+      <label for="ancho">Ancho del vano <output id="oAncho">4,00 m</output></label>
+      <input type="range" id="ancho" min="2.6" max="6" step="0.1" value="4">
+      <label for="alto">Alto <output id="oAlto">2,20 m</output></label>
+      <input type="range" id="alto" min="1.8" max="3" step="0.05" value="2.2">
+    </div>
+    <div class="grupo"><span class="rot">Acabado <output id="oAcabado">Grafito</output></span>
+      <div class="muestras" id="muestras"></div>
+    </div>
+    <div class="grupo ficha">
+      <span class="rot">Ficha de acero</span>
+      <div class="kilos"><b id="fKg">0</b><span>kg</span></div>
+      <div class="tres"><div><small>piezas</small><span id="fPz">0</span></div><div><small>perfil</small><span id="fM">0 m</span></div><div><small>hojas</small><span id="fH">1</span></div></div>
+      <ul class="perfiles" id="fLista"></ul>
+      <div class="rec"><small class="rot" style="margin-bottom:5px">Motor recomendado</small><b id="fMotor"></b><span id="fMotorDato"></span></div>
+      <p class="nota">Pesos calculados con perfiles comerciales reales. El motor y los consumos son un predimensionado de referencia: la instalación final la define el taller.</p>
+    </div>
+  </aside>
+</div>
+
+<script type="module">
+import { crearSimulador, ACABADOS, TIPOS, DISENOS } from './js/porton.js';
+
+const $ = id => document.getElementById(id), es = (n, d = 0) => n.toLocaleString('es-CO', { minimumFractionDigits: d, maximumFractionDigits: d });
+const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }, leer = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const q = new URLSearchParams(location.search), raiz = document.documentElement;
+const temaIni = q.has('dia') ? 'dia' : q.has('noche') ? 'noche' : leer('acero-tema') || (raiz.dataset.theme === 'light' || (!raiz.dataset.theme && matchMedia('(prefers-color-scheme: light)').matches) ? 'dia' : 'noche');
+const cfg0 = { dia: temaIni === 'dia' };
+for (const k of ['tipo', 'diseno', 'acabado']) if (q.get(k)) cfg0[k] = q.get(k);
+for (const k of ['ancho', 'alto']) if (q.get(k)) cfg0[k] = +q.get(k);
+
+const lienzo = $('lienzo'), sim = crearSimulador($('c'), { cfg: cfg0 });
+window.sim = sim;
+
+/* ----- tema ----- */
+function ponerTema(dia) { document.body.classList.toggle('dia', dia); raiz.style.colorScheme = dia ? 'light' : 'dark'; $('temaTxt').textContent = dia ? 'día' : 'noche'; sim.tema(dia); }
+ponerTema(cfg0.dia);
+$('tema').onclick = () => { const d = !sim.cfg.dia; ponerTema(d); guardar('acero-tema', d ? 'dia' : 'noche'); };
+
+/* ----- diseño ----- */
+for (const [k, a] of Object.entries(ACABADOS)) {
+  const b = document.createElement('button'); b.type = 'button'; b.dataset.v = k; b.title = a.nombre; b.setAttribute('aria-label', a.nombre);
+  b.style.setProperty('--c', '#' + a.color.toString(16).padStart(6, '0')); b.onclick = () => { sim.set({ acabado: k }); pintar(); }; $('muestras').append(b);
+}
+document.querySelectorAll('.seg').forEach(s => s.querySelectorAll('button').forEach(b => b.onclick = () => { sim.set({ [s.dataset.k]: b.dataset.v }); sim.vista('calle'); pintar(); }));
+$('ancho').oninput = e => { sim.set({ ancho: +e.target.value }); pintar(); };
+$('alto').oninput = e => { sim.set({ alto: +e.target.value }); pintar(); };
+function pintar() {
+  const c = sim.cfg, f = sim.ficha;
+  document.querySelectorAll('.seg').forEach(s => s.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === c[s.dataset.k])));
+  $('muestras').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === c.acabado));
+  $('ancho').value = c.ancho; $('alto').value = c.alto;
+  $('oAncho').textContent = es(c.ancho, 2) + ' m'; $('oAlto').textContent = es(c.alto, 2) + ' m'; $('oAcabado').textContent = ACABADOS[c.acabado].nombre;
+  $('tTipo').textContent = TIPOS[c.tipo]; $('tMedida').textContent = `${es(c.ancho, 2)} × ${es(c.alto, 2)} m · ${DISENOS[c.diseno].toLowerCase()}`;
+  $('fKg').textContent = es(Math.round(f.kg)); $('fPz').textContent = es(f.piezas); $('fM').textContent = es(f.metros, 1) + ' m'; $('fH').textContent = f.hojas;
+  $('fLista').innerHTML = f.lista.map(p => `<li><span>${p.nombre}</span><span>${es(p.cantidad, 1)} ${p.unidad} · ${es(p.kg, 1)} kg</span></li>`).join('');
+  $('fMotor').textContent = f.motor.modelo; $('fMotorDato').textContent = f.motor.dato; $('motorChip').textContent = f.motor.modelo;
+  notas = null;
+}
+
+/* ----- automatismo ----- */
+$('pulso').onclick = () => sim.cmd('pulso', 'Control remoto');
+document.querySelectorAll('[data-cmd]').forEach(b => b.onclick = () => sim.cmd(b.dataset.cmd, 'Tablero'));
+$('bCarro').onclick = () => sim.carro('auto'); $('bPrueba').onclick = () => { sim.prueba(); $('fotocelda').checked = true; };
+$('tiempo').oninput = e => { sim.cfg.tiempo = +e.target.value; $('oTiempo').textContent = e.target.value + ' s'; };
+$('pausa').oninput = e => { sim.cfg.pausa = +e.target.value; $('oPausa').textContent = e.target.value + ' s'; };
+for (const k of ['fotocelda', 'autocierre', 'lampara']) $(k).onchange = e => { sim.cfg[k] = e.target.checked; };
+document.querySelectorAll('[data-vista]').forEach(b => b.onclick = () => sim.vista(b.dataset.vista));
+sim.alEvento((tipo, texto, t) => {
+  const li = document.createElement('li'); if (tipo === 'alerta') li.className = 'alerta';
+  const m = Math.floor(t / 60), s = Math.floor(t % 60); li.innerHTML = `<span>${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}</span><span></span>`; li.lastChild.textContent = texto;
+  $('registro').prepend(li); while ($('registro').children.length > 6) $('registro').lastChild.remove();
+});
+
+/* ----- anotaciones estilo plano ----- */
+let notas = null, nCuadro = 0;
+function anotar(w, h) {
+  const capa = $('capa'), g = sim.geo, f = sim.ficha;
+  if (!notas) {
+    capa.querySelectorAll('.iso-nota').forEach(n => n.remove()); $('lineas').innerHTML = '';
+    notas = [['anclaMotor', 'motor/.', f.motor.modelo, -1], ['anclaFoto', 'fotocelda/.', 'haz infrarrojo', 1], ['anclaBaliza', 'lámpara/.', 'destella al mover', 1]].map(([ancla, txt, sub, lado]) => {
+      const d = document.createElement('div'); d.className = 'iso-nota iso-callout'; d.innerHTML = `${txt}<small>${sub}</small>`; capa.append(d);
+      const l = document.createElementNS('http://www.w3.org/2000/svg', 'path'); l.setAttribute('class', 'iso-guia');
+      const p = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); p.setAttribute('class', 'iso-punto'); p.setAttribute('r', 3); $('lineas').append(l, p);
+      return { ancla, d, l, p, lado };
+    });
+  }
+  const chico = w < 560; nCuadro++;
+  notas.forEach((n, i) => {
+    if (nCuadro % 8 === 1) n.tapada = sim.tapado(g[n.ancla]);
+    const s = sim.aPantalla(g[n.ancla], w, h), ver = s.visible && !n.tapada && !(chico && i > 0);
+    n.d.hidden = !ver; n.l.style.display = n.p.style.display = ver ? '' : 'none'; if (!ver) return;
+    const dx = (chico ? 34 : 70) * n.lado, dy = -(chico ? 46 : 64) - i * 14, tx = s.x + dx, ty = s.y + dy;
+    n.p.setAttribute('cx', s.x); n.p.setAttribute('cy', s.y); n.l.setAttribute('d', `M${s.x} ${s.y} L${tx} ${ty + 8}`);
+    n.d.style.left = (n.lado > 0 ? tx + 6 : tx - n.d.offsetWidth - 6) + 'px'; n.d.style.top = (ty - 6) + 'px';
+  });
+}
+
+/* ----- telemetría ----- */
+const NOMBRE = { cerrado: 'Cerrado', abriendo: 'Abriendo', abierto: 'Abierto', cerrando: 'Cerrando', detenido: 'Detenido' };
+const hist = new Array(180).fill(.05); let tHist = 0;
+function tele(dt) {
+  const t = sim.telemetria();
+  $('estado').textContent = NOMBRE[t.estado]; $('estado').dataset.e = t.estado; $('barra').style.width = (t.apertura * 100).toFixed(1) + '%';
+  $('sub').textContent = t.bloqueada && sim.cfg.fotocelda ? 'fotocelda ocupada' : t.pausa !== null ? `cierra en ${Math.ceil(t.pausa)} s` : `apertura ${Math.round(t.apertura * 100)} %`;
+  $('vVel').textContent = es(t.velocidad, t.velocidad < 10 ? 1 : 0) + ' ' + t.unidadVel; $('vCor').textContent = es(t.corriente, 1) + ' A'; $('vPot').textContent = es(Math.round(t.potencia)) + ' W'; $('vCic').textContent = t.ciclos;
+  $('bCarro').textContent = t.carroDentro ? 'Salir carro' : 'Entrar carro';
+  tHist += dt; if (tHist > 1 / 15) { tHist = 0; hist.push(t.corriente); hist.shift(); onda(); }
+}
+function onda() {
+  const c = $('onda'), x = c.getContext('2d'), W = c.width, H = c.height, cs = getComputedStyle(document.body), max = sim.ficha.motor.inom * 2.3;
+  x.clearRect(0, 0, W, H); x.strokeStyle = `rgba(${cs.getPropertyValue('--tinta-rgb')}, .14)`; x.lineWidth = 1; x.setLineDash([4, 6]);
+  const yn = H - 6 - (sim.ficha.motor.inom / max) * (H - 14); x.beginPath(); x.moveTo(0, yn); x.lineTo(W, yn); x.stroke(); x.setLineDash([]);
+  x.beginPath(); hist.forEach((v, i) => { const px = i / (hist.length - 1) * W, py = H - 6 - Math.min(1, v / max) * (H - 14); i ? x.lineTo(px, py) : x.moveTo(px, py); });
+  x.strokeStyle = cs.getPropertyValue('--coral'); x.lineWidth = 3; x.lineJoin = 'round'; x.stroke();
+  x.lineTo(W, H); x.lineTo(0, H); x.closePath(); x.globalAlpha = .14; x.fillStyle = cs.getPropertyValue('--coral'); x.fill(); x.globalAlpha = 1;
+}
+
+/* ----- bucle ----- */
+let w = 0, h = 0, antes = performance.now();
+function medir() { const r = lienzo.getBoundingClientRect(); if (r.width !== w || r.height !== h) { const primera = !w; w = r.width; h = r.height; sim.medida(w, h); if (primera) sim.vista('calle', true); } }
+new ResizeObserver(medir).observe(lienzo);
+function cuadro(ahora) {
+  const dt = Math.min(.05, (ahora - antes) / 1000); antes = ahora; medir();
+  if (w && !window.__congelado) { sim.step(dt); sim.render(dt); anotar(w, h); tele(dt); }
+  requestAnimationFrame(cuadro);
+}
+pintar(); medir(); requestAnimationFrame(cuadro);
+</script>
+</body>
+</html>
