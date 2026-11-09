@@ -23,11 +23,11 @@ export const PERFILES = {
   lam14: { nombre: 'Lámina cal. 14 corte láser', kgm2: 14.92 },
 };
 export const ACABADOS = {
-  grafito: { nombre: 'Grafito', color: 0x4a5266 },
-  negro: { nombre: 'Negro mate', color: 0x1d2028 },
-  blanco: { nombre: 'Blanco', color: 0xf1f2f5 },
-  celeste: { nombre: 'Celeste maqueta', color: 0xb6dbf8 },
-  corten: { nombre: 'Óxido corten', color: 0xa85f3a },
+  grafito: { nombre: 'Grafito', color: 0x4a5266, metal: .55, rug: .3, capa: .6, piel: .13 },
+  negro: { nombre: 'Negro mate', color: 0x1d2028, metal: .45, rug: .5, capa: .2, piel: .2 },
+  blanco: { nombre: 'Blanco', color: 0xf1f2f5, metal: .1, rug: .28, capa: .7, piel: .11 },
+  celeste: { nombre: 'Celeste maqueta', color: 0xb6dbf8, metal: .2, rug: .28, capa: .7, piel: .11 },
+  corten: { nombre: 'Óxido corten', color: 0xa85f3a, metal: .5, rug: .88, capa: 0, piel: .7 },
 };
 export const TIPOS = { corredizo: 'Corredizo', batiente: 'Batiente', levadizo: 'Levadizo' };
 export const DISENOS = { celosia: 'Celosía láser', lanzas: 'Lanzas', listones: 'Listones', lamina: 'Rombos' };
@@ -40,17 +40,72 @@ const PAL = {
   noche: {
     fondo: 0x1f2433, suelo: 0x2b3145, anden: 0x3f4862, via: 0x262b3d, raya: 0x7c86a6, muro: 0x55668a, casa: 0x4d5f79, casa2: 0x445269, ruta: 0xe29699,
     arbol: 0x41607a, tronco: 0x39405a, carro: 0xbfe2fb, vidrio: 0x232c44, cesped: 0x2f3b50, piel: 0xe9b89a, ropa: 0xee7f74,
-    tinta: 0x0b0d14, tintaOp: .5, hemiC: 0x9aa8d6, hemiS: 0x4c5674, hemiI: 1.25, solC: 0xbccaff, solI: 1.25, sol: [-9, 14, 11], luces: 1, env: .22, expo: 1.12, motor: 0xb6dbf8, mecanica: 0xc9cfdc,
+    tinta: 0x0b0d14, tintaOp: .5, hemiC: 0x9aa8d6, hemiS: 0x4c5674, hemiI: 1.25, solC: 0xbccaff, solI: 1.25, sol: [-9, 14, 11], luces: 1, env: .34, expo: 1.12, motor: 0xb6dbf8, mecanica: 0xc9cfdc,
   },
   dia: {
     fondo: 0xeceef2, suelo: 0xe3e6ec, anden: 0xf6f7f9, via: 0xd3d7e0, raya: 0xffffff, muro: 0xffffff, casa: 0xffffff, casa2: 0xf1f3f6, ruta: 0xf0a8a2,
     arbol: 0xdbe5ec, tronco: 0xcfd4dd, carro: 0x8fc6f0, vidrio: 0x55617a, cesped: 0xdfe6e2, piel: 0xe9b89a, ropa: 0xe8736a,
-    tinta: 0x1a1e2c, tintaOp: .3, hemiC: 0xffffff, hemiS: 0xc9cedb, hemiI: .95, solC: 0xfff1dc, solI: 2.6, sol: [10, 16, 9], luces: 0, env: .5, expo: 1.02, motor: 0x8fc6f0, mecanica: 0x9aa3b5,
+    tinta: 0x1a1e2c, tintaOp: .3, hemiC: 0xffffff, hemiS: 0xc9cedb, hemiI: .95, solC: 0xfff1dc, solI: 2.6, sol: [10, 16, 9], luces: 0, env: .62, expo: 1.02, motor: 0x8fc6f0, mecanica: 0x9aa3b5,
   },
 };
 
 const UNIT = new THREE.BoxGeometry(1, 1, 1), BORDE = new THREE.EdgesGeometry(UNIT);
 const CONO = new THREE.ConeGeometry(.027, .11, 4); CONO.rotateY(Math.PI / 4);
+/* relieve fino del metal: 'piel' de la pintura electrostática y cepillado del galvanizado */
+function texRelieve(tipo, rep) {
+  const n = 128, cv = document.createElement('canvas'); cv.width = cv.height = n; const g = cv.getContext('2d'), im = g.createImageData(n, n);
+  let h = new Float32Array(n * n), r = 7; const azar = () => (r = (r * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < n * n; i++) h[i] = azar();
+  const pasada = (dx, dy) => { const o = new Float32Array(n * n); for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { let a = 0; for (let k = -1; k <= 1; k++) a += h[((y + k * dy + n) % n) * n + (x + k * dx + n) % n]; o[y * n + x] = a / 3; } h = o; };
+  if (tipo === 'piel') { for (let i = 0; i < 3; i++) { pasada(1, 0); pasada(0, 1); } } else for (let i = 0; i < 14; i++) pasada(1, 0);
+  const k = tipo === 'piel' ? 14 : 5;
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+    const dx = (h[y * n + (x + 1) % n] - h[y * n + (x + n - 1) % n]) * k, dy = (h[((y + 1) % n) * n + x] - h[((y + n - 1) % n) * n + x]) * k, l = Math.hypot(dx, dy, 1), i = (y * n + x) * 4;
+    im.data[i] = (-dx / l * .5 + .5) * 255; im.data[i + 1] = (-dy / l * .5 + .5) * 255; im.data[i + 2] = (1 / l * .5 + .5) * 255; im.data[i + 3] = 255;
+  }
+  g.putImageData(im, 0, 0); const t = new THREE.CanvasTexture(cv); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rep, rep); t.anisotropy = 4; return t;
+}
+/* tubo estructural: sección con esquinas redondeadas (radio real del perfil), largo en z */
+const TUBOS = new Map();
+function geoTubo(a, b, l) {
+  const k = `${a.toFixed(4)},${b.toFixed(4)},${l.toFixed(4)}`; let g = TUBOS.get(k); if (g) return g;
+  const r = Math.min(.012, Math.min(a, b) * .17), x = a / 2, y = b / 2, f = new THREE.Shape();
+  f.moveTo(-x + r, -y); f.lineTo(x - r, -y); f.absarc(x - r, -y + r, r, -Math.PI / 2, 0); f.lineTo(x, y - r); f.absarc(x - r, y - r, r, 0, Math.PI / 2);
+  f.lineTo(-x + r, y); f.absarc(-x + r, y - r, r, Math.PI / 2, Math.PI); f.lineTo(-x, -y + r); f.absarc(-x + r, -y + r, r, Math.PI, Math.PI * 1.5);
+  g = new THREE.ExtrudeGeometry(f, { depth: l, bevelEnabled: false, curveSegments: 4 }); g.translate(0, 0, -l / 2); TUBOS.set(k, g); return g;
+}
+const QY = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2), QX = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2), EJEZ = new THREE.Vector3(0, 0, 1);
+function tubo(grp, m, sx, sy, sz, x, y, z, rz = 0) {
+  const o = sx >= sy && sx >= sz ? new THREE.Mesh(geoTubo(sz, sy, sx), m) : sy >= sz ? new THREE.Mesh(geoTubo(sx, sz, sy), m) : new THREE.Mesh(geoTubo(sx, sy, sz), m);
+  if (sx >= sy && sx >= sz) o.quaternion.copy(QY); else if (sy >= sz) o.quaternion.copy(QX);
+  if (rz) o.quaternion.premultiply(new THREE.Quaternion().setFromAxisAngle(EJEZ, rz));
+  o.position.set(x, y, z); o.castShadow = o.receiveShadow = true; grp.add(o); return o;
+}
+/* cordón de soldadura: escamas a lo largo de la junta */
+const CORDONES = new Map();
+function cordon(grp, m, x, y, z, eje, largo, r = .0045) {
+  const k = largo.toFixed(3) + r; let g = CORDONES.get(k);
+  if (!g) { g = new THREE.CylinderGeometry(r, r, largo, 7, Math.max(4, Math.round(largo / .0022)), false); const P = g.attributes.position;
+    for (let i = 0; i < P.count; i++) { const yy = P.getY(i), e = 1 + .22 * Math.sin(yy / .0075 * 6.2832) + .06 * Math.sin(yy * 2311); P.setX(i, P.getX(i) * e); P.setZ(i, P.getZ(i) * e); }
+    g.computeVertexNormals(); CORDONES.set(k, g); }
+  const o = new THREE.Mesh(g, m); if (eje === 'x') o.rotation.z = Math.PI / 2; else if (eje === 'z') o.rotation.x = Math.PI / 2; o.position.set(x, y, z); o.castShadow = true; grp.add(o); return o;
+}
+const G_HEX = new THREE.CylinderGeometry(.011, .011, .009, 6), G_ARAN = new THREE.CylinderGeometry(.017, .017, .0025, 16), G_ESP = new THREE.CylinderGeometry(.006, .006, .03, 8);
+function perno(grp, m, x, y, z) { for (const [g, dy] of [[G_ARAN, .00125], [G_HEX, .007], [G_ESP, .015]]) { const o = new THREE.Mesh(g, m); o.position.set(x, y + dy, z); o.castShadow = true; grp.add(o); } }
+const G_PINON = (() => { const N = 14, f = new THREE.Shape(); for (let i = 0; i < N * 4; i++) { const a = (i - .5) / (N * 4) * 6.2832, r = i % 4 < 2 ? .0445 : .057; f[i ? 'lineTo' : 'moveTo'](Math.cos(a) * r, Math.sin(a) * r); } f.closePath();
+  const h = new THREE.Path(); h.absarc(0, 0, .012, 0, 6.2832, true); f.holes.push(h); const g = new THREE.ExtrudeGeometry(f, { depth: .03, bevelEnabled: false, curveSegments: 8 }); g.translate(0, 0, -.015); g.rotateX(Math.PI / 2); return g; })();
+const G_RUEDA = new THREE.LatheGeometry([[.012, -.016], [.05, -.016], [.05, -.011], [.041, 0], [.05, .011], [.05, .016], [.012, .016]].map(p => new THREE.Vector2(...p)), 28);
+const G_FIJOS = new Set([G_HEX, G_ARAN, G_ESP, G_PINON, G_RUEDA]);
+/* lámina de corte láser con espesor real: cada perforación es un hueco de verdad */
+function geoLamina(p, esp = .003) {
+  const f = new THREE.Shape(); f.moveTo(0, 0); f.lineTo(p.L, 0); f.lineTo(p.L, p.H); f.lineTo(0, p.H); f.closePath();
+  for (const h of p.huecos) { const c = new THREE.Path();
+    if (h.t === 'c') c.absarc(h.x, h.y, h.r, 0, 6.2832, true);
+    else if (h.t === 'e') c.absellipse(h.x, h.y, h.rx, h.ry, 0, 6.2832, true, h.a);
+    else { c.moveTo(h.x - h.rx, h.y); c.lineTo(h.x, h.y + h.ry); c.lineTo(h.x + h.rx, h.y); c.lineTo(h.x, h.y - h.ry); c.closePath(); }
+    f.holes.push(c); }
+  const g = new THREE.ExtrudeGeometry(f, { depth: esp, bevelEnabled: false, curveSegments: 8 }); g.translate(-p.L / 2, -p.H / 2, -esp / 2); return g;
+}
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v)), suave = t => t * t * (3 - 2 * t), mix = (a, b, t) => a + (b - a) * t;
 function azar(s) { let a = (s * 2654435761) >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 
@@ -146,7 +201,7 @@ export function crearSimulador(canvas, opt = {}) {
   const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), .04).texture; pm.dispose();
   const camera = new THREE.PerspectiveCamera(34, 1, .1, 200);
   const controls = new OrbitControls(camera, canvas);
-  Object.assign(controls, { enableDamping: true, dampingFactor: .08, maxPolarAngle: Math.PI * .495, minDistance: 1.6, maxDistance: 40, enablePan: false });
+  Object.assign(controls, { enableDamping: true, dampingFactor: .08, maxPolarAngle: Math.PI * .495, minDistance: .4, maxDistance: 40, enablePan: false });
 
   const hemi = new THREE.HemisphereLight(0xffffff, 0x333333, 1), sol = new THREE.DirectionalLight(0xffffff, 1);
   sol.castShadow = true; sol.shadow.mapSize.set(2048, 2048); sol.shadow.bias = -.0003; sol.shadow.normalBias = .025;
@@ -155,10 +210,12 @@ export function crearSimulador(canvas, opt = {}) {
 
   /* materiales por rol, para cambiar día/noche sin reconstruir */
   const M = {}, mat = (rol, extra) => (M[rol] ||= new THREE.MeshStandardMaterial({ roughness: .92, metalness: 0, ...extra }));
-  const mAcero = new THREE.MeshStandardMaterial({ metalness: .55, roughness: .42 });
-  const mPanel = new THREE.MeshStandardMaterial({ metalness: .55, roughness: .42, side: THREE.DoubleSide, alphaTest: .5 });
-  const mPanelP = mPanel.clone();
-  const mMotor = new THREE.MeshStandardMaterial({ metalness: .1, roughness: .55 }), mMec = new THREE.MeshStandardMaterial({ metalness: .8, roughness: .32 });
+  // el entorno sigue plano (figuras y colores); el metal responde a la luz como metal de verdad
+  const nPiel = texRelieve('piel', 26), nCepillo = texRelieve('cepillo', 9);
+  const mAcero = new THREE.MeshPhysicalMaterial({ metalness: .35, roughness: .4, clearcoat: .4, clearcoatRoughness: .28, envMapIntensity: 2.1, normalMap: nPiel, normalScale: new THREE.Vector2(.14, .14) });
+  const mPanel = mAcero, mPanelP = mAcero;
+  const mMotor = new THREE.MeshPhysicalMaterial({ metalness: .05, roughness: .42, clearcoat: .5, clearcoatRoughness: .25 });
+  const mMec = new THREE.MeshStandardMaterial({ metalness: 1, roughness: .26, envMapIntensity: 2.4, normalMap: nCepillo, normalScale: new THREE.Vector2(.35, .35) }); // galvanizado e inoxidable
   const mOscuro = new THREE.MeshStandardMaterial({ color: 0x1c1f29, roughness: .7, metalness: .2 });
   const mConcreto = new THREE.MeshStandardMaterial({ color: 0x8b93a6, roughness: 1 });
   const emis = (c, e) => new THREE.MeshStandardMaterial({ color: c, emissive: e, emissiveIntensity: 0, roughness: .6 });
@@ -176,7 +233,7 @@ export function crearSimulador(canvas, opt = {}) {
     if (borde) { const e = new THREE.LineSegments(BORDE, mLinea); e.scale.copy(o.scale); e.position.copy(o.position); grp.add(e); }
     return o;
   };
-  const limpiar = g => { for (const o of [...g.children]) { limpiar(o); g.remove(o); if (o.geometry && ![UNIT, CONO, BORDE].includes(o.geometry)) o.geometry.dispose(); } };
+  const limpiar = g => { for (const o of [...g.children]) { limpiar(o); g.remove(o); if (o.geometry && ![UNIT, CONO, BORDE].includes(o.geometry) && !G_FIJOS.has(o.geometry)) o.geometry.dispose(); } };
 
   /* ---------- estado ---------- */
   const S = { p: 0, v: 0, estado: 'cerrado', objetivo: 0, tPausa: 0, tMov: 0, ciclos: 0, corriente: .05, tBaliza: 0, bloqueada: false, reloj: 0, golpe: 0, red: true, bat: .92, whCiclo: 0, placa: 0, q: 0, qObj: 0, tPuerta: 0 };
@@ -197,21 +254,24 @@ export function crearSimulador(canvas, opt = {}) {
   function hoja(L, H, diseno, acc, arco, mP, pasoM = 3, pasoR = 4) {
     const raiz = new THREE.Group(), t = .06, li = L - 2 * t;
     const gm = grupo('Marco', pasoM, [0, 0, .9], raiz, [L * .25, H, 0], 'tubo 60×60×3'), gr = grupo('Relleno', pasoR, [0, 0, 2], raiz, [L * .7, H * .75, 0], DISENOS[diseno].toLowerCase());
-    const B = (g, sx, sy, sz, x, y, z = 0, rz = 0) => { const m = new THREE.Mesh(UNIT, mAcero); m.scale.set(sx, sy, sz); m.position.set(x, y, z); m.rotation.z = rz; m.castShadow = m.receiveShadow = true; g.add(m); return m; };
+    const B = (g, sx, sy, sz, x, y, z = 0, rz = 0) => tubo(g, mAcero, sx, sy, sz, x, y, z, rz);
+    const esquinas = yT => { for (const x of [t, L - t]) for (const y of [t, yT]) { for (const z of [-t / 2, t / 2]) cordon(gm, mAcero, x, y + (y < H / 2 ? -t / 2 : t / 2), z, 'y', t - .012); cordon(gm, mAcero, x + (x < L / 2 ? .002 : -.002), y + (y < H / 2 ? .002 : -.002), 0, 'z', t - .014); } };
+    const tes = (x, a, y0, y1, z) => { for (const y of [y0, y1]) for (const s of [-1, 1]) cordon(gm, mAcero, x + s * a / 2, y, z, 'z', a - .008, .0038); };
     if (diseno === 'celosia') {
       B(gm, t, H, t, t / 2, H / 2); B(gm, t, H, t, L - t / 2, H / 2); acc.add('shs60', H, 2);
       B(gm, li, t, t, L / 2, t / 2); B(gm, li, t, t, L / 2, H - t / 2); acc.add('shs60', li, 2);
       const nI = Math.max(0, Math.ceil(li / 1.25) - 1);
-      for (let i = 1; i <= nI; i++) { B(gm, .04, H - 2 * t, .04, t + li * i / (nI + 1), H / 2, -.012); acc.add('t40', H - 2 * t); }
-      const pw = li + .04, ph = H - 2 * t + .04, p = patron(pw, ph, cfg), tex = new THREE.CanvasTexture(pintarPatron(p, Math.min(520, 2048 / pw)));
-      tex.anisotropy = 8; texturas.push(tex); mP.alphaMap = tex; mP.needsUpdate = true;
-      const pl = new THREE.Mesh(new THREE.PlaneGeometry(pw, ph), mP); pl.position.set(L / 2, H / 2, .012); pl.castShadow = pl.receiveShadow = true; gr.add(pl);
+      for (let i = 1; i <= nI; i++) { B(gm, .04, H - 2 * t, .04, t + li * i / (nI + 1), H / 2, -.012); acc.add('t40', H - 2 * t); tes(t + li * i / (nI + 1), .04, t, H - t, -.012); }
+      esquinas(H - t);
+      const pw = li + .04, ph = H - 2 * t + .04, p = patron(pw, ph, cfg);
+      const pl = new THREE.Mesh(geoLamina(p), mP); pl.position.set(L / 2, H / 2, .0125); pl.userData.lamina = true; pl.castShadow = pl.receiveShadow = true; gr.add(pl);
+      for (let i = 0, n = Math.max(2, Math.round(pw / .28)); i <= n; i++) for (const y of [t - .008, H - t + .008]) cordon(gr, mAcero, t - .02 + .03 + (pw - .06) * i / n, y, .0145, 'x', .022, .003); // puntos de soldadura de la lámina
       acc.lamina(pw * ph, 'lam14', p.abierto, p.corte); raiz.userData.patron = p;
     } else if (diseno === 'lanzas') {
       const yT = arco ? H - .52 : H - .2, yM = .52;
       B(gm, t, yT + t / 2, t, t / 2, (yT + t / 2) / 2); B(gm, t, yT + t / 2, t, L - t / 2, (yT + t / 2) / 2); acc.add('shs60', yT + t / 2, 2);
       B(gm, li, t, t, L / 2, t / 2); B(gm, li, t, t, L / 2, yT); acc.add('shs60', li, 2);
-      B(gm, li, .04, .04, L / 2, yM); acc.add('t40', li);
+      B(gm, li, .04, .04, L / 2, yM); acc.add('t40', li); esquinas(yT - t / 2);
       B(gr, li, yM - t - .02, .012, L / 2, (t + yM - .02) / 2); acc.lamina(li * (yM - t - .02));
       const n = Math.max(2, Math.round(li / .115) - 1), paso = li / (n + 1);
       for (let i = 1; i <= n; i++) {
@@ -224,13 +284,14 @@ export function crearSimulador(canvas, opt = {}) {
       B(gm, t, H, t, t / 2, H / 2); B(gm, t, H, t, L - t / 2, H / 2); acc.add('shs60', H, 2);
       const nI = Math.max(0, Math.ceil(li / 1.5) - 1);
       for (let i = 1; i <= nI; i++) { B(gm, .04, H - .04, .04, t + li * i / (nI + 1), H / 2, -.022); acc.add('t40', H - .04); }
+      for (const x of [t / 2, L - t / 2]) for (const y of [.004, H - .004]) cordon(gm, mAcero, x, y, 0, 'z', t - .014);
       const n = Math.floor((H + .03) / .11), paso = H / n;
       for (let i = 0; i < n; i++) { B(gr, li, paso - .03, .02, L / 2, paso * (i + .5), .01); acc.add('l80', li); }
     } else {
       const yS = H * .64;
       B(gm, t, H, t, t / 2, H / 2); B(gm, t, H, t, L - t / 2, H / 2); acc.add('shs60', H, 2);
       B(gm, li, t, t, L / 2, t / 2); B(gm, li, t, t, L / 2, H - t / 2); acc.add('shs60', li, 2);
-      B(gm, li, .04, .04, L / 2, yS); acc.add('t40', li);
+      B(gm, li, .04, .04, L / 2, yS); acc.add('t40', li); esquinas(H - t);
       B(gr, li, yS - t - .02, .012, L / 2, (t + yS - .02) / 2); acc.lamina(li * (yS - t - .02));
       const nR = Math.max(1, Math.round(li / .8) - 1);
       for (let i = 1; i <= nR; i++) { B(gr, .04, yS - t - .02, .02, t + li * i / (nR + 1), (t + yS - .02) / 2, .014); acc.add('t4020', yS - t - .02); }
@@ -242,7 +303,7 @@ export function crearSimulador(canvas, opt = {}) {
 
   /* ---------- construcción ---------- */
   function construir() {
-    limpiar(entorno); limpiar(porton); texturas.forEach(t => t.dispose()); texturas = []; grupos = []; partes = {};
+    limpiar(entorno); limpiar(porton); TUBOS.clear(); CORDONES.clear(); texturas.forEach(t => t.dispose()); texturas = []; grupos = []; partes = {};
     const { ancho: W, alto: H, tipo } = cfg, hp = H + .42, xd = W / 2 + COL / 2, xi = -xd - PEAT - COL, xp = -xd - COL / 2 - PEAT / 2;
     geo = { W, H, hp, xd, xi, xp };
     /* entorno */
@@ -267,11 +328,16 @@ export function crearSimulador(canvas, opt = {}) {
     luzPatio.position.set(0, 1.1, -2.4);
 
     /* acceso */
-    const acc = nuevoAcc(), Bm = (g, m, sx, sy, sz, x, y, z) => caja(g, m, sx, sy, sz, x, y, z);
+    const acc = nuevoAcc(), Bm = (g, m, sx, sy, sz, x, y, z) => m === mAcero ? tubo(g, m, sx, sy, sz, x, y, z) : caja(g, m, sx, sy, sz, x, y, z);
     const gBase = grupo('Cimentación', 1, [0, 0, 0], porton, [xd, .05, .5], 'dados de concreto');
     for (const x of [xi, -xd, xd]) Bm(gBase, mConcreto, .42, .08, .42, x, .02, 0);
     const gPor = grupo('Pórtico', 2, [0, 1.1, 0], porton, [xp, hp + .2, 0], 'tubo 150×150 y viga 200×150');
-    for (const x of [xi, -xd, xd]) { Bm(gPor, mAcero, COL, hp, COL, x, hp / 2, 0); acc.add('shs150', hp); }
+    for (const x of [xi, -xd, xd]) {
+      Bm(gPor, mAcero, COL, hp - .066, COL, x, .066 + (hp - .066) / 2, 0); acc.add('shs150', hp);
+      tubo(gPor, mAcero, .3, .012, .3, x, .066, 0); // platina de anclaje con cuatro pernos
+      for (const a of [-1, 1]) for (const b of [-1, 1]) perno(gPor, mMec, x + a * .115, .072, b * .115);
+      for (const s of [-1, 1]) { cordon(gPor, mAcero, x, .074, s * COL / 2, 'x', COL - .03, .0055); cordon(gPor, mAcero, x + s * COL / 2, .074, 0, 'z', COL - .03, .0055); cordon(gPor, mAcero, x, hp - .002, s * COL / 2, 'x', COL - .03, .0055); }
+    }
     const lv = xd - xi + COL; Bm(gPor, mAcero, lv, .2, COL, (xd + xi) / 2, hp + .1, 0); acc.add('r200', lv);
     Bm(gPor, mAcero, PEAT + .7, .05, 1.25, xp, hp + .225, .3); acc.lamina((PEAT + .7) * 1.25, 'lam14'); // marquesina
     Bm(gPor, mLed, lv - .5, .015, .03, (xd + xi) / 2, hp - .008, .05);
@@ -290,23 +356,27 @@ export function crearSimulador(canvas, opt = {}) {
     // puerta peatonal
     const gPea = grupo('Puerta peatonal', 7, [0, 0, 1.5], porton, [xp, H * .9, 0], 'chapa eléctrica y brazo hidráulico');
     const pivP = new THREE.Group(); pivP.position.set(xi + COL / 2 + .012, .05, 0); gPea.add(pivP); partes.pivP = pivP;
-    pivP.add(hoja(PEAT - .03, H - .05, cfg.diseno, acc, false, mPanelP, 7, 7)); Bm(pivP, mMec, .03, .16, .05, PEAT - .09, 1.05, .05); Bm(pivP, mOscuro, .05, .11, .03, PEAT - .09, 1.05, -.045);
+    pivP.add(hoja(PEAT - .03, H - .05, cfg.diseno, acc, false, mPanelP, 7, 7)); Bm(pivP, mOscuro, .05, .11, .03, PEAT - .09, 1.05, -.045);
+    { const cil = (r, l, x, y, z, ejeZ) => { const o = new THREE.Mesh(new THREE.CylinderGeometry(r, r, l, 18), mMec); if (ejeZ) o.rotation.x = Math.PI / 2; o.position.set(x, y, z); o.castShadow = true; pivP.add(o); return o; };
+      cil(.013, .46, PEAT - .09, 1.12, .075); for (const y of [.95, 1.29]) cil(.007, .05, PEAT - .09, y, .052, true); // manija tubular
+      for (const y of [.28, (H - .05) / 2, H - .38]) { cil(.011, .1, -.011, y, .036); cil(.0125, .004, -.011, y, .036); Bm(pivP, mMec, .05, .09, .004, .02, y, .032); } // bisagras de barril
+    }
     grupos = grupos.filter(g => g.parent?.parent !== pivP); // la puerta se monta como una sola pieza
     const gMot = grupo('Motor', 5, [0, .5, -1.5], porton, [0, 0, 0], ''), kgAntes = acc.total().kg;
 
     if (tipo === 'corredizo') {
       const L = W + .5, zc = -.3, T = W + .04; geo.T = T; geo.zona = [-.5, -.1];
       const h = hoja(L, H - .1, cfg.diseno, acc, false, mPanel); h.position.set(-W / 2 - .1, .1, zc); porton.add(h); partes.hoja = h;
-      Bm(gBase, mConcreto, 2 * W + 1.8, .05, .3, W / 2 + .35, 0, zc); Bm(gBase, mMec, 2 * W + 1.6, .02, .05, W / 2 + .35, .035, zc);
+      Bm(gBase, mConcreto, 2 * W + 1.8, .05, .3, W / 2 + .35, 0, zc); Bm(gBase, mMec, 2 * W + 1.6, .006, .06, W / 2 + .35, .028, zc); { const r = new THREE.Mesh(new THREE.CylinderGeometry(.009, .009, 2 * W + 1.6, 12), mMec); r.rotation.z = Math.PI / 2; r.position.set(W / 2 + .35, .037, zc); r.castShadow = true; gBase.add(r); }
       const gh = grupo('Cremallera y ruedas', 5, [0, 0, -.9], h, [L * .5, .34, 0], 'módulo M4');
-      partes.ruedas = [.5, L - .5].map(x => { const r = new THREE.Mesh(new THREE.CylinderGeometry(.05, .05, .03, 14), mMec); r.rotation.x = Math.PI / 2; r.position.set(x, -.04, 0); gh.add(r); return r; });
+      partes.ruedas = [.5, L - .5].map(x => { const r = new THREE.Mesh(G_RUEDA, mMec); r.rotation.x = Math.PI / 2; r.position.set(x, -.013, 0); r.castShadow = true; gh.add(r); return r; });
       const yc = .34; Bm(gh, mMec, L - .1, .03, .028, L / 2, yc, -.047);
       const nd = Math.floor((L - .1) / .034), dientes = new THREE.InstancedMesh(UNIT, mMec, nd), tm = new THREE.Matrix4();
       for (let i = 0; i < nd; i++) { tm.makeScale(.016, .014, .028); tm.setPosition(.06 + i * .034, yc - .021, -.047); dientes.setMatrixAt(i, tm); } gh.add(dientes);
       const mx = W / 2 + .62, mz = zc - .19;
       Bm(gBase, mConcreto, .5, .06, .42, mx, .01, mz); Bm(gMot, mOscuro, .34, .02, .26, mx, .05, mz); Bm(gMot, mMotor, .28, .3, .2, mx, .21, mz); Bm(gMot, mOscuro, .28, .035, .2, mx, .377, mz);
-      const pin = new THREE.Mesh(new THREE.CylinderGeometry(.052, .052, .03, 10), mMec); pin.rotation.x = Math.PI / 2; pin.position.set(mx, .1 + yc - .028 - .052, zc - .047);
-      const marca = new THREE.Mesh(UNIT, mOscuro); marca.scale.set(.02, .034, .05); marca.position.set(.03, 0, 0); pin.add(marca); gMot.add(pin); partes.pinon = pin; Bm(gMot, mMec, .03, .03, .1, mx, pin.position.y, zc - .11);
+      const pin = new THREE.Mesh(G_PINON, mMec); pin.castShadow = true; pin.rotation.x = Math.PI / 2; pin.position.set(mx, .1 + yc - .028 - .052, zc - .047);
+      gMot.add(pin); for (const a of [-1, 1]) for (const b of [-1, 1]) perno(gMot, mMec, mx + a * .14, .06, mz + b * .1); partes.pinon = pin; Bm(gMot, mMec, .03, .03, .1, mx, pin.position.y, zc - .11);
       Bm(gMot, mMec, .05, .05, .3, W / 2 + .1, H + .08, -.2); Bm(gMot, mOscuro, .05, .1, .03, W / 2 + .1, H, zc + .05); Bm(gMot, mOscuro, .05, .1, .03, W / 2 + .1, H, zc - .05);
       Bm(gMot, mMec, .08, H * .5, .08, -W / 2 - .2, H * .25, zc - .09); Bm(gMot, mMec, .08, .5, .08, W / 2 + .5 + W + .5, .25, zc);
       gMot.userData.ancla.set(mx, .42, mz); geo.pmin = (1.18 + W / 2) / T;
@@ -382,7 +452,7 @@ export function crearSimulador(canvas, opt = {}) {
     scene.background = new THREE.Color(P.fondo); scene.fog.color.setHex(P.fondo); scene.environmentIntensity = P.env; renderer.toneMappingExposure = P.expo;
     hemi.color.setHex(P.hemiC); hemi.groundColor.setHex(P.hemiS); hemi.intensity = P.hemiI; sol.color.setHex(P.solC); sol.intensity = P.solI; sol.position.set(...P.sol);
     mLinea.color.setHex(P.tinta); mLinea.opacity = P.tintaOp;
-    const col = ACABADOS[cfg.acabado].color; mAcero.color.setHex(col); mPanel.color.setHex(col); mPanelP.color.setHex(col); partes.mPlaca?.color.setHex(col);
+    const A = ACABADOS[cfg.acabado], col = A.color; Object.assign(mAcero, { metalness: A.metal, roughness: A.rug, clearcoat: A.capa }); mAcero.normalScale.setScalar(A.piel); mAcero.color.setHex(col); mPanel.color.setHex(col); mPanelP.color.setHex(col); partes.mPlaca?.color.setHex(col);
     mMotor.color.setHex(P.motor); mMec.color.setHex(P.mecanica);
     mVentana.color.setHex(dia ? 0xc9d6e6 : 0x39425c); mVentana.emissiveIntensity = L * red * .95; mFarol.emissiveIntensity = L * red * 2.4; luzFarol.intensity = L * red * 22;
     mLed.emissiveIntensity = L * propia * 2.6; mNum.emissiveIntensity = L * propia * 1.8; luzLed.forEach(l => l.intensity = L * propia * 9); luzPatio.intensity = L * propia * 7;
@@ -493,6 +563,7 @@ export function crearSimulador(canvas, opt = {}) {
       calle: [[W * .9 + 4.4, 5.2, 13 + W], [-.6, H * .45, .5]], predio: [[W * .9 + 3.5, 3.6, -(7.5 + W * .7)], [-.4, H * .45, 0]],
       frente: [[-7, 2.7, 9 + W * .6], [-1.2, H * .5, 0]],
       motor: t === 'corredizo' ? [[W / 2 + 2.7, 1.5, -3.1], [W / 2 + .5, .4, -.4]] : t === 'batiente' ? [[-W / 2 + 2.3, 2, -3.4], [-W / 2 + .25, .85, -.3]] : [[W / 2 + 3.4, H + 2.4, -H - 4.6], [0, H, -H / 2]],
+      herrajes: [[geo.xi + .1, 1.38, 1.75], [geo.xi + .72, 1.1, 0]], soldadura: [[geo.xd + .5, .42, .8], [geo.xd, .13, 0]],
       aerea: [[5, 17, 13], [0, 0, -1.5]], despiece: [[W * .9 + 5.5, 4.4, 11 + W], [-.4, H * .5, 1]],
     };
   };
@@ -515,7 +586,7 @@ export function crearSimulador(canvas, opt = {}) {
   }
   function medida(w, h, dpr = Math.min(1.75, window.devicePixelRatio || 1)) { tam = [w, h, dpr]; renderer.setPixelRatio(dpr); renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); if (composer) { composer.setPixelRatio(dpr); composer.setSize(w, h); } }
   const vP = new THREE.Vector3(), rayo = new THREE.Raycaster(), vD = new THREE.Vector3();
-  function tapado(v) { const d = vD.copy(v).sub(camera.position).length(); rayo.set(camera.position, vD.normalize()); rayo.far = d - .45; return rayo.intersectObjects([entorno, porton], true).some(i => i.object.isMesh && i.object.visible && i.object !== partes.haz && i.object.material !== mPanel && i.object.material !== mPanelP); }
+  function tapado(v) { const d = vD.copy(v).sub(camera.position).length(); rayo.set(camera.position, vD.normalize()); rayo.far = d - .45; return rayo.intersectObjects([entorno, porton], true).some(i => i.object.isMesh && i.object.visible && i.object !== partes.haz && !i.object.userData.lamina); }
   function aPantalla(v, w, h) { vP.copy(v).project(camera); return { x: (vP.x * .5 + .5) * w, y: (-vP.y * .5 + .5) * h, visible: vP.z < 1 && Math.abs(vP.x) < 1.05 && Math.abs(vP.y) < 1.05 }; }
   function etiquetas() { // grupos visibles con su punto de anclaje en el mundo
     const vistos = new Set();
