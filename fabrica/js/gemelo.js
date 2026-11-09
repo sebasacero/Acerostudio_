@@ -70,11 +70,19 @@ export function crearGemelo(canvas, { onMaquina, onPieza } = {}) {
     poly([P(x1, z0, y0), P(x1, z1, y0), P(x1, z1, y1), P(x1, z0, y1)], shade(color, -0.12), edge);
     poly([P(x0, z0, y1), P(x1, z0, y1), P(x1, z1, y1), P(x0, z1, y1)], shade(color, 0.12), edge);
   }
+  let cajas = [];
   function nota(x, y, titulo, dato, dx = 0, dy = -46) {
     const tinta = css('--tinta') || '#fff';
     const chico = canvas.getBoundingClientRect().width < 640;
     if (chico) { dy *= 0.6; dato = ''; }
     ctx.save();
+    // Si la etiqueta pisa a otra ya dibujada en este cuadro, sube hasta quedar libre.
+    ctx.font = `italic 400 ${chico ? 12 : 14}px Outfit, sans-serif`;
+    const ancho = Math.max(ctx.measureText(titulo).width, dato.length * 6.4) + 10, alto = chico ? 16 : 32;
+    const caja = () => ({ x0: x + dx - ancho / 2, x1: x + dx + ancho / 2, y1: y + dy, y0: y + dy - alto });
+    const choca = (a) => cajas.some((b) => a.x0 < b.x1 && a.x1 > b.x0 && a.y0 < b.y1 && a.y1 > b.y0);
+    for (let i = 0; i < 8 && choca(caja()); i++) dy -= chico ? 9 : 12;
+    cajas.push(caja());
     ctx.strokeStyle = tinta; ctx.setLineDash([4, 4]); ctx.lineWidth = 1.1;
     ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + dx, y + dy); ctx.stroke(); ctx.setLineDash([]);
     ctx.fillStyle = tinta; ctx.beginPath(); ctx.arc(x, y, 2.6, 0, Math.PI * 2); ctx.fill();
@@ -86,6 +94,7 @@ export function crearGemelo(canvas, { onMaquina, onPieza } = {}) {
   }
 
   function drawPlanta() {
+    cajas = [];
     const dia = document.body.classList.contains('dia');
     const base = dia ? '#f4f5f8' : '#424a66', maqColor = dia ? '#ffffff' : '#525b7a', edge = dia ? 'rgba(26,30,44,.12)' : 'rgba(255,255,255,.05)';
     // Piso de la nave con retícula de ejes cada 3 m.

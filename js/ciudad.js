@@ -319,6 +319,16 @@ export function crearCiudad(canvas, overlay, opciones = {}) {
         o_set(n.el, x + nx, y - ny, `translate(-50%,-50%) rotate(${ang}deg)`); continue;
       }
       const dx = n.dx ?? 60, dy = n.dy ?? -50;
+      // En pantallas angostas el texto va centrado sobre el punto para no pisar al complejo vecino.
+      if (canvas.clientWidth < 560) {
+        const w = n.el.offsetWidth / 2 + 8, top = y - Math.max(Math.abs(dy), 44);
+        const cx = Math.min(Math.max(x, w), canvas.clientWidth - w);
+        n.path.setAttribute('d', `M${x} ${y} L${x} ${top}`); n.dot.setAttribute('cx', x); n.dot.setAttribute('cy', y);
+        o_set(n.el, cx, top - 6, 'translate(-50%,-100%)'); n.el.style.textAlign = 'center';
+        n.el.classList.toggle('activa', n.complejo && n.complejo === elegido);
+        continue;
+      }
+      n.el.style.textAlign = '';
       const ex = x + dx, ey = y + dy;
       const d = n.recto ? `M${x} ${y} L${ex} ${y}` : `M${x} ${y} L${x} ${ey} L${ex - Math.sign(dx) * 4} ${ey}`;
       n.path.setAttribute('d', d); n.dot.setAttribute('cx', x); n.dot.setAttribute('cy', y);

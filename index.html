@@ -209,8 +209,18 @@
   .phone-cap { position: absolute; z-index: 3; left: 20px; right: 20px; bottom: 22px; display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; background: rgba(11, 13, 16, .78); border-left: 2px solid var(--coral); color: #fff; backdrop-filter: blur(6px); }
   .phone-cap b { font-size: 15px; font-weight: 500; } .phone-cap i { display: block; height: 2px; background: var(--coral); width: 0; }
   .phone-play { position: absolute; z-index: 4; right: 18px; top: 48px; width: 34px; height: 34px; border-radius: 50%; background: rgba(0, 0, 0, .5); color: #fff; font-size: 12px; }
-  .herr-lista { max-width: 1240px; margin: 0 auto; }
-  .herr-lista li b a:hover { color: var(--coral); }
+  .herr { max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; list-style: none; }
+  .herr li { grid-column: span 2; display: flex; }
+  .herr li.grande, .herr li.ancha { grid-column: span 3; }
+  .herr a { flex: 1; display: grid; grid-template-rows: auto auto 1fr auto; gap: 10px; padding: 22px; border: 1px solid rgba(var(--tinta-rgb), .16); border-radius: 4px; background: rgba(var(--vidrio-rgb), .45); transition: border-color .2s, transform .2s, background .2s; }
+  .herr a:hover, .herr a:focus-visible { border-color: var(--coral); transform: translateY(-2px); background: rgba(var(--vidrio-rgb), .75); }
+  .herr i { font-style: normal; font-family: var(--mono); font-size: 11px; letter-spacing: .1em; color: var(--coral); }
+  .herr b { font-family: var(--disp); font-weight: 500; font-size: 30px; line-height: 1; text-transform: uppercase; letter-spacing: .01em; }
+  .herr .grande b { font-size: 44px; }
+  .herr span { color: var(--suave); font-size: 14px; line-height: 1.5; }
+  .herr em { font-style: normal; font-size: 13.5px; font-weight: 500; display: inline-flex; align-items: center; gap: 10px; color: var(--celeste-txt); margin-top: 6px; }
+  .herr .grande a { min-height: 230px; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--coral); outline-offset: 3px; }
   .pie-links { display: flex; gap: 18px; flex-wrap: wrap; } .pie-links a:hover { color: var(--coral); }
   footer span a { color: var(--texto); }
   .wa-float { position: fixed; right: 20px; bottom: 20px; z-index: 50; width: 54px; height: 54px; border-radius: 50%; background: #25d366; color: #fff; display: grid; place-items: center; box-shadow: 0 12px 30px -8px rgba(0, 0, 0, .5); }
@@ -229,6 +239,7 @@
     .control { right: 84px; bottom: 16px; } .control button { padding: 7px 9px; font-size: 10px; }
     .herramientas { display: none; }
     section { padding: 80px 16px; }
+    .herr { grid-template-columns: 1fr; } .herr li, .herr li.grande, .herr li.ancha { grid-column: auto; } .herr .grande a { min-height: 0; } .herr .grande b { font-size: 36px; }
     .cabeza { flex-direction: column; align-items: start; gap: 18px; margin-bottom: 36px; }
     .pasos, .cifras { grid-template-columns: 1fr 1fr; }
     .paso:nth-child(3) { border-left: 0; padding-left: 0; }
@@ -248,7 +259,7 @@
 
   <div class="barra">
     <a class="marca" href="#inicio"><img src="images/logo-web.png" alt="ACERO"><span>.studio</span></a>
-    <nav><a href="#proceso">cómo funciona</a><a href="#app">la app</a><a href="#producto">el producto</a><a href="#herramientas">herramientas</a><a class="cta" href="studio/">Abrir Studio</a></nav>
+    <nav><a href="#proceso">cómo funciona</a><a href="#app">la app</a><a href="#producto">el producto</a><a href="#herramientas">herramientas</a><a href="fabrica/">fábrica</a><a class="cta" href="studio/">Abrir Studio</a></nav>
   </div>
 
   <div class="luna-wrap" aria-hidden="true">
@@ -339,7 +350,7 @@
     <p>Conversas con la IA a la izquierda, ves la ciudad en el centro y el acero a la derecha. Todo lo que cambias se recalcula.</p>
   </div>
   <div class="producto">
-    <a class="marco" href="ciudad.html"><img src="images/volumetrico/producto.jpg" alt="Pantalla de AceroStudio con la ciudad isométrica, el chat de IA y la ficha de acero"><span class="ir boton coral">Ver el concepto <span class="flecha-punteada"></span></span></a>
+    <a class="marco" href="app.html"><img src="images/app/editor.jpg" width="1600" height="1000" loading="lazy" alt="Pantalla de AceroStudio con el chat de diseño, la ciudad isométrica y la ficha de acero del complejo"><span class="ir boton coral">Probar la app <span class="flecha-punteada"></span></span></a>
     <ul class="lista">
       <li><i>01</i><div><b>Chat de diseño</b><span>“Une la zona A con la B y pon vivienda encima del viaducto.”</span></div></li>
       <li><i>02</i><div><b>Ciudad viva</b><span>Gira, cambia la hora, haz clic en un complejo y mira su estructura.</span></div></li>
@@ -384,15 +395,16 @@
 <section id="herramientas">
   <div class="cabeza">
     <h2><em>herramientas/.</em>Todo lo que ya<br>puedes usar hoy</h2>
-    <p>Las herramientas reales de AceroStudio. El concepto de la portada marca hacia dónde va cada una.</p>
+    <p>Las herramientas reales de AceroStudio, del primer trazo a la pieza cortada. Todas abren en el navegador, sin instalar nada.</p>
   </div>
-  <ul class="lista herr-lista">
-    <li><i>3D</i><div><b><a href="studio/">Studio 3D</a></b><span>Edificio, casa, nave o pabellón en acero; plano a 3D, foto a volúmenes, render comercial, IFC 4, DXF y Blender.</span></div></li>
-    <li><i>CNC</i><div><b><a href="fabrica/">Fábrica</a></b><span>Del modelo a la planta: despiece con conexiones, nesting, DSTV/NC1 y DXF para las máquinas, planos de taller, etiquetas QR y seguimiento de montaje.</span></div></li>
-    <li><i>IA</i><div><b><a href="clasico.html#rediseno">Rediseño con una foto</a></b><span>Sube una foto de tu espacio y recibe la propuesta en acero por WhatsApp.</span></div></li>
-    <li><i>kg</i><div><b><a href="clasico.html#calculadora">Calculadora de acero</a></b><span>Toneladas y kg/m² de una estructura a partir de sus luces y pisos.</span></div></li>
-    <li><i>⌂</i><div><b><a href="explorador.html">Explorador por pisos</a></b><span>Recorre un edificio piso a piso y en ascensor.</span></div></li>
-    <li><i>▶</i><div><b><a href="presentacion.html">Presentaciones</a></b><span>Láminas y reels de proyectos para redes.</span></div></li>
+  <ul class="herr">
+    <li class="grande"><a href="studio/"><i>3D · DISEÑO</i><b>Studio 3D</b><span>Edificio, casa, nave o pabellón en acero con perfiles reales. Plano a 3D, foto a volúmenes, toneladas en vivo, render comercial, IFC 4, DXF y Blender.</span><em>Abrir el Studio <span class="flecha-punteada"></span></em></a></li>
+    <li class="grande"><a href="fabrica/"><i>CNC · PRODUCCIÓN</i><b>Fábrica</b><span>Del modelo a la planta: despiece con conexiones, nesting de barras, DSTV/NC1 y DXF para las máquinas, planos de taller, etiquetas QR y montaje en obra.</span><em>Entrar a la planta <span class="flecha-punteada"></span></em></a></li>
+    <li><a href="app.html"><i>APP · FLUJO COMPLETO</i><b>La app</b><span>Del prompt a la lámina de venta: crear, ficha de acero, render y exportación en nueve pantallas.</span><em>Recorrer la app <span class="flecha-punteada"></span></em></a></li>
+    <li><a href="clasico.html#rediseno"><i>IA · FOTO</i><b>Rediseño con una foto</b><span>Sube una foto de tu espacio y recibe la propuesta en acero por WhatsApp.</span><em>Subir una foto <span class="flecha-punteada"></span></em></a></li>
+    <li><a href="clasico.html#calculadora"><i>KG · CÁLCULO</i><b>Calculadora de acero</b><span>Toneladas y kg/m² de una estructura a partir de sus luces y pisos.</span><em>Calcular <span class="flecha-punteada"></span></em></a></li>
+    <li class="ancha"><a href="explorador.html"><i>⌂ · RECORRIDO</i><b>Explorador por pisos</b><span>Recorre un edificio piso a piso y en ascensor, desde el celular.</span><em>Explorar <span class="flecha-punteada"></span></em></a></li>
+    <li class="ancha"><a href="presentacion.html"><i>▶ · VENTA</i><b>Presentaciones</b><span>Láminas y reels de proyecto listos para redes y para el cliente.</span><em>Ver presentaciones <span class="flecha-punteada"></span></em></a></li>
   </ul>
 </section>
 
@@ -417,7 +429,7 @@
 </section>
 <footer>
   <a class="marca" href="#inicio"><img src="images/logo-web.png" alt="ACERO"><span>.studio</span></a>
-  <nav class="pie-links"><a href="studio/">Studio 3D</a><a href="fabrica/">Fábrica</a><a href="ciudad.html">Concepto</a><a href="explorador.html">Explorador</a><a href="presentacion.html">Presentaciones</a><a href="clasico.html">Web clásica</a><a href="https://instagram.com/acero.press" target="_blank" rel="noopener">Instagram</a></nav>
+  <nav class="pie-links"><a href="studio/">Studio 3D</a><a href="fabrica/">Fábrica</a><a href="app.html">La app</a><a href="ciudad.html">Concepto</a><a href="explorador.html">Explorador</a><a href="presentacion.html">Presentaciones</a><a href="clasico.html">Web clásica</a><a href="https://instagram.com/acero.press" target="_blank" rel="noopener">Instagram</a></nav>
   <span>ACEROSTUDIO © 2026 · Bogotá · 2.600 msnm · <a href="https://wa.me/573152125327">+57 315 212 5327</a></span>
 </footer>
 <a href="https://wa.me/573152125327?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20un%20proyecto%20con%20acero.studio." class="wa-float" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp"><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16.04 4C9.37 4 3.98 9.36 3.98 15.99c0 2.27.63 4.4 1.73 6.23L4 28l6.02-1.58a12.1 12.1 0 0 0 6.02 1.59h.01c6.67 0 12.06-5.36 12.06-11.99C28.1 9.36 22.71 4 16.04 4zm0 21.94h-.01a9.9 9.9 0 0 1-5.06-1.39l-.36-.21-3.58.94.96-3.5-.24-.36a9.86 9.86 0 0 1-1.52-5.27c0-5.49 4.49-9.96 10.02-9.96 5.52 0 10.01 4.47 10.01 9.96 0 5.5-4.49 9.95-10.02 9.95zm5.48-7.45c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.47-.89-.79-1.49-1.76-1.66-2.06-.17-.3-.02-.46.13-.61.14-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.06 2.87 1.21 3.07.15.2 2.09 3.2 5.08 4.48.71.31 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.08 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.13-.27-.2-.57-.35z"/></svg></a>
