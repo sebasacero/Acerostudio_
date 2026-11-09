@@ -519,7 +519,7 @@ export function crearSimulador(canvas, opt = {}) {
       else if (per.fase === 2) { per.t += dt; per.paso *= .8; if (per.t > 1.3) { per.fase = 3; evento('estado', 'Teclado: clave correcta'); abrirPuerta('Teclado'); } }
       else if (per.fase === 3) { if (S.qObj === 0) per.fase = 0; else if (S.q > .85) per.fase = 4; }
       else if (per.fase === 4 && ir(xp + .05, -2.2)) { per.fase = 5; }
-      else if (per.fase === 5 && ir(xp, -4.6)) { per.fase = 0; per.paso = 0; per.rumbo = Math.PI; }
+      else if (per.fase === 5 && ir(xp, -4.6)) { per.fase = 0; per.paso = 0; per.rumbo = Math.PI; persona.visible = false; }
     }
     const enPuerta = per.fase >= 3 && per.z < .9 && per.z > -1.4;
     S.q += clamp(S.qObj - S.q, -dt / 1.1, dt / .8);
