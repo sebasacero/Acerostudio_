@@ -6,7 +6,7 @@ import { model, uid, fmt, wallLength } from './model.js';
 import { wallFrame } from './plan.js';
 import { PROFILES, member } from './steel.js';
 
-const RED = 0xcf2a1f;
+const RED = 0xee7f74;
 const ghostMat = new THREE.MeshBasicMaterial({ color: RED, transparent: true, opacity: 0.28, depthWrite: false });
 const lineMat = new THREE.LineBasicMaterial({ color: RED, depthTest: false });
 const markerMat = new THREE.MeshBasicMaterial({ color: RED, depthTest: false });

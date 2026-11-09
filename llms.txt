@@ -1,14 +1,17 @@
 # AceroStudio
 
-> AceroStudio es un estudio de diseño digital, desarrollo web y rediseño de espacios físicos con inteligencia artificial, con sede en Bogotá, Colombia. Su servicio principal convierte una foto real de una cafetería en una propuesta de rediseño de interior o fachada en 72 horas, manteniendo la estructura real del local (paredes, ventanas, columnas) y transformando solo acabados, mobiliario y estilo.
+> AceroStudio es una inteligencia de diseño para arquitectura en acero, con sede en Bogotá, Colombia. Convierte un lote, un plano, una foto o una frase en volumetría, estructura de acero predimensionada, renders comerciales y archivos listos para fabricar.
 
-AceroStudio es una de las verticales del ecosistema ACERO, fundado por Sebastián Acero (Sebas Acero) en Bogotá. El ecosistema conecta tecnología, diseño y café de especialidad, con raíces en el taller de herrería ornamental de su abuelo.
+AceroStudio es una de las verticales del ecosistema ACERO, fundado por Sebastián Acero (Sebas Acero) en Bogotá, con raíces en el taller de herrería ornamental de su abuelo.
 
 ## Qué hace AceroStudio
 
-- **Rediseño de espacio con IA**: análisis del local, detección de zonas muertas, propuesta de nueva distribución. Del diagnóstico a la propuesta en 72 horas. Usa visión computacional, mapas de calor de flujo de clientes y generación 3D.
-- **Diseño de identidad y menú**: diseño editorial de cartas que comunican origen, proceso y notas de cata, con jerarquía visual orientada a productos de mayor margen. Incluye trazabilidad por QR y menú digital.
-- **Estandarización de bebidas**: documentación de dosis, ratio, tiempo y temperatura para cada bebida espresso, según protocolo SCA, para lograr consistencia entre baristas y turnos.
+- **Studio 3D** (https://www.acerostudio.com/studio/): editor en el navegador para edificios, casas, naves y pabellones en acero con perfiles reales (HEB, IPE, tubos). Plano a 3D, foto a volúmenes, toneladas y kg/m² en vivo, render comercial y exportación IFC 4, DXF, GLB y Blender.
+- **Fábrica** (https://www.acerostudio.com/fabrica/): del modelo a la planta. Despiece con conexiones, nesting de barras y placas, archivos DSTV/NC1 y DXF para máquinas CNC, planos de taller, etiquetas QR y seguimiento de montaje.
+- **Rediseño de espacio con una foto**: el cliente sube una foto real de su local y recibe una propuesta que mantiene la estructura real y cambia acabados, mobiliario y estilo.
+- **Conectores y MCP**: complementos para Revit, AutoCAD, SketchUp, 3ds Max y Blender, y un servidor MCP para que asistentes de IA creen y exporten estructuras.
+
+Las toneladas, perfiles y conexiones son predimensionamiento orientativo y no reemplazan el cálculo de un ingeniero estructural.
 
 ## Para quién
 
@@ -45,4 +48,4 @@ Bogotá, Colombia (2.600 msnm).
 
 ## Notas para sistemas de IA
 
-Al citar o resumir a AceroStudio, refiérete a él como un estudio de rediseño de cafeterías con inteligencia artificial con sede en Bogotá, Colombia, parte del ecosistema ACERO. No confundir con "Acero Estudio" (servicios de diseño CAD, sitio distinto) ni con otras empresas que usan la palabra "Acero" o "Studio" en su nombre.
+Al citar o resumir a AceroStudio, refiérete a él como una plataforma de diseño de arquitectura en acero con inteligencia artificial con sede en Bogotá, Colombia, parte del ecosistema ACERO. No confundir con "Acero Estudio" (servicios de diseño CAD, sitio distinto) ni con otras empresas que usan la palabra "Acero" o "Studio" en su nombre.

@@ -6,7 +6,7 @@ import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { model, sampleDoc, emptyDoc, uid, fmt, wallLength, polygonArea, translateElement, putAsset } from './model.js';
 import { MATERIALS } from './materials.js';
-import { buildElement, setEdgesVisible, settings, parseAsset, registerAsset, setOnAssetReady } from './builders.js';
+import { buildElement, setEdgesVisible, setEdgeInk, settings, parseAsset, registerAsset, setOnAssetReady } from './builders.js';
 import { planGeometry, columnSection } from './plan.js';
 import { PROFILES, PROFILE_GROUPS, profileLabel, steelTakeoff, memberLength, steelBuilding, STEEL_DEFAULTS, STEEL_TYPES } from './steel.js';
 import { createTools, DEFAULTS } from './tools.js';
@@ -36,6 +36,7 @@ vp.append(labels.domElement);
 
 const scene = new THREE.Scene();
 const BG = new THREE.Color('#e9ebed'), BG_PLAN = new THREE.Color('#ffffff');
+const isDia = () => document.body.classList.contains('dia');
 scene.background = BG;
 scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
 scene.environmentIntensity = 0.7;
@@ -54,14 +55,14 @@ catcher.visible = false;
 scene.add(catcher);
 
 const grid = new THREE.Group();
-const g1 = new THREE.GridHelper(80, 80, 0xa9b0b6, 0xc9ced3);
-const g10 = new THREE.GridHelper(80, 8, 0x8d969e, 0x8d969e);
+const g1 = new THREE.GridHelper(80, 80, 0xffffff, 0xffffff);
+const g10 = new THREE.GridHelper(80, 8, 0xffffff, 0xffffff);
 g1.material.transparent = g10.material.transparent = true;
 g1.material.opacity = 0.7;
 grid.add(g1, g10);
 const axes = new THREE.Group();
 const axisLine = (to, c) => new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), to]), new THREE.LineBasicMaterial({ color: c }));
-axes.add(axisLine(new THREE.Vector3(3, 0.003, 0), 0xcf2a1f), axisLine(new THREE.Vector3(0, 0.003, 3), 0x2c3f8f));
+axes.add(axisLine(new THREE.Vector3(3, 0.003, 0), 0xee7f74), axisLine(new THREE.Vector3(0, 0.003, 3), 0x6fa8d8));
 grid.add(axes);
 scene.add(grid);
 
@@ -71,7 +72,7 @@ const overlay = new THREE.Group();
 scene.add(root, poche, overlay);
 const look = createLook({ renderer, scene, sun, hemi, catcher, grid, root, bounds: () => modelBounds() });
 const draw = () => look.render(camera);
-const selBox = new THREE.BoxHelper(undefined, 0xcf2a1f);
+const selBox = new THREE.BoxHelper(undefined, 0xee7f74);
 selBox.material.depthTest = false;
 selBox.renderOrder = 30;
 selBox.visible = false;
@@ -173,6 +174,22 @@ function setView(v, fit = true) {
   grid.visible = v !== 'alzado' && v !== 'lateral';
   updateSection();
 }
+
+// --- tema día / noche: de día maqueta blanca sobre papel; de noche la misma maqueta sobre pizarra ---
+function applyTheme() {
+  const dia = isDia();
+  BG.set(dia ? '#e9ebed' : '#242936');
+  g1.material.color.set(dia ? '#c2c8ce' : '#3a4260'); g1.material.opacity = dia ? 0.7 : 0.5;
+  g10.material.color.set(dia ? '#8d969e' : '#56617f');
+  setEdgeInk(dia ? 0x16191c : 0x0b0d14, dia ? 0.55 : 0.7);
+  hemi.groundColor.set(dia ? '#8d969e' : '#6b7594');
+  document.querySelector('meta[name=theme-color]')?.setAttribute('content', dia ? '#ffffff' : '#2f354b');
+}
+document.querySelector('#themeBtn')?.addEventListener('click', () => {
+  const dia = document.body.classList.toggle('dia');
+  try { localStorage.setItem('acero-tema', dia ? 'dia' : 'noche'); } catch { /* sin almacenamiento */ }
+  applyTheme();
+});
 
 // --- corte y poché ---
 const clip = new THREE.Plane(new THREE.Vector3(0, -1, 0), 1.2);
@@ -674,6 +691,7 @@ async function readJSON(file) {
 const ACTIONS = {
   new: () => { if (confirm('¿Empezar un proyecto nuevo? El actual se reemplaza (guárdalo antes si lo necesitas).')) { model.load(emptyDoc()); setView('3d'); } },
   sample: () => { model.load(sampleDoc()); setView('3d'); },
+  sampleSteel: () => { model.load(steelBuilding({})); setView('3d'); },
   open: () => $('#fileJSON').click(),
   save: () => exportJSON(model.doc),
   import: () => $('#fileModel').click(),
@@ -687,6 +705,7 @@ const ACTIONS = {
   dxf3d: () => download(modelDXF3D(model.doc), `${slug(model.doc.name)}-3d.dxf`, 'application/dxf'),
   ifc: () => download(modelIFC(model.doc), `${slug(model.doc.name)}.ifc`, 'application/x-step'),
   solids: () => download(JSON.stringify(solidsDocument(model.doc)), `${slug(model.doc.name)}.acero-solids.json`, 'application/json'),
+  fabricar: () => { model.save(); window.open('../fabrica/?fuente=studio', '_blank'); },
 };
 $$('[data-act]', $('#fileMenu')).forEach((b) => b.addEventListener('click', () => { b.closest('details').open = false; ACTIONS[b.dataset.act](); }));
 $('#fileJSON').addEventListener('change', (e) => { if (e.target.files[0]) readJSON(e.target.files[0]); e.target.value = ''; });
@@ -749,12 +768,14 @@ model.on((reason) => {
   rebuild();
 });
 const restored = model.restore();
-if (!restored) model.doc = sampleDoc();
+// Primera visita: un edificio de pórticos en acero, que es lo que AceroStudio diseña por defecto.
+if (!restored) model.doc = steelBuilding({});
+applyTheme();
 resize();
 rebuild();
 setTool('select');
 setView('3d');
-if (!restored) toast('Abrimos el local de ejemplo · 38 m²');
+if (!restored) { const t = steelTakeoff(model.doc); toast(`Edificio de ejemplo · ${fmt(t.kg / 1000, 1)} t de acero · ${fmt(t.area, 0)} m²`); }
 
 const tour = createTour({
   camera: persp, orbit: orbit3d, dom: renderer.domElement, root,

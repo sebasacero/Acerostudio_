@@ -24,6 +24,8 @@ import { MATERIALS } from '../studio/js/palette.js';
 import { SHOT_INFO, SEQUENCES, videoPrompt } from '../studio/js/prompts.js';
 import { PROFILES, steelBuilding, steelTakeoff, steelForWalls, steelColumn, member, STEEL_TYPES } from '../studio/js/steel.js';
 import { modelIFC } from '../studio/js/ifc.js';
+import { ordenDeProduccion, archivosDeTaller } from '../fabrica/js/paquete.js';
+import { hms } from '../fabrica/js/planta.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const CONNECTORS = join(HERE, '..', 'integraciones');
@@ -299,6 +301,18 @@ tool('exportar', 'Exporta el proyecto: ifc (IFC4 BIM: Revit, ArchiCAD, Tekla, co
 }, ({ formato, ruta }) => {
   const ext = { ifc: '.ifc', json: '.acero.json', solidos: '.acero-solids.json', dxf: '-planta.dxf', dxf3d: '-3d.dxf', svg: '-planta.svg' }[formato];
   return ok(`Exportado: ${exportTo(formato, resolve(ruta || `${slug(doc.name)}${ext}`))}`);
+});
+
+tool('fabricar', 'Pasa el modelo de acero a producción: despiece por marca con conexiones (placas base, testa, aletas, cartelas), nesting de barras de 6/12 m y de placas en láminas, programas DSTV/NC1 para la línea de corte y taladrado, DXF para plasma o láser, planos de taller SVG, etiquetas QR y plan de taller con horas máquina y control de calidad. Escribe el paquete en una carpeta.', {
+  carpeta: z.string().optional(), orden: z.string().optional(),
+}, ({ carpeta, orden }) => {
+  const op = ordenDeProduccion(doc, { orden });
+  if (!op.despiece.piezas.length) return fail('El proyecto no tiene barras ni columnas de acero con perfil del catálogo. Usa generar_estructura_acero primero.');
+  const out = resolve(carpeta || 'taller');
+  const files = archivosDeTaller(op);
+  for (const f of files) { const p = join(out, f.name); mkdirSync(dirname(p), { recursive: true }); writeFileSync(p, f.data); }
+  const r = op.despiece.resumen, s = op.sim;
+  return ok(`Orden ${op.orden}: ${r.piezas} piezas en ${r.marcas} marcas, ${r.placas} placas, ${(r.kg / 1000).toFixed(1)} t, ${r.agujeros} agujeros. ${op.barras.barras.length} barras (aprovechamiento ${(op.barras.aprovechamiento * 100).toFixed(1)} %), ${op.laminas.hojas.length} láminas. Taller listo en ${hms(s.makespan)} con ${s.horasMaquina.toFixed(0)} h máquina. ${files.length} archivos en ${join(out, op.orden)}.`, { compra: op.barras.compra, costoUSD: Math.round(op.costo.total) });
 });
 
 function findBlender(custom) {

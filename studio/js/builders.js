@@ -9,8 +9,9 @@ import { wallFrame, wallSpans, columnPoly, dimGeometry } from './plan.js';
 import { profileOf, sectionOutline, sectionHole, memberFrame } from './steel.js';
 
 const INK = new THREE.LineBasicMaterial({ color: 0x16191c, transparent: true, opacity: 0.55 });
-const RED = new THREE.LineBasicMaterial({ color: 0xcf2a1f, depthTest: false, transparent: true });
+const RED = new THREE.LineBasicMaterial({ color: 0xe8736a, depthTest: false, transparent: true });
 export const settings = { edges: true };
+export const setEdgeInk = (color, opacity) => { INK.color.set(color); INK.opacity = opacity; };
 const memberGeo = new Map(); // geometrías de barras repetidas (mismo perfil y largo) se comparten
 
 // UV a escala real (1 unidad de textura ≈ 0,6 m) para que ladrillo y madera no se estiren.
