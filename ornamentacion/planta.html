@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Planta de Ornamentación AceroStudio</title>
+<meta name="description" content="Simulación de la celda robotizada AS-RT-08: una mesa rotativa con ocho puestos que corta, dobla, arma, suelda, esmerila, pinta e inspecciona cada pieza de ornamentación, con una cámara que sigue una pieza de punta a punta.">
+<link rel="icon" type="image/png" href="../images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Antonio:wght@300;500;700&family=DM+Mono:wght@400;500&family=Outfit:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Permanent+Marker&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/volumetrico.css">
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/" } }</script>
+<style>
+  /* Planta de producción: lienzo 3D con dos cámaras a la izquierda, mando de la celda a la derecha. Tokens de css/volumetrico.css */
+  :root { --ok: #7fd6a4; --alerta: #ffb04a; --lado: max(18px, env(safe-area-inset-left, 0px)); --lado-d: max(18px, env(safe-area-inset-right, 0px)); }
+  body.dia { --ok: #1f8a55; --alerta: #b86a00; }
+  html, body { height: 100%; }
+  [hidden] { display: none !important; }
+  body { overflow: hidden; font-size: 14px; }
+  .app { height: 100%; display: grid; grid-template-rows: 54px minmax(0, 1fr); grid-template-columns: minmax(0, 1fr) 348px; grid-template-areas: "top top" "lienzo mando"; }
+  .top { grid-area: top; display: flex; align-items: center; gap: 18px; padding: 0 var(--lado-d) 0 var(--lado); background: var(--pizarra-2); border-bottom: 1px solid rgba(var(--tinta-rgb), .1); }
+  .ruta { font-size: 13px; color: var(--suave); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .ruta b { color: var(--texto); font-weight: 500; }
+  .secciones { display: flex; gap: 2px; background: rgba(var(--tinta-rgb), .06); padding: 3px; border-radius: 4px; }
+  .secciones a { font-size: 12.5px; padding: 6px 10px; border-radius: 3px; color: var(--suave); white-space: nowrap; }
+  .secciones a[aria-current] { background: var(--celeste); color: var(--negro); font-weight: 500; }
+  .top .der { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+  .chip { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; padding: 6px 9px; border: 1px solid rgba(var(--tinta-rgb), .25); border-radius: 3px; text-transform: uppercase; white-space: nowrap; }
+  #tema { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--suave); padding: 6px 4px; }
+  #tema svg { width: 20px; height: 20px; }
+  :focus-visible { outline: 2px solid var(--celeste-txt); outline-offset: 2px; }
+
+  .lienzo { grid-area: lienzo; position: relative; min-height: 0; overflow: hidden; background: var(--pizarra); }
+  .lienzo canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+  .hud { position: absolute; font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; background: rgba(16, 19, 26, .78); color: #eef1f8; padding: 7px 10px; border-radius: 3px; pointer-events: none; display: flex; gap: 8px; align-items: center; white-space: nowrap; }
+  .hud i { width: 7px; height: 7px; border-radius: 50%; background: #5cf09a; display: inline-block; }
+  .hud.pausa i { background: #ffb21c; }
+  #hudCelda { left: 16px; top: 16px; }
+  #hudSigue { top: 0; left: 0; }
+  #marcoSigue { position: absolute; border: 1px solid rgba(255, 255, 255, .6); border-radius: 4px; box-shadow: 0 10px 30px rgba(0, 0, 0, .25); pointer-events: none; }
+  #marcoSigue .hud { position: absolute; left: 8px; top: 8px; }
+  #marcoSigue .paso { position: absolute; left: 8px; bottom: 8px; right: 8px; font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em; color: #eef1f8; display: flex; gap: 3px; }
+  #marcoSigue .paso span { flex: 1; height: 4px; background: rgba(255, 255, 255, .25); border-radius: 2px; }
+  #marcoSigue .paso span.ya { background: var(--coral); }
+  #marcoSigue .paso span.ahora { background: #fff; }
+  #etiquetas { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .etq { position: absolute; transform: translate(-50%, -100%); pointer-events: auto; font-size: 11.5px; padding: 4px 8px 4px 6px; border-radius: 3px; background: var(--pizarra-2); color: var(--texto); box-shadow: 0 2px 10px rgba(0, 0, 0, .18); display: flex; gap: 6px; align-items: center; white-space: nowrap; }
+  .etq b { font-family: var(--mono); font-weight: 500; font-size: 10px; background: var(--amarillo); color: #111; border-radius: 2px; padding: 1px 4px; }
+  .etq.activa { background: var(--coral); color: #fff; }
+  .etq.oculta { opacity: 0; pointer-events: none; }
+  #leyenda { position: absolute; left: 16px; bottom: 16px; max-width: min(420px, calc(100% - 32px)); background: var(--pizarra-2); color: var(--texto); border-radius: 4px; padding: 14px 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, .2); }
+  #leyenda small { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--coral); }
+  #leyenda h3 { font-family: var(--disp); font-weight: 500; font-size: 24px; letter-spacing: .01em; margin: 2px 0 4px; }
+  #leyenda p { font-size: 13px; line-height: 1.45; color: var(--suave); }
+  #leyenda .maq { font-size: 12px; color: var(--texto); margin-bottom: 4px; }
+  #cargando { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); }
+
+  .panel { grid-area: mando; background: var(--pizarra-2); overflow: auto; min-height: 0; display: flex; flex-direction: column; gap: 22px; padding: 20px var(--lado-d) 28px 18px; border-left: 1px solid rgba(var(--tinta-rgb), .1); }
+  .panel h2 { font-style: italic; font-weight: 400; font-size: 17px; display: flex; justify-content: space-between; align-items: baseline; }
+  .panel h2 small { font-family: var(--mono); font-style: normal; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); }
+  .grupo { display: flex; flex-direction: column; gap: 9px; }
+  .rot { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); display: flex; justify-content: space-between; }
+  .seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 2px; background: rgba(var(--tinta-rgb), .06); padding: 3px; border-radius: 4px; }
+  .seg button { font-size: 13px; padding: 8px 4px; border-radius: 3px; color: var(--suave); }
+  .seg button[aria-pressed="true"] { background: var(--celeste); color: var(--negro); font-weight: 500; }
+  .muestras { display: flex; gap: 9px; align-items: center; }
+  .muestras button { width: 30px; height: 30px; border-radius: 50%; background: var(--c); border: 2px solid var(--pizarra-2); box-shadow: 0 0 0 1px rgba(var(--tinta-rgb), .3); }
+  .muestras button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--coral); }
+  .muestras output { font-size: 12.5px; color: var(--suave); margin-left: 4px; }
+  .nota { font-size: 11.5px; color: var(--suave); line-height: 1.45; }
+  .botones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .btn { font-size: 13px; padding: 10px 12px; border-radius: 3px; border: 1px solid rgba(var(--tinta-rgb), .25); color: var(--texto); text-align: center; }
+  .btn.prim { background: var(--coral); border-color: var(--coral); color: #fff; font-weight: 500; }
+  .btn[aria-pressed="true"] { background: var(--celeste); color: var(--negro); border-color: var(--celeste); }
+
+  .kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 10px; border-top: 1px dashed rgba(var(--tinta-rgb), .28); padding-top: 18px; }
+  .kpi { font-family: var(--disp); font-weight: 700; font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .kpi span { font-size: 15px; font-weight: 500; color: var(--suave); margin-left: 3px; }
+  .kpi small { display: block; font-family: var(--mono); font-weight: 400; font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); margin-bottom: 5px; }
+
+  .puestos { list-style: none; display: flex; flex-direction: column; }
+  .puestos li { display: grid; grid-template-columns: 22px 1fr auto; gap: 8px; align-items: center; padding: 7px 4px; border-bottom: 1px solid var(--linea); font-size: 13px; cursor: pointer; border-radius: 3px; }
+  .puestos li:hover { background: rgba(var(--tinta-rgb), .05); }
+  .puestos li b { font-family: var(--mono); font-weight: 500; font-size: 10px; background: var(--amarillo); color: #111; border-radius: 2px; text-align: center; padding: 2px 0; }
+  .puestos li .pz { font-family: var(--mono); font-size: 11px; color: var(--suave); font-variant-numeric: tabular-nums; }
+  .puestos li .barra { grid-column: 2 / 4; height: 3px; background: rgba(var(--tinta-rgb), .1); border-radius: 2px; overflow: hidden; }
+  .puestos li .barra i { display: block; height: 100%; width: 0; background: var(--coral); }
+  .puestos li.sigue { background: rgba(var(--tinta-rgb), .07); }
+  .puestos li.sigue .pz { color: var(--coral); }
+
+  .bitacora { list-style: none; font-size: 12.5px; display: flex; flex-direction: column; max-height: 220px; overflow: auto; }
+  .bitacora li { display: grid; grid-template-columns: 54px 1fr; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--linea); }
+  .bitacora li span { font-family: var(--mono); font-size: 10.5px; color: var(--suave); }
+  .bitacora li.ajuste em { color: var(--alerta); font-style: normal; }
+  .bitacora li.cert em { color: var(--ok); font-style: normal; }
+  .bitacora em { font-style: normal; font-family: var(--mono); font-size: 11px; margin-right: 6px; }
+
+  @media (max-width: 1080px) { .app { grid-template-columns: minmax(0, 1fr) 300px; } .secciones a { padding: 6px 7px; } }
+  @media (max-width: 860px) {
+    .top { gap: 8px; } .top .der { gap: 6px; } .ruta, .secciones .lg, #temaTxt { display: none; } .secciones a { padding: 6px 8px; font-size: 12px; }
+    body { overflow: auto; }
+    .app { height: auto; grid-template-columns: minmax(0, 1fr); grid-template-rows: 54px auto auto; grid-template-areas: "top" "lienzo" "mando"; }
+    .lienzo { height: min(118vw, 74vh); }
+    .panel { border-left: 0; padding-left: var(--lado); overflow: visible; }
+    .top { gap: 10px; } .top .chip, .ruta { display: none; }
+    .secciones a { font-size: 12px; }
+    #leyenda { left: 10px; right: 10px; bottom: auto; top: 10px; max-width: none; padding: 10px 12px; }
+    #leyenda h3 { font-size: 19px; } #leyenda p { font-size: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    #hudCelda { top: auto; bottom: calc(50% + 10px); left: 10px; }
+    .etq { font-size: 10.5px; padding: 3px; } .etq span { display: none; } .etq.activa span { display: inline; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <a class="marca" href="../"><img src="../images/logo-web.png" alt="ACERO"><span>.studio</span></a>
+    <div class="ruta">Ornamentación / <b>Planta de producción</b></div>
+    <nav class="secciones" aria-label="Secciones de Ornamentación">
+      <a href="./">Acceso<span class="lg"> en acero</span></a>
+      <a href="planta.html" aria-current="page">Planta</a>
+    </nav>
+    <div class="der">
+      <span class="chip">AS-RT-08 · simulación</span>
+      <button id="tema" type="button" aria-label="Cambiar entre día y noche">
+        <svg class="luna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+        <svg class="sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>
+        <span id="temaTxt">día</span>
+      </button>
+    </div>
+  </header>
+
+  <section class="lienzo" aria-label="Celda robotizada en 3D">
+    <canvas id="c"></canvas>
+    <div id="cargando">cargando la celda…</div>
+    <div id="etiquetas"></div>
+    <div class="hud" id="hudCelda"><i></i><span>AS-RT-08 · simulación de proceso</span></div>
+    <div id="marcoSigue" hidden><div class="hud"><i></i><span id="hudSigueTxt">cámara sigue · una pieza</span></div><div class="paso" id="pasoSigue"></div></div>
+    <div id="leyenda" hidden><small id="lNum"></small><h3 id="lNom"></h3><div class="maq" id="lMaq"></div><p id="lTxt"></p></div>
+  </section>
+
+  <aside class="panel" aria-label="Mando de la celda">
+    <div class="grupo">
+      <h2>Siguiente pieza <small>lote de uno</small></h2>
+      <span class="rot">Diseño de la lámina</span>
+      <div class="seg" id="sDiseno"></div>
+      <span class="rot">Acabado en polvo</span>
+      <div class="muestras" id="sAcabado"><output id="acabadoTxt"></output></div>
+      <p class="nota">Lo que elijas entra con la próxima lámina que el robot carga. Las piezas que ya van en la mesa siguen con su propio diseño: la celda no se detiene para cambiar de formato.</p>
+    </div>
+
+    <div class="grupo">
+      <h2>Celda <small id="estadoTxt">produciendo</small></h2>
+      <div class="botones">
+        <button class="btn prim" id="bPausa" type="button">Pausar</button>
+        <button class="btn" id="bRecorrido" type="button" aria-pressed="false">Recorrido guiado</button>
+        <button class="btn" id="bOtra" type="button">Seguir otra pieza</button>
+        <button class="btn" id="bSigue" type="button" aria-pressed="true">Cámara que sigue</button>
+      </div>
+      <span class="rot">Velocidad de la simulación</span>
+      <div class="seg" id="sVel"><button type="button" data-v="1" aria-pressed="true">×1</button><button type="button" data-v="2">×2</button><button type="button" data-v="4">×4</button><button type="button" data-v="8">×8</button></div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><small>Ciclo</small><output id="kCiclo">—</output><span>s</span></div>
+      <div class="kpi"><small>Piezas por hora</small><output id="kPzh">—</output></div>
+      <div class="kpi"><small>Terminadas</small><output id="kHechas">0</output></div>
+      <div class="kpi"><small>Pieza seguida</small><output id="kSeguida" style="font-size:24px">—</output></div>
+    </div>
+
+    <div class="grupo">
+      <h2>Puestos <small>toca uno para verlo</small></h2>
+      <ul class="puestos" id="lPuestos"></ul>
+    </div>
+
+    <div class="grupo">
+      <h2>Bitácora <small>en vivo</small></h2>
+      <ul class="bitacora" id="lBitacora"></ul>
+      <p class="nota">Simulación con tiempos de referencia de taller: ciclo de 7,6 s por puesto. Cada máquina mide su trabajo y se corrige sola; el escáner del último puesto certifica cada pieza contra el modelo.</p>
+    </div>
+  </aside>
+</div>
+
+<script type="module">
+import { crearCelda, PUESTOS, DISENOS, ACABADOS } from './js/celda.js';
+const $ = (id) => document.getElementById(id);
+const q = new URLSearchParams(location.search), raiz = document.documentElement;
+const leer = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
+const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
+
+const sim = crearCelda($('c'), { captura: q.has('captura') });
+window.__celda = sim;
+$('cargando').hidden = true;
+
+// tema
+let dia = q.has('noche') ? false : q.has('dia') ? true : (leer('acero-tema') || 'dia') === 'dia';
+function ponerTema(d) { dia = d; document.body.classList.toggle('dia', d); raiz.style.colorScheme = d ? 'light' : 'dark'; $('temaTxt').textContent = d ? 'día' : 'noche'; sim.tema(d); }
+ponerTema(dia);
+$('tema').onclick = () => { ponerTema(!dia); guardar('acero-tema', dia ? 'dia' : 'noche'); };
+
+// pedido
+const sD = $('sDiseno');
+for (const [k, v] of Object.entries(DISENOS)) { const b = document.createElement('button'); b.type = 'button'; b.textContent = v; b.dataset.k = k; b.setAttribute('aria-pressed', k === sim.cfg.diseno); b.onclick = () => { sim.set({ diseno: k }); [...sD.children].forEach((x) => x.setAttribute('aria-pressed', x === b)); }; sD.append(b); }
+const sA = $('sAcabado');
+for (const [k, a] of Object.entries(ACABADOS)) { const b = document.createElement('button'); b.type = 'button'; b.title = a.nombre; b.setAttribute('aria-label', a.nombre); b.style.setProperty('--c', '#' + a.color.toString(16).padStart(6, '0')); b.setAttribute('aria-pressed', k === sim.cfg.acabado); b.onclick = () => { sim.set({ acabado: k }); [...sA.querySelectorAll('button')].forEach((x) => x.setAttribute('aria-pressed', x === b)); $('acabadoTxt').textContent = a.nombre; }; sA.insertBefore(b, $('acabadoTxt')); }
+$('acabadoTxt').textContent = ACABADOS[sim.cfg.acabado].nombre;
+
+// mando
+$('bPausa').onclick = () => { sim.set({ pausa: !sim.cfg.pausa }); $('bPausa').textContent = sim.cfg.pausa ? 'Reanudar' : 'Pausar'; $('estadoTxt').textContent = sim.cfg.pausa ? 'en pausa' : 'produciendo'; $('hudCelda').classList.toggle('pausa', sim.cfg.pausa); };
+$('bRecorrido').onclick = () => { const on = $('bRecorrido').getAttribute('aria-pressed') !== 'true'; sim.recorrido(on); };
+$('bOtra').onclick = () => sim.seguirSiguiente();
+$('bSigue').onclick = () => { const on = !sim.cfg.verSigue; sim.set({ verSigue: on }); $('bSigue').setAttribute('aria-pressed', on); };
+$('sVel').onclick = (e) => { const b = e.target.closest('button'); if (!b) return; sim.set({ vel: +b.dataset.v }); [...$('sVel').children].forEach((x) => x.setAttribute('aria-pressed', x === b)); };
+
+// leyenda del recorrido o del puesto elegido
+let leyendaHasta = 0;
+function mostrarPuesto(k, fija) {
+  if (k == null) { $('leyenda').hidden = true; return; }
+  const P = PUESTOS[k]; $('lNum').textContent = `Puesto ${k + 1} de ${PUESTOS.length}`; $('lNom').textContent = P.nombre; $('lMaq').textContent = P.maquina; $('lTxt').textContent = P.texto; $('leyenda').hidden = false;
+  leyendaHasta = fija ? Infinity : performance.now() + 9000; puestoVisto = k;
+}
+let puestoVisto = null;
+sim.alRecorrido((k) => { $('bRecorrido').setAttribute('aria-pressed', k != null); if (k == null) { mostrarPuesto(null); puestoVisto = null; } else { mostrarPuesto(k, true); sim.seguirEn(k); } });
+
+// lista de puestos y etiquetas en la escena
+const lp = $('lPuestos'), et = $('etiquetas'), etqs = [];
+PUESTOS.forEach((P, k) => {
+  const li = document.createElement('li'); li.innerHTML = `<b>${k + 1}</b><span>${P.nombre}</span><span class="pz"></span><div class="barra"><i></i></div>`; li.onclick = () => { sim.recorrido(false); sim.irA(k); sim.seguirEn(k); mostrarPuesto(k); }; lp.append(li);
+  const e = document.createElement('button'); e.type = 'button'; e.className = 'etq'; e.innerHTML = `<b>${k + 1}</b><span>${P.nombre}</span>`; e.setAttribute('aria-label', `Puesto ${k + 1}: ${P.nombre}`); e.onclick = li.onclick; et.append(e); etqs.push(e);
+});
+const pasos = $('pasoSigue'); PUESTOS.forEach(() => pasos.append(document.createElement('span')));
+
+// bitácora
+const lb = $('lBitacora'), mmss = (t) => `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
+const TIPO = { carga: 'CARGA', ok: 'OK', ajuste: 'AJUSTE', cert: 'CERT' };
+sim.alEvento((e) => { const li = document.createElement('li'); li.className = e.tipo; li.innerHTML = `<span>${mmss(e.t)}</span><div><em>${TIPO[e.tipo]}</em>${e.pieza} · ${e.txt}</div>`; lb.prepend(li); while (lb.children.length > 40) lb.lastChild.remove(); });
+
+// cada cuadro: etiquetas, marco de la cámara que sigue y panel
+let tPanel = 0;
+const angosto = matchMedia('(max-width: 860px)');
+sim.alCuadro(() => {
+  const ahora = performance.now(), st = sim.estado(), v = sim.vistas();
+  if (leyendaHasta !== Infinity && ahora > leyendaHasta && !$('leyenda').hidden) { $('leyenda').hidden = true; puestoVisto = null; }
+  const pos = sim.etiquetas(), ms = $('marcoSigue');
+  pos.forEach((p, k) => { const e = etqs[k]; const fuera = p.z > 1 || p.x < 0 || p.x > v.principal.w || p.y < 20 || p.y > v.principal.h; const tapada = v.sigue && v.modo === 'inset' && p.x > v.sigue.x - 10 && p.y < v.sigue.y + v.sigue.h + 30; e.classList.toggle('oculta', fuera || tapada || (angosto.matches && puestoVisto != null && k !== puestoVisto)); e.style.left = p.x + 'px'; e.style.top = p.y + 'px'; e.classList.toggle('activa', k === puestoVisto); });
+  if (v.sigue) { ms.hidden = false; const top = v.modo === 'inset' ? v.sigue.y : v.principal.h; Object.assign(ms.style, { left: v.sigue.x + 'px', top: top + 'px', width: v.sigue.w + 'px', height: v.sigue.h + 'px' }); } else ms.hidden = true;
+  if (ahora - tPanel < 120) return; tPanel = ahora;
+  const P = PUESTOS[st.kSeguida] || PUESTOS[0];
+  $('hudSigueTxt').textContent = `cámara sigue · ${st.seguida} · ${st.indexando ? 'girando' : P.nombre.toLowerCase()}`;
+  [...pasos.children].forEach((s, k) => { s.className = k < st.kSeguida ? 'ya' : k === st.kSeguida ? 'ahora' : ''; });
+  $('kCiclo').textContent = st.ciclo.toFixed(1).replace('.', ','); $('kPzh').textContent = Math.round(st.pzh); $('kHechas').textContent = st.hechas; $('kSeguida').textContent = st.seguida;
+  [...lp.children].forEach((li, k) => { const pl = st.pales.find((x) => x.k === k); li.querySelector('.pz').textContent = pl ? pl.id : '—'; li.querySelector('.barra i').style.width = (st.indexando ? 100 : st.p * 100) + '%'; li.classList.toggle('sigue', k === st.kSeguida); });
+});
+</script>
+</body>
+</html>
