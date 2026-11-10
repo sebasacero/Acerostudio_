@@ -509,3 +509,18 @@ function avisar(t) { const a = $('#aviso'); a.textContent = t; a.hidden = false;
 window.__manh = { estado, preguntar, preguntarManh, PREGUNTAS };
 if ('speechSynthesis' in window) speechSynthesis.onvoiceschanged = () => {};
 cargar();
+
+// Actualización sola: si se publica una versión nueva, la app se recarga cuando el Maestro
+// está en la pantalla de inicio o de fin (nunca a mitad de una respuesta). Así no tiene que hacer nada.
+let versionCargada = null;
+async function revisarVersion() {
+  try {
+    const v = (await (await fetch('version.json?t=' + Date.now(), { cache: 'no-store' })).json()).version;
+    if (!versionCargada) { versionCargada = v; return; }
+    const quieto = !$('[data-paso="inicio"]').hidden || !$('[data-paso="fin"]').hidden || $('.vista.maestro').hidden;
+    if (v !== versionCargada && quieto && !graba.activo) location.reload();
+  } catch {}
+}
+revisarVersion();
+setInterval(revisarVersion, 5 * 60 * 1000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { revisarVersion(); sincronizarYa(); } });
