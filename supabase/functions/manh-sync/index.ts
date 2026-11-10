@@ -56,15 +56,19 @@ function aCliente(f: any) {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   if (req.method !== "POST") return json({ error: "Solo POST" }, 405);
-  if (!(await autorizado(req))) return json({ error: "Clave del taller incorrecta" }, 401);
+  // Subir no pide clave (el celular del Maestro sube solo). Leer, escuchar y borrar sí: solo la familia.
+  const familia = await autorizado(req);
   try {
     const b = await req.json();
     const disp = String(b.dispositivo ?? "").slice(0, 80);
+    if (!familia && !["respuesta", "archivo", "pendiente"].includes(b.accion)) return json({ error: "Clave del taller incorrecta" }, 401);
     switch (b.accion) {
       case "respuesta": {
         const fila = filaRespuesta(b.respuesta, disp);
         // no pisar una versión editada más reciente
-        const { data: ya } = await sb.from("manh_respuestas").select("editada,fecha").eq("id", fila.id).maybeSingle();
+        const { data: ya } = await sb.from("manh_respuestas").select("editada,fecha,dispositivo").eq("id", fila.id).maybeSingle();
+        // sin clave, cada celular solo puede tocar lo que él mismo subió
+        if (ya && !familia && ya.dispositivo !== disp) return json({ error: "Sin permiso" }, 403);
         const tNueva = deMs(fila.editada) ?? deMs(fila.fecha)!, tVieja = ya ? (deMs(ya.editada) ?? deMs(ya.fecha)!) : -1;
         if (tNueva >= tVieja) { const { error } = await sb.from("manh_respuestas").upsert(fila); if (error) throw error; }
         return json({ ok: true });
@@ -72,6 +76,11 @@ Deno.serve(async (req) => {
       case "archivo": {
         const { id, respuestaId, tipo, mime, base64 } = b;
         if (!/^[a-z]-[a-z0-9-]+$/i.test(id) || !["audio", "foto"].includes(tipo)) throw new Error("Archivo inválido");
+        if (typeof base64 !== "string" || base64.length > 20_000_000) throw new Error("Archivo muy grande");
+        if (!familia) {
+          const { data: ya } = await sb.from("manh_archivos").select("id").eq("id", id).maybeSingle();
+          if (ya) return json({ ok: true }); // ya está; sin clave no se reemplaza
+        }
         const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
         const ext = tipo === "foto" ? (mime?.includes("png") ? "png" : "jpg") : (mime?.includes("mp4") ? "m4a" : "webm");
         const path = `${tipo}s/${id}.${ext}`;
