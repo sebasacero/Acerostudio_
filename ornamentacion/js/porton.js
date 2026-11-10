@@ -82,12 +82,12 @@ function tubo(grp, m, sx, sy, sz, x, y, z, rz = 0) {
   o.position.set(x, y, z); o.castShadow = o.receiveShadow = true; grp.add(o); return o;
 }
 /* cordón de soldadura: escamas a lo largo de la junta */
-const CORDONES = new Map();
+const CORDONES = new Map(), CORD = new Set();
 function cordon(grp, m, x, y, z, eje, largo, r = .0045) {
   const k = largo.toFixed(3) + r; let g = CORDONES.get(k);
   if (!g) { g = new THREE.CylinderGeometry(r, r, largo, 7, Math.max(4, Math.round(largo / .0022)), false); const P = g.attributes.position;
     for (let i = 0; i < P.count; i++) { const yy = P.getY(i), e = 1 + .22 * Math.sin(yy / .0075 * 6.2832) + .06 * Math.sin(yy * 2311); P.setX(i, P.getX(i) * e); P.setZ(i, P.getZ(i) * e); }
-    g.computeVertexNormals(); CORDONES.set(k, g); }
+    g.computeVertexNormals(); CORDONES.set(k, g); CORD.add(g); }
   const o = new THREE.Mesh(g, m); if (eje === 'x') o.rotation.z = Math.PI / 2; else if (eje === 'z') o.rotation.x = Math.PI / 2; o.position.set(x, y, z); o.castShadow = true; grp.add(o); return o;
 }
 const G_HEX = new THREE.CylinderGeometry(.011, .011, .009, 6), G_ARAN = new THREE.CylinderGeometry(.017, .017, .0025, 16), G_ESP = new THREE.CylinderGeometry(.006, .006, .03, 8);
@@ -169,10 +169,12 @@ export function dxfPatron(p) { // DXF R12 en milímetros: contorno y perforacion
 }
 
 function nuevoAcc() {
-  const items = {}; let piezas = 0, corte = 0, pintura = 0;
+  const items = {}, porG = {}; let piezas = 0, corte = 0, pintura = 0;
+  const aG = (yo, clave, campo, v, n) => { const g = yo.alias[yo.g] || yo.g, o = ((porG[g] ||= {})[clave] ||= { m: 0, m2: 0, n: 0 }); o[campo] += v; o.n += n; };
   return {
-    add(p, m, n = 1) { (items[p] ||= { m: 0, n: 0 }); items[p].m += m * n; items[p].n += n; piezas += n; pintura += m * n * .22; },
-    lamina(m2, clave = 'lam', abierto = 0, mCorte = 0) { (items[clave] ||= { m2: 0, n: 0 }); items[clave].m2 += m2 * (1 - abierto); items[clave].n++; piezas++; corte += mCorte; pintura += m2 * 2 * (1 - abierto); },
+    g: 'Pórtico', alias: {},
+    add(p, m, n = 1) { aG(this, p, 'm', m * n, n); (items[p] ||= { m: 0, n: 0 }); items[p].m += m * n; items[p].n += n; piezas += n; pintura += m * n * .22; },
+    lamina(m2, clave = 'lam', abierto = 0, mCorte = 0) { aG(this, clave, 'm2', m2 * (1 - abierto), 1); (items[clave] ||= { m2: 0, n: 0 }); items[clave].m2 += m2 * (1 - abierto); items[clave].n++; piezas++; corte += mCorte; pintura += m2 * 2 * (1 - abierto); },
     total() {
       let kg = 0, m = 0; const lista = [];
       for (const [k, v] of Object.entries(items)) {
@@ -180,7 +182,9 @@ function nuevoAcc() {
         lista.push({ clave: k, nombre: p.nombre, cantidad: p.kgm2 ? v.m2 : v.m, unidad: p.kgm2 ? 'm²' : 'm', n: v.n, kg: w });
       }
       lista.sort((a, b) => b.kg - a.kg);
-      return { kg: kg * 1.04, metros: m, piezas, lista, corte, pintura }; // +4 % soldadura y herrajes
+      const grupos = {};
+      for (const [g, it] of Object.entries(porG)) { const l = Object.entries(it).map(([k, v]) => { const p = PERFILES[k]; return { clave: k, nombre: p.nombre, cantidad: p.kgm2 ? v.m2 : v.m, unidad: p.kgm2 ? 'm²' : 'm', n: v.n, kg: (p.kgm2 ? v.m2 * p.kgm2 : v.m * p.kgm) * 1.04 }; }).sort((a, b) => b.kg - a.kg); grupos[g] = { kg: l.reduce((a, b) => a + b.kg, 0), piezas: l.reduce((a, b) => a + b.n, 0), lista: l }; }
+      return { kg: kg * 1.04, metros: m, piezas, lista, corte, pintura, grupos }; // +4 % soldadura y herrajes
     },
   };
 }
@@ -253,8 +257,8 @@ export function crearSimulador(canvas, opt = {}) {
   /* ---------- una hoja: devuelve marco y relleno por separado ---------- */
   function hoja(L, H, diseno, acc, arco, mP, pasoM = 3, pasoR = 4) {
     const raiz = new THREE.Group(), t = .06, li = L - 2 * t;
-    const gm = grupo('Marco', pasoM, [0, 0, .9], raiz, [L * .25, H, 0], 'tubo 60×60×3'), gr = grupo('Relleno', pasoR, [0, 0, 2], raiz, [L * .7, H * .75, 0], DISENOS[diseno].toLowerCase());
-    const B = (g, sx, sy, sz, x, y, z = 0, rz = 0) => tubo(g, mAcero, sx, sy, sz, x, y, z, rz);
+    const gm = grupo('Marco', pasoM, [0, 0, 1.3], raiz, [L * .25, H, 0], 'tubo 60×60×3'), gr = grupo('Relleno', pasoR, [0, 0, 2.6], raiz, [L * .7, H * .75, 0], DISENOS[diseno].toLowerCase());
+    const B = (g, sx, sy, sz, x, y, z = 0, rz = 0) => { acc.g = g.userData.nombre; return tubo(g, mAcero, sx, sy, sz, x, y, z, rz); };
     const esquinas = yT => { for (const x of [t, L - t]) for (const y of [t, yT]) { for (const z of [-t / 2, t / 2]) cordon(gm, mAcero, x, y + (y < H / 2 ? -t / 2 : t / 2), z, 'y', t - .012); cordon(gm, mAcero, x + (x < L / 2 ? .002 : -.002), y + (y < H / 2 ? .002 : -.002), 0, 'z', t - .014); } };
     const tes = (x, a, y0, y1, z) => { for (const y of [y0, y1]) for (const s of [-1, 1]) cordon(gm, mAcero, x + s * a / 2, y, z, 'z', a - .008, .0038); };
     if (diseno === 'celosia') {
@@ -266,7 +270,7 @@ export function crearSimulador(canvas, opt = {}) {
       const pw = li + .04, ph = H - 2 * t + .04, p = patron(pw, ph, cfg);
       const pl = new THREE.Mesh(geoLamina(p), mP); pl.position.set(L / 2, H / 2, .0125); pl.userData.lamina = true; pl.castShadow = pl.receiveShadow = true; gr.add(pl);
       for (let i = 0, n = Math.max(2, Math.round(pw / .28)); i <= n; i++) for (const y of [t - .008, H - t + .008]) cordon(gr, mAcero, t - .02 + .03 + (pw - .06) * i / n, y, .0145, 'x', .022, .003); // puntos de soldadura de la lámina
-      acc.lamina(pw * ph, 'lam14', p.abierto, p.corte); raiz.userData.patron = p;
+      acc.g = 'Relleno'; acc.lamina(pw * ph, 'lam14', p.abierto, p.corte); raiz.userData.patron = p;
     } else if (diseno === 'lanzas') {
       const yT = arco ? H - .52 : H - .2, yM = .52;
       B(gm, t, yT + t / 2, t, t / 2, (yT + t / 2) / 2); B(gm, t, yT + t / 2, t, L - t / 2, (yT + t / 2) / 2); acc.add('shs60', yT + t / 2, 2);
@@ -303,7 +307,7 @@ export function crearSimulador(canvas, opt = {}) {
 
   /* ---------- construcción ---------- */
   function construir() {
-    limpiar(entorno); limpiar(porton); TUBOS.clear(); CORDONES.clear(); texturas.forEach(t => t.dispose()); texturas = []; grupos = []; partes = {};
+    limpiar(entorno); limpiar(porton); TUBOS.clear(); CORDONES.clear(); CORD.clear(); texturas.forEach(t => t.dispose()); texturas = []; grupos = []; partes = {};
     const { ancho: W, alto: H, tipo } = cfg, hp = H + .42, xd = W / 2 + COL / 2, xi = -xd - PEAT - COL, xp = -xd - COL / 2 - PEAT / 2;
     geo = { W, H, hp, xd, xi, xp };
     /* entorno */
@@ -331,7 +335,7 @@ export function crearSimulador(canvas, opt = {}) {
     const acc = nuevoAcc(), Bm = (g, m, sx, sy, sz, x, y, z) => m === mAcero ? tubo(g, m, sx, sy, sz, x, y, z) : caja(g, m, sx, sy, sz, x, y, z);
     const gBase = grupo('Cimentación', 1, [0, 0, 0], porton, [xd, .05, .5], 'dados de concreto');
     for (const x of [xi, -xd, xd]) Bm(gBase, mConcreto, .42, .08, .42, x, .02, 0);
-    const gPor = grupo('Pórtico', 2, [0, 1.1, 0], porton, [xp, hp + .2, 0], 'tubo 150×150 y viga 200×150');
+    acc.g = 'Pórtico'; const gPor = grupo('Pórtico', 2, [0, 1.5, 0], porton, [xp, hp + .2, 0], 'tubo 150×150 y viga 200×150');
     for (const x of [xi, -xd, xd]) {
       Bm(gPor, mAcero, COL, hp - .066, COL, x, .066 + (hp - .066) / 2, 0); acc.add('shs150', hp);
       tubo(gPor, mAcero, .3, .012, .3, x, .066, 0); // platina de anclaje con cuatro pernos
@@ -342,7 +346,7 @@ export function crearSimulador(canvas, opt = {}) {
     Bm(gPor, mAcero, PEAT + .7, .05, 1.25, xp, hp + .225, .3); acc.lamina((PEAT + .7) * 1.25, 'lam14'); // marquesina
     Bm(gPor, mLed, lv - .5, .015, .03, (xd + xi) / 2, hp - .008, .05);
     luzLed.forEach((l, i) => { const x = mix(xi + .6, xd - .6, i / 2); l.position.set(x, hp - .05, .35); l.target.position.set(x, 0, .9); });
-    const gSeg = grupo('Seguridad y acceso', 6, [0, .2, 2.6], porton, [xd, .62, Z_HAZ], 'fotoceldas, cámara, teclado, lámpara');
+    const gSeg = grupo('Seguridad y acceso', 6, [0, .3, 3.9], porton, [xd, .62, Z_HAZ], 'fotoceldas, cámara, teclado, lámpara');
     for (const x of [-xd + COL / 2 + .03, xd - COL / 2 - .03]) Bm(gSeg, mOscuro, .06, .12, .06, x, .5, Z_HAZ);
     partes.haz = Bm(gSeg, mHaz, W - .1, .012, .012, 0, .5, Z_HAZ); partes.haz.castShadow = false;
     Bm(gSeg, mOscuro, .03, .14, .03, xd, hp + .27, .0); const bal = new THREE.Mesh(new THREE.CylinderGeometry(.055, .065, .1, 10), mBaliza); bal.position.set(xd, hp + .39, 0); gSeg.add(bal); luzBaliza.position.set(xd, hp + .6, .4);
@@ -354,15 +358,15 @@ export function crearSimulador(canvas, opt = {}) {
     Bm(gSeg, mNum, .62, .22, .01, xd + 1.1, 1.62, .125); const pn = new THREE.Mesh(new THREE.PlaneGeometry(.66, .25), mPlaca); pn.position.set(xd + 1.1, 1.62, .14); gSeg.add(pn);
     if (cfg.solar) { const ps = new THREE.Mesh(UNIT, mSolar); ps.scale.set(1.05, .03, .68); ps.position.set(xp, hp + .33, .22); ps.rotation.x = .22; ps.castShadow = true; gSeg.add(ps); }
     // puerta peatonal
-    const gPea = grupo('Puerta peatonal', 7, [0, 0, 1.5], porton, [xp, H * .9, 0], 'chapa eléctrica y brazo hidráulico');
+    const gPea = grupo('Puerta peatonal', 7, [-.9, 0, 2], porton, [xp, H * .9, 0], 'chapa eléctrica y brazo hidráulico');
     const pivP = new THREE.Group(); pivP.position.set(xi + COL / 2 + .012, .05, 0); gPea.add(pivP); partes.pivP = pivP;
-    pivP.add(hoja(PEAT - .03, H - .05, cfg.diseno, acc, false, mPanelP, 7, 7)); Bm(pivP, mOscuro, .05, .11, .03, PEAT - .09, 1.05, -.045);
+    acc.alias = { Marco: 'Puerta peatonal', Relleno: 'Puerta peatonal' }; pivP.add(hoja(PEAT - .03, H - .05, cfg.diseno, acc, false, mPanelP, 7, 7)); acc.alias = {}; Bm(pivP, mOscuro, .05, .11, .03, PEAT - .09, 1.05, -.045);
     { const cil = (r, l, x, y, z, ejeZ) => { const o = new THREE.Mesh(new THREE.CylinderGeometry(r, r, l, 18), mMec); if (ejeZ) o.rotation.x = Math.PI / 2; o.position.set(x, y, z); o.castShadow = true; pivP.add(o); return o; };
       cil(.013, .46, PEAT - .09, 1.12, .075); for (const y of [.95, 1.29]) cil(.007, .05, PEAT - .09, y, .052, true); // manija tubular
       for (const y of [.28, (H - .05) / 2, H - .38]) { cil(.011, .1, -.011, y, .036); cil(.0125, .004, -.011, y, .036); Bm(pivP, mMec, .05, .09, .004, .02, y, .032); } // bisagras de barril
     }
     grupos = grupos.filter(g => g.parent?.parent !== pivP); // la puerta se monta como una sola pieza
-    const gMot = grupo('Motor', 5, [0, .5, -1.5], porton, [0, 0, 0], ''), kgAntes = acc.total().kg;
+    const gMot = grupo('Motor', 5, [.9, .4, -1.8], porton, [0, 0, 0], ''), kgAntes = acc.total().kg;
 
     if (tipo === 'corredizo') {
       const L = W + .5, zc = -.3, T = W + .04; geo.T = T; geo.zona = [-.5, -.1];
@@ -394,7 +398,7 @@ export function crearSimulador(canvas, opt = {}) {
     } else {
       const L = W - .03, D = H + .5; geo.zona = [-.75, .12]; geo.pmin = Math.acos(clamp(1 - 1.6 / H, -1, 1)) / (86 * Math.PI / 180); geo.D = D;
       const piv = new THREE.Group(); piv.position.set(-L / 2, 0, 0); porton.add(piv); piv.add(hoja(L, H - .02, cfg.diseno, acc, false, mPanel)); partes.piv = piv;
-      for (const s of [-1, 1]) { Bm(gPor, mAcero, .06, .06, D, s * (W / 2 - .05), H + .08, -D / 2 - COL / 2); acc.add('shs60', D); Bm(gPor, mAcero, .08, H + .1, .08, s * (W / 2 - .05), (H + .1) / 2, -D); acc.add('shs80', H + .1); }
+      acc.g = 'Pórtico'; for (const s of [-1, 1]) { Bm(gPor, mAcero, .06, .06, D, s * (W / 2 - .05), H + .08, -D / 2 - COL / 2); acc.add('shs60', D); Bm(gPor, mAcero, .08, H + .1, .08, s * (W / 2 - .05), (H + .1) / 2, -D); acc.add('shs80', H + .1); }
       Bm(gPor, mAcero, W, .08, .08, 0, H + .08, -D); acc.add('shs80', W);
       Bm(gMot, mMec, .05, .04, D - .1, 0, H + .25, -D / 2 - .02); Bm(gMot, mMotor, .3, .16, .42, 0, H + .23, -D - .1); Bm(gMot, mOscuro, .3, .02, .42, 0, H + .32, -D - .1);
       partes.carroRiel = Bm(gMot, mOscuro, .1, .07, .16, 0, H + .2, 0); partes.biela = Bm(gMot, mMec, .025, .025, 1, 0, 0, 0); gMot.userData.ancla.set(0, H + .36, -D - .1);
@@ -406,7 +410,7 @@ export function crearSimulador(canvas, opt = {}) {
     ficha = { ...t, kgHoja: t.kg - kgAntes, motor: rec, tipo, ancho: W, alto: H, hojas: tipo === 'batiente' ? 2 : 1, abierto: geo.patron?.abierto || 0 };
     Object.assign(S, { p: 0, v: 0, estado: 'cerrado', objetivo: 0, tPausa: 0, q: 0, qObj: 0 });
     Object.assign(car, { z: Z_FUERA, v: 0, objetivo: Z_FUERA, prueba: false }); Object.assign(per, { fase: 0, x: -11, z: 1.6 });
-    aplicar(); tema(cfg.dia);
+    aplicar(); tema(cfg.dia); entintar();
   }
 
   function construirCarro() {
@@ -451,8 +455,10 @@ export function crearSimulador(canvas, opt = {}) {
     for (const [rol, m] of Object.entries(M)) if (P[rol] !== undefined) m.color.setHex(P[rol]);
     scene.background = new THREE.Color(P.fondo); scene.fog.color.setHex(P.fondo); scene.environmentIntensity = P.env; renderer.toneMappingExposure = P.expo;
     hemi.color.setHex(P.hemiC); hemi.groundColor.setHex(P.hemiS); hemi.intensity = P.hemiI; sol.color.setHex(P.solC); sol.intensity = P.solI; sol.position.set(...P.sol);
-    mLinea.color.setHex(P.tinta); mLinea.opacity = P.tintaOp;
-    const A = ACABADOS[cfg.acabado], col = A.color; Object.assign(mAcero, { metalness: A.metal, roughness: A.rug, clearcoat: A.capa }); mAcero.normalScale.setScalar(A.piel); mAcero.color.setHex(col); mPanel.color.setHex(col); mPanelP.color.setHex(col); partes.mPlaca?.color.setHex(col);
+    mLinea.color.setHex(P.tinta); mLinea.opacity = P.tintaOp; mTinta.color.setHex(dia ? 0x1a1e2c : 0xdfe6f5);
+    const A = ACABADOS[cfg.acabado], col = A.color, pl = !!cfg.plano; // modo plano: el metal vuelve a color liso, como el entorno
+    Object.assign(mAcero, { metalness: pl ? 0 : A.metal, roughness: pl ? 1 : A.rug, clearcoat: pl ? 0 : A.capa, envMapIntensity: pl ? .5 : 2.1 }); mAcero.normalScale.setScalar(pl ? 0 : A.piel);
+    Object.assign(mMec, { metalness: pl ? 0 : 1, roughness: pl ? 1 : .26, envMapIntensity: pl ? .5 : 2.4 }); mMec.normalScale.setScalar(pl ? 0 : .35); mMotor.clearcoat = pl ? 0 : .5; mMotor.roughness = pl ? 1 : .42; mAcero.color.setHex(col); mPanel.color.setHex(col); mPanelP.color.setHex(col); partes.mPlaca?.color.setHex(col);
     mMotor.color.setHex(P.motor); mMec.color.setHex(P.mecanica);
     mVentana.color.setHex(dia ? 0xc9d6e6 : 0x39425c); mVentana.emissiveIntensity = L * red * .95; mFarol.emissiveIntensity = L * red * 2.4; luzFarol.intensity = L * red * 22;
     mLed.emissiveIntensity = L * propia * 2.6; mNum.emissiveIntensity = L * propia * 1.8; luzLed.forEach(l => l.intensity = L * propia * 9); luzPatio.intensity = L * propia * 7;
@@ -564,7 +570,7 @@ export function crearSimulador(canvas, opt = {}) {
       frente: [[-7, 2.7, 9 + W * .6], [-1.2, H * .5, 0]],
       motor: t === 'corredizo' ? [[W / 2 + 2.7, 1.5, -3.1], [W / 2 + .5, .4, -.4]] : t === 'batiente' ? [[-W / 2 + 2.3, 2, -3.4], [-W / 2 + .25, .85, -.3]] : [[W / 2 + 3.4, H + 2.4, -H - 4.6], [0, H, -H / 2]],
       herrajes: [[geo.xi + .1, 1.38, 1.75], [geo.xi + .72, 1.1, 0]], soldadura: [[geo.xd + .5, .42, .8], [geo.xd, .13, 0]],
-      aerea: [[5, 17, 13], [0, 0, -1.5]], despiece: [[W * .9 + 5.5, 4.4, 11 + W], [-.4, H * .5, 1]],
+      aerea: [[5, 17, 13], [0, 0, -1.5]], despiece: [[W * .8 + 5, 4.2, 8.6 + W * .8], [-.3, H * .6, 1.3]], alzado: [[-.6, H * .55, 15 + W * 1.5], [-.6, H * .55, 0]],
     };
   };
   let vuelo = null;
@@ -581,7 +587,7 @@ export function crearSimulador(canvas, opt = {}) {
   }
   function render(dt = 0) {
     if (vuelo) { vuelo.t = Math.min(1, vuelo.t + dt / .9); const e = suave(vuelo.t); camera.position.lerpVectors(vuelo.p0, vuelo.p1, e); controls.target.lerpVectors(vuelo.o0, vuelo.o1, e); if (vuelo.t >= 1) vuelo = null; }
-    if (controls.enabled) controls.update();
+    if (controls.enabled) controls.update(); marcar();
     if (cfg.brillo && !cfg.dia) { if (!composer) armarComposer(); composer.render(); } else renderer.render(scene, camera);
   }
   function medida(w, h, dpr = Math.min(1.75, window.devicePixelRatio || 1)) { tam = [w, h, dpr]; renderer.setPixelRatio(dpr); renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); if (composer) { composer.setPixelRatio(dpr); composer.setSize(w, h); } }
@@ -590,7 +596,18 @@ export function crearSimulador(canvas, opt = {}) {
   function aPantalla(v, w, h) { vP.copy(v).project(camera); return { x: (vP.x * .5 + .5) * w, y: (-vP.y * .5 + .5) * h, visible: vP.z < 1 && Math.abs(vP.x) < 1.05 && Math.abs(vP.y) < 1.05 }; }
   function etiquetas() { // grupos visibles con su punto de anclaje en el mundo
     const vistos = new Set();
-    return grupos.filter(g => g.visible && g.userData.a > .6 && !vistos.has(g.userData.nombre) && vistos.add(g.userData.nombre)).map(g => ({ nombre: g.userData.nombre, detalle: g.userData.detalle, paso: g.userData.paso, pos: g.localToWorld(g.userData.ancla.clone()) }));
+    return grupos.filter(g => g.visible && g.userData.a > .6 && !vistos.has(g.userData.nombre) && vistos.add(g.userData.nombre)).map((g, i) => ({ n: i + 1, nombre: g.userData.nombre, detalle: g.userData.detalle, paso: g.userData.paso, kg: ficha.grupos?.[g.userData.nombre]?.kg || 0, piezas: ficha.grupos?.[g.userData.nombre]?.piezas || 0, lista: ficha.grupos?.[g.userData.nombre]?.lista || [], pos: g.localToWorld(g.userData.ancla.clone()) }));
+  }
+  /* marca una pieza del despiece con un recuadro */
+  const cajaSel = new THREE.Box3(), marco = new THREE.Box3Helper(cajaSel, 0xee7f74); marco.visible = false; marco.material.depthTest = false; marco.renderOrder = 9; scene.add(marco); let sel = null;
+  const mTinta = new THREE.LineBasicMaterial({ color: 0x1a1e2c, transparent: true, opacity: .85 });
+  function entintar() { // modo plano: aristas a tinta sobre color liso, como un plano de taller
+    const quitar = []; porton.traverse(o => { if (o.userData.tinta) quitar.push(o); }); quitar.forEach(o => { o.parent.remove(o); o.geometry.dispose(); });
+    if (!cfg.plano) return; const con = []; porton.traverse(o => { if (o.isMesh && (o.material === mAcero || o.material === mMec || o.material === mMotor) && !CORD.has(o.geometry)) con.push(o); });
+    for (const o of con) { const l = new THREE.LineSegments(new THREE.EdgesGeometry(o.geometry, 28), mTinta); l.userData.tinta = true; o.add(l); }
+  }
+  function resaltar(nombre) { sel = nombre || null; marco.visible = false; }
+  function marcar() { if (!sel) return; cajaSel.makeEmpty(); for (const g of grupos) if (g.userData.nombre === sel && g.visible) cajaSel.expandByObject(g); marco.visible = !cajaSel.isEmpty(); if (marco.visible) cajaSel.expandByScalar(.03);
   }
 
   /* ---------- energía y presupuesto de ejemplo ---------- */
@@ -614,6 +631,7 @@ export function crearSimulador(canvas, opt = {}) {
   canvas.addEventListener('pointerdown', () => { vuelo = null; });
 
   return {
+    resaltar, plano(v) { cfg.plano = !!v; tema(cfg.dia); entintar(); },
     cfg, S, car, per, vis, camera, controls, renderer, scene, step, render, medida, vista, cmd, prueba, visitante, abrirPuerta, energia, tema, aPantalla, tapado, etiquetas, cuentas,
     carro: mandarCarro, verCarro(v) { car.oculto = !v; },
     montaje(activo, paso) { vis.montaje = activo; if (paso !== undefined) vis.paso = clamp(paso, 0, PASOS.length - 1); if (activo && paso === 0) for (const g of grupos) g.userData.a = 0; },

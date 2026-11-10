@@ -115,6 +115,20 @@
   .presu li { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 8px 0; border-bottom: 1px solid var(--linea); }
   .presu li small { grid-column: 1; font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--suave); }
   .presu li b { grid-row: 1 / span 2; grid-column: 2; align-self: center; font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .piezas { list-style: none; font-size: 13px; }
+  .piezas > li { border-bottom: 1px solid var(--linea); }
+  .piezas > li > button { display: grid; grid-template-columns: 26px 1fr auto; gap: 2px 10px; width: 100%; padding: 9px 0; text-align: left; align-items: center; }
+  .piezas i { grid-row: 1 / span 2; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--coral); font: 500 11px var(--mono); display: grid; place-items: center; font-style: normal; }
+  .piezas li[aria-current="true"] i { background: var(--coral); color: #1d1420; }
+  .piezas small { grid-column: 2; font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--suave); }
+  .piezas b { grid-row: 1 / span 2; grid-column: 3; font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .piezas ul { list-style: none; padding: 0 0 10px 36px; font-family: var(--mono); font-size: 11px; color: var(--suave); }
+  .piezas ul li { display: flex; justify-content: space-between; gap: 10px; padding: 2px 0; font-variant-numeric: tabular-nums; }
+  #dTotal { font-size: 22px; white-space: nowrap; }
+  .boton { width: 100%; padding: 10px; border: 1px solid rgba(var(--tinta-rgb), .28); border-radius: 3px; font-size: 13px; }
+  .boton:hover { background: rgba(var(--tinta-rgb), .06); }
+  .nota-pie { font-size: 11.5px; color: var(--suave); margin-top: 8px; line-height: 1.45; }
+  #bPlano { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; padding: 6px 10px; border: 1px solid rgba(var(--tinta-rgb), .28); border-radius: 3px; }
   .total { display: flex; justify-content: space-between; align-items: baseline; }
   .total b { font-family: var(--disp); font-weight: 700; font-size: 34px; font-variant-numeric: tabular-nums; }
   .celo { background: rgba(var(--tinta-rgb), .05); border-radius: 3px; padding: 12px; gap: 10px; }
@@ -146,6 +160,7 @@
     <div class="ruta">Ornamentación / <b>Acceso en acero</b></div>
     <div class="der">
       <span class="chip">simulador</span>
+      <button id="bPlano" type="button" aria-pressed="false" title="Cambia el metal entre realista y plano">metal realista</button>
       <button id="tema" type="button" aria-label="Cambiar entre día y noche">
         <svg class="luna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
         <svg class="sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>
@@ -164,7 +179,7 @@
     </div>
     <div class="pasoinfo" id="pasoinfo" hidden><small id="pasoN"></small><b id="pasoT"></b></div>
     <div class="vistas" role="group" aria-label="Vistas de cámara">
-      <button type="button" data-vista="calle">calle</button><button type="button" data-vista="frente">frente</button><button type="button" data-vista="predio">predio</button><button type="button" data-vista="motor">motor</button><button type="button" data-vista="herrajes">herrajes</button><button type="button" data-vista="soldadura">soldadura</button><button type="button" data-vista="aerea">aérea</button>
+      <button type="button" data-vista="calle">calle</button><button type="button" data-vista="frente">frente</button><button type="button" data-vista="predio">predio</button><button type="button" data-vista="motor">motor</button><button type="button" data-vista="herrajes">herrajes</button><button type="button" data-vista="soldadura">soldadura</button><button type="button" data-vista="aerea">aérea</button><button type="button" data-vista="alzado">alzado</button>
     </div>
     <div class="herr">
       <button type="button" id="bMontaje">▶ montaje</button>
@@ -175,7 +190,7 @@
 
   <aside class="panel mot" aria-label="Automatismo">
     <h2>Automatismo <small id="motorChip">motor</small></h2>
-    <div class="tabs" role="tablist"><button type="button" role="tab" data-tab="control" aria-selected="true">Control</button><button type="button" role="tab" data-tab="energia" aria-selected="false">Energía</button><button type="button" role="tab" data-tab="presu" aria-selected="false">Presupuesto</button></div>
+    <div class="tabs" role="tablist"><button type="button" role="tab" data-tab="control" aria-selected="true">Control</button><button type="button" role="tab" data-tab="energia" aria-selected="false">Energía</button><button type="button" role="tab" data-tab="presu" aria-selected="false">Costo</button><button type="button" role="tab" data-tab="desp" aria-selected="false">Despiece</button></div>
 
     <div class="hoja-tab" id="tab-control">
       <div class="mando">
@@ -240,6 +255,18 @@
       <p class="nota">Con batería el portón sigue funcionando en un corte de energía, un poco más lento. Sin batería queda el desbloqueo manual con llave. Consumos estimados para un motor de 24 V.</p>
     </div>
 
+    <div class="hoja-tab" id="tab-desp" hidden>
+      <div class="grupo">
+        <label for="despiece2">Separar las piezas <output id="oDesp"></output></label>
+        <input type="range" id="despiece2" min="0" max="1" step="0.01" value="1">
+      </div>
+      <div class="grupo">
+        <span class="rot">Piezas del conjunto · toca una para marcarla</span>
+        <ol class="piezas" id="dLista"></ol>
+        <div class="total"><span class="rot">Acero total</span><b id="dTotal"></b></div>
+      </div>
+      <div class="grupo"><button type="button" class="boton" id="bCsv">Copiar lista de corte</button><p class="nota-pie">Pesos con perfiles comerciales y 4 % de soldadura y herrajes. Largos de corte por confirmar en taller.</p></div>
+    </div>
     <div class="hoja-tab" id="tab-presu" hidden>
       <div class="grupo">
         <span class="rot">Presupuesto de ejemplo</span>
@@ -336,7 +363,7 @@ function pintar() {
   $('fKg').textContent = es(Math.round(f.kg)); $('fPz').textContent = es(f.piezas); $('fM').textContent = es(f.metros, 1) + ' m'; $('fC').textContent = es(f.corte, 0) + ' m';
   $('fLista').innerHTML = f.lista.map(p => `<li><span>${p.nombre}</span><span>${es(p.cantidad, 1)} ${p.unidad} · ${es(p.kg, 1)} kg</span></li>`).join('');
   $('fMotor').textContent = f.motor.modelo; $('fMotorDato').textContent = f.motor.dato; $('motorChip').textContent = f.motor.modelo;
-  cuentas(); notas.forEach(n => { n.d.remove(); n.l.remove(); n.p.remove(); }); notas.clear();
+  listaPiezas(); cuentas(); notas.forEach(n => { n.d.remove(); n.l.remove(); n.p.remove(); }); notas.clear();
 }
 function cuentas() {
   const k = sim.cuentas();
@@ -359,7 +386,7 @@ $('pKg').oninput = e => { PRECIOS.aceroKg = +e.target.value; cuentas(); };
 for (const k of ['fotocelda', 'autocierre', 'lampara']) $(k).onchange = e => { sim.cfg[k] = e.target.checked; };
 $('bateria').onchange = e => { sim.cfg.bateria = e.target.checked; sim.tema(sim.cfg.dia); cuentas(); };
 $('solar').onchange = e => { sim.set({ solar: e.target.checked }); pintar(); };
-document.querySelectorAll('[data-vista]').forEach(b => b.onclick = () => sim.vista(b.dataset.vista));
+document.querySelectorAll('[data-vista]').forEach(b => b.onclick = () => { sim.verCarro(b.dataset.vista !== 'alzado'); sim.vista(b.dataset.vista); });
 sim.alEvento((tipo, texto, t) => {
   const li = document.createElement('li'); if (tipo === 'alerta') li.className = 'alerta';
   const m = Math.floor(t / 60), s = Math.floor(t % 60); li.innerHTML = `<span>${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}</span><span></span>`; li.lastChild.textContent = texto;
@@ -369,7 +396,25 @@ sim.alEvento((tipo, texto, t) => {
 /* ----- montaje y despiece ----- */
 let montando = false, tPaso = 0;
 $('bMontaje').onclick = () => { montando = !montando; tPaso = 0; sim.montaje(montando, montando ? 0 : PASOS.length - 1); $('bMontaje').textContent = montando ? '■ detener' : '▶ montaje'; if (montando) { sim.vista('despiece'); } };
-$('despiece').oninput = e => { sim.vis.despiece = +e.target.value; };
+function ponerDespiece(v) { sim.vis.despiece = v; $('despiece').value = $('despiece2').value = v; $('oDesp').textContent = es(v * 100) + ' %'; }
+$('despiece').oninput = $('despiece2').oninput = e => ponerDespiece(+e.target.value);
+var piezaSel = null;
+function listaPiezas() {
+  const e = sim.etiquetas();
+  $('dLista').innerHTML = e.map(g => `<li aria-current="${g.nombre === piezaSel}"><button type="button" data-g="${g.nombre}"><i>${g.n}</i><span>${g.nombre}</span><small>${g.detalle}</small><b>${g.kg ? es(g.kg, 0) + ' kg' : '—'}</b></button>${g.nombre === piezaSel && g.lista.length ? '<ul>' + g.lista.map(p => `<li><span>${p.nombre}</span><span>${es(p.cantidad, 1)} ${p.unidad} · ${es(p.kg, 1)} kg</span></li>`).join('') + '</ul>' : ''}</li>`).join('');
+  $('dTotal').textContent = es(Math.round(sim.ficha.kg)) + ' kg · ' + es(sim.ficha.piezas) + ' piezas';
+}
+$('dLista').onclick = ev => { const b = ev.target.closest('[data-g]'); if (!b) return; piezaSel = piezaSel === b.dataset.g ? null : b.dataset.g; sim.resaltar(piezaSel); listaPiezas(); };
+document.querySelector('[data-tab="desp"]').addEventListener('click', () => { if (montando) $('bMontaje').click(); if (sim.vis.despiece < .5) ponerDespiece(1); sim.vista('despiece'); listaPiezas(); });
+$('bCsv').onclick = async () => {
+  const f = [['Pieza', 'Perfil', 'Cantidad', 'Unidad', 'Tramos', 'Peso kg']];
+  for (const g of sim.etiquetas()) for (const p of g.lista) f.push([g.nombre, p.nombre, p.cantidad.toFixed(2), p.unidad, p.n, p.kg.toFixed(1)]);
+  const csv = f.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(';')).join('\n');
+  try { await navigator.clipboard.writeText(csv); aviso('Lista de corte copiada: pégala en Excel'); } catch (e) { aviso('No se pudo copiar la lista desde aquí'); }
+};
+function ponerPlano(v) { sim.plano(v); $('bPlano').setAttribute('aria-pressed', v); $('bPlano').textContent = v ? 'modo plano' : 'metal realista'; }
+$('bPlano').onclick = () => { const v = !sim.cfg.plano; ponerPlano(v); guardar('acero-plano', v ? '1' : ''); };
+if (q.has('plano') || (leer('acero-plano') && !q.has('real'))) ponerPlano(true);
 function montaje(dt) {
   $('pasoinfo').hidden = !montando; if (!montando) return;
   tPaso += dt; if (tPaso > 1.5 && sim.vis.paso < PASOS.length - 1) { tPaso = 0; sim.montaje(true, sim.vis.paso + 1); }
@@ -397,7 +442,7 @@ function nota(clave, txt, sub, pos, w, h, i, lado, chico) {
 }
 function anotar(w, h) {
   const g = sim.geo, chico = w < 560; nCuadro++;
-  if (montando || sim.vis.despiece > .25) sim.etiquetas().filter(e => !montando || e.paso === sim.vis.paso || !chico).forEach((e, i) => nota('g' + e.nombre, e.nombre.toLowerCase() + '/.', e.detalle, e.pos, w, h, i, i % 2 ? 1 : -1, chico));
+  if (montando || sim.vis.despiece > .25) sim.etiquetas().filter(e => !montando || e.paso === sim.vis.paso || !chico).forEach((e, i) => nota('g' + e.nombre, e.n + ' · ' + e.nombre.toLowerCase() + '/.', montando ? e.detalle : e.kg ? es(e.kg, 0) + ' kg' : '', e.pos, w, h, i, i % 2 ? 1 : -1, chico));
   else {
     nota('motor', 'motor/.', sim.ficha.motor.modelo, g.anclaMotor, w, h, 0, -1, chico);
     if (!chico) { nota('foto', 'fotocelda/.', 'haz infrarrojo', g.anclaFoto, w, h, 1, 1, chico); nota('cam', 'cámara/.', 'lee la placa y abre', g.anclaCam, w, h, 2, 1, chico); nota('tecla', 'teclado/.', 'clave para la puerta', g.anclaTecla, w, h, 1, -1, chico); }
