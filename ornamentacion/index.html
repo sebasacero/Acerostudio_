@@ -112,6 +112,10 @@
   .pila .barra { grid-column: 1 / -1; height: 10px; margin: 0; } .pila .barra i { background: var(--ok); }
   .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 8px; }
   .presu { list-style: none; font-size: 13px; }
+  .presu li.falta span { text-decoration: line-through; opacity: .55; }
+  .prov-tipo { display: block; margin: 6px 0 2px; font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--suave); }
+  .gan .dato em { display: block; font-style: normal; font-size: 11px; color: var(--suave); margin-top: 2px; }
+  .gan .dato[data-mejor] { outline: 2px solid var(--coral); outline-offset: -2px; }
   .presu li { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 8px 0; border-bottom: 1px solid var(--linea); }
   .presu li small { grid-column: 1; font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--suave); }
   .presu li b { grid-row: 1 / span 2; grid-column: 2; align-self: center; font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -133,7 +137,7 @@
   .total { display: flex; justify-content: space-between; align-items: baseline; }
   .total b { font-family: var(--disp); font-weight: 700; font-size: 34px; font-variant-numeric: tabular-nums; }
   .celo { background: rgba(var(--tinta-rgb), .05); border-radius: 3px; padding: 12px; gap: 10px; }
-  .fila { display: flex; gap: 6px; } .fila button { flex: 1; padding: 9px 6px; font-size: 13px; border: 1px solid rgba(var(--tinta-rgb), .25); border-radius: 3px; } .fila button:hover { background: rgba(var(--tinta-rgb), .07); }
+  .fila { display: flex; gap: 6px; } .enlace-wa { flex: 1; display: grid; place-items: center; padding: 9px 6px; font-size: 13px; border-radius: 3px; background: var(--coral); color: #fff; text-decoration: none; text-align: center; } .fila button { flex: 1; padding: 9px 6px; font-size: 13px; border: 1px solid rgba(var(--tinta-rgb), .25); border-radius: 3px; } .fila button:hover { background: rgba(var(--tinta-rgb), .07); }
   .herr { position: absolute; right: 22px; bottom: 22px; display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid rgba(var(--tinta-rgb), .28); border-radius: 3px; background: rgba(var(--vidrio-rgb), .7); backdrop-filter: blur(6px); font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; }
   .herr button { font: inherit; letter-spacing: inherit; text-transform: inherit; padding: 6px 10px; border-radius: 2px; background: var(--coral); color: #1d1420; font-weight: 500; }
   .herr input { width: 110px; }
@@ -266,6 +270,15 @@
         <ol class="piezas" id="dLista"></ol>
         <div class="total"><span class="rot">Acero total</span><b id="dTotal"></b></div>
       </div>
+      <div class="grupo">
+        <span class="rot">Pedido al proveedor</span>
+        <div class="seg" data-k="proveedor" id="segProv"><button type="button" data-v="mundial">Mundial de Perfiles</button><button type="button" data-v="campana">La Campana</button></div>
+        <small class="prov-tipo" id="provTipo"></small>
+        <ul class="presu" id="dCompra"></ul>
+        <div class="fila"><button type="button" id="bPedido">Copiar pedido</button><a class="enlace-wa" id="bWa" target="_blank" rel="noopener">Cotizar</a></div>
+        <p class="nota-pie" id="provNota"></p>
+        <p class="nota-pie">Tubos y varillas en tramos de 6 m con 5 % de desperdicio; lámina en pliegos de 1,22 × 2,44 m. Ningún proveedor publica precios en línea: el pedido se cotiza con ellos.</p>
+      </div>
       <div class="grupo"><button type="button" class="boton" id="bCsv">Copiar lista de corte</button><p class="nota-pie">Pesos con perfiles comerciales y 4 % de soldadura y herrajes. Largos de corte por confirmar en taller.</p></div>
     </div>
     <div class="hoja-tab" id="tab-presu" hidden>
@@ -275,10 +288,24 @@
         <div class="total"><span class="rot">Total estimado</span><b id="pTotal"></b></div>
       </div>
       <div class="grupo">
-        <label for="pKg">Acero fabricado, por kg <output id="oKg"></output></label>
+        <label for="pKg">Acero fabricado, precio de venta por kg <output id="oKg"></output></label>
         <input type="range" id="pKg" min="9000" max="30000" step="500" value="17500">
       </div>
-      <p class="nota">Son precios de ejemplo en pesos colombianos, puestos para que la cuenta funcione. Ajústalos con los de tu taller antes de cotizar a un cliente.</p>
+      <div class="grupo">
+        <span class="rot">Ganancia de la partida de acero</span>
+        <div class="dos gan">
+          <div class="dato"><small>comprando en Mundial de Perfiles</small><span id="gMundial"></span><em id="gMundialM"></em></div>
+          <div class="dato"><small>comprando en La Campana</small><span id="gCampana"></span><em id="gCampanaM"></em></div>
+        </div>
+        <p class="nota-pie" id="gNota"></p>
+        <label for="pMatM">Acero en Mundial de Perfiles, por kg <output id="oMatM"></output></label>
+        <input type="range" id="pMatM" min="3500" max="12000" step="100" value="6400">
+        <label for="pMatC">Acero en La Campana, por kg <output id="oMatC"></output></label>
+        <input type="range" id="pMatC" min="3500" max="12000" step="100" value="5700">
+        <label for="pMO">Mano de obra y consumibles, por kg <output id="oMO"></output></label>
+        <input type="range" id="pMO" min="2000" max="15000" step="100" value="6200">
+      </div>
+      <p class="nota">Precios de ejemplo en pesos colombianos. Ni Mundial de Perfiles ni La Campana publican precios: pide la cotización del pedido de la pestaña Despiece a los dos, escribe aquí el precio por kilo que te den y verás la ganancia real de cada opción.</p>
     </div>
   </aside>
 
@@ -291,7 +318,10 @@
       <div class="seg" data-k="tipo"><button type="button" data-v="corredizo">Corredizo</button><button type="button" data-v="batiente">Batiente</button><button type="button" data-v="levadizo">Levadizo</button></div>
     </div>
     <div class="grupo" id="gDiseno"><span class="rot">Diseño de la hoja</span>
-      <div class="seg" data-k="diseno"><button type="button" data-v="celosia">Celosía</button><button type="button" data-v="lanzas">Lanzas</button><button type="button" data-v="listones">Listones</button><button type="button" data-v="lamina">Rombos</button></div>
+      <div class="seg" data-k="diseno"><button type="button" data-v="celosia">Celosía</button><button type="button" data-v="lanzas">Lanzas</button><button type="button" data-v="listones">Listones</button><button type="button" data-v="lamina">Rombos</button><button type="button" data-v="tablero" id="bTablero">Tablero</button></div>
+    </div>
+    <div class="grupo" id="gTablero"><span class="rot">Tablero estampado 2 × 1 m · Mundial de Perfiles</span>
+      <div class="seg" data-k="modelo"><button type="button" data-v="sahara">Sahara</button><button type="button" data-v="galicia">Galicia</button><button type="button" data-v="milan">Milán</button><button type="button" data-v="napoles">Nápoles</button></div>
     </div>
     <div class="grupo celo" id="celo">
       <span class="rot">Celosía de corte láser <output id="oAbierto"></output></span>
@@ -323,7 +353,7 @@
 </div>
 
 <script type="module">
-import { crearSimulador, ACABADOS, TIPOS, DISENOS, MOTIVOS, PRODUCTOS, PRECIOS } from './js/porton.js';
+import { crearSimulador, ACABADOS, TIPOS, DISENOS, MOTIVOS, PRODUCTOS, PRECIOS, TABLEROS, PROVEEDORES } from './js/porton.js';
 
 const $ = id => document.getElementById(id), es = (n, d = 0) => n.toLocaleString('es-CO', { minimumFractionDigits: d, maximumFractionDigits: d }), cop = n => '$ ' + es(Math.round(n / 1000) * 1000);
 const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }, leer = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
@@ -331,7 +361,8 @@ const q = new URLSearchParams(location.search), raiz = document.documentElement;
 const temaIni = q.has('dia') ? 'dia' : q.has('noche') ? 'noche' : leer('acero-tema') || (raiz.dataset.theme === 'light' || (!raiz.dataset.theme && matchMedia('(prefers-color-scheme: light)').matches) ? 'dia' : 'noche');
 const cfg0 = { dia: temaIni === 'dia', paisaje: q.has('paisaje') };
 if (PRODUCTOS[q.get('producto')]) { const P = PRODUCTOS[q.get('producto')]; Object.assign(cfg0, { producto: q.get('producto'), ancho: P.ancho[2], alto: P.alto[2] }); }
-for (const k of ['tipo', 'diseno', 'acabado', 'motivo']) if (q.get(k)) cfg0[k] = q.get(k);
+for (const k of ['tipo', 'diseno', 'acabado', 'motivo', 'modelo']) if (q.get(k)) cfg0[k] = q.get(k);
+if (cfg0.diseno === 'tablero' && cfg0.producto !== 'puerta') cfg0.diseno = 'celosia';
 for (const k of ['ancho', 'alto', 'semilla']) if (q.get(k)) cfg0[k] = +q.get(k);
 
 const lienzo = $('lienzo'), sim = crearSimulador($('c'), { cfg: cfg0 });
@@ -348,7 +379,7 @@ for (const [k, a] of Object.entries(ACABADOS)) {
   const b = document.createElement('button'); b.type = 'button'; b.dataset.v = k; b.title = a.nombre; b.setAttribute('aria-label', a.nombre);
   b.style.setProperty('--c', '#' + a.color.toString(16).padStart(6, '0')); b.onclick = () => { sim.set({ acabado: k }); pintar(); }; $('muestras').append(b);
 }
-document.querySelectorAll('.seg').forEach(s => s.querySelectorAll('button').forEach(b => b.onclick = () => { const k = s.dataset.k, c = { [k]: b.dataset.v }; if (k === 'producto') { const P = PRODUCTOS[b.dataset.v]; c.ancho = P.ancho[2]; c.alto = P.alto[2]; if (montando) $('bMontaje').click(); ponerDespiece(0); piezaSel = null; sim.resaltar(null); } sim.set(c); if (k === 'tipo' || k === 'producto') sim.vista('calle'); pintar(); }));
+document.querySelectorAll('.seg').forEach(s => s.querySelectorAll('button').forEach(b => b.onclick = () => { const k = s.dataset.k, c = { [k]: b.dataset.v }; if (k === 'producto') { const P = PRODUCTOS[b.dataset.v]; c.ancho = P.ancho[2]; c.alto = P.alto[2]; if (b.dataset.v !== 'puerta' && sim.cfg.diseno === 'tablero') c.diseno = 'celosia'; if (montando) $('bMontaje').click(); ponerDespiece(0); piezaSel = null; sim.resaltar(null); } sim.set(c); if (k === 'tipo' || k === 'producto') sim.vista('calle'); pintar(); }));
 for (const k of ['ancho', 'alto', 'densidad', 'apertura']) $(k).oninput = e => { sim.set({ [k]: +e.target.value }); pintar(); };
 $('bSemilla').onclick = () => { sim.set({ semilla: sim.cfg.semilla + 1 }); pintar(); };
 $('bDxf').onclick = async () => {
@@ -369,9 +400,10 @@ function pintar() {
   $('bAbrir').textContent = 'abrir'; $('bAbrir').hidden = !(c.producto === 'puerta' || c.producto === 'ventana'); $('hAuto').textContent = esP ? 'Automatismo' : 'Análisis';
   for (const k of ['ancho', 'alto', 'densidad', 'apertura']) $(k).value = c[k];
   $('celo').hidden = c.diseno !== 'celosia' || $('gDiseno').hidden;
+  $('bTablero').hidden = c.producto !== 'puerta'; $('gTablero').hidden = c.producto !== 'puerta' || c.diseno !== 'tablero';
   $('oAncho').textContent = es(c.ancho, 2) + ' m'; $('oAlto').textContent = es(c.alto, 2) + ' m'; $('oAcabado').textContent = ACABADOS[c.acabado].nombre;
   $('oDens').textContent = es(c.densidad * 100, 1) + ' cm'; $('oAper').textContent = es(f.abierto * 100) + ' % abierto'; $('oAbierto').textContent = MOTIVOS[c.motivo].toLowerCase();
-  $('tTipo').textContent = esP ? TIPOS[c.tipo] : P.nombre; $('tMedida').textContent = `${es(c.ancho, 2)} × ${es(c.alto, 2)} m` + ($('gDiseno').hidden ? '' : ` · ${DISENOS[c.diseno].toLowerCase()}`) + (esP ? ' · puerta peatonal' : '');
+  $('tTipo').textContent = esP ? TIPOS[c.tipo] : P.nombre; $('tMedida').textContent = `${es(c.ancho, 2)} × ${es(c.alto, 2)} m` + ($('gDiseno').hidden ? '' : ` · ${c.diseno === 'tablero' ? 'tablero ' + TABLEROS[c.modelo] : DISENOS[c.diseno].toLowerCase()}`) + (esP ? ' · puerta peatonal' : '');
   $('fKg').textContent = es(Math.round(f.kg)); $('fPz').textContent = es(f.piezas); $('fM').textContent = es(f.metros, 1) + ' m'; $('fC').textContent = es(f.corte, 0) + ' m';
   $('fLista').innerHTML = f.lista.map(p => `<li><span>${p.nombre}</span><span>${es(p.cantidad, 1)} ${p.unidad} · ${es(p.kg, 1)} kg</span></li>`).join('');
   $('fMotor').textContent = f.motor.modelo; $('fMotorDato').textContent = f.motor.dato; $('motorChip').textContent = esP ? f.motor.modelo : P.nombre.toLowerCase();
@@ -381,7 +413,13 @@ function cuentas() {
   const k = sim.cuentas();
   $('eWh').textContent = es(k.whCiclo, 2) + ' Wh'; $('eKwh').textContent = es(k.kwhMes, 1) + ' kWh'; $('eCosto').textContent = cop(k.costoMes); $('eAuto').textContent = sim.cfg.bateria ? '≈ ' + es(k.ciclosBat) : 'sin batería';
   $('pLista').innerHTML = k.items.map(i => `<li><span>${i[0]}</span><small>${i[1]}</small><b>${cop(i[2])}</b></li>`).join(''); $('pTotal').textContent = cop(k.total); $('oKg').textContent = cop(PRECIOS.aceroKg);
+  $('oMatM').textContent = cop(PRECIOS.materialKg.mundial); $('oMatC').textContent = cop(PRECIOS.materialKg.campana); $('oMO').textContent = cop(PRECIOS.manoObraKg);
+  const gm = sim.ganancia('mundial'), gc = sim.ganancia('campana'), pon = (id, g) => { $(id).textContent = cop(g.ganancia); $(id + 'M').textContent = `margen ${es(g.margen * 100)} % · material ${cop(g.material)}` + (g.envioGratis ? ' · envío gratis' : ''); $(id).parentElement.toggleAttribute('data-mejor', g.ganancia > (g === gm ? gc : gm).ganancia + 1000); };
+  pon('gMundial', gm); pon('gCampana', gc);
+  const d = gc.ganancia - gm.ganancia, mejor = d > 0 ? gc : gm;
+  $('gNota').textContent = (Math.abs(d) < 1000 ? 'Con estos precios las dos opciones dan lo mismo. ' : `${d > 0 ? 'La Campana' : 'Mundial de Perfiles'} deja ${cop(Math.abs(d))} más en ${{ porton: 'este portón', puerta: 'esta puerta', ventana: 'esta ventana', reja: 'esta reja', baranda: 'esta baranda', estructura: 'esta estructura' }[sim.cfg.producto]}. `) + (gc.faltan ? 'El tablero estampado se compra en Mundial de Perfiles. ' : '') + (mejor.margen < PRECIOS.margen ? `Para un margen del ${es(PRECIOS.margen * 100)} % el kilo debería venderse a ${cop(mejor.sugerido)}.` : `Margen por encima del ${es(PRECIOS.margen * 100)} % objetivo.`);
 }
+$('pMatM').oninput = e => { PRECIOS.materialKg.mundial = +e.target.value; cuentas(); }; $('pMatC').oninput = e => { PRECIOS.materialKg.campana = +e.target.value; cuentas(); }; $('pMO').oninput = e => { PRECIOS.manoObraKg = +e.target.value; cuentas(); };
 
 /* ----- pestañas ----- */
 document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { document.querySelectorAll('[data-tab]').forEach(o => { o.setAttribute('aria-selected', o === b); $('tab-' + o.dataset.tab).hidden = o !== b; }); });
@@ -415,7 +453,20 @@ function listaPiezas() {
   const e = sim.etiquetas();
   $('dLista').innerHTML = e.map(g => `<li aria-current="${g.nombre === piezaSel}"><button type="button" data-g="${g.nombre}"><i>${g.n}</i><span>${g.nombre}</span><small>${g.detalle}</small><b>${g.kg ? es(g.kg, 0) + ' kg' : '—'}</b></button>${g.nombre === piezaSel && g.lista.length ? '<ul>' + g.lista.map(p => `<li><span>${p.nombre}</span><span>${es(p.cantidad, 1)} ${p.unidad} · ${es(p.kg, 1)} kg</span></li>`).join('') + '</ul>' : ''}</li>`).join('');
   $('dTotal').textContent = es(Math.round(sim.ficha.kg)) + ' kg · ' + es(sim.ficha.piezas) + ' piezas';
+  const pv = PROVEEDORES[proveedor], ped = sim.ficha.pedido(proveedor);
+  $('segProv').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === proveedor));
+  $('provTipo').textContent = pv.tipo; $('provNota').textContent = pv.nota;
+  $('dCompra').innerHTML = ped.map(p => `<li class="${p.falta ? 'falta' : ''}"><span>${p.nombre}</span><small>${p.falta ? 'no lo vende La Campana: se pide a Mundial de Perfiles' : p.linea}</small><b>${es(p.cant)} ${p.unidad}</b></li>`).join('');
+  $('bWa').textContent = proveedor === 'mundial' ? 'Cotizar por WhatsApp' : 'Cotizar en lacampana.co';
+  $('bWa').href = proveedor === 'mundial' ? pv.contacto + '?text=' + encodeURIComponent(textoPedido()) : pv.contacto;
 }
+var proveedor = 'mundial';
+$('segProv').querySelectorAll('button').forEach(b => b.onclick = () => { proveedor = b.dataset.v; listaPiezas(); });
+function textoPedido() {
+  const c = sim.cfg, P = PRODUCTOS[c.producto];
+  return `Hola, quisiera cotizar este material para ${P.nombre.toLowerCase()} de ${es(c.ancho, 2)} × ${es(c.alto, 2)} m:\n` + sim.ficha.pedido(proveedor).filter(p => !p.falta).map(p => `- ${es(p.cant)} ${p.unidad}: ${p.nombre}`).join('\n') + (sim.ficha.corte ? `\n- Servicio de corte láser: ${es(sim.ficha.corte, 0)} m de corte (envío DXF)` : '') + '\nGracias.';
+}
+$('bPedido').onclick = async () => { try { await navigator.clipboard.writeText(textoPedido()); aviso('Pedido copiado: pégalo en WhatsApp o en un correo'); } catch (e) { aviso('No se pudo copiar el pedido desde aquí'); } };
 $('dLista').onclick = ev => { const b = ev.target.closest('[data-g]'); if (!b) return; piezaSel = piezaSel === b.dataset.g ? null : b.dataset.g; sim.resaltar(piezaSel); listaPiezas(); };
 document.querySelector('[data-tab="desp"]').addEventListener('click', () => { if (montando) $('bMontaje').click(); if (sim.vis.despiece < .5) ponerDespiece(1); sim.vista('despiece'); listaPiezas(); });
 $('bCsv').onclick = async () => {

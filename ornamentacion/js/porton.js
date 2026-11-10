@@ -9,21 +9,41 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 /* ---------- acero: perfiles y pesos reales ---------- */
+// Perfiles comerciales, nombrados como las líneas de Mundial de Perfiles (Bogotá), el distribuidor inicial.
+// Tubos y barras se compran en tramos de 6 m; láminas en pliegos de 1,22 × 2,44 m; tableros estampados de 2 × 1 m.
+// Pesos teóricos por metro; los calibres finales se confirman con la cotización del distribuidor.
+const ESTR = 'Tubería estructural', B6 = 6, PLIEGO = [1.22, 2.44];
 export const PERFILES = {
-  shs60: { nombre: 'Tubo cuadrado 60×60×3', kgm: 5.19 },
-  t40: { nombre: 'Tubo cuadrado 40×40×2', kgm: 2.31 },
-  b16: { nombre: 'Barra cuadrada 16 mm', kgm: 2.01 },
-  l80: { nombre: 'Tubo rectangular 80×20×1,5', kgm: 2.25 },
-  t20: { nombre: 'Tubo cuadrado 20×20×1,5', kgm: 0.84 },
-  t4020: { nombre: 'Tubo rectangular 40×20×1,5', kgm: 1.31 },
-  shs80: { nombre: 'Tubo cuadrado 80×80×3', kgm: 7.07 },
-  shs150: { nombre: 'Tubo cuadrado 150×150×4', kgm: 18.0 },
-  r200: { nombre: 'Tubo rectangular 200×150×4', kgm: 21.2 },
-  red50: { nombre: 'Tubo redondo 2" × 2 mm', kgm: 2.41 },
-  pl6: { nombre: 'Platina 6 mm', kgm2: 47.1 },
-  lam: { nombre: 'Lámina cal. 18 (1,2 mm)', kgm2: 9.42 },
-  lam14: { nombre: 'Lámina cal. 14 corte láser', kgm2: 14.92 },
+  shs60: { nombre: 'Tubo cuadrado 60×60×3', kgm: 5.19, linea: ESTR, barra: B6 },
+  t40: { nombre: 'Tubo cuadrado 40×40×2', kgm: 2.31, linea: ESTR, barra: B6 },
+  b16: { nombre: 'Varilla cuadrada 5/8" (16 mm)', kgm: 2.01, linea: 'Varillas cuadradas', barra: B6 },
+  l80: { nombre: 'Tubo rectangular 80×20×1,5', kgm: 2.25, linea: ESTR, barra: B6 },
+  t20: { nombre: 'Tubo cuadrado 20×20×1,5', kgm: 0.84, linea: 'Tubería para cerramientos', barra: B6 },
+  t4020: { nombre: 'Tubo rectangular 40×20×1,5', kgm: 1.31, linea: 'Tubería para cerramientos', barra: B6 },
+  shs80: { nombre: 'Tubo cuadrado 80×80×3', kgm: 7.07, linea: ESTR, barra: B6 },
+  shs150: { nombre: 'Tubo cuadrado 150×150×4', kgm: 18.0, linea: ESTR, barra: B6 },
+  r200: { nombre: 'Tubo rectangular 200×150×4', kgm: 21.2, linea: ESTR, barra: B6 },
+  red50: { nombre: 'Tubo redondo 2" × 2 mm', kgm: 2.41, linea: ESTR, barra: B6 },
+  pl6: { nombre: 'Lámina H.R. 1/4" (6 mm) para platinas', kgm2: 47.1, linea: 'Lámina H.R.', pliego: PLIEGO },
+  lam: { nombre: 'Lámina C.R. cal. 18 (1,2 mm)', kgm2: 9.42, linea: 'Lámina C.R.', pliego: PLIEGO },
+  lam14: { nombre: 'Lámina C.R. cal. 14 con corte láser', kgm2: 14.92, linea: 'Lámina C.R. + servicio de corte láser', pliego: PLIEGO },
+  tab: { nombre: 'Tablero estampado 2 × 1 m', kgm2: 7.06, linea: 'Tableros metálicos estampados', tablero: [1, 2] },
 };
+// Equivalencias en el catálogo 2026 de La Campana (fabricante, Bogotá): referencia y kg por tramo de 6 m según sus tablas.
+// Donde el catálogo no trae el peso se usa el teórico. Los tableros estampados solo los vende Mundial de Perfiles.
+const LC = {
+  shs60: { ref: 'Tubería estructural 70×70×2,5 mm (A500)', kg6: 32.16 }, t40: { ref: 'Tubería cerramiento 38×38 cal. 14 (1,9 mm)', kg6: 13.24 },
+  b16: { ref: 'Barra lisa cuadrada 5/8"', kg6: 12.06 }, l80: { ref: 'Tubería ornamentación 3"×1½" cal. 18', kg6: 11.51 }, t20: { ref: 'Tubería tipo mueble cuadrada 3/4" cal. 18', kg6: 5.0 },
+  t4020: { ref: 'Tubería ornamentación 2"×1" cal. 18', kg6: 7.61 }, shs80: { ref: 'Tubería estructural 90×90×3 mm (A500)', kg6: 49.56 }, shs150: { ref: 'Tubería estructural 150×150×4 mm (A500)', kg6: 111.48 },
+  r200: { ref: 'Tubería estructural 200×100×4 mm (A500)', kg6: 111.48 }, red50: { ref: 'Tubería cerramiento redonda 2" cal. 14', kg6: 14.5 },
+  pl6: { ref: 'Platina 1/4" A36 (tramo de 6 m)' }, lam: { ref: 'Lámina Cold Rolled cal. 18, 1,22 × 2,44 m' }, lam14: { ref: 'Lámina Cold Rolled cal. 14 + servicio de corte de plancha' }, tab: null,
+};
+export const PROVEEDORES = {
+  mundial: { nombre: 'Mundial de Perfiles', tipo: 'distribuidor · Bogotá (Carvajal, Pastranita, Bosa)', contacto: 'https://wa.me/573105722638', envio: 0, nota: 'Tableros estampados, perfilería y tubería; corte láser y doblado. No publica precios: cotiza por WhatsApp.' },
+  campana: { nombre: 'La Campana', tipo: 'fabricante · 9 sedes en Bogotá y 5 ciudades', contacto: 'https://lacampana.co/productos/', envio: 4000000, nota: 'Fabrica la tubería y los perfiles (A500, A36); crédito, envío gratis en Bogotá desde $ 4.000.000 y corte de plancha. Tampoco publica precios: cotiza con un asesor.' },
+};
+// Tableros estampados del catálogo de Mundial de Perfiles (2 × 1 m). Relieves simplificados a partir de su catálogo.
+export const TABLEROS = { sahara: 'Sahara', galicia: 'Galicia clásico', milan: 'Milán', napoles: 'Nápoles I' };
 export const ACABADOS = {
   grafito: { nombre: 'Grafito', color: 0x4a5266, metal: .55, rug: .3, capa: .6, piel: .13 },
   negro: { nombre: 'Negro mate', color: 0x1d2028, metal: .45, rug: .5, capa: .2, piel: .2 },
@@ -41,11 +61,11 @@ export const PRODUCTOS = {
   estructura: { nombre: 'Estructura', ancho: [2.5, 6, 4], alto: [2.2, 3.2, 2.6], pasos: ['Terreno', 'Columnas', 'Vigas', 'Cubierta'] },
 };
 export const TIPOS = { corredizo: 'Corredizo', batiente: 'Batiente', levadizo: 'Levadizo' };
-export const DISENOS = { celosia: 'Celosía láser', lanzas: 'Lanzas', listones: 'Listones', lamina: 'Rombos' };
+export const DISENOS = { celosia: 'Celosía láser', lanzas: 'Lanzas', listones: 'Listones', lamina: 'Rombos', tablero: 'Tablero estampado' };
 export const MOTIVOS = { cerros: 'Cerros', hojas: 'Hojas', ondas: 'Ondas', trama: 'Trama' };
 export const PASOS = ['Terreno', 'Cimentación y riel', 'Pórtico', 'Marco de la hoja', 'Relleno', 'Motor', 'Seguridad', 'Puerta peatonal'];
-// Precios de ejemplo en pesos colombianos, para ajustar con el taller
-export const PRECIOS = { aceroKg: 17500, corteM: 3800, pinturaM2: 42000, instalacion: 1450000, motor: { corredizo: 1650000, batiente: 2450000, levadizo: 1380000 }, seguridad: 620000, acceso: 1180000, solar: 890000, kwh: 920, instalacionMenor: 380000, herrajes: { puerta: 420000, ventana: 310000, reja: 60000, baranda: 90000, estructura: 180000 } };
+// Precios de ejemplo en pesos colombianos, para ajustar con el taller. materialKg: precio de compra del acero por kg según proveedor (ninguno publica precios; son supuestos para la cuenta). manoObraKg: corte, soldadura, armado y consumibles por kg fabricado.
+export const PRECIOS = { aceroKg: 17500, corteM: 3800, pinturaM2: 42000, instalacion: 1450000, motor: { corredizo: 1650000, batiente: 2450000, levadizo: 1380000 }, seguridad: 620000, acceso: 1180000, solar: 890000, kwh: 920, instalacionMenor: 380000, materialKg: { mundial: 6400, campana: 5700 }, manoObraKg: 6200, margen: .3, herrajes: { puerta: 420000, ventana: 310000, reja: 60000, baranda: 90000, estructura: 180000 } };
 
 const PAL = {
   noche: {
@@ -179,13 +199,36 @@ export function dxfPatron(p) { // DXF R12 en milímetros: contorno y perforacion
   o.push('0', 'ENDSEC', '0', 'EOF'); return o.join('\n');
 }
 
+// relieve de un tablero estampado: molduras y figuras levantadas con chaflán, en metros sobre la hoja L × H
+function relieveTablero(modelo, L, H) {
+  const g = new THREE.Group(), fig = [];
+  const rect = (x0, y0, x1, y1, r = .012) => { const s = new THREE.Shape(); x0 *= L; x1 *= L; y0 *= H; y1 *= H; s.moveTo(x0 + r, y0); s.lineTo(x1 - r, y0); s.quadraticCurveTo(x1, y0, x1, y0 + r); s.lineTo(x1, y1 - r); s.quadraticCurveTo(x1, y1, x1 - r, y1); s.lineTo(x0 + r, y1); s.quadraticCurveTo(x0, y1, x0, y1 - r); s.lineTo(x0, y0 + r); s.quadraticCurveTo(x0, y0, x0 + r, y0); return s; };
+  const arco = (x0, y0, x1, y1, f) => { const s = new THREE.Shape(); x0 *= L; x1 *= L; y0 *= H; y1 *= H; const a = f * H; s.moveTo(x0, y0); s.lineTo(x1, y0); s.lineTo(x1, y1 - a); s.quadraticCurveTo((x0 + x1) / 2, y1 + a, x0, y1 - a); s.lineTo(x0, y0); return s; };
+  const ovalo = (cx, cy, rx, ry) => { const s = new THREE.Shape(); s.absellipse(cx * L, cy * H, rx * L, ry * H, 0, Math.PI * 2, false); return s; };
+  const hueco = (sh, d) => { const pts = sh.getPoints(48), c = pts.reduce((a, p) => a.add(p), new THREE.Vector2()).divideScalar(pts.length), h = new THREE.Path(); pts.forEach((p, i) => { const q = p.clone().sub(c), l = q.length(); q.multiplyScalar(Math.max(.1, (l - d) / l)).add(c); i ? h.lineTo(q.x, q.y) : h.moveTo(q.x, q.y); }); sh.holes.push(h); return sh; };
+  const pon = (sh, alto = .007, chaflan = .012) => fig.push([sh, alto, chaflan]);
+  if (modelo === 'galicia') {
+    pon(hueco(arco(.12, .44, .88, .93, .05), .045)); pon(ovalo(.5, .665, .2, .145), .008, .02);
+    pon(hueco(rect(.12, .07, .88, .37), .045)); for (const u of [.33, .67]) pon(ovalo(u, .22, .12, .1), .008, .018);
+  } else if (modelo === 'milan') {
+    const nx = 3, ny = 7, mx = .1, my = .06, cw = (1 - 2 * mx) / nx, ch = (1 - 2 * my) / ny, lado = Math.min(cw * L, ch * H) * .72;
+    for (let i = 0; i < nx; i++) for (let j = 0; j < ny; j++) { const cx = mx + cw * (i + .5), cy = my + ch * (j + .5), hx = lado / 2 / L, hy = lado / 2 / H; pon(rect(cx - hx, cy - hy, cx + hx, cy + hy, .004), .004, lado * .42); }
+  } else if (modelo === 'napoles') {
+    for (const v of [.2, .4, .6, .8]) pon(rect(.035, v - .006, .965, v + .006, .003), .002, .004);
+    pon(ovalo(.88, .5, .018, .018 * L / H), .01, .006);
+  } else { // sahara: seis tableros levantados
+    for (const [u0, u1] of [[.11, .46], [.54, .89]]) for (const [v0, v1] of [[.06, .37], [.43, .76], [.81, .94]]) pon(rect(u0, v0, u1, v1, .006), .006, .018);
+  }
+  for (const [sh, alto, ch] of fig) { const geo = new THREE.ExtrudeGeometry(sh, { depth: .0008, bevelEnabled: true, bevelThickness: alto, bevelSize: ch, bevelOffset: -ch, bevelSegments: 2, curveSegments: 18 }); const m = new THREE.Mesh(geo); m.castShadow = m.receiveShadow = true; g.add(m); }
+  return g;
+}
 function nuevoAcc() {
   const items = {}, porG = {}; let piezas = 0, corte = 0, pintura = 0;
   const aG = (yo, clave, campo, v, n) => { const g = yo.alias[yo.g] || yo.g, o = ((porG[g] ||= {})[clave] ||= { m: 0, m2: 0, n: 0 }); o[campo] += v; o.n += n; };
   return {
     g: 'Pórtico', alias: {},
     add(p, m, n = 1) { aG(this, p, 'm', m * n, n); (items[p] ||= { m: 0, n: 0 }); items[p].m += m * n; items[p].n += n; piezas += n; pintura += m * n * .22; },
-    lamina(m2, clave = 'lam', abierto = 0, mCorte = 0) { aG(this, clave, 'm2', m2 * (1 - abierto), 1); (items[clave] ||= { m2: 0, n: 0 }); items[clave].m2 += m2 * (1 - abierto); items[clave].n++; piezas++; corte += mCorte; pintura += m2 * 2 * (1 - abierto); },
+    lamina(m2, clave = 'lam', abierto = 0, mCorte = 0, unidades = 1) { aG(this, clave, 'm2', m2 * (1 - abierto), 1); (items[clave] ||= { m2: 0, n: 0, bruto: 0, u: 0 }); items[clave].m2 += m2 * (1 - abierto); items[clave].bruto += m2; items[clave].u += unidades; items[clave].n++; piezas++; corte += mCorte; pintura += m2 * 2 * (1 - abierto); },
     total() {
       let kg = 0, m = 0; const lista = [];
       for (const [k, v] of Object.entries(items)) {
@@ -195,7 +238,15 @@ function nuevoAcc() {
       lista.sort((a, b) => b.kg - a.kg);
       const grupos = {};
       for (const [g, it] of Object.entries(porG)) { const l = Object.entries(it).map(([k, v]) => { const p = PERFILES[k]; return { clave: k, nombre: p.nombre, cantidad: p.kgm2 ? v.m2 : v.m, unidad: p.kgm2 ? 'm²' : 'm', n: v.n, kg: (p.kgm2 ? v.m2 * p.kgm2 : v.m * p.kgm) * 1.04 }; }).sort((a, b) => b.kg - a.kg); grupos[g] = { kg: l.reduce((a, b) => a + b.kg, 0), piezas: l.reduce((a, b) => a + b.n, 0), lista: l }; }
-      return { kg: kg * 1.04, metros: m, piezas, lista, corte, pintura, grupos }; // +4 % soldadura y herrajes
+      // pedido al proveedor: tramos de 6 m con 5 % de desperdicio, pliegos con 10 %, tableros por unidad
+      const compra = prov => Object.entries(items).map(([k, v]) => {
+        const p = PERFILES[k], lc = prov === 'campana' ? LC[k] : undefined, base = { clave: k, nombre: lc ? lc.ref : p.nombre, linea: lc ? 'La Campana' : p.linea, falta: lc === null };
+        if (p.barra) { const c = Math.max(1, Math.ceil(v.m * 1.05 / p.barra)); return { ...base, cant: c, unidad: c === 1 ? 'tramo de 6 m' : 'tramos de 6 m', kg: c * (lc?.kg6 || p.barra * p.kgm) }; }
+        if (p.tablero) return { ...base, nombre: p.nombre, cant: v.u, unidad: v.u === 1 ? 'tablero' : 'tableros', kg: v.u * p.tablero[0] * p.tablero[1] * p.kgm2 };
+        const a = p.pliego[0] * p.pliego[1], c = Math.max(1, Math.ceil(v.bruto * 1.1 / a)), frac = v.bruto * 1.1 / a;
+        return frac < .5 && k === 'pl6' ? { ...base, cant: Math.max(1, Math.ceil(v.n)), unidad: 'platinas cortadas a medida', kg: v.bruto * p.kgm2 } : { ...base, cant: c, unidad: c === 1 ? 'pliego 1,22 × 2,44 m' : 'pliegos 1,22 × 2,44 m', kg: c * a * p.kgm2 };
+      }).sort((a, b) => b.kg - a.kg);
+      return { kg: kg * 1.04, metros: m, piezas, lista, corte, pintura, grupos, compra: compra('mundial'), pedido: compra }; // +4 % soldadura y herrajes
     },
   };
 }
@@ -207,7 +258,7 @@ function motorRecomendado(tipo, kg, W) {
 
 export function crearSimulador(canvas, opt = {}) {
   const cfg = Object.assign({
-    producto: 'porton', tipo: 'corredizo', diseno: 'celosia', motivo: 'cerros', densidad: .075, apertura: .7, semilla: 3, ancho: 4, alto: 2.3, acabado: 'grafito',
+    producto: 'porton', tipo: 'corredizo', diseno: 'celosia', modelo: 'sahara', motivo: 'cerros', densidad: .075, apertura: .7, semilla: 3, ancho: 4, alto: 2.3, acabado: 'grafito',
     paisaje: false, tiempo: 9, autocierre: true, pausa: 5, fotocelda: true, lampara: true, bateria: true, solar: true, ciclosDia: 12, dia: false, brillo: true,
   }, opt.cfg);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: !!opt.captura });
@@ -272,7 +323,16 @@ export function crearSimulador(canvas, opt = {}) {
     const B = (g, sx, sy, sz, x, y, z = 0, rz = 0) => { acc.g = g.userData.nombre; return tubo(g, mAcero, sx, sy, sz, x, y, z, rz); };
     const esquinas = yT => { for (const x of [t, L - t]) for (const y of [t, yT]) { for (const z of [-t / 2, t / 2]) cordon(gm, mAcero, x, y + (y < H / 2 ? -t / 2 : t / 2), z, 'y', t - .012); cordon(gm, mAcero, x + (x < L / 2 ? .002 : -.002), y + (y < H / 2 ? .002 : -.002), 0, 'z', t - .014); } };
     const tes = (x, a, y0, y1, z) => { for (const y of [y0, y1]) for (const s of [-1, 1]) cordon(gm, mAcero, x + s * a / 2, y, z, 'z', a - .008, .0038); };
-    if (diseno === 'celosia') {
+    if (diseno === 'tablero') { // tablero estampado sobre marco de tubo, como lo vende Mundial de Perfiles
+      B(gm, t, H, t, t / 2, H / 2); B(gm, t, H, t, L - t / 2, H / 2); acc.add(pf, H, 2);
+      B(gm, li, t, t, L / 2, t / 2); B(gm, li, t, t, L / 2, H - t / 2); acc.add(pf, li, 2);
+      B(gm, li, .04, .02, L / 2, H * .42, -.008); acc.add('t4020', li); esquinas(H - t);
+      gr.userData.detalle = 'tablero ' + (TABLEROS[cfg.modelo] || 'Sahara') + ' 2 × 1 m';
+      const z0 = t / 2 + .0012, base = new THREE.Mesh(UNIT, mP); base.scale.set(L, H, .0024); base.position.set(L / 2, H / 2, z0); base.castShadow = base.receiveShadow = true; base.userData.lamina = true; gr.add(base);
+      const relieve = relieveTablero(cfg.modelo, L, H); relieve.position.z = z0 + .0012; relieve.children.forEach(o => { o.material = mP; o.userData.lamina = true; }); gr.add(relieve);
+      for (const x of [.004, L - .004]) for (let i = 0; i <= 4; i++) cordon(gr, mAcero, x, .1 + (H - .2) * i / 4, z0, 'y', .025, .003);
+      acc.g = 'Relleno'; acc.lamina(L * H, 'tab', 0, 0, Math.ceil(L / 1.005) * Math.ceil(H / 2.005));
+    } else if (diseno === 'celosia') {
       B(gm, t, H, t, t / 2, H / 2); B(gm, t, H, t, L - t / 2, H / 2); acc.add(pf, H, 2);
       B(gm, li, t, t, L / 2, t / 2); B(gm, li, t, t, L / 2, H - t / 2); acc.add(pf, li, 2);
       const nI = Math.max(0, Math.ceil(li / 1.25) - 1);
@@ -721,16 +781,22 @@ export function crearSimulador(canvas, opt = {}) {
     ];
     return { whCiclo, kwhMes, costoMes: kwhMes * (cfg.solar ? .15 : 1) * P.kwh, ciclosBat, items, total: items.reduce((s, i) => s + i[2], 0) };
   }
+  // ganancia de la partida de acero: venta (kg fabricados × precio) menos material comprado al proveedor y mano de obra
+  function ganancia(prov = 'mundial') {
+    const P = PRECIOS, f = ficha, ped = f.pedido(prov), kgCompra = ped.reduce((a, b) => a + b.kg, 0), material = kgCompra * P.materialKg[prov], mo = f.kg * P.manoObraKg, venta = f.kg * P.aceroKg;
+    const pv = PROVEEDORES[prov], envioGratis = pv.envio > 0 && material >= pv.envio, faltan = ped.filter(p => p.falta).length;
+    return { prov, kgCompra, material, mo, costo: material + mo, venta, ganancia: venta - material - mo, margen: venta ? (venta - material - mo) / venta : 0, envioGratis, faltan, sugerido: (material + mo) / (1 - P.margen) / Math.max(f.kg, 1) };
+  }
 
   construirCarro(); construir(); vista('calle', true);
   canvas.addEventListener('pointerdown', () => { vuelo = null; });
 
   return {
     pasos, resaltar, plano(v) { cfg.plano = !!v; tema(cfg.dia); entintar(); },
-    cfg, S, car, per, vis, camera, controls, renderer, scene, step, render, medida, vista, cmd, prueba, visitante, abrirPuerta, energia, tema, aPantalla, tapado, etiquetas, cuentas,
+    cfg, S, car, per, vis, camera, controls, renderer, scene, step, render, medida, vista, cmd, prueba, visitante, abrirPuerta, energia, tema, aPantalla, tapado, etiquetas, cuentas, ganancia,
     carro: mandarCarro, verCarro(v) { car.oculto = !v; },
     montaje(activo, paso) { vis.montaje = activo; if (paso !== undefined) vis.paso = clamp(paso, 0, pasos().length - 1); if (activo && paso === 0) for (const g of grupos) g.userData.a = 0; },
-    set(c) { const re = ['producto', 'tipo', 'diseno', 'ancho', 'alto', 'motivo', 'densidad', 'apertura', 'semilla', 'solar'].some(k => k in c && c[k] !== cfg[k]); Object.assign(cfg, c); if (re) construir(); else tema(cfg.dia); },
+    set(c) { const re = ['producto', 'tipo', 'diseno', 'modelo', 'ancho', 'alto', 'motivo', 'densidad', 'apertura', 'semilla', 'solar'].some(k => k in c && c[k] !== cfg[k]); Object.assign(cfg, c); if (re) construir(); else tema(cfg.dia); },
     dxf() { return geo.patron ? dxfPatron(geo.patron) : ''; },
     get ficha() { return ficha; }, get geo() { return geo; },
     alEvento(f) { oyentes.push(f); },
