@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Acceso Celosía AceroStudio</title>
+<meta name="description" content="Diseña y simula un acceso completo en acero: portón eléctrico con celosía de corte láser, puerta peatonal y pórtico, con montaje paso a paso, energía y presupuesto.">
+<link rel="icon" type="image/png" href="../images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Antonio:wght@300;500;700&family=DM+Mono:wght@400;500&family=Outfit:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Permanent+Marker&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/volumetrico.css">
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/" } }</script>
+<style>
+  /* Tablero de taller: lienzo 3D al centro, diseño a la izquierda, automatismo a la derecha. Tokens de css/volumetrico.css */
+  :root { --ok: #7fd6a4; --alerta: #ffb04a; --lado: max(18px, env(safe-area-inset-left, 0px)); --lado-d: max(18px, env(safe-area-inset-right, 0px)); }
+  body.dia { --ok: #1f8a55; --alerta: #b86a00; }
+  html, body { height: 100%; }
+  [hidden] { display: none !important; }
+  body { overflow: hidden; font-size: 14px; }
+  .app { height: 100%; display: grid; grid-template-rows: 54px minmax(0, 1fr); grid-template-columns: 300px minmax(0, 1fr) 336px; grid-template-areas: "top top top" "dis lienzo mot"; }
+  .top { grid-area: top; display: flex; align-items: center; gap: 18px; padding: 0 var(--lado-d) 0 var(--lado); background: var(--pizarra-2); border-bottom: 1px solid rgba(var(--tinta-rgb), .1); }
+  .ruta { font-size: 13px; color: var(--suave); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .ruta b { color: var(--texto); font-weight: 500; }
+  .top .der { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+  .chip { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; padding: 6px 9px; border: 1px solid rgba(var(--tinta-rgb), .25); border-radius: 3px; text-transform: uppercase; white-space: nowrap; }
+  #tema { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--suave); padding: 6px 4px; }
+  #tema svg { width: 20px; height: 20px; }
+  :focus-visible { outline: 2px solid var(--celeste-txt); outline-offset: 2px; }
+
+  .panel { background: var(--pizarra-2); overflow: auto; min-height: 0; display: flex; flex-direction: column; gap: 22px; padding-block: 20px 28px; }
+  .dis { grid-area: dis; border-right: 1px solid rgba(var(--tinta-rgb), .1); padding-left: var(--lado); padding-right: 18px; }
+  .mot { grid-area: mot; border-left: 1px solid rgba(var(--tinta-rgb), .1); padding-left: 18px; padding-right: var(--lado-d); }
+  .panel h2 { font-style: italic; font-weight: 400; font-size: 17px; display: flex; justify-content: space-between; align-items: baseline; }
+  .panel h2 small { font-family: var(--mono); font-style: normal; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); }
+  .grupo { display: flex; flex-direction: column; gap: 9px; }
+  .grupo > label, .rot { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); display: flex; justify-content: space-between; }
+  .grupo > label output, .rot output { color: var(--texto); font-variant-numeric: tabular-nums; }
+  .seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 2px; background: rgba(var(--tinta-rgb), .06); padding: 3px; border-radius: 4px; }
+  .seg button { font-size: 13px; padding: 8px 4px; border-radius: 3px; color: var(--suave); }
+  .seg button[aria-pressed="true"] { background: var(--celeste); color: var(--negro); font-weight: 500; }
+  input[type=range] { width: 100%; accent-color: var(--coral); height: 22px; }
+  .muestras { display: flex; gap: 9px; }
+  .muestras button { width: 30px; height: 30px; border-radius: 50%; background: var(--c); border: 2px solid var(--pizarra-2); box-shadow: 0 0 0 1px rgba(var(--tinta-rgb), .3); }
+  .muestras button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--coral); }
+
+  .ficha { border-top: 1px dashed rgba(var(--tinta-rgb), .28); padding-top: 18px; gap: 12px; }
+  .kilos { font-family: var(--disp); font-weight: 700; font-size: 46px; line-height: 1; letter-spacing: .01em; font-variant-numeric: tabular-nums; }
+  .kilos span { font-size: 20px; font-weight: 500; margin-left: 4px; color: var(--suave); }
+  .tres { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .tres div, .dato { font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .tres small, .dato small { display: block; font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); font-weight: 400; margin-bottom: 2px; }
+  .perfiles { list-style: none; font-size: 12.5px; }
+  .perfiles li { display: flex; justify-content: space-between; gap: 10px; padding: 5px 0; border-bottom: 1px solid var(--linea); }
+  .perfiles li span:last-child { font-family: var(--mono); font-size: 11.5px; color: var(--suave); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .rec { background: rgba(var(--tinta-rgb), .06); border-radius: 3px; padding: 11px 12px; font-size: 13.5px; }
+  .rec b { font-weight: 500; color: var(--celeste-txt); display: block; }
+  .nota { font-size: 11.5px; color: var(--suave); line-height: 1.45; }
+
+  /* automatismo */
+  .mando { display: grid; grid-template-columns: 92px 1fr; gap: 14px; align-items: center; }
+  #pulso { width: 92px; height: 92px; border-radius: 50%; background: var(--coral); color: #1d1420; font-family: var(--disp); font-weight: 700; font-size: 15px; letter-spacing: .06em; text-transform: uppercase; line-height: 1.05; box-shadow: 0 5px 0 var(--coral-osc), 0 12px 22px rgba(0, 0, 0, .25); transition: transform .08s, box-shadow .08s; }
+  #pulso:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--coral-osc); }
+  #pulso small { display: block; font-family: var(--mono); font-weight: 400; font-size: 8.5px; letter-spacing: .1em; margin-top: 3px; }
+  .estado { font-family: var(--disp); font-weight: 500; font-size: 30px; line-height: 1; text-transform: uppercase; letter-spacing: .02em; }
+  .estado[data-e="abriendo"], .estado[data-e="cerrando"] { color: var(--alerta); }
+  .estado[data-e="abierto"] { color: var(--ok); }
+  .barra { height: 6px; background: rgba(var(--tinta-rgb), .12); border-radius: 3px; margin-top: 10px; overflow: hidden; }
+  .barra i { display: block; height: 100%; width: 0; background: var(--celeste); }
+  .sub { font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em; color: var(--suave); margin-top: 7px; min-height: 1.3em; text-transform: uppercase; }
+  .tresb { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .tresb button, .dosb button { padding: 10px 6px; font-size: 13.5px; border: 1px solid rgba(var(--tinta-rgb), .25); border-radius: 3px; }
+  .tresb button:hover, .dosb button:hover { background: rgba(var(--tinta-rgb), .07); }
+  .dosb { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .tele { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  #onda { width: 100%; height: 54px; display: block; background: rgba(var(--tinta-rgb), .05); border-radius: 3px; }
+  .inter { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 13.5px; cursor: pointer; }
+  .inter input { appearance: none; width: 38px; height: 22px; border-radius: 11px; background: rgba(var(--tinta-rgb), .2); position: relative; cursor: pointer; flex: none; transition: background .2s; }
+  .inter input::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--pizarra-2); transition: transform .2s; }
+  .inter input:checked { background: var(--celeste); }
+  .inter input:checked::after { transform: translateX(16px); }
+  .registro { list-style: none; font-family: var(--mono); font-size: 11px; line-height: 1.5; color: var(--suave); min-height: 7.5em; }
+  .registro li { display: grid; grid-template-columns: 40px 1fr; gap: 6px; }
+  .registro li:first-child { color: var(--texto); }
+  .registro li.alerta span:last-child { color: var(--alerta); }
+
+  /* lienzo */
+  .lienzo { grid-area: lienzo; position: relative; min-width: 0; min-height: 0; overflow: hidden; background: var(--pizarra); }
+  #c { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+  .titulo { position: absolute; left: 26px; top: 22px; pointer-events: none; }
+  .titulo em { font-style: italic; font-size: 15px; color: var(--tinta); }
+  .titulo h1 { font-family: var(--disp); font-weight: 700; font-size: clamp(30px, 4.4vw, 58px); line-height: .95; text-transform: uppercase; letter-spacing: .005em; color: var(--tinta); margin-top: 4px; }
+  .titulo p { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); margin-top: 8px; }
+  .vistas { position: absolute; left: 26px; right: 286px; bottom: 22px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .vistas button { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; padding: 7px 10px; border: 1px solid rgba(var(--tinta-rgb), .28); border-radius: 3px; background: rgba(var(--vidrio-rgb), .6); backdrop-filter: blur(6px); }
+  .vistas button:hover { background: rgba(var(--vidrio-rgb), .9); }
+  .iso-callout { cursor: default; pointer-events: none; }
+
+
+  /* pestañas, escenarios, energía y presupuesto */
+  .tabs { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border-bottom: 1px solid rgba(var(--tinta-rgb), .14); margin-top: -6px; }
+  .tabs button { padding: 9px 2px; font-size: 13px; color: var(--suave); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tabs button[aria-selected="true"] { color: var(--texto); border-color: var(--coral); font-weight: 500; }
+  .hoja-tab { display: flex; flex-direction: column; gap: 22px; }
+  .esc { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .esc button { text-align: left; padding: 10px 11px; border: 1px solid rgba(var(--tinta-rgb), .25); border-radius: 3px; font-size: 13.5px; line-height: 1.2; }
+  .esc button small { display: block; font-family: var(--mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--suave); margin-top: 4px; }
+  .esc button:hover { background: rgba(var(--tinta-rgb), .07); }
+  .esc button[aria-pressed="true"] { background: var(--alerta); border-color: var(--alerta); color: #1d1420; } .esc button[aria-pressed="true"] small { color: #1d1420; }
+  .pila { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; align-items: end; }
+  .pila b { font-family: var(--disp); font-weight: 700; font-size: 42px; line-height: 1; font-variant-numeric: tabular-nums; } .pila b span { font-size: 18px; color: var(--suave); font-weight: 500; }
+  .pila em { font-family: var(--mono); font-style: normal; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ok); } .pila em.bat { color: var(--alerta); }
+  .pila .barra { grid-column: 1 / -1; height: 10px; margin: 0; } .pila .barra i { background: var(--ok); }
+  .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 8px; }
+  .presu { list-style: none; font-size: 13px; }
+  .presu li.grupo-t { display: block; padding: 10px 0 4px; border-bottom: 0; } .presu li.grupo-t span { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--suave); }
+  .venta { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; } .venta b { font-family: var(--disp); font-weight: 700; font-size: 40px; line-height: 1; font-variant-numeric: tabular-nums; } .venta small { color: var(--suave); font-size: 12px; }
+  .segN { grid-template-columns: repeat(3, 1fr); grid-auto-flow: row; max-height: 168px; overflow-y: auto; } .segN button { font-size: 12px; padding: 7px 4px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; } .chips button { font-size: 11px; padding: 4px 8px; border: 1px solid rgba(var(--tinta-rgb), .25); border-radius: 20px; } .chips button[aria-pressed="true"] { background: var(--coral); border-color: var(--coral); color: #1d1420; }
+  #bdBuscar { width: 100%; padding: 8px 10px; border: 1px solid rgba(var(--tinta-rgb), .25); border-radius: 3px; background: transparent; color: inherit; font: inherit; font-size: 13px; }
+  .bd { list-style: none; font-size: 12.5px; max-height: 52vh; overflow-y: auto; }
+  .bd li { display: grid; grid-template-columns: 1fr auto; gap: 1px 10px; padding: 7px 0; border-bottom: 1px solid var(--linea); align-items: center; }
+  .bd li small { grid-column: 1; font-family: var(--mono); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; color: var(--suave); }
+  .bd li input { grid-row: 1 / span 2; grid-column: 2; width: 104px; text-align: right; font: 500 13px var(--mono); font-variant-numeric: tabular-nums; padding: 4px 6px; border: 1px solid transparent; border-radius: 3px; background: transparent; color: inherit; }
+  .bd li input:hover, .bd li input:focus { border-color: rgba(var(--tinta-rgb), .3); outline: none; } .bd li input.ajustado { color: var(--coral); }
+  .bd li.est small::after { content: ' · estimado'; color: var(--alerta); }
+  .fuentes { list-style: none; font-size: 11.5px; color: var(--suave); margin-top: 8px; } .fuentes li { padding: 3px 0; } .fuentes a { color: inherit; }
+  .presu li.falta span { text-decoration: line-through; opacity: .55; }
+  .prov-tipo { display: block; margin: 6px 0 2px; font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--suave); }
+  .gan .dato em { display: block; font-style: normal; font-size: 11px; color: var(--suave); margin-top: 2px; }
+  .gan .dato[data-mejor] { outline: 2px solid var(--coral); outline-offset: -2px; }
+  .presu li { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 8px 0; border-bottom: 1px solid var(--linea); }
+  .presu li small { grid-column: 1; font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--suave); }
+  .presu li b { grid-row: 1 / span 2; grid-column: 2; align-self: center; font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .piezas { list-style: none; font-size: 13px; }
+  .piezas > li { border-bottom: 1px solid var(--linea); }
+  .piezas > li > button { display: grid; grid-template-columns: 26px 1fr auto; gap: 2px 10px; width: 100%; padding: 9px 0; text-align: left; align-items: center; }
+  .piezas i { grid-row: 1 / span 2; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--coral); font: 500 11px var(--mono); display: grid; place-items: center; font-style: normal; }
+  .piezas li[aria-current="true"] i { background: var(--coral); color: #1d1420; }
+  .piezas small { grid-column: 2; font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--suave); }
+  .piezas b { grid-row: 1 / span 2; grid-column: 3; font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .piezas ul { list-style: none; padding: 0 0 10px 36px; font-family: var(--mono); font-size: 11px; color: var(--suave); }
+  .piezas ul li { display: flex; justify-content: space-between; gap: 10px; padding: 2px 0; font-variant-numeric: tabular-nums; }
+  #dTotal { font-size: 22px; white-space: nowrap; }
+  .boton { width: 100%; padding: 10px; border: 1px solid rgba(var(--tinta-rgb), .28); border-radius: 3px; font-size: 13px; }
+  .boton:hover { background: rgba(var(--tinta-rgb), .06); }
+  .nota-pie { font-size: 11.5px; color: var(--suave); margin-top: 8px; line-height: 1.45; }
+  #bPlano { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; padding: 6px 10px; border: 1px solid rgba(var(--tinta-rgb), .28); border-radius: 3px; }
+  .seg.seg3 { grid-auto-flow: row; grid-template-columns: repeat(3, 1fr); }
+  .total { display: flex; justify-content: space-between; align-items: baseline; }
+  .total b { font-family: var(--disp); font-weight: 700; font-size: 34px; font-variant-numeric: tabular-nums; }
+  .celo { background: rgba(var(--tinta-rgb), .05); border-radius: 3px; padding: 12px; gap: 10px; }
+  .fila { display: flex; gap: 6px; } .enlace-wa { flex: 1; display: grid; place-items: center; padding: 9px 6px; font-size: 13px; border-radius: 3px; background: var(--coral); color: #fff; text-decoration: none; text-align: center; } .fila button { flex: 1; padding: 9px 6px; font-size: 13px; border: 1px solid rgba(var(--tinta-rgb), .25); border-radius: 3px; } .fila button:hover { background: rgba(var(--tinta-rgb), .07); }
+  .herr { position: absolute; right: 22px; bottom: 22px; display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid rgba(var(--tinta-rgb), .28); border-radius: 3px; background: rgba(var(--vidrio-rgb), .7); backdrop-filter: blur(6px); font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; }
+  .herr button { font: inherit; letter-spacing: inherit; text-transform: inherit; padding: 6px 10px; border-radius: 2px; background: var(--coral); color: #1d1420; font-weight: 500; }
+  .herr input { width: 110px; }
+  .pasoinfo { position: absolute; left: 50%; top: 22px; transform: translateX(-50%); text-align: center; pointer-events: none; text-shadow: 0 1px 8px var(--sombra-texto); white-space: nowrap; }
+  .pasoinfo small { font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--celeste-txt); display: block; }
+  .pasoinfo b { font-family: var(--disp); font-weight: 500; font-size: 26px; text-transform: uppercase; letter-spacing: .03em; color: var(--tinta); }
+  .placa { position: absolute; transform: translate(-50%, -130%); background: #ffd400; color: #111; font-family: var(--mono); font-weight: 500; font-size: 13px; letter-spacing: .08em; padding: 5px 9px; border-radius: 3px; border: 2px solid #111; pointer-events: none; white-space: nowrap; }
+  .placa small { display: block; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
+  .aviso { position: absolute; left: 50%; bottom: 76px; transform: translateX(-50%); background: var(--negro); color: #fff; font-size: 13px; padding: 9px 14px; border-radius: 3px; pointer-events: none; }
+  @media (max-width: 1080px) { .app { grid-template-columns: 264px minmax(0, 1fr) 300px; } }
+  @media (max-width: 860px) {
+    body { overflow: auto; }
+    .app { height: auto; grid-template-columns: minmax(0, 1fr); grid-template-rows: 54px 56svh auto auto; grid-template-areas: "top" "lienzo" "mot" "dis"; }
+    .panel { overflow: visible; border: 0; border-top: 1px solid rgba(var(--tinta-rgb), .1); padding-left: var(--lado); padding-right: var(--lado-d); }
+    .titulo { left: 16px; top: 14px; } .vistas { left: 16px; right: 16px; bottom: 58px; } .chip { display: none; } .herr { right: auto; left: 16px; bottom: 12px; } .pasoinfo { top: auto; bottom: 104px; }
+    .lienzo { position: sticky; top: 0; z-index: 2; }
+    .top { position: relative; z-index: 3; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <a class="marca" href="../"><img src="../images/logo-web.png" alt="ACERO"><span>.studio</span></a>
+    <div class="ruta">Ornamentación / <b>Acceso en acero</b></div>
+    <div class="der">
+      <span class="chip">simulador</span>
+      <button id="bPlano" type="button" aria-pressed="false" title="Cambia el metal entre realista y plano">metal realista</button>
+      <button id="tema" type="button" aria-label="Cambiar entre día y noche">
+        <svg class="luna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+        <svg class="sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>
+        <span id="temaTxt">noche</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="lienzo" id="lienzo">
+    <canvas id="c" aria-label="Vista 3D del acceso. Arrastra para girar."></canvas>
+    <div class="iso-capa" id="capa"><svg class="iso-lineas" id="lineas"></svg><div class="placa" id="placa" hidden>ACR·247<small>placa autorizada</small></div></div>
+    <div class="titulo">
+      <em>ornamentación/.</em>
+      <h1 id="tTipo">Corredizo</h1>
+      <p id="tMedida"></p>
+    </div>
+    <div class="pasoinfo" id="pasoinfo" hidden><small id="pasoN"></small><b id="pasoT"></b></div>
+    <div class="vistas" role="group" aria-label="Vistas de cámara">
+      <button type="button" data-vista="calle">calle</button><button type="button" data-vista="frente">frente</button><button type="button" data-vista="predio">predio</button><button type="button" data-vista="motor">motor</button><button type="button" data-vista="herrajes">herrajes</button><button type="button" data-vista="soldadura">soldadura</button><button type="button" data-vista="aerea">aérea</button><button type="button" data-vista="alzado">alzado</button>
+    </div>
+    <div class="herr">
+      <button type="button" id="bAbrir" hidden>abrir</button><button type="button" id="bMontaje">▶ montaje</button>
+      <label for="despiece">despiece</label><input type="range" id="despiece" min="0" max="1" step="0.01" value="0">
+    </div>
+    <div class="aviso" id="aviso" hidden></div>
+  </main>
+
+  <aside class="panel mot" aria-label="Automatismo">
+    <h2><span id="hAuto">Automatismo</span> <small id="motorChip">motor</small></h2>
+    <div class="tabs" role="tablist"><button type="button" role="tab" data-tab="control" aria-selected="true">Control</button><button type="button" role="tab" data-tab="energia" aria-selected="false">Energía</button><button type="button" role="tab" data-tab="presu" aria-selected="false">Costo</button><button type="button" role="tab" data-tab="desp" aria-selected="false">Despiece</button><button type="button" role="tab" data-tab="bd" aria-selected="false">Precios</button></div>
+
+    <div class="hoja-tab" id="tab-control">
+      <div class="mando">
+        <button id="pulso" type="button">Control<small>un pulso</small></button>
+        <div>
+          <div class="estado" id="estado" data-e="cerrado" aria-live="polite">Cerrado</div>
+          <div class="barra"><i id="barra"></i></div>
+          <div class="sub" id="sub">apertura 0 %</div>
+        </div>
+      </div>
+      <div class="tresb"><button type="button" data-cmd="abrir">Abrir</button><button type="button" data-cmd="detener">Detener</button><button type="button" data-cmd="cerrar">Cerrar</button></div>
+      <div class="grupo">
+        <span class="rot">Escenarios</span>
+        <div class="esc">
+          <button type="button" id="bCarro">Llega un carro<small>lectura de placa</small></button>
+          <button type="button" id="bVisita">Visitante a pie<small>clave en el teclado</small></button>
+          <button type="button" id="bPrueba">Algo se cruza<small>prueba de fotocelda</small></button>
+          <button type="button" id="bCorte" aria-pressed="false">Corte de energía<small>batería de respaldo</small></button>
+        </div>
+      </div>
+      <div class="grupo">
+        <div class="tele">
+          <div class="dato"><small>velocidad</small><span id="vVel">0</span></div>
+          <div class="dato"><small>corriente</small><span id="vCor">0,0 A</span></div>
+          <div class="dato"><small>potencia</small><span id="vPot">0 W</span></div>
+          <div class="dato"><small>ciclos</small><span id="vCic">0</span></div>
+        </div>
+        <canvas id="onda" width="600" height="108" aria-label="Corriente del motor en los últimos segundos"></canvas>
+      </div>
+      <div class="grupo">
+        <label for="tiempo">Tiempo de apertura <output id="oTiempo">9 s</output></label>
+        <input type="range" id="tiempo" min="5" max="20" step="1" value="9">
+        <label class="inter" for="fotocelda">Fotocelda de seguridad <input type="checkbox" id="fotocelda" checked></label>
+        <label class="inter" for="autocierre">Cierre automático <input type="checkbox" id="autocierre" checked></label>
+        <label for="pausa">Pausa antes de cerrar <output id="oPausa">5 s</output></label>
+        <input type="range" id="pausa" min="3" max="20" step="1" value="5">
+        <label class="inter" for="lampara">Lámpara destellante <input type="checkbox" id="lampara" checked></label>
+      </div>
+      <div class="grupo">
+        <span class="rot">Registro del tablero</span>
+        <ul class="registro" id="registro"></ul>
+      </div>
+    </div>
+
+    <div class="hoja-tab" id="tab-energia" hidden>
+      <div class="grupo">
+        <span class="rot">Batería de respaldo · 24 V 7 Ah</span>
+        <div class="pila"><b><span id="eBat">92</span><span>%</span></b><em id="eFuente">red eléctrica</em><div class="barra"><i id="eBarra"></i></div></div>
+      </div>
+      <div class="grupo">
+        <label class="inter" for="bateria">Batería de respaldo <input type="checkbox" id="bateria" checked></label>
+        <label class="inter" for="solar">Panel solar de 50 W <input type="checkbox" id="solar" checked></label>
+        <label for="ciclos">Usos al día <output id="oCiclos">12</output></label>
+        <input type="range" id="ciclos" min="2" max="80" step="1" value="12">
+      </div>
+      <div class="dos">
+        <div class="dato"><small>consumo por ciclo</small><span id="eWh"></span></div>
+        <div class="dato"><small>consumo al mes</small><span id="eKwh"></span></div>
+        <div class="dato"><small>costo de energía al mes</small><span id="eCosto"></span></div>
+        <div class="dato"><small>ciclos sin red</small><span id="eAuto"></span></div>
+      </div>
+      <p class="nota">Con batería el portón sigue funcionando en un corte de energía, un poco más lento. Sin batería queda el desbloqueo manual con llave. Consumos estimados para un motor de 24 V.</p>
+    </div>
+
+    <div class="hoja-tab" id="tab-desp" hidden>
+      <div class="grupo">
+        <label for="despiece2">Separar las piezas <output id="oDesp"></output></label>
+        <input type="range" id="despiece2" min="0" max="1" step="0.01" value="1">
+      </div>
+      <div class="grupo">
+        <span class="rot">Piezas del conjunto · toca una para marcarla</span>
+        <ol class="piezas" id="dLista"></ol>
+        <div class="total"><span class="rot">Acero total</span><b id="dTotal"></b></div>
+      </div>
+      <div class="grupo">
+        <span class="rot">Pedido al proveedor</span>
+        <div class="seg" data-k="proveedor" id="segProv"><button type="button" data-v="mundial">Mundial de Perfiles</button><button type="button" data-v="campana">La Campana</button></div>
+        <small class="prov-tipo" id="provTipo"></small>
+        <ul class="presu" id="dCompra"></ul>
+        <div class="fila"><button type="button" id="bPedido">Copiar pedido</button><a class="enlace-wa" id="bWa" target="_blank" rel="noopener">Cotizar</a></div>
+        <p class="nota-pie" id="provNota"></p>
+        <p class="nota-pie">Tubos y varillas en tramos de 6 m con 5 % de desperdicio; lámina en pliegos de 1,22 × 2,44 m. Ningún proveedor publica precios en línea: el pedido se cotiza con ellos.</p>
+      </div>
+      <div class="grupo"><button type="button" class="boton" id="bCsv">Copiar lista de corte</button><p class="nota-pie">Pesos con perfiles comerciales y 4 % de soldadura y herrajes. Largos de corte por confirmar en taller.</p></div>
+    </div>
+    <div class="hoja-tab" id="tab-presu" hidden>
+      <div class="grupo">
+        <span class="rot">Precio de venta sugerido</span>
+        <div class="venta"><b id="pVenta"></b><small id="pVentaKg"></small></div>
+        <div class="dos gan">
+          <div class="dato"><small>costo total</small><span id="pCosto"></span></div>
+          <div class="dato"><small>ganancia</small><span id="pGan"></span><em id="pGanM"></em></div>
+        </div>
+        <label for="pMargen">Margen objetivo <output id="oMargen"></output></label>
+        <input type="range" id="pMargen" min="0.1" max="0.6" step="0.01" value="0.3">
+      </div>
+      <div class="grupo">
+        <span class="rot">Comprando en <output id="pProvNombre"></output></span>
+        <div class="seg" data-k="proveedor" id="segProv2"><button type="button" data-v="mundial">Mundial de Perfiles</button><button type="button" data-v="campana">La Campana</button></div>
+        <label for="pDesc">Descuento supuesto sobre la lista de referencia <output id="oDesc"></output></label>
+        <input type="range" id="pDesc" min="0" max="0.35" step="0.01" value="0.08">
+        <p class="nota-pie" id="pCompara"></p>
+      </div>
+      <div class="grupo">
+        <span class="rot">Desglose del costo</span>
+        <ul class="presu agrupado" id="pLista"></ul>
+      </div>
+      <div class="grupo">
+        <label for="pMO">Mano de obra de taller, por kg fabricado <output id="oMO"></output></label>
+        <input type="range" id="pMO" min="2000" max="15000" step="100" value="6200">
+      </div>
+      <p class="nota">Costos con la base de datos de precios de referencia (pestaña Precios). Ni Mundial de Perfiles ni La Campana publican precios: el descuento es un supuesto que puedes cambiar cuando tengas su cotización.</p>
+    </div>
+    <div class="hoja-tab" id="tab-bd" hidden>
+      <div class="grupo">
+        <span class="rot">Base de datos de precios · Colombia · <output id="bdFecha"></output></span>
+        <input type="search" id="bdBuscar" placeholder="Buscar producto…" aria-label="Buscar producto">
+        <div class="chips" id="bdCats"></div>
+      </div>
+      <div class="grupo">
+        <ul class="bd" id="bdLista"></ul>
+      </div>
+      <div class="grupo">
+        <div class="fila"><button type="button" id="bBdCsv">Exportar CSV</button><button type="button" id="bBdReset">Restablecer precios</button></div>
+        <p class="nota-pie">Toca un precio para cambiarlo; los cambios se guardan en este navegador y recalculan el costo. Fuentes: tiendas en línea colombianas con precio público (Homecenter, G&amp;J Ferreterías, Mercado Libre, Magru) y estimados marcados como tales.</p>
+        <ul class="fuentes" id="bdFuentes"></ul>
+      </div>
+    </div>
+  </aside>
+
+  <aside class="panel dis" aria-label="Diseño del acceso">
+    <h2>Diseño <small>acero</small></h2>
+    <div class="grupo"><span class="rot">Producto</span>
+      <div class="seg seg3" data-k="producto"><button type="button" data-v="porton">Portón</button><button type="button" data-v="puerta">Puerta</button><button type="button" data-v="ventana">Ventana</button><button type="button" data-v="reja">Reja</button><button type="button" data-v="baranda">Baranda</button><button type="button" data-v="estructura">Estructura</button></div>
+    </div>
+    <div class="grupo" id="gTipo"><span class="rot">Tipo de apertura</span>
+      <div class="seg" data-k="tipo"><button type="button" data-v="corredizo">Corredizo</button><button type="button" data-v="batiente">Batiente</button><button type="button" data-v="levadizo">Levadizo</button></div>
+    </div>
+    <div class="grupo" id="gDiseno"><span class="rot">Diseño de la hoja</span>
+      <div class="seg" data-k="diseno"><button type="button" data-v="celosia">Celosía</button><button type="button" data-v="lanzas">Lanzas</button><button type="button" data-v="listones">Listones</button><button type="button" data-v="lamina">Rombos</button><button type="button" data-v="tablero" id="bTablero">Tablero</button></div>
+    </div>
+    <div class="grupo" id="gTablero"><span class="rot">Tablero estampado 2 × 1 m · Mundial de Perfiles</span>
+      <div class="seg segN" data-k="modelo" id="segModelo"></div>
+      <p class="nota-pie">25 relieves del catálogo de Mundial de Perfiles, simplificados para la vista 3D. Los que llevan vidrio se marcan con ◇.</p>
+    </div>
+    <div class="grupo celo" id="celo">
+      <span class="rot">Celosía de corte láser <output id="oAbierto"></output></span>
+      <div class="seg" data-k="motivo"><button type="button" data-v="cerros">Cerros</button><button type="button" data-v="hojas">Hojas</button><button type="button" data-v="ondas">Ondas</button><button type="button" data-v="trama">Trama</button></div>
+      <label for="densidad">Tamaño del módulo <output id="oDens"></output></label>
+      <input type="range" id="densidad" min="0.05" max="0.14" step="0.005" value="0.075">
+      <label for="apertura">Transparencia <output id="oAper"></output></label>
+      <input type="range" id="apertura" min="0.3" max="0.85" step="0.01" value="0.7">
+      <div class="fila"><button type="button" id="bSemilla">Otra variación</button><button type="button" id="bDxf">Archivo de corte DXF</button></div>
+    </div>
+    <div class="grupo">
+      <label for="ancho">Ancho del vano <output id="oAncho"></output></label>
+      <input type="range" id="ancho" min="2.6" max="6" step="0.1" value="4">
+      <label for="alto">Alto <output id="oAlto"></output></label>
+      <input type="range" id="alto" min="1.8" max="3" step="0.05" value="2.3">
+    </div>
+    <div class="grupo"><span class="rot">Acabado <output id="oAcabado">Grafito</output></span>
+      <div class="muestras" id="muestras"></div>
+    </div>
+    <div class="grupo ficha">
+      <span class="rot">Ficha de acero</span>
+      <div class="kilos"><b id="fKg">0</b><span>kg</span></div>
+      <div class="tres"><div><small>piezas</small><span id="fPz">0</span></div><div><small>perfil</small><span id="fM">0 m</span></div><div><small>corte láser</small><span id="fC">0 m</span></div></div>
+      <ul class="perfiles" id="fLista"></ul>
+      <div class="rec" id="recMotor"><small class="rot" style="margin-bottom:5px">Motor recomendado</small><b id="fMotor"></b><span id="fMotorDato"></span></div>
+      <p class="nota" id="notaFicha"></p>
+    </div>
+  </aside>
+</div>
+
+<script type="module">
+import { crearSimulador, ACABADOS, TIPOS, DISENOS, MOTIVOS, PRODUCTOS, PRECIOS, TABLEROS, TABLERO_VIDRIO, PROVEEDORES, BD } from './js/porton.js';
+
+const $ = id => document.getElementById(id), es = (n, d = 0) => n.toLocaleString('es-CO', { minimumFractionDigits: d, maximumFractionDigits: d }), cop = n => '$ ' + es(Math.round(n / 1000) * 1000);
+const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }, leer = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const q = new URLSearchParams(location.search), raiz = document.documentElement;
+const temaIni = q.has('dia') ? 'dia' : q.has('noche') ? 'noche' : leer('acero-tema') || (raiz.dataset.theme === 'light' || (!raiz.dataset.theme && matchMedia('(prefers-color-scheme: light)').matches) ? 'dia' : 'noche');
+const cfg0 = { dia: temaIni === 'dia', paisaje: q.has('paisaje') };
+if (PRODUCTOS[q.get('producto')]) { const P = PRODUCTOS[q.get('producto')]; Object.assign(cfg0, { producto: q.get('producto'), ancho: P.ancho[2], alto: P.alto[2] }); }
+for (const k of ['tipo', 'diseno', 'acabado', 'motivo', 'modelo']) if (q.get(k)) cfg0[k] = q.get(k);
+if (cfg0.diseno === 'tablero' && cfg0.producto !== 'puerta') cfg0.diseno = 'celosia';
+for (const k of ['ancho', 'alto', 'semilla']) if (q.get(k)) cfg0[k] = +q.get(k);
+
+try { BD.cargar(JSON.parse(leer('acero-precios') || '{}')); } catch (e) {}
+try { const m = JSON.parse(leer('acero-comercial') || '{}'); if (m.margen) PRECIOS.margen = m.margen; if (m.descuento) Object.assign(PRECIOS.descuento, m.descuento); } catch (e) {}
+$('segModelo').innerHTML = Object.entries(TABLEROS).map(([k, n]) => `<button type="button" data-v="${k}">${n}${TABLERO_VIDRIO.has(k) ? ' ◇' : ''}</button>`).join('');
+const lienzo = $('lienzo'), sim = crearSimulador($('c'), { cfg: cfg0 });
+window.sim = sim;
+let tAviso = 0; const aviso = t => { $('aviso').textContent = t; $('aviso').hidden = false; tAviso = 3; };
+
+/* ----- tema ----- */
+function ponerTema(dia) { document.body.classList.toggle('dia', dia); raiz.style.colorScheme = dia ? 'light' : 'dark'; $('temaTxt').textContent = dia ? 'día' : 'noche'; sim.tema(dia); }
+ponerTema(cfg0.dia);
+$('tema').onclick = () => { const d = !sim.cfg.dia; ponerTema(d); guardar('acero-tema', d ? 'dia' : 'noche'); };
+
+/* ----- diseño ----- */
+for (const [k, a] of Object.entries(ACABADOS)) {
+  const b = document.createElement('button'); b.type = 'button'; b.dataset.v = k; b.title = a.nombre; b.setAttribute('aria-label', a.nombre);
+  b.style.setProperty('--c', '#' + a.color.toString(16).padStart(6, '0')); b.onclick = () => { sim.set({ acabado: k }); pintar(); }; $('muestras').append(b);
+}
+document.querySelectorAll('.seg').forEach(s => s.querySelectorAll('button').forEach(b => b.onclick = () => { const k = s.dataset.k, c = { [k]: b.dataset.v }; if (k === 'producto') { const P = PRODUCTOS[b.dataset.v]; c.ancho = P.ancho[2]; c.alto = P.alto[2]; if (b.dataset.v !== 'puerta' && sim.cfg.diseno === 'tablero') c.diseno = 'celosia'; if (montando) $('bMontaje').click(); ponerDespiece(0); piezaSel = null; sim.resaltar(null); } sim.set(c); if (k === 'tipo' || k === 'producto') sim.vista('calle'); pintar(); }));
+for (const k of ['ancho', 'alto', 'densidad', 'apertura']) $(k).oninput = e => { sim.set({ [k]: +e.target.value }); pintar(); };
+$('bSemilla').onclick = () => { sim.set({ semilla: sim.cfg.semilla + 1 }); pintar(); };
+$('bDxf').onclick = async () => {
+  const dxf = sim.dxf(), nombre = `celosia_${sim.cfg.motivo}_${Math.round(sim.geo.patron.L * 1000)}x${Math.round(sim.geo.patron.H * 1000)}.dxf`;
+  if (window.__ARTIFACT) { try { await navigator.clipboard.writeText(dxf); aviso('DXF copiado: pégalo en un archivo .dxf'); } catch (e) { aviso('Abre el simulador en acerostudio.com para descargar el DXF'); } return; }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([dxf], { type: 'application/dxf' })); a.download = nombre; a.click(); aviso('Descargado ' + nombre);
+};
+function pintar() {
+  const c = sim.cfg, f = sim.ficha;
+  document.querySelectorAll('.seg').forEach(s => s.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === c[s.dataset.k])));
+  $('muestras').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === c.acabado));
+  const P = PRODUCTOS[c.producto], esP = c.producto === 'porton';
+  for (const k of ['ancho', 'alto']) { $(k).min = P[k][0]; $(k).max = P[k][1]; }
+  $('gTipo').hidden = !esP; $('gDiseno').hidden = c.producto === 'ventana' || c.producto === 'estructura';
+  for (const t of ['control', 'energia']) document.querySelector(`[data-tab="${t}"]`).hidden = !esP;
+  if (!esP && !$('tab-control').hidden + !$('tab-energia').hidden) document.querySelector('[data-tab="presu"]').click();
+  $('recMotor').hidden = !esP; $('notaFicha').textContent = esP ? 'Incluye portón, puerta peatonal y pórtico, con perfiles comerciales reales. El motor es un predimensionado de referencia: la instalación final la define el taller.' : 'Pesos con perfiles comerciales reales. Las secciones son un predimensionado de referencia: el cálculo final lo define el taller.';
+  $('bAbrir').textContent = 'abrir'; $('bAbrir').hidden = !(c.producto === 'puerta' || c.producto === 'ventana'); $('hAuto').textContent = esP ? 'Automatismo' : 'Análisis';
+  for (const k of ['ancho', 'alto', 'densidad', 'apertura']) $(k).value = c[k];
+  $('celo').hidden = c.diseno !== 'celosia' || $('gDiseno').hidden;
+  $('bTablero').hidden = c.producto !== 'puerta'; $('gTablero').hidden = c.producto !== 'puerta' || c.diseno !== 'tablero';
+  $('oAncho').textContent = es(c.ancho, 2) + ' m'; $('oAlto').textContent = es(c.alto, 2) + ' m'; $('oAcabado').textContent = ACABADOS[c.acabado].nombre;
+  $('oDens').textContent = es(c.densidad * 100, 1) + ' cm'; $('oAper').textContent = es(f.abierto * 100) + ' % abierto'; $('oAbierto').textContent = MOTIVOS[c.motivo].toLowerCase();
+  $('tTipo').textContent = esP ? TIPOS[c.tipo] : P.nombre; $('tMedida').textContent = `${es(c.ancho, 2)} × ${es(c.alto, 2)} m` + ($('gDiseno').hidden ? '' : ` · ${c.diseno === 'tablero' ? 'tablero ' + TABLEROS[c.modelo] : DISENOS[c.diseno].toLowerCase()}`) + (esP ? ' · puerta peatonal' : '');
+  $('fKg').textContent = es(Math.round(f.kg)); $('fPz').textContent = es(f.piezas); $('fM').textContent = es(f.metros, 1) + ' m'; $('fC').textContent = es(f.corte, 0) + ' m';
+  $('fLista').innerHTML = f.lista.map(p => `<li><span>${p.nombre}</span><span>${es(p.cantidad, 1)} ${p.unidad} · ${es(p.kg, 1)} kg</span></li>`).join('');
+  $('fMotor').textContent = f.motor.modelo; $('fMotorDato').textContent = f.motor.dato; $('motorChip').textContent = esP ? f.motor.modelo : P.nombre.toLowerCase();
+  listaPiezas(); cuentas(); notas.forEach(n => { n.d.remove(); n.l.remove(); n.p.remove(); }); notas.clear();
+}
+function cuentas() {
+  const k = sim.cuentas(proveedor), otro = sim.cuentas(proveedor === 'mundial' ? 'campana' : 'mundial'), P = PRECIOS;
+  $('eWh').textContent = es(k.whCiclo, 2) + ' Wh'; $('eKwh').textContent = es(k.kwhMes, 1) + ' kWh'; $('eCosto').textContent = cop(k.costoMes); $('eAuto').textContent = sim.cfg.bateria ? '≈ ' + es(k.ciclosBat) : 'sin batería';
+  $('pVenta').textContent = cop(k.venta); $('pVentaKg').textContent = `${cop(k.ventaKg)} por kg fabricado · ${es(Math.round(sim.ficha.kg))} kg`;
+  $('pCosto').textContent = cop(k.costo); $('pGan').textContent = cop(k.ganancia); $('pGanM').textContent = `margen ${es(k.margen * 100)} %` + (k.envioGratis ? ' · envío gratis' : '');
+  $('oMargen').textContent = es(P.margen * 100) + ' %'; $('pMargen').value = P.margen; $('oDesc').textContent = es((P.descuento[proveedor]) * 100) + ' %'; $('pDesc').value = P.descuento[proveedor]; $('oMO').textContent = cop(BD.precio('mano-obra')); $('pMO').value = BD.precio('mano-obra');
+  $('pProvNombre').textContent = PROVEEDORES[proveedor].nombre; document.querySelectorAll('[data-k="proveedor"] button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === proveedor));
+  const d = otro.costo - k.costo;
+  $('pCompara').textContent = (Math.abs(d) < 1000 ? 'Con estos descuentos las dos opciones cuestan lo mismo.' : d > 0 ? `Comprando en ${PROVEEDORES[proveedor].nombre} el costo baja ${cop(d)} frente a ${PROVEEDORES[otro.prov].nombre}.` : `${PROVEEDORES[otro.prov].nombre} saldría ${cop(-d)} más barato.`) + (k.faltan && proveedor === 'campana' ? ' El tablero estampado se compra en Mundial de Perfiles.' : '') + (PROVEEDORES[proveedor].envio && !k.envioGratis ? ` Envío gratis en Bogotá desde ${cop(PROVEEDORES[proveedor].envio)} de material.` : '');
+  let html = '', g = null;
+  for (const it of k.items) { if (it.grupo !== g) { g = it.grupo; html += `<li class="grupo-t"><span><span>${g}</span><span>${cop(k.grupos[g])}</span></span></li>`; } html += `<li><span>${it.nombre}</span><small>${it.detalle}</small><b>${cop(it.valor)}</b></li>`; }
+  $('pLista').innerHTML = html;
+}
+const guardarComercial = () => guardar('acero-comercial', JSON.stringify({ margen: PRECIOS.margen, descuento: PRECIOS.descuento }));
+$('pMargen').oninput = e => { PRECIOS.margen = +e.target.value; guardarComercial(); cuentas(); };
+$('pDesc').oninput = e => { PRECIOS.descuento[proveedor] = +e.target.value; guardarComercial(); cuentas(); };
+$('pMO').oninput = e => { BD.ajustar('mano-obra', +e.target.value); guardar('acero-precios', JSON.stringify(BD.ajustes)); cuentas(); bdLista(); };
+$('segProv2').querySelectorAll('button').forEach(b => b.onclick = () => { proveedor = b.dataset.v; cuentas(); listaPiezas(); });
+
+/* ----- base de datos de precios ----- */
+let bdCat = '', bdQ = '';
+$('bdFecha').textContent = BD.actualizado;
+$('bdCats').innerHTML = `<button type="button" data-c="" aria-pressed="true">Todo</button>` + Object.entries(BD.categorias).map(([k, n]) => `<button type="button" data-c="${k}" aria-pressed="false">${n}</button>`).join('');
+$('bdCats').onclick = ev => { const b = ev.target.closest('[data-c]'); if (!b) return; bdCat = b.dataset.c; $('bdCats').querySelectorAll('button').forEach(o => o.setAttribute('aria-pressed', o === b)); bdLista(); };
+$('bdBuscar').oninput = e => { bdQ = e.target.value.toLowerCase(); bdLista(); };
+const norm = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+function bdLista() {
+  const q = norm(bdQ), items = BD.items.filter(i => (!bdCat || i.cat === bdCat) && (!q || norm(i.nombre + ' ' + BD.categorias[i.cat]).includes(q)));
+  $('bdLista').innerHTML = items.map(i => `<li class="${i.fuente === 'est' ? 'est' : ''}"><span>${i.nombre}</span><small>${i.unidad}${i.kg ? ` · ${es(i.kg, 1)} kg` : ''} · ${BD.fuentes[i.fuente].nombre} · ${i.fecha}</small><input type="text" inputmode="numeric" data-id="${i.id}" class="${BD.ajustes[i.id] !== undefined ? 'ajustado' : ''}" value="${es(BD.precio(i.id))}" aria-label="Precio de ${i.nombre}"></li>`).join('') || '<li><span>Sin resultados</span></li>';
+  $('bdFuentes').innerHTML = Object.values(BD.fuentes).filter(f => f.url).map(f => `<li><b>${f.nombre}</b> · ${f.detalle} · <a href="${f.url}" target="_blank" rel="noopener">ver</a></li>`).join('');
+}
+$('bdLista').onchange = ev => { const inp = ev.target.closest('input[data-id]'); if (!inp) return; const v = parseInt(inp.value.replace(/[^\d]/g, ''), 10); BD.ajustar(inp.dataset.id, isNaN(v) ? null : v); guardar('acero-precios', JSON.stringify(BD.ajustes)); bdLista(); cuentas(); aviso('Precio actualizado'); };
+$('bBdCsv').onclick = async () => { try { await navigator.clipboard.writeText(BD.csv()); aviso('Base de datos copiada en CSV: pégala en Excel'); } catch (e) { aviso('No se pudo copiar desde aquí'); } };
+$('bBdReset').onclick = () => { for (const k of Object.keys(BD.ajustes)) BD.ajustar(k, null); guardar('acero-precios', '{}'); bdLista(); cuentas(); aviso('Precios de referencia restablecidos'); };
+bdLista();
+
+/* ----- pestañas ----- */
+document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { document.querySelectorAll('[data-tab]').forEach(o => { o.setAttribute('aria-selected', o === b); $('tab-' + o.dataset.tab).hidden = o !== b; }); });
+
+/* ----- automatismo y escenarios ----- */
+$('pulso').onclick = () => sim.cmd('pulso', 'Control remoto');
+document.querySelectorAll('[data-cmd]').forEach(b => b.onclick = () => sim.cmd(b.dataset.cmd, 'Tablero'));
+$('bCarro').onclick = () => sim.carro('auto'); $('bPrueba').onclick = () => { sim.prueba(); $('fotocelda').checked = true; }; $('bVisita').onclick = () => { sim.visitante(); sim.vista('frente'); };
+$('bCorte').onclick = e => { const corte = sim.S.red; sim.energia(!corte); e.currentTarget.setAttribute('aria-pressed', corte); };
+$('tiempo').oninput = e => { sim.cfg.tiempo = +e.target.value; $('oTiempo').textContent = e.target.value + ' s'; cuentas(); };
+$('pausa').oninput = e => { sim.cfg.pausa = +e.target.value; $('oPausa').textContent = e.target.value + ' s'; };
+$('ciclos').oninput = e => { sim.cfg.ciclosDia = +e.target.value; $('oCiclos').textContent = e.target.value; cuentas(); };
+for (const k of ['fotocelda', 'autocierre', 'lampara']) $(k).onchange = e => { sim.cfg[k] = e.target.checked; };
+$('bateria').onchange = e => { sim.cfg.bateria = e.target.checked; sim.tema(sim.cfg.dia); cuentas(); };
+$('solar').onchange = e => { sim.set({ solar: e.target.checked }); pintar(); };
+document.querySelectorAll('[data-vista]').forEach(b => b.onclick = () => { sim.verCarro(b.dataset.vista !== 'alzado'); sim.vista(b.dataset.vista); });
+sim.alEvento((tipo, texto, t) => {
+  const li = document.createElement('li'); if (tipo === 'alerta') li.className = 'alerta';
+  const m = Math.floor(t / 60), s = Math.floor(t % 60); li.innerHTML = `<span>${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}</span><span></span>`; li.lastChild.textContent = texto;
+  $('registro').prepend(li); while ($('registro').children.length > 6) $('registro').lastChild.remove();
+});
+
+/* ----- montaje y despiece ----- */
+let montando = false, tPaso = 0;
+$('bMontaje').onclick = () => { montando = !montando; tPaso = 0; sim.montaje(montando, montando ? 0 : sim.pasos().length - 1); $('bMontaje').textContent = montando ? '■ detener' : '▶ montaje'; if (montando) { sim.vista('despiece'); } };
+function ponerDespiece(v) { sim.vis.despiece = v; $('despiece').value = $('despiece2').value = v; $('oDesp').textContent = es(v * 100) + ' %'; }
+$('despiece').oninput = $('despiece2').oninput = e => ponerDespiece(+e.target.value);
+var piezaSel = null;
+function listaPiezas() {
+  const e = sim.etiquetas();
+  $('dLista').innerHTML = e.map(g => `<li aria-current="${g.nombre === piezaSel}"><button type="button" data-g="${g.nombre}"><i>${g.n}</i><span>${g.nombre}</span><small>${g.detalle}</small><b>${g.kg ? es(g.kg, 0) + ' kg' : '—'}</b></button>${g.nombre === piezaSel && g.lista.length ? '<ul>' + g.lista.map(p => `<li><span>${p.nombre}</span><span>${es(p.cantidad, 1)} ${p.unidad} · ${es(p.kg, 1)} kg</span></li>`).join('') + '</ul>' : ''}</li>`).join('');
+  $('dTotal').textContent = es(Math.round(sim.ficha.kg)) + ' kg · ' + es(sim.ficha.piezas) + ' piezas';
+  const pv = PROVEEDORES[proveedor], ped = sim.ficha.pedido(proveedor);
+  $('segProv').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === proveedor));
+  $('provTipo').textContent = pv.tipo; $('provNota').textContent = pv.nota;
+  $('dCompra').innerHTML = ped.map(p => `<li class="${p.falta ? 'falta' : ''}"><span>${p.nombre}</span><small>${p.falta ? 'no lo vende La Campana: se pide a Mundial de Perfiles' : p.linea}${p.ref ? ` · ref. ${cop(p.ref)} c/u` : ''}</small><b>${es(p.cant)} ${p.unidad}</b></li>`).join('');
+  $('bWa').textContent = proveedor === 'mundial' ? 'Cotizar por WhatsApp' : 'Cotizar en lacampana.co';
+  $('bWa').href = proveedor === 'mundial' ? pv.contacto + '?text=' + encodeURIComponent(textoPedido()) : pv.contacto;
+}
+var proveedor = 'mundial';
+$('segProv').querySelectorAll('button').forEach(b => b.onclick = () => { proveedor = b.dataset.v; listaPiezas(); cuentas(); });
+function textoPedido() {
+  const c = sim.cfg, P = PRODUCTOS[c.producto];
+  return `Hola, quisiera cotizar este material para ${P.nombre.toLowerCase()} de ${es(c.ancho, 2)} × ${es(c.alto, 2)} m:\n` + sim.ficha.pedido(proveedor).filter(p => !p.falta).map(p => `- ${es(p.cant)} ${p.unidad}: ${p.nombre}`).join('\n') + (sim.ficha.corte ? `\n- Servicio de corte láser: ${es(sim.ficha.corte, 0)} m de corte (envío DXF)` : '') + '\nGracias.';
+}
+$('bPedido').onclick = async () => { try { await navigator.clipboard.writeText(textoPedido()); aviso('Pedido copiado: pégalo en WhatsApp o en un correo'); } catch (e) { aviso('No se pudo copiar el pedido desde aquí'); } };
+$('dLista').onclick = ev => { const b = ev.target.closest('[data-g]'); if (!b) return; piezaSel = piezaSel === b.dataset.g ? null : b.dataset.g; sim.resaltar(piezaSel); listaPiezas(); };
+document.querySelector('[data-tab="desp"]').addEventListener('click', () => { if (montando) $('bMontaje').click(); if (sim.vis.despiece < .5) ponerDespiece(1); sim.vista('despiece'); listaPiezas(); });
+$('bCsv').onclick = async () => {
+  const f = [['Pieza', 'Perfil', 'Cantidad', 'Unidad', 'Tramos', 'Peso kg']];
+  for (const g of sim.etiquetas()) for (const p of g.lista) f.push([g.nombre, p.nombre, p.cantidad.toFixed(2), p.unidad, p.n, p.kg.toFixed(1)]);
+  const csv = f.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(';')).join('\n');
+  try { await navigator.clipboard.writeText(csv); aviso('Lista de corte copiada: pégala en Excel'); } catch (e) { aviso('No se pudo copiar la lista desde aquí'); }
+};
+$('bAbrir').onclick = () => { sim.cmd('pulso'); $('bAbrir').textContent = sim.S.qObj ? 'cerrar' : 'abrir'; };
+function ponerPlano(v) { sim.plano(v); $('bPlano').setAttribute('aria-pressed', v); $('bPlano').textContent = v ? 'modo plano' : 'metal realista'; }
+$('bPlano').onclick = () => { const v = !sim.cfg.plano; ponerPlano(v); guardar('acero-plano', v ? '1' : ''); };
+if (q.has('plano') || (leer('acero-plano') && !q.has('real'))) ponerPlano(true);
+function montaje(dt) {
+  $('pasoinfo').hidden = !montando; if (!montando) return;
+  tPaso += dt; if (tPaso > 1.5 && sim.vis.paso < sim.pasos().length - 1) { tPaso = 0; sim.montaje(true, sim.vis.paso + 1); }
+  if (tPaso > 3 && sim.vis.paso === sim.pasos().length - 1) { montando = false; sim.montaje(false); $('bMontaje').textContent = '▶ montaje'; }
+  $('pasoN').textContent = `paso ${sim.vis.paso} de ${sim.pasos().length - 1}`; $('pasoT').textContent = sim.pasos()[sim.vis.paso];
+}
+
+/* ----- anotaciones estilo plano ----- */
+const notas = new Map(); let nCuadro = 0;
+function nota(clave, txt, sub, pos, w, h, i, lado, chico) {
+  let n = notas.get(clave);
+  if (!n) {
+    const d = document.createElement('div'); d.className = 'iso-nota iso-callout'; d.innerHTML = '<span></span><small></small>'; $('capa').append(d);
+    const l = document.createElementNS('http://www.w3.org/2000/svg', 'path'); l.setAttribute('class', 'iso-guia');
+    const p = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); p.setAttribute('class', 'iso-punto'); p.setAttribute('r', 3); $('lineas').append(l, p);
+    notas.set(clave, n = { d, l, p, tapada: false });
+  }
+  n.viva = nCuadro; n.d.firstChild.textContent = txt; n.d.lastChild.textContent = sub;
+  if (nCuadro % 8 === 1) n.tapada = sim.tapado(pos);
+  const s = sim.aPantalla(pos, w, h), ver = s.visible && !n.tapada;
+  n.d.hidden = !ver; n.l.style.display = n.p.style.display = ver ? '' : 'none'; if (!ver) return;
+  const dx = (chico ? 30 : 64) * lado, dy = -(chico ? 40 : 58) - (i % 3) * 16, tx = s.x + dx, ty = s.y + dy;
+  n.p.setAttribute('cx', s.x); n.p.setAttribute('cy', s.y); n.l.setAttribute('d', `M${s.x} ${s.y} L${tx} ${ty + 8}`);
+  n.d.style.left = (lado > 0 ? tx + 6 : tx - n.d.offsetWidth - 6) + 'px'; n.d.style.top = (ty - 6) + 'px';
+}
+function anotar(w, h) {
+  const g = sim.geo, chico = w < 560; nCuadro++;
+  if (montando || sim.vis.despiece > .25) sim.etiquetas().filter(e => !montando || e.paso === sim.vis.paso || !chico).forEach((e, i) => nota('g' + e.nombre, e.n + ' · ' + e.nombre.toLowerCase() + '/.', montando ? e.detalle : e.kg ? es(e.kg, 0) + ' kg' : '', e.pos, w, h, i, i % 2 ? 1 : -1, chico));
+  else if (sim.cfg.producto === 'porton') {
+    nota('motor', 'motor/.', sim.ficha.motor.modelo, g.anclaMotor, w, h, 0, -1, chico);
+    if (!chico) { nota('foto', 'fotocelda/.', 'haz infrarrojo', g.anclaFoto, w, h, 1, 1, chico); nota('cam', 'cámara/.', 'lee la placa y abre', g.anclaCam, w, h, 2, 1, chico); nota('tecla', 'teclado/.', 'clave para la puerta', g.anclaTecla, w, h, 1, -1, chico); }
+  }
+  for (const [k, n] of notas) if (n.viva !== nCuadro) { n.d.remove(); n.l.remove(); n.p.remove(); notas.delete(k); }
+  const pl = $('placa'), s = sim.aPantalla(g.anclaCam, w, h); pl.hidden = !(sim.S.placa > 0 && s.visible); pl.style.left = s.x + 'px'; pl.style.top = s.y + 'px';
+}
+
+/* ----- telemetría ----- */
+const NOMBRE = { cerrado: 'Cerrado', abriendo: 'Abriendo', abierto: 'Abierto', cerrando: 'Cerrando', detenido: 'Detenido' };
+const hist = new Array(180).fill(.05); let tHist = 0;
+function tele(dt) {
+  const t = sim.telemetria();
+  $('estado').textContent = NOMBRE[t.estado]; $('estado').dataset.e = t.estado; $('barra').style.width = (t.apertura * 100).toFixed(1) + '%';
+  $('sub').textContent = !t.red ? (sim.cfg.bateria ? 'funcionando con batería' : 'sin energía') : t.bloqueada && sim.cfg.fotocelda ? 'fotocelda ocupada' : t.pausa !== null ? `cierra en ${Math.ceil(t.pausa)} s` : `apertura ${Math.round(t.apertura * 100)} %`;
+  $('vVel').textContent = es(t.velocidad, t.velocidad < 10 ? 1 : 0) + ' ' + t.unidadVel; $('vCor').textContent = es(t.corriente, 1) + ' A'; $('vPot').textContent = es(Math.round(t.potencia)) + ' W'; $('vCic').textContent = t.ciclos;
+  $('bCarro').firstChild.textContent = t.carroDentro ? 'Sale el carro' : 'Llega un carro'; $('bCarro').lastChild.textContent = t.carroDentro ? 'sensor de salida' : 'lectura de placa';
+  $('eBat').textContent = es(t.bat * 100, t.red ? 0 : 1); $('eBarra').style.width = (t.bat * 100) + '%'; $('eFuente').textContent = t.red ? (sim.cfg.solar && sim.cfg.dia ? 'red + sol cargando' : 'red eléctrica') : 'batería'; $('eFuente').className = t.red ? '' : 'bat';
+  tHist += dt; if (tHist > 1 / 15) { tHist = 0; hist.push(t.corriente); hist.shift(); onda(); }
+  if (tAviso > 0) { tAviso -= dt; if (tAviso <= 0) $('aviso').hidden = true; }
+}
+function onda() {
+  const c = $('onda'), x = c.getContext('2d'), W = c.width, H = c.height, cs = getComputedStyle(document.body), max = sim.ficha.motor.inom * 2.3;
+  x.clearRect(0, 0, W, H); x.strokeStyle = `rgba(${cs.getPropertyValue('--tinta-rgb')}, .14)`; x.lineWidth = 1; x.setLineDash([4, 6]);
+  const yn = H - 6 - (sim.ficha.motor.inom / max) * (H - 14); x.beginPath(); x.moveTo(0, yn); x.lineTo(W, yn); x.stroke(); x.setLineDash([]);
+  x.beginPath(); hist.forEach((v, i) => { const px = i / (hist.length - 1) * W, py = H - 6 - Math.min(1, v / max) * (H - 14); i ? x.lineTo(px, py) : x.moveTo(px, py); });
+  x.strokeStyle = cs.getPropertyValue('--coral'); x.lineWidth = 3; x.lineJoin = 'round'; x.stroke();
+  x.lineTo(W, H); x.lineTo(0, H); x.closePath(); x.globalAlpha = .14; x.fillStyle = cs.getPropertyValue('--coral'); x.fill(); x.globalAlpha = 1;
+}
+
+/* ----- bucle ----- */
+let w = 0, h = 0, antes = performance.now(), lentos = 0;
+function medir() { const r = lienzo.getBoundingClientRect(); if (r.width !== w || r.height !== h) { const primera = !w; w = r.width; h = r.height; sim.medida(w, h); if (primera) sim.vista('calle', true); } }
+new ResizeObserver(medir).observe(lienzo);
+function cuadro(ahora) {
+  const real = (ahora - antes) / 1000, dt = Math.min(.05, real); antes = ahora; medir();
+  if (sim.cfg.brillo && !sim.cfg.dia && !window.__congelado) { lentos = real > .07 ? lentos + 1 : Math.max(0, lentos - 1); if (lentos > 40) sim.cfg.brillo = false; } // equipos lentos: sin resplandor
+  if (w && !window.__congelado) { sim.step(dt); montaje(dt); sim.render(dt); anotar(w, h); tele(dt); }
+  requestAnimationFrame(cuadro);
+}
+pintar(); medir(); requestAnimationFrame(cuadro);
+</script>
+</body>
+</html>
