@@ -150,3 +150,15 @@ body.dia .mapa .barra-a span { background: var(--celeste-txt); }
 }
 @media (prefers-reduced-motion: reduce) { .microfono.grabando { animation: none; } }
 .maestro .nube[data-estado="apagada"], .maestro .nube:empty { display: none; }
+
+/* agente: sugerencias y respuestas con herramienta */
+.sugerencias { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; }
+.sugerencias .chip { background: transparent; color: inherit; cursor: pointer; text-transform: none; letter-spacing: 0; font-size: 12.5px; text-align: left; }
+.sugerencias .chip:hover { background: rgba(var(--tinta-rgb), .06); }
+.msg .detalle { margin: 8px 0 0; padding-left: 18px; font-size: 14px; }
+.msg .detalle li { margin: 3px 0; }
+.msg .aviso-base { margin-top: 8px; font-size: 13px; color: var(--suave); font-style: italic; }
+
+/* aviso claro de que está grabando */
+.microfono.grabando + .indicacion { font-weight: 600; font-size: 22px; }
+.repregunta-pista { font-size: 17px; color: var(--suave); margin: 0 0 6px; }

@@ -48,8 +48,27 @@ calidad y precio) y ve las máquinas nuevas como una mejora, no como una amenaza
 
 Esa forma de hablar y esos valores salen de sus primeras 14 respuestas (transcritas con ElevenLabs el 2026-11-10). Se afinan a medida que cuente más.
 
+## Estructura del agente
+
+ManH tiene cuatro piezas. El código está en `manh/js/agente.js` (reglas y herramientas) y `manh/js/oficio.js` (cálculos del oficio).
+
+| Pieza | Qué es | Dónde vive |
+| --- | --- | --- |
+| Fuentes | 1) lo que dijo el Maestro y el equipo revisó, 2) lo que dijo sin revisar, 3) base técnica general. Cuando dos fuentes chocan, gana la de más arriba. | `manh_respuestas` en Supabase · `oficio.js` |
+| Herramientas | `buscar_conocimiento`, `cotizar_corte_laser`, `angulo_de_corte`, `donde_soldar`, `preguntar_al_maestro`, cada una con su esquema JSON para un modelo con uso de herramientas. | `HERRAMIENTAS` en `agente.js` |
+| Reglas | Seguridad primero; citar al Maestro; si solo hay base técnica, decirlo y ofrecer preguntárselo; nunca inventar medidas, amperajes ni precios; hablar como el taller. | `REGLAS` en `agente.js` y el prompt de arriba |
+| Enrutador | Sin IA, lee la pregunta y elige la herramienta (por ejemplo, "cuánto cuesta cortar con láser 3 m en 2 mm" va a `cotizar_corte_laser`). Con IA, el modelo elige con los esquemas. | `enrutar()` en `agente.js` |
+
+Toda respuesta que sale de la base técnica lleva el aviso "por confirmar con el Maestro" y un botón para dejarle la pregunta. Así la base técnica se va reemplazando por su experiencia.
+
+### Base técnica inicial
+
+- **Corte láser:** precio por tiempo de máquina. Tiempo = metros de corte ÷ velocidad según espesor + perforaciones × (tiempo de perforación + 1,5 s). Tarifa de referencia $75 por segundo (Magru, Bogotá), alistamiento $15.000 y mínimo $30.000 por pedido (supuestos ajustables). Velocidades de un láser de fibra de 3 kW en acero al carbono, de 22 m/min en 1,2 mm a 0,9 m/min en 12 mm.
+- **Ángulos:** inglete = la mitad del ángulo interior; en la sierra se pone 90° menos eso. Marco de n lados: ángulo interior 180·(n−2)/n.
+- **Soldadura:** dónde y en qué orden por tipo de trabajo (portón, reja, viga, cercha, escalera, lámina), filete mínimo según AWS D1.1 y electrodo por espesor.
+
 ## Próximos pasos
 
 - Conectar ManH al módulo **Fábrica** (PR #12): que la planta autónoma consulte a ManH en cada estación (corte, soldadura, pintura) y muestre la regla del Maestro que aplica.
-- Pasar a texto en la nube, solas, las grabaciones nuevas (el celular Android no transcribe mientras graba).
-- Mejorar la entrevista: tono claro al empezar a grabar, "¿algo más sobre eso?" antes de repreguntar y partir las preguntas dobles.
+- Pasar a texto en la nube, solas, las grabaciones nuevas: `manh-sync` ya lo hace si existe el secreto `ELEVENLABS_API_KEY` (falta desplegar esta versión y poner el secreto).
+- Cotizaciones reales de corte láser para ajustar la tarifa, el mínimo y las velocidades.

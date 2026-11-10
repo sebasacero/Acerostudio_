@@ -1,6 +1,7 @@
 // ManH · interfaz. Tres vistas: Conversar (el Maestro responde por voz), Equipo (revisar y preguntar)
 // y Preguntar a ManH (el agente responde con lo que el Maestro enseñó).
 import { TEMAS, PREGUNTAS, REPREGUNTAS, temaPorId } from './preguntas.js';
+import { responder as responderAgente } from './agente.js';
 import { TIPOS, siguientePregunta, cobertura, responderLocal, manualMarkdown, paquete, unir, recortar } from './conocimiento.js';
 import * as A from './almacen.js';
 import * as N from './nube.js';
@@ -164,6 +165,7 @@ async function iniciarGrabacion(destino = 'respuesta') {
     graba.med = new MediaRecorder(graba.flujo, tipo ? { mimeType: tipo } : undefined);
     graba.med.ondataavailable = e => e.data.size && graba.trozos.push(e.data);
     graba.med.start(1000);
+    if (destino === 'respuesta') { tono(880, 0.18); navigator.vibrate?.(120); }
   } catch (e) {
     graba.med = null;
     if (!Reconocedor) { graba.activo = false; avisar('No hay permiso para usar el micrófono. Puede responder escribiendo.'); return false; }
@@ -191,6 +193,18 @@ async function iniciarGrabacion(destino = 'respuesta') {
     if (graba.destino === 'respuesta') $('#reloj').textContent = txt;
   }, 500);
   return true;
+}
+
+// Un "bip" corto y una vibración: el Maestro sabe que ya lo estamos escuchando (antes preguntaba "¿ya le puedo hablar?").
+let ctxAudio;
+function tono(hz, seg) {
+  try {
+    ctxAudio = ctxAudio || new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctxAudio.createOscillator(), g = ctxAudio.createGain(), t = ctxAudio.currentTime;
+    o.frequency.value = hz; o.connect(g); g.connect(ctxAudio.destination);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.3, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + seg);
+    o.start(t); o.stop(t + seg + 0.02);
+  } catch {}
 }
 
 function mostrarEnVivo(t) {
@@ -221,7 +235,7 @@ $('#microfono').onclick = async () => {
     if (await iniciarGrabacion('respuesta')) {
       $('#microfono').classList.add('grabando');
       $('#microfono').setAttribute('aria-label', 'Tocar para terminar');
-      $('#indicacion').textContent = 'Le escucho… toque otra vez cuando termine';
+      $('#indicacion').textContent = 'Ya lo estoy escuchando. Hable tranquilo; toque otra vez cuando termine.';
       $('#reloj').hidden = false;
     }
   } else {
@@ -274,13 +288,26 @@ $('#guardar').onclick = async () => {
   estado.sesion++;
   // repregunta: una de la lista, distinta cada vez; no se repregunta una repregunta
   if (!q.padre) {
-    const rp = REPREGUNTAS[(estado.respuestas.length + q.id.length) % REPREGUNTAS.length];
-    estado.repregunta = { id: `${q.id}~${rp.slice(1, 12)}`, tema: q.tema, texto: rp, padre: q.id, contexto: q.texto };
-    $('#textoRepregunta').textContent = `Sobre «${recortar(q.texto, 80)}»: ${rp}`;
+    const rp = elegirRepregunta(q);
+    estado.repregunta = { id: `${q.id}~${rp.slice(1, 12)}`, tema: q.tema, texto: `Siga contando. ${rp}`, padre: q.id, contexto: q.texto, pista: rp };
+    $('#textoRepregunta').textContent = rp;
     paso('repregunta');
-    if (estado.ajustes.leer) leerEnVoz('Guardado. ¿Quiere agregar algo más? ' + rp);
+    if (estado.ajustes.leer) leerEnVoz('Guardado. ¿Quiere seguir contando sobre esto? Si quiere, cuéntenos también: ' + rp);
   } else seguir();
 };
+
+// Repregunta que no se repita: cada una se usa una vez antes de volver a salir, "¿qué haría distinto
+// con las máquinas nuevas?" solo una vez en total (ya la contestó), y según el tema se prefiere la que más enseña.
+const PREFERIDA = { inicio: 2, costos: 3, material: 3, planos: 3, trazo: 3, doblez: 3, soldadura: 1, seguridad: 1, calidad: 1, acabado: 0, porton: 2, proyectos: 3 };
+function elegirRepregunta(q) {
+  const usos = REPREGUNTAS.map(rp => estado.respuestas.filter(r => r.preguntaId?.includes(`~${rp.slice(1, 12)}`)).length);
+  const posibles = REPREGUNTAS.map((rp, i) => ({ rp, i, n: usos[i] })).filter(x => !(/máquinas nuevas/.test(x.rp) && x.n >= 1));
+  const menos = Math.min(...posibles.map(x => x.n));
+  // la de "máquinas nuevas" solo si no queda otra: ya la contestó y casi no enseña oficio
+  const libres = posibles.filter(x => x.n === menos).sort((x, y) => /máquinas/.test(x.rp) - /máquinas/.test(y.rp)).filter((x, _, l) => l.length === 1 || !/máquinas/.test(x.rp));
+  const pref = libres.find(x => x.i === PREFERIDA[q.tema]);
+  return (pref || libres[(estado.respuestas.length + q.id.length) % libres.length]).rp;
+}
 
 function seguir() {
   if (estado.sesion > 0 && estado.sesion % 5 === 0) { terminar(`Lleva ${estado.sesion} respuestas hoy. Puede descansar o seguir otro rato.`); return; }
@@ -289,7 +316,7 @@ function seguir() {
 $('#siguiente').onclick = seguir;
 $('#contestarRepregunta').onclick = () => {
   const rp = estado.repregunta;
-  preguntar({ ...rp, texto: `${rp.texto} (sobre: ${recortar(rp.contexto, 90)})` });
+  preguntar({ ...rp, texto: `Siga contando sobre «${recortar(rp.contexto, 90)}». Si quiere, cuéntenos también: ${rp.pista}` });
 };
 $('#saltar').onclick = async () => {
   detenerGrabacion(true);
@@ -463,24 +490,27 @@ function agregarMsg(quien, html) {
 
 async function preguntarManh(consulta) {
   agregarMsg('yo', esc(consulta));
-  let resp = responderLocal(consulta, estado.respuestas, nombre());
-  // Con servicio de IA configurado, ManH redacta usando solo los fragmentos encontrados.
-  if (estado.ajustes.ia && resp.sabe) {
+  let resp = responderAgente(consulta, estado.respuestas, nombre());
+  // Con servicio de IA configurado, ManH redacta usando solo los fragmentos del Maestro encontrados.
+  if (estado.ajustes.ia && resp.sabe && !resp.base) {
     try {
       const r = await fetch(estado.ajustes.ia, { method: 'POST', headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ pregunta: consulta, maestro: nombre(), fuentes: resp.fuentes.map(({ id, tema, pregunta, texto, resumen, tipo }) => ({ id, tema, pregunta, texto, resumen, tipo })) }) });
       if (r.ok) { const j = await r.json(); if (j.respuesta) resp = { ...resp, texto: j.respuesta }; }
     } catch {}
   }
-  const d = agregarMsg('manh', `<p>${esc(resp.texto)}</p>`);
-  if (resp.fuentes.length) {
+  let html = `<p>${esc(resp.texto)}</p>`;
+  if (resp.detalle?.length) html += `<ul class="detalle">${resp.detalle.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`;
+  if (resp.aviso) html += `<p class="aviso-base">${esc(resp.aviso)}</p>`;
+  const d = agregarMsg('manh', html);
+  if (resp.fuentes.length && !resp.base) {
     const f = document.createElement('div'); f.className = 'fuentes';
     f.innerHTML = resp.fuentes.map(r => `<div class="fuente"><b>${esc(temaPorId(r.tema).nombre)} · ${esc(recortar(r.pregunta, 90))}</b>${r.audio ? `<audio controls preload="none" data-audio="${r.audio}"></audio>` : ''}</div>`).join('');
     d.append(f);
     f.querySelectorAll('[data-audio]').forEach(el => cargarAudio(el));
   }
-  // lo que ManH no sabe se convierte en pregunta para el Maestro
-  if (!resp.sabe) {
+  // lo que ManH no sabe (o solo sabe por la base técnica) se convierte en pregunta para el Maestro
+  if (!resp.sabe || resp.preguntarAlMaestro) {
     const b = document.createElement('button'); b.className = 'boton coral'; b.textContent = `Preguntárselo ${aNombre()}`;
     b.onclick = async () => {
       const q = { id: A.id('p'), tema: adivinarTema(consulta), texto: consulta.endsWith('?') ? consulta : `¿${consulta.replace(/^¿/, '')}?`, pidio: 'ManH', urgente: false, fecha: Date.now() };
@@ -490,6 +520,7 @@ async function preguntarManh(consulta) {
     d.append(b);
   }
 }
+$$('[data-sugerencia]').forEach(b => b.onclick = () => preguntarManh(b.textContent.trim()));
 function adivinarTema(t) {
   const n = t.toLowerCase();
   const claves = { soldadura: /sold|electrodo|mig|amper/, trazo: /cort|disco|plasma|trazo/, acabado: /pint|anticorros|galvan|oxid|pul/, doblez: /dobl|curv|rol/, armado: /arm|escuadra|plantilla/, montaje: /mont|anclaj|obra|instal/, costos: /prec|cobr|cotiz|cost|kilo/, material: /perfil|lamin|tubo|angulo|platina|proveedor|calibre/, seguridad: /segur|accident|proteccion/, calidad: /tolerancia|revis|error|calidad/, clientes: /client/ };
