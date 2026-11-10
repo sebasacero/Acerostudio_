@@ -38,12 +38,12 @@ export const PRECIOS = { aceroKg: 17500, corteM: 3800, pinturaM2: 42000, instala
 
 const PAL = {
   noche: {
-    fondo: 0x1f2433, suelo: 0x2b3145, anden: 0x3f4862, via: 0x262b3d, raya: 0x7c86a6, muro: 0x55668a, casa: 0x4d5f79, casa2: 0x445269, ruta: 0xe29699,
+    fondo: 0x1f2433, estudio: 0x2a3044, suelo: 0x2b3145, anden: 0x3f4862, via: 0x262b3d, raya: 0x7c86a6, muro: 0x55668a, casa: 0x4d5f79, casa2: 0x445269, ruta: 0xe29699,
     arbol: 0x41607a, tronco: 0x39405a, carro: 0xbfe2fb, vidrio: 0x232c44, cesped: 0x2f3b50, piel: 0xe9b89a, ropa: 0xee7f74,
     tinta: 0x0b0d14, tintaOp: .5, hemiC: 0x9aa8d6, hemiS: 0x4c5674, hemiI: 1.25, solC: 0xbccaff, solI: 1.25, sol: [-9, 14, 11], luces: 1, env: .34, expo: 1.12, motor: 0xb6dbf8, mecanica: 0xc9cfdc,
   },
   dia: {
-    fondo: 0xeceef2, suelo: 0xe3e6ec, anden: 0xf6f7f9, via: 0xd3d7e0, raya: 0xffffff, muro: 0xffffff, casa: 0xffffff, casa2: 0xf1f3f6, ruta: 0xf0a8a2,
+    fondo: 0xeceef2, estudio: 0xe9ebf0, suelo: 0xe3e6ec, anden: 0xf6f7f9, via: 0xd3d7e0, raya: 0xffffff, muro: 0xffffff, casa: 0xffffff, casa2: 0xf1f3f6, ruta: 0xf0a8a2,
     arbol: 0xdbe5ec, tronco: 0xcfd4dd, carro: 0x8fc6f0, vidrio: 0x55617a, cesped: 0xdfe6e2, piel: 0xe9b89a, ropa: 0xe8736a,
     tinta: 0x1a1e2c, tintaOp: .3, hemiC: 0xffffff, hemiS: 0xc9cedb, hemiI: .95, solC: 0xfff1dc, solI: 2.6, sol: [10, 16, 9], luces: 0, env: .62, expo: 1.02, motor: 0x8fc6f0, mecanica: 0x9aa3b5,
   },
@@ -197,7 +197,7 @@ function motorRecomendado(tipo, kg, W) {
 export function crearSimulador(canvas, opt = {}) {
   const cfg = Object.assign({
     tipo: 'corredizo', diseno: 'celosia', motivo: 'cerros', densidad: .075, apertura: .7, semilla: 3, ancho: 4, alto: 2.3, acabado: 'grafito',
-    tiempo: 9, autocierre: true, pausa: 5, fotocelda: true, lampara: true, bateria: true, solar: true, ciclosDia: 12, dia: false, brillo: true,
+    paisaje: false, tiempo: 9, autocierre: true, pausa: 5, fotocelda: true, lampara: true, bateria: true, solar: true, ciclosDia: 12, dia: false, brillo: true,
   }, opt.cfg);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: !!opt.captura });
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -310,8 +310,11 @@ export function crearSimulador(canvas, opt = {}) {
     limpiar(entorno); limpiar(porton); TUBOS.clear(); CORDONES.clear(); CORD.clear(); texturas.forEach(t => t.dispose()); texturas = []; grupos = []; partes = {};
     const { ancho: W, alto: H, tipo } = cfg, hp = H + .42, xd = W / 2 + COL / 2, xi = -xd - PEAT - COL, xp = -xd - COL / 2 - PEAT / 2;
     geo = { W, H, hp, xd, xi, xp };
-    /* entorno */
+    /* entorno: en Ornamentación solo va el producto sobre un piso de estudio; el paisaje queda como opción (cfg.paisaje) */
     const piso = (rol, sx, sz, x, z, y) => { const o = new THREE.Mesh(UNIT, mat(rol)); o.scale.set(sx, .02, sz); o.position.set(x, y, z); o.receiveShadow = true; entorno.add(o); return o; };
+    partes.ventanas = [];
+    if (!cfg.paisaje) piso('estudio', 170, 170, 0, 0, -.012);
+    else {
     piso('suelo', 170, 170, 0, 0, -.012); piso('anden', 64, 2.4, 0, 1.6, 0); piso('via', 170, 7.5, 0, 6.55, -.004); piso('cesped', 29.6, 12.2, 0, -6.3, -.002);
     for (let x = -30; x <= 30; x += 3.2) piso('raya', 1.5, .12, x, 6.55, .002);
     piso('ruta', W - .1, 12.5, 0, -3.45, .004); piso('ruta', W - .1, 1.3, 0, 3.45, .002); piso('anden', PEAT + .3, 5.2, xp, -2.7, .003);
@@ -329,7 +332,8 @@ export function crearSimulador(canvas, opt = {}) {
     }
     caja(entorno, mOscuro, .09, 4.6, .09, 7.8, 2.3, 2.5); caja(entorno, mOscuro, .09, .07, 1.1, 7.8, 4.6, 3); caja(entorno, mFarol, .22, .05, .42, 7.8, 4.55, 3.4); luzFarol.position.set(7.8, 4.3, 3.4);
     for (const z of [-2.2, -5.4]) for (const s of [-1, 1]) { caja(entorno, mOscuro, .07, .34, .07, s * (W / 2 + .22), .17, z); caja(entorno, mLed, .075, .05, .075, s * (W / 2 + .22), .36, z); }
-    luzPatio.position.set(0, 1.1, -2.4);
+    luzPatio.position.set(0, 1.1, -2.4); luzFarol.position.set(7.8, 4.3, 3.4);
+    }
 
     /* acceso */
     const acc = nuevoAcc(), Bm = (g, m, sx, sy, sz, x, y, z) => m === mAcero ? tubo(g, m, sx, sy, sz, x, y, z) : caja(g, m, sx, sy, sz, x, y, z);
@@ -352,10 +356,10 @@ export function crearSimulador(canvas, opt = {}) {
     Bm(gSeg, mOscuro, .03, .14, .03, xd, hp + .27, .0); const bal = new THREE.Mesh(new THREE.CylinderGeometry(.055, .065, .1, 10), mBaliza); bal.position.set(xd, hp + .39, 0); gSeg.add(bal); luzBaliza.position.set(xd, hp + .6, .4);
     Bm(gSeg, mOscuro, .1, .08, .2, xd - .7, hp - .06, .16); const lente = new THREE.Mesh(new THREE.CylinderGeometry(.03, .03, .05, 10), mMec); lente.rotation.x = 1.1; lente.position.set(xd - .7, hp - .09, .27); gSeg.add(lente); // cámara de placas
     Bm(gSeg, mOscuro, .1, .2, .035, -xd, 1.32, COL / 2 + .018); partes.tecla = Bm(gSeg, mTecla, .07, .1, .01, -xd, 1.3, COL / 2 + .04); // teclado
-    Bm(gSeg, mMotor, .3, .4, .12, xd + .55, 1.4, -.17); // tablero de control
+    if (cfg.paisaje) Bm(gSeg, mMotor, .3, .4, .12, xd + .55, 1.4, -.17); else Bm(gSeg, mMotor, .26, .36, .1, xd, 1.4, -COL / 2 - .05); // tablero de control
     const cvN = document.createElement('canvas'); cvN.width = 256; cvN.height = 96; const gN = cvN.getContext('2d'); gN.fillStyle = '#fff'; gN.fillRect(0, 0, 256, 96); gN.fillStyle = '#000'; gN.font = '700 64px Antonio, Arial Narrow, sans-serif'; gN.textAlign = 'center'; gN.textBaseline = 'middle'; gN.fillText('24 – 18', 128, 52);
     const tN = new THREE.CanvasTexture(cvN); texturas.push(tN); const mPlaca = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: .55, roughness: .42, alphaMap: tN, alphaTest: .5 }); partes.mPlaca = mPlaca;
-    Bm(gSeg, mNum, .62, .22, .01, xd + 1.1, 1.62, .125); const pn = new THREE.Mesh(new THREE.PlaneGeometry(.66, .25), mPlaca); pn.position.set(xd + 1.1, 1.62, .14); gSeg.add(pn);
+    if (cfg.paisaje) { Bm(gSeg, mNum, .62, .22, .01, xd + 1.1, 1.62, .125); const pn = new THREE.Mesh(new THREE.PlaneGeometry(.66, .25), mPlaca); pn.position.set(xd + 1.1, 1.62, .14); gSeg.add(pn); }
     if (cfg.solar) { const ps = new THREE.Mesh(UNIT, mSolar); ps.scale.set(1.05, .03, .68); ps.position.set(xp, hp + .33, .22); ps.rotation.x = .22; ps.castShadow = true; gSeg.add(ps); }
     // puerta peatonal
     const gPea = grupo('Puerta peatonal', 7, [-.9, 0, 2], porton, [xp, H * .9, 0], 'chapa eléctrica y brazo hidráulico');
@@ -460,8 +464,8 @@ export function crearSimulador(canvas, opt = {}) {
     Object.assign(mAcero, { metalness: pl ? 0 : A.metal, roughness: pl ? 1 : A.rug, clearcoat: pl ? 0 : A.capa, envMapIntensity: pl ? .5 : 2.1 }); mAcero.normalScale.setScalar(pl ? 0 : A.piel);
     Object.assign(mMec, { metalness: pl ? 0 : 1, roughness: pl ? 1 : .26, envMapIntensity: pl ? .5 : 2.4 }); mMec.normalScale.setScalar(pl ? 0 : .35); mMotor.clearcoat = pl ? 0 : .5; mMotor.roughness = pl ? 1 : .42; mAcero.color.setHex(col); mPanel.color.setHex(col); mPanelP.color.setHex(col); partes.mPlaca?.color.setHex(col);
     mMotor.color.setHex(P.motor); mMec.color.setHex(P.mecanica);
-    mVentana.color.setHex(dia ? 0xc9d6e6 : 0x39425c); mVentana.emissiveIntensity = L * red * .95; mFarol.emissiveIntensity = L * red * 2.4; luzFarol.intensity = L * red * 22;
-    mLed.emissiveIntensity = L * propia * 2.6; mNum.emissiveIntensity = L * propia * 1.8; luzLed.forEach(l => l.intensity = L * propia * 9); luzPatio.intensity = L * propia * 7;
+    mVentana.color.setHex(dia ? 0xc9d6e6 : 0x39425c); mVentana.emissiveIntensity = L * red * .95; mFarol.emissiveIntensity = L * red * 2.4; luzFarol.intensity = cfg.paisaje ? L * red * 22 : 0;
+    mLed.emissiveIntensity = L * propia * 2.6; mNum.emissiveIntensity = L * propia * 1.8; luzLed.forEach(l => l.intensity = L * propia * 9); luzPatio.intensity = cfg.paisaje ? L * propia * 7 : 0;
     mTecla.emissiveIntensity = propia * (dia ? .6 : 1.6); mFaro.emissiveIntensity = L * 2.2; if (partes0.faros) partes0.faros.intensity = L * 24;
   }
   function energia(red) { if (S.red === red) return; S.red = red; evento(red ? 'estado' : 'alerta', red ? 'Volvió la energía de la red' : cfg.bateria ? 'Corte de energía: sigue con batería' : 'Corte de energía: sin batería, usa el desbloqueo manual'); tema(cfg.dia); }
@@ -494,7 +498,7 @@ export function crearSimulador(canvas, opt = {}) {
   function step(dt) {
     S.reloj += dt;
     const frente = car.z - MITAD, cola = car.z + MITAD, [z0, z1] = geo.zona;
-    const hayCarro = !car.oculto && !vis.montaje && vis.despiece < .05; carro.visible = hayCarro;
+    const hayCarro = !car.oculto && !vis.montaje && vis.despiece < .05; carro.visible = hayCarro && (cfg.paisaje || Math.abs(car.v) > .01 || (car.z < Z_FUERA - .05 && car.z > Z_DENTRO + .05));
     S.bloqueada = hayCarro && frente < Z_HAZ && cola > Z_HAZ;
     const enZona = hayCarro && frente < z1 && cola > z0, paso = geo.pmin + .012;
     if (Math.abs(car.objetivo - car.z) > .005 || Math.abs(car.v) > .01) {

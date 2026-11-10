@@ -325,7 +325,7 @@ const $ = id => document.getElementById(id), es = (n, d = 0) => n.toLocaleString
 const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }, leer = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
 const q = new URLSearchParams(location.search), raiz = document.documentElement;
 const temaIni = q.has('dia') ? 'dia' : q.has('noche') ? 'noche' : leer('acero-tema') || (raiz.dataset.theme === 'light' || (!raiz.dataset.theme && matchMedia('(prefers-color-scheme: light)').matches) ? 'dia' : 'noche');
-const cfg0 = { dia: temaIni === 'dia' };
+const cfg0 = { dia: temaIni === 'dia', paisaje: q.has('paisaje') };
 for (const k of ['tipo', 'diseno', 'acabado', 'motivo']) if (q.get(k)) cfg0[k] = q.get(k);
 for (const k of ['ancho', 'alto', 'semilla']) if (q.get(k)) cfg0[k] = +q.get(k);
 
