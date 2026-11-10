@@ -3,6 +3,7 @@
 import { TEMAS, PREGUNTAS, REPREGUNTAS, temaPorId } from './preguntas.js';
 import { TIPOS, siguientePregunta, cobertura, responderLocal, manualMarkdown, paquete, unir, recortar } from './conocimiento.js';
 import * as A from './almacen.js';
+import * as N from './nube.js';
 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
@@ -22,9 +23,36 @@ async function cargar() {
     Object.assign(estado.ajustes, (await A.leer('ajustes', 'ajustes')) || {});
     estado.saltadas = (await A.leer('ajustes', 'saltadas')) || [];
   } catch (e) { avisar('No se pudo abrir el almacén de este navegador. Lo grabado no quedará guardado.'); }
+  const qs = new URLSearchParams(location.search);
+  if (qs.get('clave')) { estado.ajustes.clave = qs.get('clave'); guardarAjustes(); history.replaceState(null, '', location.pathname + (qs.get('vista') ? '?vista=' + qs.get('vista') : '')); }
+  N.configurar(estado.ajustes.clave);
   aplicarAjustes();
   pintarTodo();
+  sincronizarYa();
+  setInterval(sincronizarYa, 60000);
+  addEventListener('online', sincronizarYa);
   if (new URLSearchParams(location.search).get('vista')) mostrarVista(new URLSearchParams(location.search).get('vista'));
+}
+let nube = { estado: 'apagada', total: 0 };
+async function sincronizarYa() {
+  if (!N.activa()) { nube.estado = 'apagada'; pintarNube(); return; }
+  if (!navigator.onLine) { nube.estado = 'sin-red'; pintarNube(); return; }
+  nube.estado = 'subiendo'; pintarNube();
+  try { const r = await N.sincronizar(estado); nube = { estado: 'ok', total: r.total, hora: new Date() }; if (r.nuevas || r.subidas) pintarTodo(); }
+  catch (e) { nube.estado = e.status === 401 ? 'clave' : 'error'; }
+  pintarNube();
+}
+const subir = r => N.activa() && N.subirRespuesta(r).then(() => { nube.total = Math.max(nube.total, estado.respuestas.filter(x => x.nube).length); pintarNube(); }).catch(() => { nube.estado = 'error'; pintarNube(); });
+function pintarNube() {
+  const sinSubir = estado.respuestas.filter(r => !r.subida || r.subida < (r.editada || r.fecha)).length;
+  const t = { apagada: 'Solo en este dispositivo. Escriba la clave del taller para guardar en la base de datos.', 'sin-red': `Sin internet. ${sinSubir} por subir; se suben solas al volver la señal.`, subiendo: 'Guardando en la base de datos…', clave: 'La clave del taller no es correcta.', error: `No se pudo conectar con la base de datos. ${sinSubir} por subir; se reintenta cada minuto.`, ok: sinSubir ? `${sinSubir} por subir…` : `Todo guardado en la base de datos del taller (${nube.total} respuestas con audio).` }[nube.estado];
+  $$('[data-nube]').forEach(n => { n.textContent = t; n.dataset.estado = nube.estado; });
+}
+async function cargarAudio(el) {
+  const id = el.dataset.audio || el.dataset.foto;
+  let b = await A.leer('archivos', id).catch(() => null);
+  if (b) { el.src = URL.createObjectURL(b); return; }
+  try { const u = await N.urlArchivo(id); if (u) el.src = u; } catch {}
 }
 const guardarAjustes = () => A.guardar('ajustes', estado.ajustes, 'ajustes').catch(() => {});
 const nombre = () => estado.ajustes.nombre || 'el Maestro';
@@ -37,6 +65,7 @@ function aplicarAjustes() {
   $('#ajLeer').checked = estado.ajustes.leer;
   $('#ajVel').value = estado.ajustes.velocidad; $('#ajVelOut').textContent = estado.ajustes.velocidad;
   $('#ajIA').value = estado.ajustes.ia;
+  $('#ajClave').value = estado.ajustes.clave || '';
   $$('.modo button').forEach(b => b.setAttribute('aria-pressed', b.dataset.modo === estado.ajustes.modo));
 }
 
@@ -70,6 +99,7 @@ function pintarInicio() {
 
 $$('.modo button').forEach(b => b.onclick = () => { estado.ajustes.modo = b.dataset.modo; aplicarAjustes(); guardarAjustes(); });
 $('#empezar').onclick = () => { estado.temaHoy = null; empezar(); };
+$('#empezarPorton').onclick = () => { estado.temaHoy = 'porton'; empezar(); };
 $('#otraVez').onclick = () => { estado.temaHoy = null; empezar(); };
 
 function empezar() { estado.sesion = 0; preguntar(); }
@@ -239,6 +269,7 @@ $('#guardar').onclick = async () => {
     await A.guardar('respuestas', r);
   } catch (e) { avisar('No se pudo guardar en este dispositivo.'); }
   estado.respuestas.push(r);
+  subir(r);
   estado.sesion++;
   // repregunta: una de la lista, distinta cada vez; no se repregunta una repregunta
   if (!q.padre) {
@@ -289,7 +320,7 @@ function pintarEquipo() {
   $('#pendientes').innerHTML = abiertas.map(q => `<li><span>${q.urgente ? '<b>URGENTE · </b>' : ''}${esc(q.texto)}${q.pidio ? ` <small class="nota">· ${esc(q.pidio)}</small>` : ''}</span><button type="button" data-quitar="${q.id}" aria-label="Quitar pregunta">×</button></li>`).join('');
   $$('[data-quitar]').forEach(b => b.onclick = async () => {
     estado.pendientes = estado.pendientes.filter(q => q.id !== b.dataset.quitar);
-    await A.borrar('pendientes', b.dataset.quitar).catch(() => {}); pintarTodo();
+    await A.borrar('pendientes', b.dataset.quitar).catch(() => {}); N.borrarRemoto('pendiente', b.dataset.quitar); pintarTodo();
   });
   pintarRespuestas();
 }
@@ -317,10 +348,10 @@ function pintarRespuestas() {
       </div>
     </article>`).join('');
   // audios y fotos desde IndexedDB
-  $$('[data-audio]').forEach(async el => { const b = await A.leer('archivos', el.dataset.audio).catch(() => null); if (b) el.src = URL.createObjectURL(b); });
+  $$('[data-audio]').forEach(el => cargarAudio(el));
   $$('[data-fotos]').forEach(async el => {
-    const imgs = await Promise.all(el.dataset.fotos.split(',').map(f => A.leer('archivos', f).catch(() => null)));
-    el.innerHTML = imgs.filter(Boolean).map(b => `<img src="${URL.createObjectURL(b)}" alt="Foto del Maestro">`).join('');
+    el.innerHTML = el.dataset.fotos.split(',').map(f => `<img data-foto="${f}" alt="Foto del Maestro">`).join('');
+    el.querySelectorAll('img').forEach(cargarAudio);
   });
   $$('.tarjeta').forEach(t => {
     const r = estado.respuestas.find(x => x.id === t.dataset.id);
@@ -330,12 +361,14 @@ function pintarRespuestas() {
       r.editada = Date.now();
       t.classList.toggle('revisada', r.estado === 'revisada');
       await A.guardar('respuestas', r).catch(() => {});
+      subir(r);
       pintarFichaManh();
     });
     t.querySelector('[data-borrar]').onclick = async () => {
       if (!confirm('¿Borrar esta respuesta y su audio? No se puede deshacer.')) return;
       estado.respuestas = estado.respuestas.filter(x => x.id !== r.id);
       await A.borrar('respuestas', r.id).catch(() => {});
+      N.borrarRemoto('respuesta', r.id);
       for (const f of [r.audio, ...(r.fotos || [])].filter(Boolean)) await A.borrar('archivos', f).catch(() => {});
       pintarTodo();
     };
@@ -353,6 +386,7 @@ $('#formPregunta').onsubmit = async e => {
   const q = { id: A.id('p'), tema: $('#nuevaTema').value, texto, pidio: $('#nuevaQuien').value.trim() || 'El equipo', urgente: $('#nuevaUrgente').checked, fecha: Date.now() };
   estado.pendientes.push(q);
   await A.guardar('pendientes', q).catch(() => {});
+  N.subirPendiente(q).catch(() => {});
   $('#nuevaTexto').value = ''; $('#nuevaUrgente').checked = false; temaManual = false;
   avisar(`Listo. Se la pregunto ${aNombre()} en la próxima conversación.`);
   pintarTodo();
@@ -362,6 +396,7 @@ $('#formPregunta').onsubmit = async e => {
 $('#ajNombre').onchange = e => { estado.ajustes.nombre = e.target.value.trim(); aplicarAjustes(); guardarAjustes(); pintarTodo(); };
 $('#ajLeer').onchange = e => { estado.ajustes.leer = e.target.checked; guardarAjustes(); };
 $('#ajVel').oninput = e => { estado.ajustes.velocidad = +e.target.value; $('#ajVelOut').textContent = e.target.value; guardarAjustes(); };
+$('#ajClave').onchange = e => { estado.ajustes.clave = e.target.value.trim(); N.configurar(estado.ajustes.clave); guardarAjustes(); sincronizarYa(); };
 $('#ajIA').onchange = e => { estado.ajustes.ia = e.target.value.trim(); guardarAjustes(); };
 
 // exportar / importar
@@ -441,14 +476,14 @@ async function preguntarManh(consulta) {
     const f = document.createElement('div'); f.className = 'fuentes';
     f.innerHTML = resp.fuentes.map(r => `<div class="fuente"><b>${esc(temaPorId(r.tema).nombre)} · ${esc(recortar(r.pregunta, 90))}</b>${r.audio ? `<audio controls preload="none" data-audio="${r.audio}"></audio>` : ''}</div>`).join('');
     d.append(f);
-    f.querySelectorAll('[data-audio]').forEach(async el => { const b = await A.leer('archivos', el.dataset.audio).catch(() => null); if (b) el.src = URL.createObjectURL(b); });
+    f.querySelectorAll('[data-audio]').forEach(el => cargarAudio(el));
   }
   // lo que ManH no sabe se convierte en pregunta para el Maestro
   if (!resp.sabe) {
     const b = document.createElement('button'); b.className = 'boton coral'; b.textContent = `Preguntárselo ${aNombre()}`;
     b.onclick = async () => {
       const q = { id: A.id('p'), tema: adivinarTema(consulta), texto: consulta.endsWith('?') ? consulta : `¿${consulta.replace(/^¿/, '')}?`, pidio: 'ManH', urgente: false, fecha: Date.now() };
-      estado.pendientes.push(q); await A.guardar('pendientes', q).catch(() => {});
+      estado.pendientes.push(q); await A.guardar('pendientes', q).catch(() => {}); N.subirPendiente(q).catch(() => {});
       b.disabled = true; b.textContent = 'Anotada para la próxima conversación'; pintarTodo();
     };
     d.append(b);

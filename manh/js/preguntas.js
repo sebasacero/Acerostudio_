@@ -5,6 +5,8 @@
 
 export const TEMAS = [
   { id: 'inicio', nombre: 'Su historia', icono: '★', nota: 'Para romper el hielo y entender de dónde viene el oficio.' },
+  { id: 'porton', nombre: 'Un portón desde cero', icono: '▥', nota: 'Paso a paso, del cliente que llega a la entrega, como si lo hiciéramos juntos.' },
+  { id: 'proyectos', nombre: 'Otros trabajos de principio a fin', icono: '▦', nota: 'Escalera, reja, cubierta y estructura, contados completos.' },
   { id: 'material', nombre: 'Material y compra', icono: '▤', nota: 'Perfiles, láminas, proveedores y cómo reconocer buen acero.' },
   { id: 'planos', nombre: 'Leer el trabajo', icono: '⌗', nota: 'Del plano o la idea del cliente a la lista de piezas.' },
   { id: 'trazo', nombre: 'Trazo y corte', icono: '✂', nota: 'Medir, trazar, cortar con disco, sierra, plasma u oxicorte.' },
@@ -117,6 +119,31 @@ export const PREGUNTAS = [
   ['clientes', '¿Cómo entrega un trabajo? ¿Qué le explica al cliente sobre el cuidado?'],
   ['clientes', 'Cuéntenos de un cliente difícil y cómo lo resolvió.', true],
 ].map(([tema, texto, ejemplo], i) => ({ id: `q${String(i + 1).padStart(3, '0')}`, tema, texto, ejemplo: !!ejemplo }));
+
+// Recorridos completos: el Maestro cuenta un trabajo entero, en orden. Van justo después de "Su historia".
+// Tienen ids propios para no cambiar los de arriba (ya hay respuestas guardadas con esos ids).
+const RECORRIDOS = [
+  ['porton', 'Llega un cliente que quiere un portón para su garaje. ¿Qué es lo primero que hace? ¿Qué mide en el sitio y qué le pregunta?'],
+  ['porton', '¿Cómo decide si el portón va batiente, corredizo o levadizo? ¿Qué le recomienda al cliente y por qué?'],
+  ['porton', '¿Qué perfiles usa para el marco, los travesaños y el forro, y de qué calibre según el tamaño del portón?'],
+  ['porton', 'Díctenos la lista de cortes para un portón de 3 metros de ancho por 2,40 de alto: qué piezas, cuántas y de qué medida.', true],
+  ['porton', '¿En qué orden corta, arma y suelda el marco para que quede a escuadra y no se tuerza?'],
+  ['porton', '¿Cómo forra o llena el portón: lámina, tubería, celosía? ¿Cómo lo suelda para que no se ondule la lámina?'],
+  ['porton', '¿Cómo pone las bisagras, o el riel y las ruedas si es corredizo? ¿Qué falla con los años si se hace mal?'],
+  ['porton', '¿Cómo hace la chapa, el pasador, el tope y la puerta peatonal si lleva?'],
+  ['porton', '¿Qué deja listo para un motor eléctrico, por si el cliente lo quiere después?'],
+  ['porton', '¿Cómo lo prepara y lo pinta, con qué productos y cuánto tiempo de secado antes de llevarlo?'],
+  ['porton', '¿Cómo lo transporta y lo instala? ¿Cómo lo ancla y lo deja a plomo para que cierre bien?'],
+  ['porton', '¿Cuánto tiempo le toma en total y cómo le saca el precio a ese portón? Hágalo con números.', true],
+  ['porton', 'Antes de entregarlo, ¿qué revisa? ¿Y qué le explica al cliente para que le dure?'],
+  ['proyectos', 'Ahora cuéntenos una escalera metálica de principio a fin: medidas, huella y contrahuella, perfiles, armado e instalación.', true],
+  ['proyectos', 'Una reja de ventana o de seguridad de principio a fin: medir, diseñar, fabricar e instalar.'],
+  ['proyectos', 'Una cubierta o estructura de techo en acero de principio a fin: cerchas o vigas, correas, anclajes y teja.', true],
+  ['proyectos', 'Un mezanine o entrepiso en acero de principio a fin: vigas, columnas, placa y cómo se calcula lo que aguanta.'],
+  ['proyectos', '¿Qué otro trabajo hace seguido que deberíamos aprender completo? Cuéntenoslo paso a paso.'],
+].map(([tema, texto, ejemplo], i) => ({ id: `${tema === 'porton' ? 'pt' : 'pr'}${String(i + 1).padStart(2, '0')}`, tema, texto, ejemplo: !!ejemplo }));
+const finInicio = PREGUNTAS.findLastIndex(q => q.tema === 'inicio') + 1;
+PREGUNTAS.splice(finInicio, 0, ...RECORRIDOS);
 
 // Repreguntas: después de cada respuesta se ofrece una, para sacar el "por qué" y el caso límite.
 // Es la técnica de entrevista a expertos: lo valioso casi nunca sale en la primera respuesta.

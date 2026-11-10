@@ -14,7 +14,7 @@ Hablar es lo más natural para alguien con 50 años de oficio, así que la captu
 5. **Revisar.** El equipo escucha cada audio, corrige la transcripción, escribe la regla en una línea y la clasifica (regla, dato, advertencia, historia, truco). Lo revisado pesa más cuando ManH responde.
 6. **Cerrar el ciclo.** Cuando a ManH le preguntan algo que no sabe, lo dice y ofrece "Preguntárselo al Maestro"; la pregunta queda en la lista. Así ManH aprende justo lo que la fábrica necesita.
 
-El banco inicial tiene 67 preguntas en 14 temas que siguen la ruta de una pieza por el taller: material y compra, leer el trabajo, trazo y corte, doblez, armado, soldadura, pintura, calidad, montaje, seguridad, costos, taller y gente, clientes, y su historia (`manh/js/preguntas.js`).
+El banco inicial tiene 85 preguntas en 16 temas (incluye "Un portón desde cero" paso a paso) que siguen la ruta de una pieza por el taller: material y compra, leer el trabajo, trazo y corte, doblez, armado, soldadura, pintura, calidad, montaje, seguridad, costos, taller y gente, clientes, y su historia (`manh/js/preguntas.js`).
 
 ## Dónde queda el conocimiento
 
