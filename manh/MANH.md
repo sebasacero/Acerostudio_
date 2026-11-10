@@ -38,10 +38,37 @@ que te da el sistema, en español claro de taller, en frases cortas y con númer
 Di siempre de dónde sale ("Como enseña el Maestro…"). Si los fragmentos no alcanzan, dilo y propone
 preguntárselo al Maestro; nunca inventes medidas, amperajes, espesores ni precios.
 En seguridad, si hay riesgo para una persona, dilo primero.
+Habla como habla el Maestro: en plural de taller ("hacemos", "compramos", "elaboramos"), directo, con frases
+cortas y sin adornos. Usa sus palabras del oficio: elaborar, la obra, peinazo, perfil cuatro por ocho, tronzadora,
+desperdicio, anticipo. Valores que siempre pesan en tus respuestas, porque son los suyos: responsabilidad con el
+cliente, buena inversión de los anticipos, calidad en el trabajo, y lo que se fabrica tiene que funcionar
+("si no sube, no baja o no corre, algo quedó mal instalado"). Prefiere lo probado (los mismos proveedores, por
+calidad y precio) y ve las máquinas nuevas como una mejora, no como una amenaza. Tono sereno y respetuoso.
 ```
+
+Esa forma de hablar y esos valores salen de sus primeras 14 respuestas (transcritas con ElevenLabs el 2026-11-10). Se afinan a medida que cuente más.
+
+## Estructura del agente
+
+ManH tiene cuatro piezas. El código está en `manh/js/agente.js` (reglas y herramientas) y `manh/js/oficio.js` (cálculos del oficio).
+
+| Pieza | Qué es | Dónde vive |
+| --- | --- | --- |
+| Fuentes | 1) lo que dijo el Maestro y el equipo revisó, 2) lo que dijo sin revisar, 3) base técnica general. Cuando dos fuentes chocan, gana la de más arriba. | `manh_respuestas` en Supabase · `oficio.js` |
+| Herramientas | `buscar_conocimiento`, `cotizar_corte_laser`, `angulo_de_corte`, `donde_soldar`, `preguntar_al_maestro`, cada una con su esquema JSON para un modelo con uso de herramientas. | `HERRAMIENTAS` en `agente.js` |
+| Reglas | Seguridad primero; citar al Maestro; si solo hay base técnica, decirlo y ofrecer preguntárselo; nunca inventar medidas, amperajes ni precios; hablar como el taller. | `REGLAS` en `agente.js` y el prompt de arriba |
+| Enrutador | Sin IA, lee la pregunta y elige la herramienta (por ejemplo, "cuánto cuesta cortar con láser 3 m en 2 mm" va a `cotizar_corte_laser`). Con IA, el modelo elige con los esquemas. | `enrutar()` en `agente.js` |
+
+Toda respuesta que sale de la base técnica lleva el aviso "por confirmar con el Maestro" y un botón para dejarle la pregunta. Así la base técnica se va reemplazando por su experiencia.
+
+### Base técnica inicial
+
+- **Corte láser:** precio por tiempo de máquina. Tiempo = metros de corte ÷ velocidad según espesor + perforaciones × (tiempo de perforación + 1,5 s). Tarifa de referencia $75 por segundo (Magru, Bogotá), alistamiento $15.000 y mínimo $30.000 por pedido (supuestos ajustables). Velocidades de un láser de fibra de 3 kW en acero al carbono, de 22 m/min en 1,2 mm a 0,9 m/min en 12 mm.
+- **Ángulos:** inglete = la mitad del ángulo interior; en la sierra se pone 90° menos eso. Marco de n lados: ángulo interior 180·(n−2)/n.
+- **Soldadura:** dónde y en qué orden por tipo de trabajo (portón, reja, viga, cercha, escalera, lámina), filete mínimo según AWS D1.1 y electrodo por espesor.
 
 ## Próximos pasos
 
 - Conectar ManH al módulo **Fábrica** (PR #12): que la planta autónoma consulte a ManH en cada estación (corte, soldadura, pintura) y muestre la regla del Maestro que aplica.
-- Sincronizar entre el celular del Maestro y el equipo con una tabla en Supabase, para no mover archivos a mano.
-- Transcribir con un servicio de voz a texto los audios que el celular no transcribió.
+- Pasar a texto en la nube, solas, las grabaciones nuevas: `manh-sync` ya lo hace si existe el secreto `ELEVENLABS_API_KEY` (falta desplegar esta versión y poner el secreto).
+- Cotizaciones reales de corte láser para ajustar la tarifa, el mínimo y las velocidades.

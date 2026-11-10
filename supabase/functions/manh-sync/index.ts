@@ -29,6 +29,27 @@ async function autorizado(req: Request) {
   return !!hashClave && (await sha256(c)) === hashClave;
 }
 
+// Voz a texto en la nube (el celular Android no transcribe mientras graba). Solo si el secreto
+// ELEVENLABS_API_KEY existe; sin él no hace nada. Escribe el texto solo si la respuesta llegó vacía.
+const CLAVE_VOZ = Deno.env.get("ELEVENLABS_API_KEY");
+async function transcribir(respuestaId: string, bytes: Uint8Array, mime: string) {
+  try {
+    const { data: r } = await sb.from("manh_respuestas").select("texto").eq("id", respuestaId).maybeSingle();
+    if (!r || String(r.texto ?? "").trim()) return;
+    const form = new FormData();
+    form.append("model_id", "scribe_v1");
+    form.append("language_code", "spa");
+    form.append("tag_audio_events", "false");
+    form.append("file", new Blob([bytes], { type: mime || "audio/webm" }), "respuesta.webm");
+    const res = await fetch("https://api.elevenlabs.io/v1/speech-to-text", { method: "POST", headers: { "xi-api-key": CLAVE_VOZ! }, body: form });
+    if (!res.ok) { console.error("voz a texto", res.status, await res.text()); return; }
+    const texto = String((await res.json()).text ?? "").trim();
+    if (!texto) return;
+    const ahora = new Date().toISOString();
+    await sb.from("manh_respuestas").update({ texto, editada: ahora, actualizado: ahora }).eq("id", respuestaId).eq("texto", "");
+  } catch (e) { console.error("voz a texto", e); }
+}
+
 const ms = (v: unknown) => (v ? new Date(Number(v)).toISOString() : null);
 const deMs = (v: string | null) => (v ? new Date(v).getTime() : null);
 const TIPOS = new Set(["regla", "dato", "advertencia", "historia", "truco"]);
@@ -88,6 +109,12 @@ Deno.serve(async (req) => {
         if (up.error) throw up.error;
         const { error } = await sb.from("manh_archivos").upsert({ id, respuesta_id: respuestaId ?? null, tipo, path, mime, bytes: bytes.length });
         if (error) throw error;
+        if (tipo === "audio" && respuestaId && CLAVE_VOZ) {
+          // @ts-ignore EdgeRuntime existe en Supabase: deja terminar la transcripción después de responder
+          const tarea = transcribir(String(respuestaId), bytes, mime);
+          // deno-lint-ignore no-explicit-any
+          (globalThis as any).EdgeRuntime?.waitUntil ? (globalThis as any).EdgeRuntime.waitUntil(tarea) : await tarea;
+        }
         return json({ ok: true, path });
       }
       case "pendiente": {

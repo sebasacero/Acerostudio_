@@ -93,9 +93,10 @@
 
     <div class="paso" data-paso="repregunta" hidden>
       <p class="ok-grande">✓ Guardado. ManH ya lo aprendió.</p>
-      <p class="grande">¿Quiere agregar algo más sobre esto?</p>
+      <p class="grande">¿Quiere seguir contando sobre esto?</p>
+      <p class="repregunta-pista">Si quiere, cuéntenos también:</p>
       <h2 class="pregunta chica" id="textoRepregunta"></h2>
-      <button class="enorme" id="contestarRepregunta">Sí, le cuento</button>
+      <button class="enorme" id="contestarRepregunta">Sí, sigo contando</button>
       <button class="enorme coral" id="siguiente">No, la siguiente pregunta</button>
       <button class="enlace" id="terminar2">Terminar por hoy</button>
     </div>
@@ -174,6 +175,12 @@
       </div>
     </div>
     <div class="chat" id="chat" aria-live="polite"></div>
+    <div class="sugerencias" aria-label="Preguntas de ejemplo">
+      <button class="chip" data-sugerencia>¿Cuánto cuesta cortar con láser 3 m en lámina de 2 mm con 12 perforaciones?</button>
+      <button class="chip" data-sugerencia>¿A qué ángulo corto un marco hexagonal?</button>
+      <button class="chip" data-sugerencia>¿Dónde soldar el empalme de una viga?</button>
+      <button class="chip" data-sugerencia>¿Cómo soldar el forro de lámina de un portón calibre 18?</button>
+    </div>
     <form class="preguntar" id="formManh">
       <input id="consulta" placeholder="Pregúntele a ManH: ¿qué electrodo uso para lámina de 2 mm?" autocomplete="off" aria-label="Pregunta para ManH">
       <button type="button" class="mic-chico" id="micManh" aria-label="Preguntar hablando"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>

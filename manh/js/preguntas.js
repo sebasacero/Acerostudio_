@@ -145,6 +145,53 @@ const RECORRIDOS = [
 const finInicio = PREGUNTAS.findLastIndex(q => q.tema === 'inicio') + 1;
 PREGUNTAS.splice(finInicio, 0, ...RECORRIDOS);
 
+// Una pregunta a la vez. En las primeras respuestas el Maestro contestó solo la primera mitad de las
+// preguntas dobles, así que la segunda mitad sale aparte, justo después (id propio con "b").
+const SEGUNDAS = {
+  q001: '¿Quién le enseñó el oficio? ¿Cómo era esa persona?',
+  q007: 'Cuéntenos una vez que le salió mal algo con un proveedor.',
+  pt01: '¿Qué mide en el sitio y qué le pregunta al cliente del portón?',
+  pt02: '¿Qué tipo de portón le recomienda al cliente y por qué?',
+  pt06: '¿Cómo suelda el forro para que la lámina no se ondule?',
+  pt07: '¿Qué le falla a un portón con los años cuando las bisagras o el riel se ponen mal?',
+  pt11: '¿Cómo ancla el portón y lo deja a plomo para que cierre bien?',
+  pt13: '¿Qué le explica al cliente para que el portón le dure?',
+  q010: '¿Qué reglas sigue siempre para escoger el perfil?',
+  q016: '¿Qué herramientas usa para trazar y que las piezas salgan exactas?',
+  q017: '¿Qué ventaja tiene cada forma de cortar: pulidora, sierra, plasma, oxicorte?',
+  q036: '¿Qué pasa si no se prepara bien el acero antes de pintar?',
+  q051: '¿Qué causó ese accidente y cómo se hubiera evitado?',
+  q061: '¿Qué le pone a hacer primero a un aprendiz?',
+  q066: '¿Qué le explica al cliente sobre el cuidado del trabajo?',
+};
+for (const [id, segunda] of Object.entries(SEGUNDAS)) {
+  const i = PREGUNTAS.findIndex(q => q.id === id);
+  if (i < 0) continue;
+  const q = PREGUNTAS[i];
+  q.texto = q.texto.slice(0, q.texto.indexOf('?') + 1);
+  PREGUNTAS.splice(i + 1, 0, { id: `${id}b`, tema: q.tema, texto: segunda, ejemplo: q.ejemplo });
+}
+
+// Oficio fino: dónde soldar, ángulos de corte y corte láser. Confirman o corrigen la base técnica de ManH
+// (manh/js/oficio.js). Van al final de su tema, con ids propios.
+const OFICIO = [
+  ['soldadura', 'En un portón, ¿dónde suelda primero y en qué orden sigue para que no se tuerza?'],
+  ['soldadura', 'Si tiene que empalmar una viga o un perfil largo, ¿en qué parte hace el empalme y por qué ahí?', true],
+  ['soldadura', '¿Dónde nunca se debe soldar? Por ejemplo, en un doblez, cerca de un agujero o a mitad de un tramo.'],
+  ['soldadura', 'Para soldar lámina delgada, ¿cuánto deja entre punto y punto y qué tan largo hace cada cordón?'],
+  ['soldadura', '¿Cómo suelda una bisagra para que el portón no se descuelgue con los años?'],
+  ['trazo', 'Para un marco con esquinas a 45 grados, ¿cuánto material de más deja por cada esquina?'],
+  ['trazo', '¿Cómo saca el ángulo cuando la esquina no es de 90 grados, por ejemplo en una escalera o una reja inclinada?', true],
+  ['trazo', '¿Cómo corta un tubo para que encaje redondo contra otro tubo, la boca de pescado?'],
+  ['trazo', '¿Qué trabajos manda a cortar con láser y cuáles prefiere cortar en el taller? ¿Por qué?'],
+  ['costos', 'Cuando manda a cortar con láser, ¿cómo le cobran: por metro, por tiempo o por pieza? ¿Cuánto ha pagado?', true],
+  ['costos', '¿Qué hace para que un corte láser salga más barato: juntar piezas, menos agujeros, otro espesor?'],
+];
+const ultimoDe = tema => PREGUNTAS.findLastIndex(q => q.tema === tema);
+OFICIO.forEach(([tema, texto, ejemplo], i) => {
+  PREGUNTAS.splice(ultimoDe(tema) + 1, 0, { id: `of${String(i + 1).padStart(2, '0')}`, tema, texto, ejemplo: !!ejemplo });
+});
+
 // Repreguntas: después de cada respuesta se ofrece una, para sacar el "por qué" y el caso límite.
 // Es la técnica de entrevista a expertos: lo valioso casi nunca sale en la primera respuesta.
 export const REPREGUNTAS = [
