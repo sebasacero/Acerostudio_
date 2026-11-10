@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ManH · AceroStudio</title>
+<meta name="description" content="ManH es el jefe de planta de AceroStudio. Aprende del Maestro, 50 años de oficio en acero, con una conversación por voz pregunta a pregunta.">
+<meta name="theme-color" content="#eceef2">
+<link rel="icon" type="image/png" href="../images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Antonio:wght@300;500;700&family=DM+Mono:wght@400;500&family=Outfit:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Permanent+Marker&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/volumetrico.css">
+<link rel="stylesheet" href="css/manh.css">
+</head>
+<body class="dia">
+<a class="saltar" href="#principal">Ir al contenido</a>
+<header class="top">
+  <a class="marca" href="../" aria-label="AceroStudio, inicio"><img src="../images/favicon.png" alt=""><span>ManH</span></a>
+  <nav class="pestanas" role="tablist" aria-label="Secciones">
+    <button role="tab" data-vista="maestro" aria-selected="true">Conversar</button>
+    <button role="tab" data-vista="equipo" aria-selected="false">Equipo</button>
+    <button role="tab" data-vista="manh" aria-selected="false"><span class="largo">Preguntar a </span>ManH</button>
+  </nav>
+  <button id="tema" aria-label="Cambiar a modo noche" title="Día / noche">
+    <svg class="sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+    <svg class="luna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>
+  </button>
+</header>
+
+<main id="principal">
+  <!-- ============ CONVERSAR (para el Maestro) ============ -->
+  <section class="vista maestro" data-vista="maestro">
+    <div class="paso" data-paso="inicio">
+      <p class="tag">Cuaderno del Maestro</p>
+      <h1 class="saludo">Hola, <span data-nombre>Maestro</span>.</h1>
+      <p class="grande" id="resumenInicio">Vamos a enseñarle a ManH todo lo que usted sabe del acero. Le hago una pregunta, usted me contesta hablando, como si le explicara a un aprendiz.</p>
+      <button class="enorme" id="empezarPorton" data-tema="porton">▥ Enséñenos a hacer un portón desde cero</button>
+      <button class="enorme coral" id="empezar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg> Empezar a conversar</button>
+      <p class="nube" data-nube></p>
+      <div class="modo" role="group" aria-label="Cómo prefiere responder">
+        <button aria-pressed="true" data-modo="voz">Prefiero hablar</button>
+        <button aria-pressed="false" data-modo="texto">Prefiero escribir</button>
+      </div>
+      <details class="temas-elegir">
+        <summary>O elija un tema para hoy</summary>
+        <div class="rejilla-temas" id="temasElegir"></div>
+      </details>
+    </div>
+
+    <div class="paso" data-paso="pregunta" hidden>
+      <div class="arriba">
+        <span class="chip" id="chipTema"></span>
+        <span class="tag" id="cuenta"></span>
+      </div>
+      <p class="de-quien" id="deQuien" hidden></p>
+      <h2 class="pregunta" id="textoPregunta" aria-live="polite"></h2>
+      <button class="secundario" id="escuchar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Escuchar la pregunta</button>
+
+      <div class="responder-voz" id="zonaVoz">
+        <button class="microfono" id="microfono" aria-label="Tocar para hablar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+        <p class="indicacion" id="indicacion">Toque el botón y hable con calma</p>
+        <p class="reloj" id="reloj" hidden>0:00</p>
+        <p class="en-vivo" id="enVivo" aria-live="polite"></p>
+      </div>
+      <div class="responder-texto" id="zonaTexto" hidden>
+        <label for="escrito" class="tag">Su respuesta</label>
+        <textarea id="escrito" rows="6" placeholder="Escriba aquí, sin afán. Puede usar el micrófono del teclado."></textarea>
+        <button class="enorme coral" id="listoTexto">Guardar respuesta</button>
+      </div>
+
+      <div class="abajo">
+        <button class="enlace" id="cambiarModo">Prefiero escribir</button>
+        <button class="enlace" id="saltar">Esta no la sé o mejor otro día</button>
+        <button class="enlace" id="terminar">Terminar por hoy</button>
+      </div>
+    </div>
+
+    <div class="paso revisar" data-paso="revisar" hidden>
+      <p class="tag">Así quedó su respuesta</p>
+      <h2 class="pregunta chica" id="revPregunta"></h2>
+      <audio id="revAudio" controls hidden></audio>
+      <textarea id="revTexto" rows="3" aria-label="Texto de su respuesta"></textarea>
+      <p class="nota" id="revNota"></p>
+      <button class="enorme coral" id="guardar">Guardar y seguir</button>
+      <div class="fila">
+        <label class="secundario archivo"><input type="file" accept="image/*" capture="environment" id="foto" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3l2-2.5h6L17 7h3v12H4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.6" fill="none" stroke="currentColor" stroke-width="1.7"/></svg> Agregar foto</label>
+        <button class="secundario" id="regrabar">Volver a contestar</button>
+      </div>
+      <div class="fotos" id="revFotos"></div>
+    </div>
+
+    <div class="paso" data-paso="repregunta" hidden>
+      <p class="ok-grande">✓ Guardado. ManH ya lo aprendió.</p>
+      <p class="grande">¿Quiere agregar algo más sobre esto?</p>
+      <h2 class="pregunta chica" id="textoRepregunta"></h2>
+      <button class="enorme" id="contestarRepregunta">Sí, le cuento</button>
+      <button class="enorme coral" id="siguiente">No, la siguiente pregunta</button>
+      <button class="enlace" id="terminar2">Terminar por hoy</button>
+    </div>
+
+    <div class="paso" data-paso="fin" hidden>
+      <p class="ok-grande">Gracias, <span data-nombre>Maestro</span>.</p>
+      <p class="grande" id="resumenFin"></p>
+      <button class="enorme coral" id="otraVez">Seguir otro rato</button>
+    </div>
+  </section>
+
+  <!-- ============ EQUIPO ============ -->
+  <section class="vista equipo" data-vista="equipo" hidden>
+    <aside class="col-izq">
+      <div class="bloque">
+        <h2>Mapa del conocimiento <small id="totalResp"></small></h2>
+        <ul class="mapa" id="mapa"></ul>
+      </div>
+      <form class="bloque" id="formPregunta">
+        <h2>Pedirle algo al Maestro</h2>
+        <p class="nota">La pregunta le sale de primera en su próxima conversación. Así funciona el chat con él: ustedes preguntan aquí y él responde hablando cuando quiera.</p>
+        <label class="tag" for="nuevaTema">Tema</label>
+        <select id="nuevaTema"></select>
+        <label class="tag" for="nuevaTexto">Pregunta</label>
+        <textarea id="nuevaTexto" rows="3" required placeholder="Ej.: ¿Cómo se suelda la bisagra del portón para que no se descuelgue?"></textarea>
+        <div class="fila">
+          <input id="nuevaQuien" placeholder="Quién pregunta" aria-label="Quién pregunta">
+          <label class="check"><input type="checkbox" id="nuevaUrgente"> Urgente</label>
+        </div>
+        <button class="boton coral" type="submit">Agregar a la lista</button>
+        <ul class="pendientes" id="pendientes"></ul>
+      </form>
+      <div class="bloque">
+        <h2>Base de datos y respaldo</h2>
+        <p class="nube" data-nube></p>
+        <p class="nota">Cada respuesta y su audio se suben solos a la base de datos, sin que el Maestro haga nada. Con la clave del taller, este dispositivo además ve y escucha todo lo grabado. Los archivos sirven de respaldo extra.</p>
+        <div class="botones">
+          <button class="boton" id="expManual">Manual del Maestro (.md)</button>
+          <button class="boton" id="expJson">Base de ManH (.json)</button>
+          <button class="boton" id="expTodo">Paquete con audios y fotos</button>
+          <label class="boton archivo"><input type="file" accept=".json,application/json" id="importar" hidden>Importar paquete</label>
+        </div>
+      </div>
+      <div class="bloque">
+        <h2>Ajustes</h2>
+        <label class="tag" for="ajNombre">Cómo llamar al Maestro</label>
+        <input id="ajNombre" placeholder="Ej.: don Hernando">
+        <label class="tag" for="ajClave">Clave del taller</label>
+        <input id="ajClave" placeholder="taller-…" autocomplete="off">
+        <label class="check"><input type="checkbox" id="ajLeer" checked> Leer cada pregunta en voz alta</label>
+        <label class="tag" for="ajVel">Velocidad de la voz <output id="ajVelOut">0.9</output></label>
+        <input type="range" id="ajVel" min="0.6" max="1.2" step="0.05" value="0.9">
+        <label class="tag" for="ajIA">Servicio de IA de ManH (opcional)</label>
+        <input id="ajIA" placeholder="https://…supabase.co/functions/v1/manh">
+        <p class="nota">Sin servicio, ManH responde citando al Maestro tal cual. Con servicio, redacta la respuesta usando solo lo que el Maestro enseñó.</p>
+      </div>
+    </aside>
+    <div class="col-der">
+      <div class="barra">
+        <h2>Lo que ha contado el Maestro</h2>
+        <select id="filtroTema" aria-label="Filtrar por tema"><option value="">Todos los temas</option></select>
+        <select id="filtroEstado" aria-label="Filtrar por estado"><option value="">Todas</option><option value="borrador">Por revisar</option><option value="revisada">Revisadas</option></select>
+      </div>
+      <p class="nota">Revise cada respuesta: corrija la transcripción, escriba un resumen corto y diga qué es (regla, dato, advertencia…). Lo revisado pesa más cuando ManH responde.</p>
+      <div class="respuestas" id="respuestas"></div>
+    </div>
+  </section>
+
+  <!-- ============ MANH ============ -->
+  <section class="vista manh" data-vista="manh" hidden>
+    <div class="ficha-manh">
+      <div class="avatar" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M12 50V22l20-12 20 12v28" fill="none" stroke="currentColor" stroke-width="3"/><path d="M12 22h40M22 50V32h20v18M32 10v12" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="32" cy="41" r="3" fill="currentColor"/></svg></div>
+      <div>
+        <h1>ManH <small>jefe de planta</small></h1>
+        <p id="manhSabe">Aprende del Maestro. Responde con lo que él enseñó y dice cuándo no sabe.</p>
+      </div>
+    </div>
+    <div class="chat" id="chat" aria-live="polite"></div>
+    <form class="preguntar" id="formManh">
+      <input id="consulta" placeholder="Pregúntele a ManH: ¿qué electrodo uso para lámina de 2 mm?" autocomplete="off" aria-label="Pregunta para ManH">
+      <button type="button" class="mic-chico" id="micManh" aria-label="Preguntar hablando"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+      <button class="boton coral" type="submit">Preguntar</button>
+    </form>
+  </section>
+</main>
+<div class="aviso" id="aviso" role="status" hidden></div>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
