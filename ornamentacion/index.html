@@ -21,6 +21,9 @@
   .top { grid-area: top; display: flex; align-items: center; gap: 18px; padding: 0 var(--lado-d) 0 var(--lado); background: var(--pizarra-2); border-bottom: 1px solid rgba(var(--tinta-rgb), .1); }
   .ruta { font-size: 13px; color: var(--suave); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
   .ruta b { color: var(--texto); font-weight: 500; }
+  .secciones { display: flex; gap: 2px; background: rgba(var(--tinta-rgb), .06); padding: 3px; border-radius: 4px; }
+  .secciones a { font-size: 12.5px; padding: 6px 10px; border-radius: 3px; color: var(--suave); white-space: nowrap; }
+  .secciones a[aria-current] { background: var(--celeste); color: var(--negro); font-weight: 500; }
   .top .der { margin-left: auto; display: flex; gap: 10px; align-items: center; }
   .chip { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; padding: 6px 9px; border: 1px solid rgba(var(--tinta-rgb), .25); border-radius: 3px; text-transform: uppercase; white-space: nowrap; }
   #tema { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--suave); padding: 6px 4px; }
@@ -161,6 +164,7 @@
   .aviso { position: absolute; left: 50%; bottom: 76px; transform: translateX(-50%); background: var(--negro); color: #fff; font-size: 13px; padding: 9px 14px; border-radius: 3px; pointer-events: none; }
   @media (max-width: 1080px) { .app { grid-template-columns: 264px minmax(0, 1fr) 300px; } }
   @media (max-width: 860px) {
+    .top { gap: 8px; } .top .der { gap: 6px; } .ruta, .secciones .lg, #temaTxt { display: none; } .secciones a { padding: 6px 8px; font-size: 12px; }
     body { overflow: auto; }
     .app { height: auto; grid-template-columns: minmax(0, 1fr); grid-template-rows: 54px 56svh auto auto; grid-template-areas: "top" "lienzo" "mot" "dis"; }
     .panel { overflow: visible; border: 0; border-top: 1px solid rgba(var(--tinta-rgb), .1); padding-left: var(--lado); padding-right: var(--lado-d); }
@@ -175,6 +179,7 @@
   <header class="top">
     <a class="marca" href="../"><img src="../images/logo-web.png" alt="ACERO"><span>.studio</span></a>
     <div class="ruta">Ornamentación / <b>Acceso en acero</b></div>
+    <nav class="secciones" aria-label="Secciones de Ornamentación"><a href="./" aria-current="page">Acceso<span class="lg"> en acero</span></a><a href="planta.html">Planta</a></nav>
     <div class="der">
       <span class="chip">simulador</span>
       <button id="bPlano" type="button" aria-pressed="false" title="Cambia el metal entre realista y plano">metal realista</button>
