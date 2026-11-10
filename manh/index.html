@@ -34,7 +34,9 @@
       <p class="tag">Cuaderno del Maestro</p>
       <h1 class="saludo">Hola, <span data-nombre>Maestro</span>.</h1>
       <p class="grande" id="resumenInicio">Vamos a enseñarle a ManH todo lo que usted sabe del acero. Le hago una pregunta, usted me contesta hablando, como si le explicara a un aprendiz.</p>
+      <button class="enorme" id="empezarPorton" data-tema="porton">▥ Enséñenos a hacer un portón desde cero</button>
       <button class="enorme coral" id="empezar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg> Empezar a conversar</button>
+      <p class="nube" data-nube></p>
       <div class="modo" role="group" aria-label="Cómo prefiere responder">
         <button aria-pressed="true" data-modo="voz">Prefiero hablar</button>
         <button aria-pressed="false" data-modo="texto">Prefiero escribir</button>
@@ -75,18 +77,18 @@
       </div>
     </div>
 
-    <div class="paso" data-paso="revisar" hidden>
+    <div class="paso revisar" data-paso="revisar" hidden>
       <p class="tag">Así quedó su respuesta</p>
       <h2 class="pregunta chica" id="revPregunta"></h2>
       <audio id="revAudio" controls hidden></audio>
-      <textarea id="revTexto" rows="6" aria-label="Texto de su respuesta"></textarea>
+      <textarea id="revTexto" rows="3" aria-label="Texto de su respuesta"></textarea>
       <p class="nota" id="revNota"></p>
-      <div class="fotos" id="revFotos"></div>
+      <button class="enorme coral" id="guardar">Guardar y seguir</button>
       <div class="fila">
-        <label class="secundario archivo"><input type="file" accept="image/*" capture="environment" id="foto" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3l2-2.5h6L17 7h3v12H4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.6" fill="none" stroke="currentColor" stroke-width="1.7"/></svg> Mostrar con una foto</label>
+        <label class="secundario archivo"><input type="file" accept="image/*" capture="environment" id="foto" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3l2-2.5h6L17 7h3v12H4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.6" fill="none" stroke="currentColor" stroke-width="1.7"/></svg> Agregar foto</label>
         <button class="secundario" id="regrabar">Volver a contestar</button>
       </div>
-      <button class="enorme coral" id="guardar">Guardar y seguir</button>
+      <div class="fotos" id="revFotos"></div>
     </div>
 
     <div class="paso" data-paso="repregunta" hidden>
@@ -127,8 +129,9 @@
         <ul class="pendientes" id="pendientes"></ul>
       </form>
       <div class="bloque">
-        <h2>Compartir y respaldar</h2>
-        <p class="nota">Lo grabado vive en este dispositivo. Exporte el paquete desde el celular del Maestro e impórtelo aquí para revisarlo.</p>
+        <h2>Base de datos y respaldo</h2>
+        <p class="nube" data-nube></p>
+        <p class="nota">Con la clave del taller, cada respuesta y su audio se suben solos a la base de datos y aparecen en todos los dispositivos de la familia. Los archivos sirven de respaldo extra.</p>
         <div class="botones">
           <button class="boton" id="expManual">Manual del Maestro (.md)</button>
           <button class="boton" id="expJson">Base de ManH (.json)</button>
@@ -140,6 +143,8 @@
         <h2>Ajustes</h2>
         <label class="tag" for="ajNombre">Cómo llamar al Maestro</label>
         <input id="ajNombre" placeholder="Ej.: don Hernando">
+        <label class="tag" for="ajClave">Clave del taller</label>
+        <input id="ajClave" placeholder="taller-…" autocomplete="off">
         <label class="check"><input type="checkbox" id="ajLeer" checked> Leer cada pregunta en voz alta</label>
         <label class="tag" for="ajVel">Velocidad de la voz <output id="ajVelOut">0.9</output></label>
         <input type="range" id="ajVel" min="0.6" max="1.2" step="0.05" value="0.9">
