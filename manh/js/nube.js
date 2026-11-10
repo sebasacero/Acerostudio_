@@ -1,11 +1,14 @@
 // ManH · nube: sube cada respuesta, audio y foto a la base de datos del taller (Supabase, función manh-sync)
-// y trae lo que grabaron otros dispositivos. Sin clave del taller no hace nada: la app sigue local.
+// y trae lo que grabaron otros dispositivos.
+// Subir no pide clave: el celular del Maestro sube solo, sin pasos extra.
+// Leer, escuchar, editar lo ajeno o borrar sí piden la clave del taller (solo la familia).
 import * as A from './almacen.js';
 
 export const ENDPOINT = 'https://tylylfrabjkaiukuilem.supabase.co/functions/v1/manh-sync';
 let clave = '';
 export const configurar = c => { clave = (c || '').trim(); };
-export const activa = () => !!clave;
+export const activa = () => true;
+export const puedeLeer = () => !!clave;
 
 const dispositivo = (() => {
   try { let d = localStorage.getItem('manh-dispositivo'); if (!d) { d = A.id('d'); localStorage.setItem('manh-dispositivo', d); } return d; } catch { return 'sin-id'; }
@@ -14,7 +17,7 @@ const dispositivo = (() => {
 async function llamar(accion, datos = {}) {
   const r = await fetch(ENDPOINT, {
     method: 'POST',
-    headers: { 'content-type': 'application/json', 'x-clave-taller': clave },
+    headers: { 'content-type': 'application/json', ...(clave ? { 'x-clave-taller': clave } : {}) },
     body: JSON.stringify({ accion, dispositivo, ...datos }),
   });
   const j = await r.json().catch(() => ({}));
@@ -41,8 +44,8 @@ export async function subirRespuesta(r) {
   return true;
 }
 export const subirPendiente = async q => { if (activa()) { await llamar('pendiente', { pendiente: q }); q.subida = true; await A.guardar('pendientes', q).catch(() => {}); } };
-export const borrarRemoto = (tipo, id) => activa() ? llamar('borrar', { tipo, id }).catch(() => {}) : null;
-export const urlArchivo = async id => activa() ? (await llamar('url', { id })).url : null;
+export const borrarRemoto = (tipo, id) => puedeLeer() ? llamar('borrar', { tipo, id }).catch(() => {}) : null;
+export const urlArchivo = async id => puedeLeer() ? (await llamar('url', { id })).url : null;
 
 // Sube todo lo que falte (incluye lo grabado antes de tener la nube) y trae lo de los demás.
 export async function sincronizar(estado) {
@@ -53,6 +56,7 @@ export async function sincronizar(estado) {
     await subirRespuesta(r); subidas++;
   }
   for (const q of estado.pendientes) if (!q.subida) await subirPendiente(q);
+  if (!puedeLeer()) return { subidas, nuevas: 0, total: estado.respuestas.filter(r => r.subida).length };
   const remoto = await llamar('listar');
   const locales = new Map(estado.respuestas.map(r => [r.id, r]));
   let nuevas = 0;

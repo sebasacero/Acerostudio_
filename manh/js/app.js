@@ -35,7 +35,6 @@ async function cargar() {
 }
 let nube = { estado: 'apagada', total: 0 };
 async function sincronizarYa() {
-  if (!N.activa()) { nube.estado = 'apagada'; pintarNube(); return; }
   if (!navigator.onLine) { nube.estado = 'sin-red'; pintarNube(); return; }
   nube.estado = 'subiendo'; pintarNube();
   try { const r = await N.sincronizar(estado); nube = { estado: 'ok', total: r.total, hora: new Date() }; if (r.nuevas || r.subidas) pintarTodo(); }
@@ -45,8 +44,10 @@ async function sincronizarYa() {
 const subir = r => N.activa() && N.subirRespuesta(r).then(() => { nube.total = Math.max(nube.total, estado.respuestas.filter(x => x.nube).length); pintarNube(); }).catch(() => { nube.estado = 'error'; pintarNube(); });
 function pintarNube() {
   const sinSubir = estado.respuestas.filter(r => !r.subida || r.subida < (r.editada || r.fecha)).length;
-  const t = { apagada: 'Solo en este dispositivo. Escriba la clave del taller para guardar en la base de datos.', 'sin-red': `Sin internet. ${sinSubir} por subir; se suben solas al volver la señal.`, subiendo: 'Guardando en la base de datos…', clave: 'La clave del taller no es correcta.', error: `No se pudo conectar con la base de datos. ${sinSubir} por subir; se reintenta cada minuto.`, ok: sinSubir ? `${sinSubir} por subir…` : `Todo guardado en la base de datos del taller (${nube.total} respuestas con audio).` }[nube.estado];
-  $$('[data-nube]').forEach(n => { n.textContent = t; n.dataset.estado = nube.estado; });
+  const t = { 'sin-red': `Sin internet. ${sinSubir} por subir; se suben solas al volver la señal.`, subiendo: 'Guardando en la base de datos…', clave: 'La clave del taller no es correcta.', error: `No se pudo conectar con la base de datos. ${sinSubir} por subir; se reintenta cada minuto.`, ok: sinSubir ? `${sinSubir} por subir…` : `Todo guardado en la base de datos del taller (${nube.total} ${nube.total === 1 ? 'respuesta' : 'respuestas'}).${N.puedeLeer() ? '' : ' Para ver aquí lo que grabaron otros celulares, escriba la clave del taller.'}` }[nube.estado];
+  // al Maestro solo se le dice que todo quedó guardado; los detalles son para el equipo
+  const corto = { ok: sinSubir ? 'Guardando…' : 'Todo lo que ha contado está guardado.', subiendo: 'Guardando…' }[nube.estado] || 'Todo queda guardado en este celular y se sube solo cuando haya internet.';
+  $$('[data-nube]').forEach(n => { n.textContent = n.closest('.maestro') ? corto : t; n.dataset.estado = nube.estado; });
 }
 async function cargarAudio(el) {
   const id = el.dataset.audio || el.dataset.foto;
