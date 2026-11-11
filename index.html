@@ -210,6 +210,12 @@
   .phone-cap b { font-size: 15px; font-weight: 500; } .phone-cap i { display: block; height: 2px; background: var(--coral); width: 0; }
   .phone-play { position: absolute; z-index: 4; right: 18px; top: 48px; width: 34px; height: 34px; border-radius: 50%; background: rgba(0, 0, 0, .5); color: #fff; font-size: 12px; }
   .herr-lista { max-width: 1240px; margin: 0 auto; }
+  .oficio { max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 60px; align-items: start; }
+  .oficio-num { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+  .oficio-num b { font-family: var(--disp); font-weight: 700; font-size: clamp(120px, 17vw, 240px); line-height: .82; color: var(--coral); letter-spacing: -.01em; }
+  .oficio-num span { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); margin-bottom: 22px; }
+  .oficio .lista li b a:hover { color: var(--coral); }
+  @media (max-width: 900px) { .oficio { grid-template-columns: minmax(0, 1fr); gap: 34px; } }
   .herr-lista li b a:hover { color: var(--coral); }
   .pie-links { display: flex; gap: 18px; flex-wrap: wrap; } .pie-links a:hover { color: var(--coral); }
   footer span a { color: var(--texto); }
@@ -333,6 +339,21 @@
   </div>
 </section>
 
+<section id="oficio">
+  <div class="cabeza">
+    <h2><em>oficio/.</em>Del taller de barrio<br>a tu pantalla</h2>
+    <p>Detrás de AceroStudio hay medio siglo de oficio en acero atendiendo al barrio. Ese oficio ahora se diseña en 3D, se cotiza en línea y llega al taller listo para fabricar.</p>
+  </div>
+  <div class="oficio">
+    <div class="oficio-num"><b>50</b><span>años de oficio<br>en acero</span><a class="boton coral" href="ornamentacion/cotizar.html">Cotiza tu portón <span class="flecha-punteada"></span></a></div>
+    <ul class="lista">
+      <li><i>01</i><div><b><a href="ornamentacion/cotizar.html">Cotiza desde tu casa</a></b><span>Diseña tu portón, puerta, reja o baranda, míralo en 3D con precio estimado y pídelo por WhatsApp.</span></div></li>
+      <li><i>02</i><div><b><a href="manh/">El Maestro detrás de cada pieza</a></b><span>Lo que él aprendió en 50 años queda guardado en ManH, el jefe de planta, para que el oficio no se pierda.</span></div></li>
+      <li><i>03</i><div><b><a href="ornamentacion/planta.html">Del pedido a la planta</a></b><span>Cada diseño llega al taller con su despiece, su lista de corte y su costo, listo para producir.</span></div></li>
+    </ul>
+  </div>
+</section>
+
 <section id="producto">
   <div class="cabeza">
     <h2><em>el producto/.</em>Un estudio entero<br>en una pantalla</h2>
@@ -393,6 +414,7 @@
     <li><i>kg</i><div><b><a href="clasico.html#calculadora">Calculadora de acero</a></b><span>Toneladas y kg/m² de una estructura a partir de sus luces y pisos.</span></div></li>
     <li><i>⌂</i><div><b><a href="explorador.html">Explorador por pisos</a></b><span>Recorre un edificio piso a piso y en ascensor.</span></div></li>
     <li><i>⚙</i><div><b><a href="manh/">ManH: el jefe de planta</a></b><span>El agente de la fábrica aprende del Maestro, 50 años de oficio: él responde hablando, pregunta a pregunta, y ManH lo usa para guiar la producción.</span></div></li>
+    <li><i>$</i><div><b><a href="ornamentacion/cotizar.html">Cotizador de ornamentación</a></b><span>Para el cliente: diseña su portón, puerta, reja o baranda, ve el precio estimado y lo pide por WhatsApp.</span></div></li>
     <li><i>⇄</i><div><b><a href="ornamentacion/">Ornamentación: acceso en acero</a></b><span>Portón eléctrico, puerta peatonal y pórtico con celosía de corte láser. Simula placas, fotocelda y cortes de luz, y saca despiece, presupuesto y DXF.</span></div></li>
     <li><i>⟳</i><div><b><a href="ornamentacion/planta.html">Ornamentación: planta de producción</a></b><span>Celda robotizada con mesa rotativa: corte láser, doblez, armado, soldadura, esmerilado, pintura e inspección. Una cámara sigue cada pieza de punta a punta.</span></div></li>
     <li><i>▶</i><div><b><a href="presentacion.html">Presentaciones</a></b><span>Láminas y reels de proyectos para redes.</span></div></li>

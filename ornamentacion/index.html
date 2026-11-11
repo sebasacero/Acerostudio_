@@ -162,6 +162,12 @@
   .placa { position: absolute; transform: translate(-50%, -130%); background: #ffd400; color: #111; font-family: var(--mono); font-weight: 500; font-size: 13px; letter-spacing: .08em; padding: 5px 9px; border-radius: 3px; border: 2px solid #111; pointer-events: none; white-space: nowrap; }
   .placa small { display: block; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
   .aviso { position: absolute; left: 50%; bottom: 76px; transform: translateX(-50%); background: var(--negro); color: #fff; font-size: 13px; padding: 9px 14px; border-radius: 3px; pointer-events: none; }
+  /* modo cliente (?cliente): el vecino diseña, ve un precio estimado y pide por WhatsApp. Se oculta todo lo del taller. */
+  body:not(.cliente) [data-tab="cot"], body:not(.cliente) #tab-cot { display: none !important; }
+  body.cliente :is([data-tab="desp"], [data-tab="presu"], [data-tab="bd"], #tab-desp, #tab-presu, #tab-bd, .secciones, #bPlano, #bDxf, .herr, .ficha .perfiles, .ficha .tres, #notaFicha) { display: none !important; }
+  .campo { width: 100%; padding: 10px 11px; border: 1px solid rgba(var(--tinta-rgb), .28); border-radius: 3px; background: transparent; color: inherit; font: inherit; font-size: 15px; }
+  .pedir { display: grid; place-items: center; padding: 14px 10px; font-size: 16px; font-weight: 500; border-radius: 3px; background: var(--coral); color: #1d1420; text-decoration: none; text-align: center; }
+  .incluye { list-style: none; font-size: 13.5px; } .incluye li { padding: 6px 0; border-bottom: 1px solid var(--linea); display: flex; justify-content: space-between; gap: 12px; } .incluye li span:last-child { color: var(--suave); text-align: right; }
   @media (max-width: 1080px) { .app { grid-template-columns: 264px minmax(0, 1fr) 300px; } }
   @media (max-width: 860px) {
     .top { gap: 8px; } .top .der { gap: 6px; } .ruta, .secciones .lg, #temaTxt { display: none; } .secciones a { padding: 6px 8px; font-size: 12px; }
@@ -171,6 +177,7 @@
     .titulo { left: 16px; top: 14px; } .vistas { left: 16px; right: 16px; bottom: 58px; } .chip { display: none; } .herr { right: auto; left: 16px; bottom: 12px; } .pasoinfo { top: auto; bottom: 104px; }
     .lienzo { position: sticky; top: 0; z-index: 2; }
     .top { position: relative; z-index: 3; }
+    body.cliente .app { grid-template-areas: "top" "lienzo" "dis" "mot"; } body.cliente .lienzo { height: 46svh; } body.cliente .app { grid-template-rows: 54px 46svh auto auto; } body.cliente .vistas { display: none; }
   }
 </style>
 </head>
@@ -178,10 +185,10 @@
 <div class="app">
   <header class="top">
     <a class="marca" href="../"><img src="../images/logo-web.png" alt="ACERO"><span>.studio</span></a>
-    <div class="ruta">Ornamentación / <b>Acceso en acero</b></div>
+    <div class="ruta">Ornamentación / <b id="rutaB">Acceso en acero</b></div>
     <nav class="secciones" aria-label="Secciones de Ornamentación"><a href="./" aria-current="page">Acceso<span class="lg"> en acero</span></a><a href="planta.html">Planta</a></nav>
     <div class="der">
-      <span class="chip">simulador</span>
+      <span class="chip" id="chipModo">simulador</span>
       <button id="bPlano" type="button" aria-pressed="false" title="Cambia el metal entre realista y plano">metal realista</button>
       <button id="tema" type="button" aria-label="Cambiar entre día y noche">
         <svg class="luna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
@@ -212,7 +219,29 @@
 
   <aside class="panel mot" aria-label="Automatismo">
     <h2><span id="hAuto">Automatismo</span> <small id="motorChip">motor</small></h2>
-    <div class="tabs" role="tablist"><button type="button" role="tab" data-tab="control" aria-selected="true">Control</button><button type="button" role="tab" data-tab="energia" aria-selected="false">Energía</button><button type="button" role="tab" data-tab="presu" aria-selected="false">Costo</button><button type="button" role="tab" data-tab="desp" aria-selected="false">Despiece</button><button type="button" role="tab" data-tab="bd" aria-selected="false">Precios</button></div>
+    <div class="tabs" role="tablist"><button type="button" role="tab" data-tab="cot" aria-selected="false">Cotización</button><button type="button" role="tab" data-tab="control" aria-selected="true">Control</button><button type="button" role="tab" data-tab="energia" aria-selected="false">Energía</button><button type="button" role="tab" data-tab="presu" aria-selected="false">Costo</button><button type="button" role="tab" data-tab="desp" aria-selected="false">Despiece</button><button type="button" role="tab" data-tab="bd" aria-selected="false">Precios</button></div>
+
+    <div class="hoja-tab" id="tab-cot" hidden>
+      <div class="grupo">
+        <span class="rot">Precio estimado, instalado</span>
+        <div class="venta"><b id="cPrecio"></b><small id="cPrecioN"></small></div>
+        <p class="nota">Es un precio de referencia calculado con tu diseño. El valor final se confirma con la visita de medición, sin costo.</p>
+      </div>
+      <div class="grupo">
+        <span class="rot">Lo que incluye</span>
+        <ul class="incluye" id="cIncluye"></ul>
+      </div>
+      <div class="grupo">
+        <label for="cNombre">Tu nombre</label>
+        <input class="campo" id="cNombre" type="text" autocomplete="name" placeholder="Nombre">
+        <label for="cBarrio">Barrio o dirección</label>
+        <input class="campo" id="cBarrio" type="text" autocomplete="address-level3" placeholder="Barrio">
+      </div>
+      <div class="grupo">
+        <a class="pedir" id="cWa" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        <p class="nota-pie">Se abre WhatsApp con tu diseño y sus medidas listos para enviar al taller. Cambia el diseño a la izquierda y el precio se actualiza solo.</p>
+      </div>
+    </div>
 
     <div class="hoja-tab" id="tab-control">
       <div class="mando">
@@ -324,6 +353,7 @@
         <label for="pMO">Mano de obra de taller, por kg fabricado <output id="oMO"></output></label>
         <input type="range" id="pMO" min="2000" max="15000" step="100" value="6200">
       </div>
+      <div class="grupo"><button type="button" class="boton" id="bEnlaceCliente">Copiar enlace para el cliente</button><p class="nota-pie">El cliente abre este mismo diseño en modo cotizador: ve el precio de venta, no el costo, y lo pide por WhatsApp.</p></div>
       <p class="nota">Costos con la base de datos de precios de referencia (pestaña Precios). Ni Mundial de Perfiles ni La Campana publican precios: el descuento es un supuesto que puedes cambiar cuando tengas su cotización.</p>
     </div>
     <div class="hoja-tab" id="tab-bd" hidden>
@@ -398,10 +428,13 @@ const cfg0 = { dia: temaIni === 'dia', paisaje: q.has('paisaje') };
 if (PRODUCTOS[q.get('producto')]) { const P = PRODUCTOS[q.get('producto')]; Object.assign(cfg0, { producto: q.get('producto'), ancho: P.ancho[2], alto: P.alto[2] }); }
 for (const k of ['tipo', 'diseno', 'acabado', 'motivo', 'modelo']) if (q.get(k)) cfg0[k] = q.get(k);
 if (cfg0.diseno === 'tablero' && cfg0.producto !== 'puerta') cfg0.diseno = 'celosia';
-for (const k of ['ancho', 'alto', 'semilla']) if (q.get(k)) cfg0[k] = +q.get(k);
+for (const k of ['ancho', 'alto', 'semilla', 'densidad', 'apertura']) if (q.get(k)) cfg0[k] = +q.get(k);
+const cliente = q.has('cliente'), WA_TALLER = '573152125327';
+document.body.classList.toggle('cliente', cliente);
+if (cliente) { $('rutaB').textContent = 'Cotiza tu diseño'; $('chipModo').textContent = 'cotizador'; document.title = 'Cotiza tu portón, puerta o reja en acero · AceroStudio'; }
 
-try { BD.cargar(JSON.parse(leer('acero-precios') || '{}')); } catch (e) {}
-try { const m = JSON.parse(leer('acero-comercial') || '{}'); if (m.margen) PRECIOS.margen = m.margen; if (m.descuento) Object.assign(PRECIOS.descuento, m.descuento); } catch (e) {}
+if (!cliente) try { BD.cargar(JSON.parse(leer('acero-precios') || '{}')); } catch (e) {}
+if (!cliente) try { const m = JSON.parse(leer('acero-comercial') || '{}'); if (m.margen) PRECIOS.margen = m.margen; if (m.descuento) Object.assign(PRECIOS.descuento, m.descuento); } catch (e) {}
 $('segModelo').innerHTML = Object.entries(TABLEROS).map(([k, n]) => `<button type="button" data-v="${k}">${n}${TABLERO_VIDRIO.has(k) ? ' ◇' : ''}</button>`).join('');
 const lienzo = $('lienzo'), sim = crearSimulador($('c'), { cfg: cfg0 });
 window.sim = sim;
@@ -433,7 +466,7 @@ function pintar() {
   for (const k of ['ancho', 'alto']) { $(k).min = P[k][0]; $(k).max = P[k][1]; }
   $('gTipo').hidden = !esP; $('gDiseno').hidden = c.producto === 'ventana' || c.producto === 'estructura';
   for (const t of ['control', 'energia']) document.querySelector(`[data-tab="${t}"]`).hidden = !esP;
-  if (!esP && !$('tab-control').hidden + !$('tab-energia').hidden) document.querySelector('[data-tab="presu"]').click();
+  if (!esP && !$('tab-control').hidden + !$('tab-energia').hidden) document.querySelector(`[data-tab="${cliente ? 'cot' : 'presu'}"]`).click();
   $('recMotor').hidden = !esP; $('notaFicha').textContent = esP ? 'Incluye portón, puerta peatonal y pórtico, con perfiles comerciales reales. El motor es un predimensionado de referencia: la instalación final la define el taller.' : 'Pesos con perfiles comerciales reales. Las secciones son un predimensionado de referencia: el cálculo final lo define el taller.';
   $('bAbrir').textContent = 'abrir'; $('bAbrir').hidden = !(c.producto === 'puerta' || c.producto === 'ventana'); $('hAuto').textContent = esP ? 'Automatismo' : 'Análisis';
   for (const k of ['ancho', 'alto', 'densidad', 'apertura']) $(k).value = c[k];
@@ -459,7 +492,29 @@ function cuentas() {
   let html = '', g = null;
   for (const it of k.items) { if (it.grupo !== g) { g = it.grupo; html += `<li class="grupo-t"><span><span>${g}</span><span>${cop(k.grupos[g])}</span></span></li>`; } html += `<li><span>${it.nombre}</span><small>${it.detalle}</small><b>${cop(it.valor)}</b></li>`; }
   $('pLista').innerHTML = html;
+  if (cliente) cotizacion(sim.cuentas('mundial'));
 }
+/* ----- cotización para el cliente y enlaces de diseño ----- */
+function enlaceDiseno(modo) {
+  const c = sim.cfg, p = new URLSearchParams({ producto: c.producto, ancho: c.ancho, alto: c.alto, acabado: c.acabado });
+  if (c.producto === 'porton') p.set('tipo', c.tipo);
+  if (c.producto !== 'ventana' && c.producto !== 'estructura') { p.set('diseno', c.diseno); if (c.diseno === 'celosia') { p.set('motivo', c.motivo); p.set('semilla', c.semilla); p.set('densidad', c.densidad); p.set('apertura', c.apertura); } if (c.diseno === 'tablero') p.set('modelo', c.modelo); }
+  const base = /^https?:/.test(location.protocol) && !window.__ARTIFACT ? location.origin + location.pathname : 'https://www.acerostudio.com/ornamentacion/';
+  return base + '?' + p + (modo === 'cliente' ? '&cliente' : '&tab=presu');
+}
+function descripcion() {
+  const c = sim.cfg, P = PRODUCTOS[c.producto], conD = c.producto !== 'ventana' && c.producto !== 'estructura';
+  return [['Producto', c.producto === 'porton' ? `Portón ${TIPOS[c.tipo].toLowerCase()} con puerta peatonal` : P.nombre], ['Medida', `${es(c.ancho, 2)} × ${es(c.alto, 2)} m`], ...(conD ? [['Diseño', c.diseno === 'tablero' ? 'Tablero ' + TABLEROS[c.modelo] : DISENOS[c.diseno] + (c.diseno === 'celosia' ? ' ' + MOTIVOS[c.motivo].toLowerCase() : '')]] : []), ['Acabado', ACABADOS[c.acabado].nombre + ', pintura electrostática'], ...(c.producto === 'porton' ? [['Motor', sim.ficha.motor.modelo + (c.bateria ? ' con batería' : '')], ['Seguridad', 'fotoceldas, lámpara, cámara de placas y teclado']] : []), ['Acero', es(Math.round(sim.ficha.kg)) + ' kg'], ['Instalación', 'incluida']];
+}
+function cotizacion(k) {
+  $('cPrecio').textContent = cop(k.venta); $('cPrecioN').textContent = 'pesos colombianos · referencia';
+  const d = descripcion(); $('cIncluye').innerHTML = d.map(([a, b]) => `<li><span>${a}</span><span>${b}</span></li>`).join('');
+  const nombre = $('cNombre').value.trim(), barrio = $('cBarrio').value.trim();
+  const txt = `Hola AceroStudio${nombre ? ', soy ' + nombre : ''}${barrio ? ' (' + barrio + ')' : ''}. Quiero cotizar este diseño:\n` + d.filter(([a]) => a !== 'Instalación').map(([a, b]) => `- ${a}: ${b}`).join('\n') + `\nPrecio estimado en la web: ${cop(k.venta)}\nDiseño para el taller: ${enlaceDiseno('taller')}`;
+  $('cWa').href = `https://wa.me/${WA_TALLER}?text=` + encodeURIComponent(txt);
+}
+$('cNombre').oninput = $('cBarrio').oninput = () => cuentas();
+$('bEnlaceCliente').onclick = async () => { try { await navigator.clipboard.writeText(enlaceDiseno('cliente')); aviso('Enlace copiado: envíaselo al cliente'); } catch (e) { aviso('No se pudo copiar el enlace desde aquí'); } };
 const guardarComercial = () => guardar('acero-comercial', JSON.stringify({ margen: PRECIOS.margen, descuento: PRECIOS.descuento }));
 $('pMargen').oninput = e => { PRECIOS.margen = +e.target.value; guardarComercial(); cuentas(); };
 $('pDesc').oninput = e => { PRECIOS.descuento[proveedor] = +e.target.value; guardarComercial(); cuentas(); };
@@ -609,6 +664,7 @@ function cuadro(ahora) {
   requestAnimationFrame(cuadro);
 }
 pintar(); medir(); requestAnimationFrame(cuadro);
+{ const t = cliente ? 'cot' : q.get('tab'), b = t && document.querySelector(`[data-tab="${t}"]`); if (b && !b.hidden) b.click(); }
 </script>
 </body>
 </html>
