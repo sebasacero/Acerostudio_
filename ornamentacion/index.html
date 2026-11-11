@@ -239,7 +239,7 @@
       </div>
       <div class="grupo">
         <a class="pedir" id="cWa" target="_blank" rel="noopener">Pedir por WhatsApp</a>
-        <p class="nota-pie">Se abre WhatsApp con tu diseño y sus medidas listos para enviar al taller. Cambia el diseño a la izquierda y el precio se actualiza solo.</p>
+        <p class="nota-pie">Se abre WhatsApp con tu diseño y sus medidas listos para enviar. Cambia el diseño a la izquierda y el precio se actualiza solo.</p>
       </div>
     </div>
 
@@ -510,7 +510,7 @@ function cotizacion(k) {
   $('cPrecio').textContent = cop(k.venta); $('cPrecioN').textContent = 'pesos colombianos · referencia';
   const d = descripcion(); $('cIncluye').innerHTML = d.map(([a, b]) => `<li><span>${a}</span><span>${b}</span></li>`).join('');
   const nombre = $('cNombre').value.trim(), barrio = $('cBarrio').value.trim();
-  const txt = `Hola AceroStudio${nombre ? ', soy ' + nombre : ''}${barrio ? ' (' + barrio + ')' : ''}. Quiero cotizar este diseño:\n` + d.filter(([a]) => a !== 'Instalación').map(([a, b]) => `- ${a}: ${b}`).join('\n') + `\nPrecio estimado en la web: ${cop(k.venta)}\nDiseño para el taller: ${enlaceDiseno('taller')}`;
+  const txt = `Hola AceroStudio${nombre ? ', soy ' + nombre : ''}${barrio ? ' (' + barrio + ')' : ''}. Quiero cotizar este diseño:\n` + d.filter(([a]) => a !== 'Instalación').map(([a, b]) => `- ${a}: ${b}`).join('\n') + `\nPrecio estimado en la web: ${cop(k.venta)}\nAbrir diseño: ${enlaceDiseno('taller')}`;
   $('cWa').href = `https://wa.me/${WA_TALLER}?text=` + encodeURIComponent(txt);
 }
 $('cNombre').oninput = $('cBarrio').oninput = () => cuentas();
