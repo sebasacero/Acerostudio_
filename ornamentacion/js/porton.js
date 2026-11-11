@@ -303,10 +303,17 @@ export function crearSimulador(canvas, opt = {}) {
     producto: 'porton', tipo: 'corredizo', diseno: 'celosia', modelo: 'sahara', motivo: 'cerros', densidad: .075, apertura: .7, semilla: 3, ancho: 4, alto: 2.3, acabado: 'grafito',
     paisaje: false, tiempo: 9, autocierre: true, pausa: 5, fotocelda: true, lampara: true, bateria: true, solar: true, ciclosDia: 12, dia: false, brillo: true,
   }, opt.cfg);
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: !!opt.captura });
+  // Si el equipo no deja crear WebGL (p. ej. Safari lo bloqueó tras un fallo de la GPU), el simulador sigue sin dibujar:
+  // botones, cálculos, costos y despiece funcionan igual y la página avisa que el visor 3D no arrancó.
+  let renderer, sin3D = null;
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: !!opt.captura }); }
+  catch (e) {
+    try { renderer = new THREE.WebGLRenderer({ canvas, antialias: false }); }
+    catch (e2) { sin3D = (e2 && e2.message) || String(e2); renderer = { domElement: canvas, shadowMap: {}, toneMappingExposure: 1, setPixelRatio() {}, setSize() {}, render() {}, getContext: () => null, dispose() {} }; }
+  }
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.toneMapping = THREE.ACESFilmicToneMapping;
   const scene = new THREE.Scene(); scene.fog = new THREE.Fog(0, 40, 85);
-  const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), .04).texture; pm.dispose();
+  if (!sin3D) { const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), .04).texture; pm.dispose(); }
   const camera = new THREE.PerspectiveCamera(34, 1, .1, 200);
   const controls = new OrbitControls(camera, canvas);
   Object.assign(controls, { enableDamping: true, dampingFactor: .08, maxPolarAngle: Math.PI * .495, minDistance: .4, maxDistance: 40, enablePan: false });
@@ -785,6 +792,7 @@ export function crearSimulador(canvas, opt = {}) {
   function render(dt = 0) {
     if (vuelo) { vuelo.t = Math.min(1, vuelo.t + dt / .9); const e = suave(vuelo.t); camera.position.lerpVectors(vuelo.p0, vuelo.p1, e); controls.target.lerpVectors(vuelo.o0, vuelo.o1, e); if (vuelo.t >= 1) vuelo = null; }
     if (controls.enabled) controls.update(); marcar();
+    if (sin3D) return;
     if (cfg.brillo && !cfg.dia && !sinBrillo) { if (!composer) armarComposer(); composer.render(); } else renderer.render(scene, camera);
   }
   function medida(w, h, dpr = Math.min(1.75, window.devicePixelRatio || 1)) { tam = [w, h, dpr]; renderer.setPixelRatio(dpr); renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); if (composer) { composer.setPixelRatio(dpr); composer.setSize(w, h); } }
@@ -854,7 +862,7 @@ export function crearSimulador(canvas, opt = {}) {
     montaje(activo, paso) { vis.montaje = activo; if (paso !== undefined) vis.paso = clamp(paso, 0, pasos().length - 1); if (activo && paso === 0) for (const g of grupos) g.userData.a = 0; },
     set(c) { const re = ['producto', 'tipo', 'diseno', 'modelo', 'ancho', 'alto', 'motivo', 'densidad', 'apertura', 'semilla', 'solar'].some(k => k in c && c[k] !== cfg[k]); Object.assign(cfg, c); if (re) construir(); else tema(cfg.dia); },
     dxf() { return geo.patron ? dxfPatron(geo.patron) : ''; },
-    get ficha() { return ficha; }, get geo() { return geo; },
+    get ficha() { return ficha; }, get geo() { return geo; }, get sin3D() { return sin3D; },
     alEvento(f) { oyentes.push(f); },
     telemetria() {
       const v = Math.abs(S.v), t = cfg.tipo;
