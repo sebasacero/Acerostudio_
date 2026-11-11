@@ -770,16 +770,22 @@ export function crearSimulador(canvas, opt = {}) {
     const obj = new THREE.Vector3(...o), pos = obj.clone().add(new THREE.Vector3(...p).sub(obj).multiplyScalar(k));
     if (inmediata) { camera.position.copy(pos); controls.target.copy(obj); controls.update(); vuelo = null; } else vuelo = { p0: camera.position.clone(), o0: controls.target.clone(), p1: pos, o1: obj, t: 0 };
   }
-  let composer = null, bloom = null, tam = [1, 1, 1];
+  let composer = null, bloom = null, tam = [1, 1, 1], sinBrillo = false;
   function armarComposer() {
-    const [w, h, dpr] = tam, rt = new THREE.WebGLRenderTarget(w * dpr, h * dpr, { samples: 4, type: THREE.HalfFloatType });
+    const [w, h, dpr] = tam;
+    // En iPhone (WebKit) el búfer de punto flotante con antialias multimuestra no siempre está disponible: el resultado es un visor vacío en modo noche.
+    // Se usa medio punto flotante solo si la extensión existe; si no, búfer de 8 bits con el mismo antialias.
+    const gl = renderer.getContext(), flotante = !!gl.getExtension('EXT_color_buffer_float') || !!gl.getExtension('EXT_color_buffer_half_float');
+    const rt = new THREE.WebGLRenderTarget(w * dpr, h * dpr, { samples: 4, type: flotante ? THREE.HalfFloatType : THREE.UnsignedByteType });
     composer = new EffectComposer(renderer, rt); composer.addPass(new RenderPass(scene, camera));
     bloom = new UnrealBloomPass(new THREE.Vector2(w, h), .32, .55, 1.05); composer.addPass(bloom); composer.addPass(new OutputPass());
   }
+  renderer.domElement.addEventListener('webglcontextlost', e => { e.preventDefault(); sinBrillo = true; composer = null; });
+  renderer.domElement.addEventListener('webglcontextrestored', () => { sinBrillo = false; });
   function render(dt = 0) {
     if (vuelo) { vuelo.t = Math.min(1, vuelo.t + dt / .9); const e = suave(vuelo.t); camera.position.lerpVectors(vuelo.p0, vuelo.p1, e); controls.target.lerpVectors(vuelo.o0, vuelo.o1, e); if (vuelo.t >= 1) vuelo = null; }
     if (controls.enabled) controls.update(); marcar();
-    if (cfg.brillo && !cfg.dia) { if (!composer) armarComposer(); composer.render(); } else renderer.render(scene, camera);
+    if (cfg.brillo && !cfg.dia && !sinBrillo) { if (!composer) armarComposer(); composer.render(); } else renderer.render(scene, camera);
   }
   function medida(w, h, dpr = Math.min(1.75, window.devicePixelRatio || 1)) { tam = [w, h, dpr]; renderer.setPixelRatio(dpr); renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); if (composer) { composer.setPixelRatio(dpr); composer.setSize(w, h); } }
   const vP = new THREE.Vector3(), rayo = new THREE.Raycaster(), vD = new THREE.Vector3();
