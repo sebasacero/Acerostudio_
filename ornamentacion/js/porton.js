@@ -303,10 +303,17 @@ export function crearSimulador(canvas, opt = {}) {
     producto: 'porton', tipo: 'corredizo', diseno: 'celosia', modelo: 'sahara', motivo: 'cerros', densidad: .075, apertura: .7, semilla: 3, ancho: 4, alto: 2.3, acabado: 'grafito',
     paisaje: false, tiempo: 9, autocierre: true, pausa: 5, fotocelda: true, lampara: true, bateria: true, solar: true, ciclosDia: 12, dia: false, brillo: true,
   }, opt.cfg);
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: !!opt.captura });
+  // Si el equipo no deja crear WebGL (p. ej. Safari lo bloqueó tras un fallo de la GPU), el simulador sigue sin dibujar:
+  // botones, cálculos, costos y despiece funcionan igual y la página avisa que el visor 3D no arrancó.
+  let renderer, sin3D = null;
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: !!opt.captura }); }
+  catch (e) {
+    try { renderer = new THREE.WebGLRenderer({ canvas, antialias: false }); }
+    catch (e2) { sin3D = (e2 && e2.message) || String(e2); renderer = { domElement: canvas, shadowMap: {}, toneMappingExposure: 1, setPixelRatio() {}, setSize() {}, render() {}, getContext: () => null, dispose() {} }; }
+  }
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.toneMapping = THREE.ACESFilmicToneMapping;
   const scene = new THREE.Scene(); scene.fog = new THREE.Fog(0, 40, 85);
-  const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), .04).texture; pm.dispose();
+  if (!sin3D) { const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), .04).texture; pm.dispose(); }
   const camera = new THREE.PerspectiveCamera(34, 1, .1, 200);
   const controls = new OrbitControls(camera, canvas);
   Object.assign(controls, { enableDamping: true, dampingFactor: .08, maxPolarAngle: Math.PI * .495, minDistance: .4, maxDistance: 40, enablePan: false });
@@ -770,16 +777,23 @@ export function crearSimulador(canvas, opt = {}) {
     const obj = new THREE.Vector3(...o), pos = obj.clone().add(new THREE.Vector3(...p).sub(obj).multiplyScalar(k));
     if (inmediata) { camera.position.copy(pos); controls.target.copy(obj); controls.update(); vuelo = null; } else vuelo = { p0: camera.position.clone(), o0: controls.target.clone(), p1: pos, o1: obj, t: 0 };
   }
-  let composer = null, bloom = null, tam = [1, 1, 1];
+  let composer = null, bloom = null, tam = [1, 1, 1], sinBrillo = false;
   function armarComposer() {
-    const [w, h, dpr] = tam, rt = new THREE.WebGLRenderTarget(w * dpr, h * dpr, { samples: 4, type: THREE.HalfFloatType });
+    const [w, h, dpr] = tam;
+    // En iPhone (WebKit) el búfer de punto flotante con antialias multimuestra no siempre está disponible: el resultado es un visor vacío en modo noche.
+    // Se usa medio punto flotante solo si la extensión existe; si no, búfer de 8 bits con el mismo antialias.
+    const gl = renderer.getContext(), flotante = !!gl.getExtension('EXT_color_buffer_float') || !!gl.getExtension('EXT_color_buffer_half_float');
+    const rt = new THREE.WebGLRenderTarget(w * dpr, h * dpr, { samples: 4, type: flotante ? THREE.HalfFloatType : THREE.UnsignedByteType });
     composer = new EffectComposer(renderer, rt); composer.addPass(new RenderPass(scene, camera));
     bloom = new UnrealBloomPass(new THREE.Vector2(w, h), .32, .55, 1.05); composer.addPass(bloom); composer.addPass(new OutputPass());
   }
+  renderer.domElement.addEventListener('webglcontextlost', e => { e.preventDefault(); sinBrillo = true; composer = null; });
+  renderer.domElement.addEventListener('webglcontextrestored', () => { sinBrillo = false; });
   function render(dt = 0) {
     if (vuelo) { vuelo.t = Math.min(1, vuelo.t + dt / .9); const e = suave(vuelo.t); camera.position.lerpVectors(vuelo.p0, vuelo.p1, e); controls.target.lerpVectors(vuelo.o0, vuelo.o1, e); if (vuelo.t >= 1) vuelo = null; }
     if (controls.enabled) controls.update(); marcar();
-    if (cfg.brillo && !cfg.dia) { if (!composer) armarComposer(); composer.render(); } else renderer.render(scene, camera);
+    if (sin3D) return;
+    if (cfg.brillo && !cfg.dia && !sinBrillo) { if (!composer) armarComposer(); composer.render(); } else renderer.render(scene, camera);
   }
   function medida(w, h, dpr = Math.min(1.75, window.devicePixelRatio || 1)) { tam = [w, h, dpr]; renderer.setPixelRatio(dpr); renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); if (composer) { composer.setPixelRatio(dpr); composer.setSize(w, h); } }
   const vP = new THREE.Vector3(), rayo = new THREE.Raycaster(), vD = new THREE.Vector3();
@@ -848,7 +862,7 @@ export function crearSimulador(canvas, opt = {}) {
     montaje(activo, paso) { vis.montaje = activo; if (paso !== undefined) vis.paso = clamp(paso, 0, pasos().length - 1); if (activo && paso === 0) for (const g of grupos) g.userData.a = 0; },
     set(c) { const re = ['producto', 'tipo', 'diseno', 'modelo', 'ancho', 'alto', 'motivo', 'densidad', 'apertura', 'semilla', 'solar'].some(k => k in c && c[k] !== cfg[k]); Object.assign(cfg, c); if (re) construir(); else tema(cfg.dia); },
     dxf() { return geo.patron ? dxfPatron(geo.patron) : ''; },
-    get ficha() { return ficha; }, get geo() { return geo; },
+    get ficha() { return ficha; }, get geo() { return geo; }, get sin3D() { return sin3D; },
     alEvento(f) { oyentes.push(f); },
     telemetria() {
       const v = Math.abs(S.v), t = cfg.tipo;
