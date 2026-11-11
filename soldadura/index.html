@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simulador de soldadura · AceroStudio</title>
+<meta name="description" content="Practique soldadura en la pantalla: trace el cordón con el dedo o el Apple Pencil sobre una probeta de acero y reciba la inspección: ritmo, alineación, defectos, corte y consejos.">
+<meta name="theme-color" content="#eceef2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" type="image/png" href="../images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Antonio:wght@300;500;700&family=DM+Mono:wght@400;500&family=Outfit:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Permanent+Marker&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/volumetrico.css">
+<link rel="stylesheet" href="css/soldadura.css">
+</head>
+<body class="dia">
+<header class="top">
+  <a class="marca" href="../" aria-label="AceroStudio, inicio"><img src="../images/favicon.png" alt=""><span>Soldadura</span></a>
+  <nav class="pestanas" role="tablist" aria-label="Modo">
+    <button role="tab" data-modo="practica" aria-selected="true">Práctica</button>
+    <button role="tab" data-modo="examen" aria-selected="false">Examen</button>
+  </nav>
+  <button id="tema" aria-label="Cambiar a modo noche" title="Día / noche">
+    <svg class="sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+    <svg class="luna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>
+  </button>
+</header>
+
+<main class="taller">
+  <section class="escena" id="escena" aria-label="Probeta de soldadura">
+    <canvas id="lienzo" role="img" aria-label="Probeta de acero. Trace el cordón sobre la junta con el dedo o el Apple Pencil."></canvas>
+
+    <div class="hud" id="hud">
+      <div class="medidor" id="hVel" data-estado="">
+        <span class="tag">Avance</span>
+        <div class="regla"><i class="zona"></i><b id="hVelMarca"></b></div>
+        <span class="valor" id="hVelTxt">—</span>
+      </div>
+      <div class="medidor" id="hDes" data-estado="">
+        <span class="tag">Sobre la junta</span>
+        <div class="regla centro"><i class="zona"></i><b id="hDesMarca"></b></div>
+        <span class="valor" id="hDesTxt">—</span>
+      </div>
+      <div class="lapiz" id="hLapiz" hidden>
+        <span class="tag">Arco</span><span class="valor" id="hArco" data-estado=""></span>
+        <span class="tag">Ángulo</span><span class="valor" id="hAng" data-estado="">—</span>
+      </div>
+    </div>
+    <span class="chip-examen" id="chipExamen" hidden>Examen · sin ayudas</span>
+    <canvas id="lente" class="lente" hidden aria-hidden="true"></canvas>
+
+    <div class="inicio" id="inicio">
+      <p class="tag">Cómo se practica</p>
+      <p>Ponga el dedo en una punta de la junta, espere a que se forme el charco y avance <b>despacio y parejo</b> siguiendo la línea. Levante al llegar al otro extremo.</p>
+      <p class="nota">Con el dedo, el arco queda un poco arriba de la yema para que vea el charco. Con Apple Pencil la presión es el largo de arco y la inclinación, el ángulo del electrodo.</p>
+    </div>
+
+    <p class="aviso" id="aviso" role="status" aria-live="polite"></p>
+
+    <div class="barra-escena">
+      <div class="herramientas" id="herramientas" role="group" aria-label="Herramienta">
+        <button data-herr="soldar" aria-pressed="true">Soldar</button>
+        <button data-herr="piqueta" aria-pressed="false">Piqueta</button>
+      </div>
+      <button class="sec" id="quitarEscoria" hidden>Quitar toda</button>
+      <span class="espacio"></span>
+      <button class="sec" id="nueva">Otra probeta</button>
+      <button class="prim" id="evaluar" disabled>Evaluar</button>
+    </div>
+
+    <section class="informe" id="informe" hidden aria-labelledby="iTitulo">
+      <header>
+        <div>
+          <p class="tag" id="iTitulo">Inspección visual</p>
+          <p class="puntaje"><b id="iTotal" tabindex="-1">0</b><small>/100</small> <span class="veredicto" id="iVeredicto" data-ok="false"></span></p>
+          <p class="nota" id="iDetalle"></p>
+        </div>
+        <button class="cerrar" id="cerrarInforme" aria-label="Cerrar informe y ver la probeta">✕</button>
+      </header>
+      <ul class="puntos" id="iPuntos"></ul>
+      <dl class="datos" id="iDatos"></dl>
+      <div class="graficas">
+        <figure><figcaption class="tag">Corte transversal</figcaption><canvas id="iCorte"></canvas></figure>
+        <figure><figcaption class="tag">Ritmo a lo largo de la junta</figcaption><canvas id="iRitmo"></canvas></figure>
+      </div>
+      <h3 class="tag">Defectos</h3>
+      <ul class="defectos" id="iDefectos"></ul>
+      <h3 class="tag">Para la próxima</h3>
+      <ul class="consejos" id="iConsejos"></ul>
+      <div class="acciones">
+        <button class="sec" id="picarAhora">Picar la escoria y ver el cordón</button>
+        <button class="prim" id="otraDesdeInforme">Otra probeta</button>
+      </div>
+      <p class="nota">Simulador de práctica: la calificación sigue los criterios de una inspección visual, pero no reemplaza la prueba real ante un inspector.</p>
+    </section>
+  </section>
+
+  <aside class="panel" id="panel">
+    <section>
+      <h2 class="tag">Prueba</h2>
+      <div class="opciones juntas" id="juntas" role="radiogroup" aria-label="Tipo de junta"></div>
+      <p class="nota" id="descJunta"></p>
+    </section>
+    <section>
+      <h2 class="tag">Proceso</h2>
+      <div class="opciones procesos" id="procesos" role="radiogroup" aria-label="Proceso de soldadura"></div>
+    </section>
+    <section>
+      <label class="tag" for="amp">Amperaje</label>
+      <div class="amp"><input type="range" id="amp" min="50" max="220" step="5"><output id="ampVal" for="amp">110 A</output></div>
+      <p class="nota" id="ampRec"></p>
+    </section>
+    <section>
+      <h2 class="tag">Entrada</h2>
+      <p class="nota entrada" id="entrada"></p>
+      <label class="interruptor"><input type="checkbox" id="o-desfase"><span>Arco arriba del dedo</span></label>
+      <label class="interruptor" id="filaAceptarDedo" hidden><input type="checkbox" id="o-aceptarDedo"><span>Soldar también con el dedo</span></label>
+    </section>
+    <section class="ayudas">
+      <h2 class="tag">Ayudas de práctica</h2>
+      <label class="interruptor"><input type="checkbox" id="o-guia"><span>Línea y guía de ritmo</span></label>
+      <label class="interruptor"><input type="checkbox" id="o-lente"><span>Lente del charco</span></label>
+      <label class="interruptor"><input type="checkbox" id="o-careta"><span>Careta oscura</span></label>
+      <label class="interruptor"><input type="checkbox" id="o-sonido"><span>Sonido del arco</span></label>
+    </section>
+    <section>
+      <h2 class="tag">Mis pruebas</h2>
+      <ol class="historial" id="historial"></ol>
+    </section>
+  </aside>
+</main>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
