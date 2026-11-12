@@ -196,7 +196,10 @@ h2.cursiva small { font-family: var(--mono); font-style: normal; font-size: 10px
   .mesa { min-height: auto; }
   .top { padding-right: max(8px, env(safe-area-inset-right, 0px)); }
   .pantalla.on[data-p="camara"] { grid-template-rows: 52px auto auto; }
-  [data-p="camara"] .lienzo { height: calc(100svh - 52px - var(--barra) - env(safe-area-inset-bottom, 0px)); }
+  /* móvil: el recuadro de la cámara mide lo que mide el video y la barra queda pegada justo debajo */
+  [data-p="camara"] .lienzo { height: auto; display: flex; flex-direction: column; align-items: stretch; }
+  [data-p="camara"] .lienzo video { width: 100%; height: auto; max-height: 58svh; object-fit: cover; flex: none; }
+  [data-p="camara"] .barra-cam { position: static; background: #0b0d14; padding-top: 14px; }
   .barra-cam { padding-bottom: 14px; gap: 12px; }
   .modos-cam { grid-template-columns: 1fr; justify-items: center; position: relative; gap: 12px; }
   .modos-cam .seg { width: 230px; }
