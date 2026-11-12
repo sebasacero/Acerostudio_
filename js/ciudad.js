@@ -196,16 +196,16 @@ export function crearCiudad(canvas, overlay, opciones = {}) {
       }
     }
     const inst = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0x121622 }), miembros.length);
-    const M = new THREE.Matrix4(), q = new THREE.Quaternion(), s = new THREE.Vector3(), cuenta = {};
+    const M = new THREE.Matrix4(), q = new THREE.Quaternion(), s = new THREE.Vector3(), cuenta = {}, metros = {};
     miembros.forEach(([tipo, a, b], i) => {
       const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b), d = B.clone().sub(A), L = d.length();
       q.setFromUnitVectors(Y, d.normalize()); const grosor = tipo === 'columna' ? 0.42 : tipo === 'viga' ? 0.26 : 0.22;
       s.set(grosor, L, grosor); M.compose(A.clone().add(B).multiplyScalar(0.5), q, s); inst.setMatrixAt(i, M);
-      kg += L * PERFILES[tipo].kgm; cuenta[tipo] = (cuenta[tipo] || 0) + 1;
+      kg += L * PERFILES[tipo].kgm; cuenta[tipo] = (cuenta[tipo] || 0) + 1; metros[tipo] = (metros[tipo] || 0) + L;
     });
     inst.visible = false; g.add(inst);
     scene.add(g);
-    c.ton = kg / 1000; c.area = area; c.kgm2 = kg / area; c.pisos = Math.max(...c.cajas.map((b) => Math.round((b.y + b.h) / 3.6))); c.miembros = cuenta;
+    c.ton = kg / 1000; c.area = area; c.kgm2 = kg / area; c.pisos = Math.max(...c.cajas.map((b) => Math.round((b.y + b.h) / 3.6))); c.miembros = cuenta; c.metros = metros;
     c.altura = Math.max(...c.cajas.map((b) => b.y + b.h));
     { const b = c.cajas.reduce((m, k) => (k.y + k.h > m.y + m.h ? k : m)); c.ancla = [c.pos[0] + b.x, b.y + b.h, c.pos[2] + b.z]; }
     grupoComplejos.push({ c, g, mat, inst });
@@ -319,6 +319,16 @@ export function crearCiudad(canvas, overlay, opciones = {}) {
         o_set(n.el, x + nx, y - ny, `translate(-50%,-50%) rotate(${ang}deg)`); continue;
       }
       const dx = n.dx ?? 60, dy = n.dy ?? -50;
+      // En pantallas angostas el texto va centrado sobre el punto para no pisar al complejo vecino.
+      if (canvas.clientWidth < 560) {
+        const w = n.el.offsetWidth / 2 + 8, top = y - Math.max(Math.abs(dy), 44);
+        const cx = Math.min(Math.max(x, w), canvas.clientWidth - w);
+        n.path.setAttribute('d', `M${x} ${y} L${x} ${top}`); n.dot.setAttribute('cx', x); n.dot.setAttribute('cy', y);
+        o_set(n.el, cx, top - 6, 'translate(-50%,-100%)'); n.el.style.textAlign = 'center';
+        n.el.classList.toggle('activa', n.complejo && n.complejo === elegido);
+        continue;
+      }
+      n.el.style.textAlign = '';
       const ex = x + dx, ey = y + dy;
       const d = n.recto ? `M${x} ${y} L${ex} ${y}` : `M${x} ${y} L${x} ${ey} L${ex - Math.sign(dx) * 4} ${ey}`;
       n.path.setAttribute('d', d); n.dot.setAttribute('cx', x); n.dot.setAttribute('cy', y);
@@ -379,6 +389,24 @@ export function crearCiudad(canvas, overlay, opciones = {}) {
     alElegir: (f) => oyentes.push(f),
     get acero() { return verAcero; },
     enfocar(p, v) { target.set(...p); if (v) vista = v; encuadrar(); pedir(); },
+    // cámara animada: { az, el, vista, centro } en ms (para tomas de render y transiciones)
+    camara(dest = {}, ms = 0) {
+      const de = { az, el, vista, c: target.clone() };
+      const a = { az: dest.az ?? az, el: dest.el ?? el, vista: dest.vista ?? vista, c: dest.centro ? new THREE.Vector3(...dest.centro) : target.clone() };
+      return new Promise((ok) => {
+        const t0 = performance.now();
+        (function paso(now) {
+          const k = ms ? Math.min(1, (now - t0) / ms) : 1, e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+          az = de.az + (a.az - de.az) * e; el = de.el + (a.el - de.el) * e; vista = de.vista + (a.vista - de.vista) * e;
+          target.lerpVectors(de.c, a.c, e); encuadrar(); pedir();
+          if (k < 1) requestAnimationFrame(paso); else ok();
+        })(t0);
+      });
+    },
+    get vistaActual() { return { az, el, vista, centro: target.toArray() }; },
+    set deriva(si) { opt.deriva = si; },
+    // foto del lienzo (preserveDrawingBuffer) en JPEG
+    foto(calidad = 0.85) { renderer.render(scene, camera); return canvas.toDataURL('image/jpeg', calidad); },
     render() { renderer.render(scene, camera); actualizarNotas(); },
   };
 }
