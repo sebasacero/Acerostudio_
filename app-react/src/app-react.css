@@ -1,0 +1,5 @@
+/* Ajustes propios de la versión React (el resto viene de css/app.css) */
+#raiz { height: 100%; }
+/* tokens de los dibujos isométricos (cambian con día/noche) */
+:root { --iso-suelo: #262b3a; --iso-top: #4d5f79; --iso-lit: #4f5f79; --iso-shd: #363e51; --iso-via: #e29699; --iso-via-luz: #ffe9b8; --iso-cel: #bfe2fb; --iso-cel-2: #a5cdee; --iso-cel-3: #8fb9de; }
+body.dia { --iso-suelo: #e3e5ea; --iso-top: #ffffff; --iso-lit: #f1f2f6; --iso-shd: #d9dde5; --iso-via: #ee8a82; --iso-via-luz: #fff; --iso-cel: #bfe2fb; --iso-cel-2: #a9d4f6; --iso-cel-3: #92c1e8; }
