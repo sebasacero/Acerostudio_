@@ -64,12 +64,12 @@ export default function Propuesta() {
         </article>
       </div>
       <div className="ctrl">
-        <div><h2 className="cursiva">propuesta/.</h2><span className="tag">{numero}</span></div>
+        <h2 className="cursiva">Propuesta <small>{numero}</small></h2>
         <div className="medidas-grandes"><div className="kpi coral"><b style={{ fontSize: 24 }}>{cop(total)}</b><span>total instalado</span></div><div className="kpi"><b>{fmt(kg)}<small>kg</small></b><span>acero</span></div></div>
-        <div className="deslizador"><label>plazo (días hábiles)/. <output>{plazo}</output></label><input type="range" min="5" max="45" value={plazo} onChange={(e) => setPlazo(+e.target.value)} /></div>
-        <div className="deslizador"><label>anticipo/. <output>{anticipo} %</output></label><input type="range" min="0" max="100" step="10" value={anticipo} onChange={(e) => setAnticipo(+e.target.value)} /></div>
+        <div className="deslizador"><label>plazo (días hábiles) <output>{plazo}</output></label><input type="range" min="5" max="45" value={plazo} onChange={(e) => setPlazo(+e.target.value)} /></div>
+        <div className="deslizador"><label>anticipo <output>{anticipo} %</output></label><input type="range" min="0" max="100" step="10" value={anticipo} onChange={(e) => setAnticipo(+e.target.value)} /></div>
         <button className="boton coral" onClick={() => { guardar('propuesta'); }} style={{ justifyContent: 'space-between' }}>Guardar propuesta <span className="flecha-punteada"></span></button>
-        <div className="opciones"><button className="boton linea chico" onClick={() => print()}>PDF</button><button className="boton linea chico" onClick={whatsapp}>Enviar por WhatsApp</button><button className="boton linea chico" onClick={() => guardar('pedido')}>Cliente aceptó → pedido</button></div>
+        <div className="tresb"><button onClick={() => print()}>PDF</button><button onClick={whatsapp}>Enviar por WhatsApp</button><button onClick={() => guardar('pedido')}>Cliente aceptó → pedido</button></div>
         <p className="nota-tec">{calc?.cuentas ? 'Precio calculado con la base de precios de referencia de Ornamentación (Homecenter, G&J, Mundial de Perfiles) y margen del 30 %.' : 'Precio estimado por kg (sin la base de precios: el visor 3D no arrancó en este equipo).'} Pendiente: cargar precios reales y margen del taller.</p>
       </div>
     </section>

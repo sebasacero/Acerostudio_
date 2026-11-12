@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import Top from '../Top.jsx';
+import Top, { Titulo } from '../Top.jsx';
 import { useApp, m, cop } from '../visita.jsx';
 import { crearSimulador } from '../../../ornamentacion/js/porton.js';
 
@@ -110,23 +110,21 @@ export default function Render() {
         <canvas ref={canvas} className="vista3d" />
         {sin3D && <div className="vacio" style={{ position: 'absolute', border: 0, color: '#fff' }}><b>El visor 3D no arrancó</b><span>{sin3D}</span></div>}
         {sub && <div className="subtitulo">{sub}</div>}
-        <div className="sello-cam"><span className="chip">metal realista</span>{grabando && <span className="tiempo-rec">● GRABANDO</span>}</div>
+        <Titulo sobre="video/." nombre={cfg?.producto || 'Producto'} sub={<>{cfg ? `${m(cfg.ancho)} × ${m(cfg.alto)} · metal realista` : ''}{grabando && <span className="tiempo-rec"> ● GRABANDO</span>}</>} />
+        <div className="vistas-cam">{['calle', 'frente', 'motor', 'herrajes', 'predio', 'aerea'].map((v) => <button key={v} onClick={() => vista(v)}>{v}</button>)}</div>
       </div>
       <div className="ctrl">
-        <div><h2 className="cursiva">render y video/.</h2><span className="tag">{cfg ? `${cfg.producto} · ${m(cfg.ancho)} × ${m(cfg.alto)}` : ''}</span></div>
-        <div className="opciones">
-          {['calle', 'frente', 'motor', 'herrajes', 'predio', 'aerea'].map((v) => <button key={v} onClick={() => vista(v)}>{v}</button>)}
-        </div>
-        {cfg?.producto === 'porton' && <div className="opciones"><button onClick={() => cmd('abrir')}>Abrir</button><button onClick={() => cmd('cerrar')}>Cerrar</button><button onClick={() => cmd('parar')}>Parar</button><button onClick={() => cmd('puerta')}>Puerta peatonal</button></div>}
-        {cfg?.producto === 'puerta' && <div className="opciones"><button onClick={() => cmd('puerta')}>Abrir la puerta</button></div>}
+        <h2 className="cursiva">Render y video <small>{cfg?.producto}</small></h2>
+        {cfg?.producto === 'porton' && <div className="campo"><span className="lbl">mando</span><div className="tresb"><button onClick={() => cmd('abrir')}>Abrir</button><button onClick={() => cmd('cerrar')}>Cerrar</button><button onClick={() => cmd('parar')}>Parar</button><button onClick={() => cmd('puerta')}>Puerta peatonal</button></div></div>}
+        {cfg?.producto === 'puerta' && <div className="campo"><span className="lbl">mando</span><div className="tresb"><button onClick={() => cmd('puerta')}>Abrir la puerta</button></div></div>}
         <label className="conm" style={{ fontSize: 13 }} onClick={() => setConFoto(!conFoto)} aria-pressed={conFoto}><i></i>foto del cliente de fondo</label>
         <div>
-          <span className="seccion-tag">guion del video/.</span>
+          <span className="seccion-tag">guion del video</span>
           <ol className="guion" style={{ marginTop: 8 }}>{guion.filter((p) => !p.fin).map((p, i) => <li key={i} className={i === pasoGuion ? 'on' : ''}><b>{String(p.t).padStart(2, '0')} s</b><span>{p.txt}</span></li>)}</ol>
         </div>
         {grabando && <div className="barra-progreso"><i style={{ width: progreso * 100 + '%' }}></i></div>}
         <button className="boton coral" disabled={grabando || !listo} onClick={grabar} style={{ justifyContent: 'space-between' }}>{grabando ? 'Grabando…' : `Grabar video de ${guion.length ? guion[guion.length - 1].t : 0} s`} <span className="flecha-punteada"></span></button>
-        <div className="opciones"><button className="boton linea chico" onClick={fotoRender}>Guardar render (foto)</button>{videoUrl && <button className="boton linea chico" onClick={compartir}>Enviar video al cliente</button>}</div>
+        <div className="dosb"><button onClick={fotoRender}>Guardar render (foto)</button>{videoUrl && <button onClick={compartir}>Enviar video al cliente</button>}</div>
         {videoUrl && <video src={videoUrl} controls playsInline style={{ width: '100%', borderRadius: 4 }} />}
         {ficha && <p className="nota-tec">{Math.round(ficha.kg)} kg de acero · {ficha.hojas} hoja{ficha.hojas > 1 ? 's' : ''} · {ficha.motor?.modelo}. Precio estimado en la propuesta.</p>}
       </div>

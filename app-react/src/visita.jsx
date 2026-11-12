@@ -29,12 +29,13 @@ function guardar(v) { try { localStorage.setItem(CLAVE, JSON.stringify(v.map(({ 
 export function AppProvider({ children }) {
   const [visitas, setVisitas] = useState(leer);
   const [actualId, setActualId] = useState(() => leer()[0]?.id || null);
-  const [dia, setDia] = useState(false);
+  // modo día (claro, como el simulador de Ornamentación) por defecto; se recuerda en el teléfono
+  const [dia, setDia] = useState(() => { try { return localStorage.getItem('acero-tema') !== 'noche'; } catch { return true; } });
   const [toast, setToastTxt] = useState('');
   const videos = useRef({}); // id -> video (no se persiste)
   const tt = useRef();
 
-  useEffect(() => { document.body.classList.toggle('dia', dia); }, [dia]);
+  useEffect(() => { document.body.classList.toggle('dia', dia); try { localStorage.setItem('acero-tema', dia ? 'dia' : 'noche'); } catch {} }, [dia]);
   useEffect(() => { guardar(visitas); }, [visitas]);
 
   const actual = useMemo(() => visitas.find((v) => v.id === actualId) || null, [visitas, actualId]);

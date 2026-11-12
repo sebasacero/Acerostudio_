@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import Top from '../Top.jsx';
+import Top, { Titulo } from '../Top.jsx';
 import { useApp, m } from '../visita.jsx';
 import { REFERENCIAS, hayAR, medirAR, escalaPorReferencia, medidasVano } from '../medicion.js';
 
@@ -61,10 +61,10 @@ export default function Medir() {
               {pts.map((p, i) => <circle key={i} className={'punto' + (i < 2 ? ' ref' : '')} cx={aPx(p)[0]} cy={aPx(p)[1]} r="7" />)}
               {actual.medidas && pts.length === 6 && <><text className="cota" x={(aPx(pts[2])[0] + aPx(pts[3])[0]) / 2} y={aPx(pts[2])[1] - 12} textAnchor="middle">{m(actual.medidas.ancho)}</text><text className="cota" x={aPx(pts[3])[0] + 12} y={(aPx(pts[3])[1] + aPx(pts[4])[1]) / 2}>{m(actual.medidas.alto)}</text></>}
             </svg></div></>}
-        <div className="sello-cam"><span className="chip">{ar ? 'AR disponible' : 'medición sobre foto'}</span>{actual?.medidas && <span className="chip cel">{actual.medidas.fuente}</span>}</div>
+        <Titulo sobre="medir/." nombre="Vano" sub={`${actual?.medidas ? `${m(actual.medidas.ancho)} × ${m(actual.medidas.alto)} · ${actual.medidas.fuente}` : 'sin medidas'} · ${ar ? 'AR disponible' : 'sobre la foto'}`} />
       </div>
       <div className="ctrl">
-        <div><h2 className="cursiva">medir/.</h2><span className="tag">{actual?.cliente}</span></div>
+        <h2 className="cursiva">Medir <small>{actual?.cliente}</small></h2>
         <div className="medidas-grandes">
           <div className="kpi coral"><b>{actual?.medidas ? actual.medidas.ancho.toFixed(2) : '–'}<small>m</small></b><span>ancho del vano</span></div>
           <div className="kpi"><b>{actual?.medidas ? actual.medidas.alto.toFixed(2) : '–'}<small>m</small></b><span>alto del vano</span></div>
@@ -72,11 +72,11 @@ export default function Medir() {
         {actual?.medidas && <span className="aviso" style={{ margin: 0 }}>Precisión estimada: {actual.medidas.precision}.</span>}
         {ar && <button className="boton coral" onClick={lanzarAR} style={{ justifyContent: 'space-between' }}>Medir con el sensor (AR) <span className="flecha-punteada"></span></button>}
         {!sinFoto && <>
-          <div className="campo"><label htmlFor="refsel">referencia en la foto/.</label><select id="refsel" value={ref} onChange={(e) => setRef(+e.target.value)}>{REFERENCIAS.map(([n, v]) => <option key={n} value={v}>{n}</option>)}</select></div>
+          <div className="campo"><label htmlFor="refsel">referencia en la foto</label><select id="refsel" value={ref} onChange={(e) => setRef(+e.target.value)}>{REFERENCIAS.map(([n, v]) => <option key={n} value={v}>{n}</option>)}</select></div>
           <ol className="pasos-med">{PASOS.map((p, i) => <li key={p} className={pts.length >= (i === 0 ? 2 : i + 2) ? 'ok' : i === paso ? 'on' : ''}>{p}</li>)}</ol>
           <button className="boton linea chico" onClick={() => setPts([])}>Empezar de nuevo</button>
         </>}
-        <div className="campo"><span className="lbl">o a mano (flexómetro)/.</span>
+        <div className="campo"><span className="lbl">o a mano (flexómetro)</span>
           <div className="fila2"><input type="number" step="0.01" min="0.3" value={manual.ancho} onChange={(e) => setManual({ ...manual, ancho: +e.target.value })} aria-label="Ancho en metros" /><input type="number" step="0.01" min="0.3" value={manual.alto} onChange={(e) => setManual({ ...manual, alto: +e.target.value })} aria-label="Alto en metros" /></div>
           <button className="boton linea chico" onClick={guardarManual}>Guardar ancho × alto</button>
         </div>

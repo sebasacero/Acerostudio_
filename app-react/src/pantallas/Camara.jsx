@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import Top from '../Top.jsx';
+import Top, { Titulo } from '../Top.jsx';
 import { useApp } from '../visita.jsx';
 import { irA } from '../App.jsx';
 
@@ -22,6 +22,7 @@ export default function Camara() {
   const [linterna, setLinterna] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [grabando, setGrabando] = useState(false);
+  const [modo, setModo] = useState('foto'); // foto | video
   const [segundos, setSegundos] = useState(0);
   const [fotos, setFotos] = useState(() => (actual?.fotos || (actual?.foto ? [actual.foto] : [])));
   const [videoUrl, setVideoUrl] = useState(() => (actual && videos[actual.id]?.url) || null);
@@ -95,19 +96,26 @@ export default function Camara() {
         {estado !== 'lista' && <div className="vacio" style={{ position: 'absolute', inset: 'auto 20px', border: 0, color: '#fff' }}>
           {estado === 'arrancando' ? <span>Abriendo la cámara…</span> : <><b>Sin cámara</b><span>{error}</span><button className="boton linea chico" onClick={abrir}>Reintentar</button></>}
         </div>}
-        <div className="sello-cam"><span className="chip">{res}</span>{grabando && <span className="tiempo-rec">● REC {String(Math.floor(segundos / 60)).padStart(2, '0')}:{String(segundos % 60).padStart(2, '0')}</span>}</div>
-        <div className="rec">
-          <button className="mini" onClick={alternarLinterna} aria-pressed={linterna} title="Linterna">{linterna ? 'luz on' : 'luz'}</button>
-          <button className="disparo" onClick={foto} aria-label="Tomar foto" />
-          <button className={'disparo video' + (grabando ? ' on' : '')} onClick={grabar} aria-label={grabando ? 'Parar video' : 'Grabar video'}><i></i></button>
-          <button className="mini" onClick={() => setRes(res === '720p' ? '1080p' : res === '1080p' ? '4K' : '720p')} title="Resolución">{res}</button>
+        <Titulo sobre="cámara/." nombre={actual?.cliente || 'Visita'} sub={<>{res} · {modo}{grabando && <span className="tiempo-rec"> ● REC {String(Math.floor(segundos / 60)).padStart(2, '0')}:{String(segundos % 60).padStart(2, '0')}</span>}</>} />
+        {/* barra inferior de la cámara: opciones arriba, modos y disparador abajo (como la cámara del teléfono) */}
+        <div className="barra-cam">
+          <div className="opc-cam">
+            <div className="seg chico" role="group" aria-label="Resolución">{Object.keys(RES).map((r) => <button key={r} aria-pressed={res === r} onClick={() => setRes(r)}>{r}</button>)}</div>
+            <button className={'opc' + (linterna ? ' on' : '')} onClick={alternarLinterna} aria-pressed={linterna} disabled={!caps.torch}>luz</button>
+            {caps.zoom ? <label className="zoom-cam">zoom <input type="range" min={caps.zoom.min} max={Math.min(caps.zoom.max, 5)} step="0.1" value={zoom} onChange={(e) => cambiarZoom(+e.target.value)} aria-label="Zoom" /><output>{zoom.toFixed(1)}×</output></label> : <span className="opc" aria-disabled="true">zoom</span>}
+          </div>
+          <div className="modos-cam">
+            <div className="seg" role="tablist" aria-label="Modo"><button role="tab" aria-pressed={modo === 'foto'} onClick={() => setModo('foto')} disabled={grabando}>Foto</button><button role="tab" aria-pressed={modo === 'video'} onClick={() => setModo('video')}>Video</button><a role="tab" href="#medir">Medir</a></div>
+            {modo === 'foto'
+              ? <button className="disparo" onClick={foto} aria-label="Tomar foto" />
+              : <button className={'disparo video' + (grabando ? ' on' : '')} onClick={grabar} aria-label={grabando ? 'Parar video' : 'Grabar video'}><i></i></button>}
+            <div className="ultima" style={{ backgroundImage: fotos[0] ? `url(${fotos[0]})` : undefined }} aria-hidden="true">{!fotos[0] && (videoUrl ? '▶' : '')}</div>
+          </div>
         </div>
       </div>
       <div className="ctrl">
-        <div><h2 className="cursiva">cámara/.</h2><span className="tag">{actual?.cliente}</span></div>
-        {caps.zoom && <div className="deslizador"><label>zoom/. <output>{zoom.toFixed(1)}×</output></label><input type="range" min={caps.zoom.min} max={Math.min(caps.zoom.max, 5)} step="0.1" value={zoom} onChange={(e) => cambiarZoom(+e.target.value)} /></div>}
-        <div className="campo"><span className="lbl">resolución/.</span><div className="opciones">{Object.keys(RES).map((r) => <button key={r} className={res === r ? 'on' : ''} onClick={() => setRes(r)}>{r}</button>)}</div></div>
-        <div><span className="seccion-tag">fotos de la visita/.</span>
+        <h2 className="cursiva">Cámara <small>{actual?.cliente}</small></h2>
+        <div><span className="seccion-tag">fotos de la visita</span>
           <div className="galeria" style={{ marginTop: 8 }}>
             {fotos.map((f, i) => <div key={i} className={'img' + (i === 0 ? ' on' : '')} style={{ backgroundImage: `url(${f})` }} onClick={() => { const l = [f, ...fotos.filter((x) => x !== f)]; setFotos(l); actualizar({ foto: f, fotos: l, medidas: null, vano: null }); }} />)}
             {videoUrl && <div className="img"><video src={videoUrl} muted playsInline controls /></div>}
