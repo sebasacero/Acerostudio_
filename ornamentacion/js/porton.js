@@ -433,7 +433,8 @@ export function crearSimulador(canvas, opt = {}) {
     /* entorno: en Ornamentación solo va el producto sobre un piso de estudio; el paisaje queda como opción (cfg.paisaje) */
     const piso = (rol, sx, sz, x, z, y) => { const o = new THREE.Mesh(UNIT, mat(rol)); o.scale.set(sx, .02, sz); o.position.set(x, y, z); o.receiveShadow = true; entorno.add(o); return o; };
     partes.ventanas = [];
-    if (!cfg.paisaje) piso('estudio', 170, 170, 0, 0, -.012);
+    // con una foto de fondo (cfg.fondo, la app de visitas) el piso solo recibe sombra: el producto se ve sobre el espacio real
+    if (!cfg.paisaje) { const e = piso('estudio', 170, 170, 0, 0, -.012); if (cfg.fondo) e.material = new THREE.ShadowMaterial({ opacity: .3 }); }
     else {
     piso('suelo', 170, 170, 0, 0, -.012); piso('anden', 64, 2.4, 0, 1.6, 0); piso('via', 170, 7.5, 0, 6.55, -.004); piso('cesped', 29.6, 12.2, 0, -6.3, -.002);
     for (let x = -30; x <= 30; x += 3.2) piso('raya', 1.5, .12, x, 6.55, .002);
@@ -580,7 +581,7 @@ export function crearSimulador(canvas, opt = {}) {
   function tema(dia) {
     cfg.dia = !!dia; const P = dia ? PAL.dia : PAL.noche, L = P.luces, red = S.red ? 1 : 0, propia = S.red || cfg.bateria ? 1 : 0;
     for (const [rol, m] of Object.entries(M)) if (P[rol] !== undefined) m.color.setHex(P[rol]);
-    scene.background = new THREE.Color(P.fondo); scene.fog.color.setHex(P.fondo); scene.environmentIntensity = P.env; renderer.toneMappingExposure = P.expo;
+    scene.background = cfg.fondo || new THREE.Color(P.fondo); scene.fog.color.setHex(P.fondo); scene.fog.near = cfg.fondo ? 400 : 40; scene.environmentIntensity = P.env; renderer.toneMappingExposure = P.expo;
     hemi.color.setHex(P.hemiC); hemi.groundColor.setHex(P.hemiS); hemi.intensity = P.hemiI; sol.color.setHex(P.solC); sol.intensity = P.solI; sol.position.set(...P.sol);
     mLinea.color.setHex(P.tinta); mLinea.opacity = P.tintaOp; mTinta.color.setHex(dia ? 0x1a1e2c : 0xdfe6f5);
     const A = ACABADOS[cfg.acabado], col = A.color, pl = !!cfg.plano; // modo plano: el metal vuelve a color liso, como el entorno

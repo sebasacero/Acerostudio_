@@ -9,6 +9,9 @@ export default defineConfig({
   base: '/app/',
   build: { outDir: '../app', emptyOutDir: true },
   // js/ciudad.js (fuera de app-react/) importa "three": se resuelve desde node_modules de este proyecto
-  resolve: { alias: { three: fileURLToPath(new URL('./node_modules/three/build/three.module.js', import.meta.url)) } },
+  resolve: { alias: [
+    { find: /^three\/addons\/(.*)$/, replacement: fileURLToPath(new URL('./node_modules/three/examples/jsm/', import.meta.url)) + '$1' },
+    { find: /^three$/, replacement: fileURLToPath(new URL('./node_modules/three/build/three.module.js', import.meta.url)) },
+  ] },
   server: { fs: { allow: [fileURLToPath(new URL('..', import.meta.url))] } },
 });

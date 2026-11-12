@@ -1,26 +1,24 @@
 import { useEffect, useState } from 'react';
-import { AppProvider } from './store.jsx';
-import { PANTALLAS } from './datos.js';
+import { AppProvider } from './visita.jsx';
 import Riel from './Riel.jsx';
 import Inicio from './pantallas/Inicio.jsx';
-import Nuevo from './pantallas/Nuevo.jsx';
-import Editor from './pantallas/Editor.jsx';
-import Acero from './pantallas/Acero.jsx';
+import Camara from './pantallas/Camara.jsx';
+import Medir from './pantallas/Medir.jsx';
+import Encajar from './pantallas/Encajar.jsx';
 import Render from './pantallas/Render.jsx';
-import Lamina from './pantallas/Lamina.jsx';
-import Exportar from './pantallas/Exportar.jsx';
-import Perfiles from './pantallas/Perfiles.jsx';
-import Sistema from './pantallas/Sistema.jsx';
+import Propuesta from './pantallas/Propuesta.jsx';
+import Pedidos from './pantallas/Pedidos.jsx';
 
-const VISTAS = { inicio: Inicio, nuevo: Nuevo, editor: Editor, acero: Acero, render: Render, lamina: Lamina, exportar: Exportar, perfiles: Perfiles, sistema: Sistema };
+export const PANTALLAS = ['inicio', 'camara', 'medir', 'encajar', 'render', 'propuesta', 'pedidos'];
+const VISTAS = { inicio: Inicio, camara: Camara, medir: Medir, encajar: Encajar, render: Render, propuesta: Propuesta, pedidos: Pedidos };
 
-function leerHash() { const p = location.hash.slice(1); return PANTALLAS.includes(p) ? p : 'inicio'; }
+function leerHash() { const p = location.hash.slice(1).split('?')[0]; return PANTALLAS.includes(p) ? p : 'inicio'; }
 export function useRuta() {
   const [ruta, setRuta] = useState(leerHash);
   useEffect(() => { const f = () => setRuta(leerHash()); addEventListener('hashchange', f); return () => removeEventListener('hashchange', f); }, []);
   return ruta;
 }
-export const irAPantalla = (p) => { location.hash = p; };
+export const irA = (p) => { location.hash = p; };
 
 export default function App() {
   const ruta = useRuta();

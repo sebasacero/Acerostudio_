@@ -1,96 +1,134 @@
 import { useEffect, useRef, useState } from 'react';
-import Top, { Proyecto } from '../Top.jsx';
-import { Slot, useApp, Hora, ConmAcero, Conm } from '../store.jsx';
-import { BASE, FOTO_IA } from '../datos.js';
+import * as THREE from 'three';
+import Top from '../Top.jsx';
+import { useApp, m, cop } from '../visita.jsx';
+import { crearSimulador } from '../../../ornamentacion/js/porton.js';
 
-const TOMAS = [
-  { id: 'aerea', n: 'aérea', info: 'isométrica · 41°', cam: () => BASE },
-  { id: 'puente', n: 'puente habitable', info: 'complejo A · 30°', cam: (A) => ({ az: 24, el: 28, vista: 88, centro: [A.pos[0] + 10, 16, A.pos[2]] }) },
-  { id: 'viaducto', n: 'sobre el viaducto', info: 'rasante · 20°', cam: () => ({ az: 78, el: 20, vista: 120, centro: [-20, 6, 10] }) },
-  { id: 'torre', n: 'torre escalonada', info: 'complejo B · 36°', cam: (A, B) => ({ az: 60, el: 36, vista: 84, centro: [B.pos[0] - 4, 14, B.pos[2]] }) },
-  { id: 'cenital', n: 'cenital', info: 'planta · 70°', cam: () => ({ az: 45, el: 70, vista: 210, centro: [-16, 0, -4] }) },
-];
-const PX = { '16:9': '3840 × 2160', '4:5': '2160 × 2700', '9:16': '2160 × 3840', '1:1': '2880 × 2880' };
-const ESTILOS = [['maqueta', 'Maqueta blanca', 'Volumen limpio para revisar masa'], ['noche', 'Ciudad de noche', 'Viaducto coral, estructura a la vista'], ['foto', 'Fotorrealista IA', 'Para vender: luz real, gente, vida']];
+// Render con metal real (simulador 3D de Ornamentación) sobre la foto del cliente, y video del producto funcionando
+// con subtítulos que explican qué hace: se graba desde un canvas compuesto (3D + rótulos) con MediaRecorder.
+const MAPA_DISENO = { celosia: 'celosia', lanzas: 'lanzas', listones: 'listones', lamina: 'lamina', tablero: 'tablero' };
+function mimeVideo() { if (typeof MediaRecorder === 'undefined') return null; for (const t of ['video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm']) if (MediaRecorder.isTypeSupported(t)) return t; return ''; }
+
+function guionDe(cfg, ficha) {
+  const nombre = { porton: 'Portón', puerta: 'Puerta', ventana: 'Ventana', reja: 'Reja', baranda: 'Baranda' }[cfg.producto] || 'Producto';
+  const tam = `${cfg.ancho.toFixed(2)} × ${cfg.alto.toFixed(2)} m`;
+  if (cfg.producto === 'porton') return [
+    { t: 0, txt: `${nombre} ${cfg.tipo} en acero · ${tam}`, vista: 'calle', cmd: null },
+    { t: 3, txt: 'Abre desde el control o la app del celular', cmd: 'abrir', vista: 'calle' },
+    { t: 8, txt: `Motor ${ficha?.motor?.modelo || 'eléctrico'} con batería de respaldo`, vista: 'motor' },
+    { t: 12, txt: 'La fotocelda detiene el cierre si alguien pasa', cmd: 'cerrar', vista: 'calle' },
+    { t: 17, txt: 'Puerta peatonal independiente con chapa eléctrica', cmd: 'puerta', vista: 'herrajes' },
+    { t: 21, txt: `${Math.round(ficha?.kg || 0)} kg de acero · pintura electrostática · 50 años de experiencia`, vista: 'calle' },
+    { t: 25, fin: true },
+  ];
+  return [
+    { t: 0, txt: `${nombre} en acero · ${tam}`, vista: 'calle' },
+    { t: 3, txt: 'Marco fijo anclado al vano, hoja con relleno de ' + (cfg.diseno || 'celosía'), vista: 'frente' },
+    { t: 7, txt: cfg.producto === 'ventana' ? 'Vidrio templado de 6 mm y herrajes' : 'Herrajes y cerradura de seguridad', cmd: cfg.producto === 'puerta' ? 'puerta' : null, vista: 'herrajes' },
+    { t: 11, txt: `${Math.round(ficha?.kg || 0)} kg de acero · pintura electrostática · 50 años de experiencia`, vista: 'calle' },
+    { t: 15, fin: true },
+  ];
+}
 
 export default function Render() {
-  const { asegurarCiudad, notas, hora, irA, noche, avisar, mem } = useApp();
-  const [tomas, setTomas] = useState(mem.tomas || null); // { imgs, maqueta, noche }
-  const [toma, setToma] = useState(mem.toma ?? 0);
-  const [formato, setFormato] = useState(mem.formato || '16:9');
-  const [foto, setFoto] = useState(mem.foto || false);
-  const [autos, setAutos] = useState(true);
-  const [notasOn, setNotasOn] = useState(true);
-  const [cola, setCola] = useState(mem.cola || []);
-  const [marco, setMarco] = useState({ w: 0, h: 0 });
-  const slotRef = useRef(null);
-
-  const estilo = foto ? 'foto' : noche ? 'noche' : 'maqueta';
+  const { actual, actualizar, avisar, videos, dia } = useApp();
+  const canvas = useRef(null), sim = useRef(null), raf = useRef(0), textura = useRef(null);
+  const [listo, setListo] = useState(false);
+  const [sin3D, setSin3D] = useState('');
+  const [ficha, setFicha] = useState(null);
+  const [conFoto, setConFoto] = useState(!!actual?.foto);
+  const [grabando, setGrabando] = useState(false);
+  const [sub, setSub] = useState('');
+  const [progreso, setProgreso] = useState(0);
+  const [pasoGuion, setPasoGuion] = useState(-1);
+  const [videoUrl, setVideoUrl] = useState(() => (actual && videos['r' + actual.id]?.url) || null);
+  const cfg = actual?.producto;
 
   useEffect(() => {
-    const c = asegurarCiudad(); notas(true);
-    (async () => {
-      let t = mem.tomas;
-      if (!t) {
-        const [A, B] = c.complejos, prev = c.vistaActual, imgs = [];
-        for (const k of TOMAS) { await c.camara(k.cam(A, B), 0); imgs.push(c.foto(0.7)); }
-        c.aplicarHora(0); await c.camara(TOMAS[0].cam(), 0); const maqueta = c.foto(0.7); c.aplicarHora(hora);
-        await c.camara(prev, 0);
-        t = mem.tomas = { imgs, maqueta, noche: imgs[0] };
-      }
-      setTomas(t); elegirToma(mem.toma ?? 0, 600);
-    })();
+    if (!cfg) return;
+    const c = canvas.current;
+    // la foto del cliente va como fondo de la escena (cfg.fondo) desde el inicio, así el piso del estudio solo recibe sombra
+    let tx = null;
+    if (actual.foto) { tx = new THREE.TextureLoader().load(actual.foto); tx.colorSpace = THREE.SRGBColorSpace; textura.current = tx; }
+    const s = crearSimulador(c, { captura: true, cfg: { producto: cfg.producto, tipo: cfg.tipo || 'corredizo', diseno: MAPA_DISENO[cfg.diseno] || 'celosia', ancho: cfg.ancho, alto: cfg.alto, acabado: 'grafito', paisaje: false, dia, fondo: tx } });
+    sim.current = s; if (s.sin3D) setSin3D(s.sin3D);
+    const ajustar = () => { const r = c.parentElement.getBoundingClientRect(); s.medida(r.width, r.height); };
+    ajustar(); addEventListener('resize', ajustar);
+    let t0 = performance.now();
+    const bucle = (t) => { const dt = Math.min(0.05, (t - t0) / 1000); t0 = t; s.step(dt); s.render(dt); raf.current = requestAnimationFrame(bucle); };
+    raf.current = requestAnimationFrame(bucle);
+    setFicha(s.ficha); setListo(true);
+    return () => { cancelAnimationFrame(raf.current); removeEventListener('resize', ajustar); s.renderer.dispose?.(); };
   }, []);
-  useEffect(() => { const f = () => { const s = slotRef.current?.querySelector('.slot') || document.querySelector('[data-slot="render"]'); if (!s) return; const [a, b] = formato.split(':').map(Number); const k = Math.min(s.clientWidth * 0.92 / a, s.clientHeight * 0.82 / b); setMarco({ w: a * k, h: b * k }); }; f(); addEventListener('resize', f); return () => removeEventListener('resize', f); }, [formato]);
+  useEffect(() => { const s = sim.current; if (!s) return; s.cfg.fondo = conFoto ? textura.current : null; s.set({ dia, semilla: (s.cfg.semilla || 3) }); }, [conFoto, dia]);
 
-  const elegirToma = (i, ms = 800) => {
-    const c = asegurarCiudad(); const [A, B] = c.complejos;
-    setToma(i); mem.toma = i; return c.camara(TOMAS[i].cam(A, B), ms);
+  const vista = (n) => sim.current?.vista(n);
+  const cmd = (c) => { const s = sim.current; if (!s) return; if (c === 'puerta') s.abrirPuerta('App'); else s.cmd(c, 'App'); };
+
+  async function grabar() {
+    const s = sim.current; if (!s || s.sin3D) return avisar('Sin 3D en este equipo no se puede grabar el video');
+    const tipo = mimeVideo(); if (tipo === null) return avisar('Este navegador no graba video');
+    const guion = guionDe(cfg, s.ficha), dur = guion[guion.length - 1].t;
+    // canvas compuesto: 3D + subtítulo + marca, 1280×720
+    const comp = document.createElement('canvas'); comp.width = 1280; comp.height = 720; const g = comp.getContext('2d');
+    const stream = comp.captureStream(30); const r = new MediaRecorder(stream, { mimeType: tipo || undefined, videoBitsPerSecond: 6e6 }); const trozos = [];
+    r.ondataavailable = (e) => { if (e.data.size) trozos.push(e.data); };
+    r.onstop = () => {
+      const blob = new Blob(trozos, { type: r.mimeType }), url = URL.createObjectURL(blob);
+      videos['r' + actual.id] = { url, blob, tipo: r.mimeType, duracion: dur }; setVideoUrl(url);
+      actualizar({ render: { duracion: dur, bytes: blob.size, tipo: r.mimeType } }); setGrabando(false); setSub(''); setPasoGuion(-1); avisar('Video del producto listo');
+    };
+    setGrabando(true); s.vista('calle', true); r.start(500);
+    const inicio = performance.now(); let i = 0, subt = '';
+    await new Promise((fin) => {
+      const paso = () => {
+        const t = (performance.now() - inicio) / 1000;
+        while (i < guion.length && guion[i].t <= t) { const p = guion[i]; if (p.fin) { fin(); return; } subt = p.txt; setSub(p.txt); setPasoGuion(i); if (p.vista) s.vista(p.vista); if (p.cmd) cmd(p.cmd); i++; }
+        setProgreso(t / dur);
+        g.drawImage(canvas.current, 0, 0, comp.width, comp.height);
+        if (subt) { g.font = '500 30px Outfit, sans-serif'; const w = g.measureText(subt).width + 48; g.fillStyle = 'rgba(11,13,16,.8)'; g.fillRect((comp.width - w) / 2, 620, w, 62); g.fillStyle = '#ee7f74'; g.fillRect((comp.width - w) / 2, 620, 4, 62); g.fillStyle = '#fff'; g.textBaseline = 'middle'; g.fillText(subt, (comp.width - w) / 2 + 28, 651); }
+        g.font = '600 18px DM Mono, monospace'; g.fillStyle = 'rgba(255,255,255,.85)'; g.textBaseline = 'alphabetic'; g.fillText('ACERO.STUDIO · ' + (actual.cliente || ''), 28, 44);
+        requestAnimationFrame(paso);
+      };
+      paso();
+    });
+    r.stop(); setProgreso(1);
+  }
+  const compartir = async () => {
+    const v = videos['r' + actual.id]; if (!v) return;
+    const ext = v.tipo.includes('mp4') ? 'mp4' : 'webm'; const archivo = new File([v.blob], `${cfg.producto}-${actual.cliente}.${ext}`, { type: v.tipo });
+    if (navigator.canShare?.({ files: [archivo] })) { try { await navigator.share({ files: [archivo], title: 'Así funciona tu ' + cfg.producto, text: 'Video de AceroStudio' }); return; } catch {} }
+    const a = document.createElement('a'); a.href = v.url; a.download = archivo.name; a.click();
   };
-  const elegirEstilo = (e) => { const f = e === 'foto'; setFoto(f); mem.foto = f; if (!f) irA(e === 'noche' ? 1 : 0); };
-  const renderizar = () => {
-    const c = asegurarCiudad();
-    const job = { id: Date.now(), n: TOMAS[toma].n, f: formato, estilo: ESTILOS.find((x) => x[0] === estilo)[1], img: foto ? FOTO_IA : c.foto(0.6), pct: 0, listo: false };
-    let lista = [job, ...cola]; setCola(lista); mem.cola = lista;
-    const iv = setInterval(() => {
-      job.pct = Math.min(100, job.pct + 9 + Math.round(Math.random() * 12));
-      if (job.pct >= 100) { job.listo = true; clearInterval(iv); avisar(`Render 4K listo: ${job.n}`); }
-      lista = lista.map((x) => (x.id === job.id ? { ...job } : x)); mem.cola = lista; setCola(lista);
-    }, 380);
-  };
-  const miniatura = (e) => (e === 'maqueta' ? tomas?.maqueta : e === 'noche' ? tomas?.noche : FOTO_IA);
+  const fotoRender = () => { const s = sim.current; if (!s) return; s.render(0); const url = canvas.current.toDataURL('image/jpeg', 0.9); actualizar({ renderFoto: url }); avisar('Render guardado en la visita'); };
+  const guion = cfg ? guionDe(cfg, ficha) : [];
 
   return (
-    <section className="pantalla on" data-p="render" aria-label="Render" ref={slotRef}>
-      <Top ruta={<Proyecto hoja="Render" />} modo="render" />
-      <div className="tomas" role="listbox" aria-label="Tomas">
-        {tomas && TOMAS.map((t, i) => <button key={t.id} className={'toma' + (toma === i ? ' on' : '')} role="option" aria-selected={toma === i} onClick={() => elegirToma(i)}><span className="img" style={{ backgroundImage: `url(${tomas.imgs[i]})` }}><small>{String(i + 1).padStart(2, '0')}</small></span>{t.n}</button>)}
-        {tomas && <button className="toma nueva" onClick={() => avisar('Toma guardada desde la vista actual')}><span className="img">+</span>guardar vista actual</button>}
+    <section className="pantalla on" data-p="render" aria-label="Video">
+      <Top paso="render"><a className="boton coral chico" href="#propuesta">Propuesta <span className="flecha-punteada"></span></a></Top>
+      <div className="lienzo">
+        <canvas ref={canvas} className="vista3d" />
+        {sin3D && <div className="vacio" style={{ position: 'absolute', border: 0, color: '#fff' }}><b>El visor 3D no arrancó</b><span>{sin3D}</span></div>}
+        {sub && <div className="subtitulo">{sub}</div>}
+        <div className="sello-cam"><span className="chip">metal realista</span>{grabando && <span className="tiempo-rec">● GRABANDO</span>}</div>
       </div>
-      <Slot nombre="render">
-        <div className={'foto-ia sobre' + (foto ? ' on' : '')} style={{ backgroundImage: `url(${FOTO_IA})` }}><span className="chip cel sello" style={{ background: 'rgba(var(--vidrio-rgb),.8)' }}>fotorrealista · IA</span></div>
-        <div className="marco sobre"><div style={{ width: marco.w, height: marco.h }}><span>{formato} · {PX[formato]}</span></div></div>
-      </Slot>
       <div className="ctrl">
-        <div><h2 className="cursiva">{TOMAS[toma].n}/.</h2><span className="tag">cámara {TOMAS[toma].info}</span></div>
-        <div className="estilos" role="radiogroup" aria-label="Estilo">
-          {ESTILOS.map(([id, n, d]) => <button key={id} className={'estilo' + (estilo === id ? ' on' : '')} role="radio" aria-checked={estilo === id} onClick={() => elegirEstilo(id)}><i style={{ backgroundImage: miniatura(id) ? `url(${miniatura(id)})` : undefined }}></i><div><b>{n}</b>{d}</div></button>)}
+        <div><h2 className="cursiva">render y video/.</h2><span className="tag">{cfg ? `${cfg.producto} · ${m(cfg.ancho)} × ${m(cfg.alto)}` : ''}</span></div>
+        <div className="opciones">
+          {['calle', 'frente', 'motor', 'herrajes', 'predio', 'aerea'].map((v) => <button key={v} onClick={() => vista(v)}>{v}</button>)}
         </div>
-        <div className="campo"><span className="lbl">formato/.</span>
-          <div className="formatos" role="group" aria-label="Formato">
-            {[['16:9', 16, 9], ['4:5', 10, 12], ['9:16', 8, 14], ['1:1', 11, 11]].map(([f, w, h]) => <button key={f} className={formato === f ? 'on' : ''} onClick={() => { setFormato(f); mem.formato = f; }}><i style={{ width: w, height: h }}></i>{f}</button>)}
-          </div>
+        {cfg?.producto === 'porton' && <div className="opciones"><button onClick={() => cmd('abrir')}>Abrir</button><button onClick={() => cmd('cerrar')}>Cerrar</button><button onClick={() => cmd('parar')}>Parar</button><button onClick={() => cmd('puerta')}>Puerta peatonal</button></div>}
+        {cfg?.producto === 'puerta' && <div className="opciones"><button onClick={() => cmd('puerta')}>Abrir la puerta</button></div>}
+        <label className="conm" style={{ fontSize: 13 }} onClick={() => setConFoto(!conFoto)} aria-pressed={conFoto}><i></i>foto del cliente de fondo</label>
+        <div>
+          <span className="seccion-tag">guion del video/.</span>
+          <ol className="guion" style={{ marginTop: 8 }}>{guion.filter((p) => !p.fin).map((p, i) => <li key={i} className={i === pasoGuion ? 'on' : ''}><b>{String(p.t).padStart(2, '0')} s</b><span>{p.txt}</span></li>)}</ol>
         </div>
-        <Hora style={{ maxWidth: 'none' }} />
-        <div className="toggles">
-          <ConmAcero texto="estructura a la vista" className="conm" />
-          <Conm texto="autos en el viaducto" on={autos} onChange={setAutos} />
-          <Conm texto="anotaciones tipo plano" on={notasOn} onChange={(s) => { setNotasOn(s); notas(s); }} />
-        </div>
-        <button className="boton coral" style={{ justifyContent: 'space-between' }} onClick={renderizar}>Generar render 4K <span className="flecha-punteada"></span></button>
-        <div className="cola"><span className="seccion-tag">cola de render/.</span>
-          <div>{cola.length ? cola.map((c) => <div className="trabajo" key={c.id}><i style={{ backgroundImage: `url(${c.img})` }}></i><div>{c.n}<small>{c.f} · {c.estilo}</small></div><span className={'chip ' + (c.listo ? 'ok' : 'amar')}>{c.listo ? 'listo' : c.pct + '%'}</span></div>) : <span className="aviso" style={{ margin: 0 }}>Nada en cola. Elige una toma y genera.</span>}</div>
-        </div>
+        {grabando && <div className="barra-progreso"><i style={{ width: progreso * 100 + '%' }}></i></div>}
+        <button className="boton coral" disabled={grabando || !listo} onClick={grabar} style={{ justifyContent: 'space-between' }}>{grabando ? 'Grabando…' : `Grabar video de ${guion.length ? guion[guion.length - 1].t : 0} s`} <span className="flecha-punteada"></span></button>
+        <div className="opciones"><button className="boton linea chico" onClick={fotoRender}>Guardar render (foto)</button>{videoUrl && <button className="boton linea chico" onClick={compartir}>Enviar video al cliente</button>}</div>
+        {videoUrl && <video src={videoUrl} controls playsInline style={{ width: '100%', borderRadius: 4 }} />}
+        {ficha && <p className="nota-tec">{Math.round(ficha.kg)} kg de acero · {ficha.hojas} hoja{ficha.hojas > 1 ? 's' : ''} · {ficha.motor?.modelo}. Precio estimado en la propuesta.</p>}
       </div>
     </section>
   );
