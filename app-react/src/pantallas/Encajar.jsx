@@ -3,15 +3,20 @@ import Top, { Titulo } from '../Top.jsx';
 import { useApp, m } from '../visita.jsx';
 import { homografia } from '../medicion.js';
 import { ProductoSVG, PRODUCTOS, DISENOS, TIPOS, ACABADOS } from '../producto.jsx';
+import { useDetectorVano } from '../vision.js';
+import EstadoIA from '../EstadoIA.jsx';
 
 // Encajar: el producto dibujado se deforma (homografía CSS) hasta las 4 esquinas del vano marcado en la foto.
-// Las esquinas se pueden arrastrar; el tamaño real viene de las medidas.
+// Fase 1: al tocar el espacio, la IA (SlimSAM de Meta) recorta el vano y propone las 4 esquinas; se confirman o se arrastran.
 export default function Encajar() {
   const { actual, actualizar, avisar } = useApp();
   const img = useRef(null), capa = useRef(null);
   const [caja, setCaja] = useState({ x: 0, y: 0, w: 1, h: 1 });
   const [apertura, setApertura] = useState(0);
   const arrastre = useRef(null);
+  const det = useDetectorVano(actual?.foto);
+  const [mascara, setMascara] = useState(null); // recorte propuesto por la IA, mientras se confirma
+  const [buscando, setBuscando] = useState(false);
   const cfg = actual?.producto || {};
   const vano = actual?.vano || [[0.3, 0.3], [0.7, 0.3], [0.7, 0.85], [0.3, 0.85]];
 
@@ -31,6 +36,22 @@ export default function Encajar() {
     const n = vano.map((p, i) => (i === arrastre.current ? [u, v] : p)); actualizar({ vano: n });
   };
   const soltar = () => { arrastre.current = null; };
+  // tocar la foto (fuera de las esquinas) = la IA busca el vano en ese punto
+  async function tocarFoto(e) {
+    if (e.target !== e.currentTarget || buscando) return;
+    const r = capa.current.getBoundingClientRect(); const u = (e.clientX - r.left - caja.x) / caja.w, v = (e.clientY - r.top - caja.y) / caja.h;
+    if (u < 0 || u > 1 || v < 0 || v > 1) return;
+    if (det.estado === 'cargando') return avisar(`La IA se está preparando (${Math.round(det.progreso * 100)} %)`);
+    if (det.estado === 'error') return avisar('La IA no está disponible en este equipo: arrastra las 4 esquinas');
+    setBuscando(true);
+    try {
+      const res = await det.detectar(u, v);
+      if (!res) { avisar('No encontré un espacio claro ahí: toca más al centro del vano'); return; }
+      actualizar({ vano: res.esquinas }); setMascara(res.mascara);
+    } catch (err) { console.warn(err); avisar('No se pudo analizar la foto: arrastra las esquinas'); }
+    finally { setBuscando(false); }
+  }
+  const sinVano = !actual?.vano && det.estado !== 'error';
   const P = PRODUCTOS[cfg.producto] || PRODUCTOS.puerta;
 
   return (
@@ -40,13 +61,20 @@ export default function Encajar() {
         {!actual?.foto ? <div className="vacio" style={{ border: 0, color: '#fff' }}><b>Sin foto</b><span>Toma la foto del vano para encajar el producto.</span><a className="boton linea chico" href="#camara">Ir a la cámara</a></div>
           : <>
             <img ref={img} className="foto" src={actual.foto} alt="Espacio del cliente" />
-            <div className="encaje" style={{ width: BW, height: BH, transform: homografia(esqPx, BW, BH) }}><ProductoSVG cfg={cfg} apertura={apertura} /></div>
-            <div className="capa" ref={capa}><svg>
-              {esqPx.map(([x, y], i) => <circle key={i} className="esquina" cx={x} cy={y} r="9" onPointerDown={bajar(i)} />)}
+            {mascara && <img className="mascara" src={mascara} alt="" style={{ left: caja.x, top: caja.y, width: caja.w, height: caja.h }} />}
+            {!sinVano && <div className="encaje" style={{ width: BW, height: BH, transform: homografia(esqPx, BW, BH), opacity: mascara ? 0.85 : 1 }}><ProductoSVG cfg={cfg} apertura={apertura} /></div>}
+            <div className="capa" ref={capa}><svg onPointerDown={tocarFoto} style={{ cursor: 'crosshair' }}>
+              {!sinVano && esqPx.map(([x, y], i) => <circle key={i} className="esquina" cx={x} cy={y} r="11" onPointerDown={bajar(i)} />)}
               {actual.medidas && <text className="cota" x={(esqPx[0][0] + esqPx[1][0]) / 2} y={esqPx[0][1] - 12} textAnchor="middle">{m(cfg.ancho)} × {m(cfg.alto)}</text>}
             </svg></div>
           </>}
-        <Titulo sobre="encajar/." nombre={P.nombre} sub={`${m(cfg.ancho)} × ${m(cfg.alto)} · ${DISENOS[cfg.diseno] || ''}${!actual?.vano && actual?.foto ? ' · arrastra las esquinas al vano' : ''}`} />
+        <Titulo sobre="encajar/." nombre={P.nombre} sub={`${m(cfg.ancho)} × ${m(cfg.alto)} · ${DISENOS[cfg.diseno] || ''}`} />
+        {actual?.foto && <EstadoIA det={det} buscando={buscando} pista={sinVano ? `Toca el espacio donde va ${cfg.producto === 'porton' ? 'el' : 'la'} ${P.nombre.toLowerCase()}` : 'Toca otro punto para volver a detectar'} />}
+        {mascara && !buscando && <div className="confirmar-vano">
+          <span>¿Es este el espacio?</span>
+          <button className="si" onClick={() => { setMascara(null); avisar('Vano confirmado: ajusta las esquinas si hace falta'); }}>Sí, encajar</button>
+          <button onClick={() => { setMascara(null); actualizar({ vano: null }); }}>Tocar otro</button>
+        </div>}
       </div>
       <div className="ctrl">
         <h2 className="cursiva">Diseño <small>acero</small></h2>
@@ -59,9 +87,9 @@ export default function Encajar() {
           <div className="campo"><label>alto (m)</label><input type="number" step="0.01" value={cfg.alto} onChange={(e) => set({ alto: +e.target.value })} /></div>
         </div>
         {cfg.producto === 'porton' && <div className="deslizador"><label>apertura <output>{Math.round(apertura * 100)} %</output></label><input type="range" min="0" max="1" step="0.01" value={apertura} onChange={(e) => setApertura(+e.target.value)} /></div>}
-        <button className="boton linea chico" onClick={() => { actualizar({ vano: null }); avisar('Esquinas reiniciadas'); }}>Reiniciar esquinas</button>
+        <button className="boton linea chico" onClick={() => { actualizar({ vano: null }); setMascara(null); avisar('Toca de nuevo el espacio'); }}>Volver a detectar el vano</button>
         <a className="boton coral" href="#render" style={{ justifyContent: 'space-between' }}>Ver en 3D y grabar el video <span className="flecha-punteada"></span></a>
-        <p className="nota-tec">El dibujo es una vista frontal deformada a la perspectiva de la foto (sirve para mostrarle al cliente en el sitio). El render con metal real y el video salen en el paso siguiente.</p>
+        <p className="nota-tec">Toca el espacio en la foto: la IA de Meta (Segment Anything, versión liviana) lo recorta en el teléfono y propone las 4 esquinas; puedes arrastrarlas para afinar. La primera vez descarga el modelo (unos 14 MB).</p>
       </div>
     </section>
   );

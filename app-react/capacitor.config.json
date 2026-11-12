@@ -1,0 +1,10 @@
+{
+  "appId": "com.acerostudio.app",
+  "appName": "AceroStudio",
+  "webDir": "dist-ios",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#eef0f2",
+    "limitsNavigationsToAppBoundDomains": false
+  }
+}
