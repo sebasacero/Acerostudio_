@@ -3,7 +3,7 @@ import Top, { Titulo } from '../Top.jsx';
 import { useApp } from '../visita.jsx';
 import { irA } from '../App.jsx';
 
-// Cámara optimizada para la visita: cámara trasera, resolución elegible, enfoque continuo, linterna y zoom
+// Cámara optimizada para la visita: cámara trasera a 1080p, enfoque y balance de blancos continuos
 // (cuando el teléfono expone esas capacidades), foto JPEG y video con MediaRecorder a alta tasa de bits.
 const RES = { '720p': [1280, 720], '1080p': [1920, 1080], '4K': [3840, 2160] };
 function mimeVideo() {
@@ -15,12 +15,10 @@ function mimeVideo() {
 export default function Camara() {
   const { actual, actualizar, crear, avisar, videos } = useApp();
   const video = useRef(null), stream = useRef(null), rec = useRef(null), trozos = useRef([]), cronometro = useRef(null);
-  const [res, setRes] = useState('1080p');
+  const res = '1080p'; // fija: buen detalle sin videos pesados para WhatsApp
   const [estado, setEstado] = useState('arrancando'); // arrancando | lista | sin-camara
   const [error, setError] = useState('');
   const [caps, setCaps] = useState({});
-  const [linterna, setLinterna] = useState(false);
-  const [zoom, setZoom] = useState(1);
   const [grabando, setGrabando] = useState(false);
   const [modo, setModo] = useState('foto'); // foto | video
   const [segundos, setSegundos] = useState(0);
@@ -50,9 +48,6 @@ export default function Camara() {
   function cerrar() { stream.current?.getTracks().forEach((t) => t.stop()); stream.current = null; }
   useEffect(() => { abrir(); return () => { cerrar(); clearInterval(cronometro.current); }; }, [res]);
 
-  const pista = () => stream.current?.getVideoTracks()[0];
-  const alternarLinterna = async () => { const t = pista(); if (!t) return; try { await t.applyConstraints({ advanced: [{ torch: !linterna }] }); setLinterna(!linterna); } catch { avisar('Este equipo no deja controlar la linterna desde el navegador'); } };
-  const cambiarZoom = async (z) => { setZoom(z); const t = pista(); if (!t) return; try { await t.applyConstraints({ advanced: [{ zoom: z }] }); } catch {} };
 
   function foto() {
     const v = video.current; if (!v?.videoWidth) return avisar('La cámara aún no entrega imagen');
@@ -96,18 +91,13 @@ export default function Camara() {
         {estado !== 'lista' && <div className="vacio" style={{ position: 'absolute', inset: 'auto 20px', border: 0, color: '#fff' }}>
           {estado === 'arrancando' ? <span>Abriendo la cámara…</span> : <><b>Sin cámara</b><span>{error}</span><button className="boton linea chico" onClick={abrir}>Reintentar</button></>}
         </div>}
-        <Titulo sobre="cámara/." nombre={actual?.cliente || 'Visita'} sub={<>{res} · {modo}{grabando && <span className="tiempo-rec"> ● REC {String(Math.floor(segundos / 60)).padStart(2, '0')}:{String(segundos % 60).padStart(2, '0')}</span>}</>} />
+        <Titulo sobre="cámara/." nombre={actual?.cliente || 'Visita'} sub={<>{modo}{grabando && <span className="tiempo-rec"> ● REC {String(Math.floor(segundos / 60)).padStart(2, '0')}:{String(segundos % 60).padStart(2, '0')}</span>}</>} />
         {/* barra inferior de la cámara: opciones arriba, modos y disparador abajo (como la cámara del teléfono) */}
         <div className="barra-cam">
           {(fotos.length > 0 || videoUrl) && <div className="tira" aria-label="Fotos de la visita">
             {fotos.map((f, i) => <button key={i} className={'mini' + (i === 0 ? ' on' : '')} style={{ backgroundImage: `url(${f})` }} onClick={() => { const l = [f, ...fotos.filter((x) => x !== f)]; setFotos(l); actualizar({ foto: f, fotos: l, medidas: null, vano: null }); }} aria-label={`Foto ${i + 1}`} />)}
             {videoUrl && <button className="mini vid" onClick={compartir} aria-label="Compartir el video">▶<small>{actual?.video?.duracion ?? segundos} s</small></button>}
           </div>}
-          <div className="opc-cam">
-            <div className="seg chico" role="group" aria-label="Resolución">{Object.keys(RES).map((r) => <button key={r} aria-pressed={res === r} onClick={() => setRes(r)}>{r}</button>)}</div>
-            <button className={'opc' + (linterna ? ' on' : '')} onClick={alternarLinterna} aria-pressed={linterna} disabled={!caps.torch} title={caps.torch ? 'Linterna' : 'Este equipo no deja controlar la linterna desde el navegador'}>luz</button>
-            {caps.zoom ? <label className="zoom-cam">zoom <input type="range" min={caps.zoom.min} max={Math.min(caps.zoom.max, 5)} step="0.1" value={zoom} onChange={(e) => cambiarZoom(+e.target.value)} aria-label="Zoom" /><output>{zoom.toFixed(1)}×</output></label> : <span className="opc" aria-disabled="true">zoom</span>}
-          </div>
           <div className="modos-cam">
             <div className="seg" role="tablist" aria-label="Modo"><button role="tab" aria-pressed={modo === 'foto'} onClick={() => setModo('foto')} disabled={grabando}>Foto</button><button role="tab" aria-pressed={modo === 'video'} onClick={() => setModo('video')}>Video</button><a role="tab" href="#medir">Medir</a></div>
             {modo === 'foto'
@@ -129,7 +119,7 @@ export default function Camara() {
         {videoUrl && <button className="boton linea" onClick={compartir} style={{ justifyContent: 'space-between' }}>Compartir o descargar el video <span className="flecha-punteada"></span></button>}
         <a className="boton coral" href="#medir" style={{ justifyContent: 'space-between' }}>Medir el vano <span className="flecha-punteada"></span></a>
         <p className="nota-tec">Consejos: pon el teléfono horizontal y de frente al vano, incluye el piso y una referencia de medida conocida (puerta, baldosa, un metro). Con buena luz el enfoque continuo mantiene nítido el video.</p>
-        <p className="nota-tec">Capacidades de este equipo: {['focusMode', 'torch', 'zoom', 'whiteBalanceMode'].filter((k) => caps[k]).join(', ') || 'básicas (el navegador no expone enfoque, linterna ni zoom)'}.</p>
+        <p className="nota-tec">Capacidades de este equipo: {['focusMode', 'whiteBalanceMode'].filter((k) => caps[k]).join(', ') || 'básicas (el navegador no expone enfoque, linterna ni zoom)'}.</p>
       </div>
     </section>
   );
