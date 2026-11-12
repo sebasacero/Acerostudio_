@@ -16,11 +16,13 @@ Abre la app **Terminal** del Mac y pega, uno por uno:
 ```bash
 git clone https://github.com/sebasacero/Acerostudio_.git
 cd Acerostudio_
-git checkout claude/project-thread-6l2y4n   # cuando se fusione, basta con main
+git checkout claude/project-thread-6l2y4n
 cd app-react
 npm install
 npm run ios
 ```
+
+(Cuando el cambio se fusione a main, el `git checkout` ya no hace falta.)
 
 `npm run ios` compila la app, la copia al proyecto de iPhone y abre **Xcode**. En Xcode:
 
@@ -40,7 +42,7 @@ Listo: el ícono **AceroStudio** queda en la pantalla de inicio.
 ## Actualizar la app después de cambios
 
 ```bash
-cd Acerostudio_ && git pull && cd app-react && npm install && npm run ios
+cd ~/Acerostudio_ && git pull && cd app-react && npm install && npm run ios
 ```
 
 y ▶ en Xcode.
