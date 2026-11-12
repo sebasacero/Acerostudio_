@@ -2,6 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import Top, { Titulo } from '../Top.jsx';
 import { useApp } from '../visita.jsx';
 import { irA } from '../App.jsx';
+import { PRODUCTOS } from '../producto.jsx';
+
+// Qué se hace con la foto: medir el vano o encajar un producto en el espacio.
+const DESTINOS = [['medir', 'Medir'], ['puerta', 'Puerta'], ['porton', 'Portón'], ['estructura', 'Estructura']];
+const MANTENER_MS = 350; // mantener oprimido más que esto = video
 
 // Cámara optimizada para la visita: cámara trasera a 1080p, enfoque y balance de blancos continuos
 // (cuando el teléfono expone esas capacidades), foto JPEG y video con MediaRecorder a alta tasa de bits.
@@ -20,7 +25,8 @@ export default function Camara() {
   const [error, setError] = useState('');
   const [caps, setCaps] = useState({});
   const [grabando, setGrabando] = useState(false);
-  const [modo, setModo] = useState('foto'); // foto | video
+  const [destino, setDestino] = useState(() => (actual?.producto?.producto && actual.producto.producto !== 'puerta' && DESTINOS.some(([k]) => k === actual.producto.producto) ? actual.producto.producto : 'medir'));
+  const pulsado = useRef(null), seg = useRef(0);
   const [segundos, setSegundos] = useState(0);
   const [fotos, setFotos] = useState(() => (actual?.fotos || (actual?.foto ? [actual.foto] : [])));
   const [videoUrl, setVideoUrl] = useState(() => (actual && videos[actual.id]?.url) || null);
@@ -58,9 +64,20 @@ export default function Camara() {
     const guardada = m.toDataURL('image/jpeg', 0.8);
     const lista = [guardada, ...fotos].slice(0, 4); setFotos(lista);
     actualizar({ foto: guardada, fotos: lista, fotoAncho: m.width, fotoAlto: m.height, medidas: null, vano: null });
-    avisar('Foto guardada en la visita');
     void jpg;
+    seguir(destino);
   }
+  // lleva la foto al paso elegido: medir el vano o encajar el producto en el espacio
+  function seguir(d) {
+    if (d === 'medir') return irA('medir');
+    const P = PRODUCTOS[d]; const med = actual?.medidas;
+    actualizar((v) => ({ producto: { ...v.producto, producto: d, ancho: med?.ancho || P.ancho[2], alto: med?.alto || P.alto[2] } }));
+    irA('encajar');
+  }
+  // un solo disparador: tocar = foto, mantener oprimido = video (se graba mientras se mantiene)
+  const bajar = (e) => { e.currentTarget.setPointerCapture?.(e.pointerId); pulsado.current = setTimeout(() => { pulsado.current = 'video'; grabar(); }, MANTENER_MS); };
+  const subir = () => { if (pulsado.current === 'video') { rec.current?.stop(); } else if (pulsado.current) { clearTimeout(pulsado.current); foto(); } pulsado.current = null; };
+  const cancelar = () => { if (pulsado.current === 'video') rec.current?.stop(); else clearTimeout(pulsado.current); pulsado.current = null; };
   function grabar() {
     if (grabando) { rec.current?.stop(); return; }
     const tipo = mimeVideo(); if (tipo === null || !stream.current) return avisar('Este navegador no graba video');
@@ -70,11 +87,12 @@ export default function Camara() {
     r.onstop = () => {
       clearInterval(cronometro.current); setGrabando(false);
       const blob = new Blob(trozos.current, { type: r.mimeType }); const url = URL.createObjectURL(blob);
-      videos[actual.id] = { url, blob, tipo: r.mimeType, duracion: segundos };
-      setVideoUrl(url); actualizar({ video: { tipo: r.mimeType, duracion: segundos, bytes: blob.size } }); avisar(`Video de ${segundos} s listo`);
+      const dur = seg.current;
+      videos[actual.id] = { url, blob, tipo: r.mimeType, duracion: dur };
+      setVideoUrl(url); actualizar({ video: { tipo: r.mimeType, duracion: dur, bytes: blob.size } }); avisar(`Video de ${dur} s guardado en la visita`);
     };
-    r.start(500); rec.current = r; setGrabando(true); setSegundos(0);
-    cronometro.current = setInterval(() => setSegundos((s) => s + 1), 1000);
+    r.start(500); rec.current = r; setGrabando(true); setSegundos(0); seg.current = 0;
+    cronometro.current = setInterval(() => { seg.current += 1; setSegundos(seg.current); }, 1000);
   }
   const compartir = async () => {
     const v = videos[actual.id]; if (!v) return;
@@ -85,13 +103,13 @@ export default function Camara() {
 
   return (
     <section className="pantalla on" data-p="camara" aria-label="Cámara">
-      <Top paso="camara"><a className="boton coral chico" href="#medir">Medir <span className="flecha-punteada"></span></a></Top>
+      <Top paso="camara" />
       <div className="lienzo">
         <video ref={video} playsInline muted autoPlay />
         {estado !== 'lista' && <div className="vacio" style={{ position: 'absolute', inset: 'auto 20px', border: 0, color: '#fff' }}>
           {estado === 'arrancando' ? <span>Abriendo la cámara…</span> : <><b>Sin cámara</b><span>{error}</span><button className="boton linea chico" onClick={abrir}>Reintentar</button></>}
         </div>}
-        <Titulo sobre="cámara/." nombre={actual?.cliente || 'Visita'} sub={<>{modo}{grabando && <span className="tiempo-rec"> ● REC {String(Math.floor(segundos / 60)).padStart(2, '0')}:{String(segundos % 60).padStart(2, '0')}</span>}</>} />
+        <Titulo sobre="cámara/." nombre={actual?.cliente || 'Visita'} sub={<>{grabando ? '' : 'toca: foto · mantén: video'}{grabando && <span className="tiempo-rec"> ● REC {String(Math.floor(segundos / 60)).padStart(2, '0')}:{String(segundos % 60).padStart(2, '0')}</span>}</>} />
         {/* barra inferior de la cámara: opciones arriba, modos y disparador abajo (como la cámara del teléfono) */}
         <div className="barra-cam">
           {(fotos.length > 0 || videoUrl) && <div className="tira" aria-label="Fotos de la visita">
@@ -99,11 +117,12 @@ export default function Camara() {
             {videoUrl && <button className="mini vid" onClick={compartir} aria-label="Compartir el video">▶<small>{actual?.video?.duracion ?? segundos} s</small></button>}
           </div>}
           <div className="modos-cam">
-            <div className="seg" role="tablist" aria-label="Modo"><button role="tab" aria-pressed={modo === 'foto'} onClick={() => setModo('foto')} disabled={grabando}>Foto</button><button role="tab" aria-pressed={modo === 'video'} onClick={() => setModo('video')}>Video</button><a role="tab" href="#medir">Medir</a></div>
-            {modo === 'foto'
-              ? <button className="disparo" onClick={foto} aria-label="Tomar foto" />
-              : <button className={'disparo video' + (grabando ? ' on' : '')} onClick={grabar} aria-label={grabando ? 'Parar video' : 'Grabar video'}><i></i></button>}
-            <a className="ultima" href="#medir" style={{ backgroundImage: fotos[0] ? `url(${fotos[0]})` : undefined }} aria-label="Medir el vano con la última foto">{!fotos[0] && 'medir'}</a>
+            <div className="seg destinos" role="radiogroup" aria-label="Qué hacer con la foto">{DESTINOS.map(([k, t]) => <button key={k} role="radio" aria-checked={destino === k} aria-pressed={destino === k} onClick={() => setDestino(k)} disabled={grabando}>{t}</button>)}</div>
+            <div className="fila-disparo">
+              <span className="pista-disparo">{grabando ? 'suelta para parar' : destino === 'medir' ? 'foto → medir' : `foto → ${DESTINOS.find(([k]) => k === destino)[1].toLowerCase()}`}</span>
+              <button className={'disparo' + (grabando ? ' video on' : '')} onPointerDown={bajar} onPointerUp={subir} onPointerCancel={cancelar} onContextMenu={(e) => e.preventDefault()} aria-label="Tocar para foto, mantener para video"><i></i></button>
+              <button className="ultima" onClick={() => fotos[0] && seguir(destino)} style={{ backgroundImage: fotos[0] ? `url(${fotos[0]})` : undefined }} aria-label="Usar la última foto">{!fotos[0] && 'sin foto'}</button>
+            </div>
           </div>
         </div>
       </div>

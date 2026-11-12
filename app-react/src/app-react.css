@@ -227,3 +227,15 @@ h2.cursiva small { font-family: var(--mono); font-style: normal; font-size: 10px
   .vistas-cam { left: 12px; right: 12px; bottom: 12px; }
 }
 @media (min-width: 901px) { .tira { display: none; } }
+
+/* disparador único y destinos de la foto */
+.modos-cam { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; justify-items: stretch; }
+.modos-cam .seg.destinos { width: 100%; max-width: 460px; justify-self: center; }
+.fila-disparo { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; }
+.pista-disparo { font-family: var(--mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 255, 255, .75); }
+.fila-disparo .ultima { justify-self: end; }
+.disparo { touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; transition: transform .15s, border-color .15s, background .15s; }
+.disparo i { width: 0; height: 0; border-radius: 50%; background: var(--coral); transition: all .15s; }
+.disparo.video.on { transform: scale(1.12); border-color: var(--coral); background: rgba(238, 127, 116, .25); }
+.disparo.video.on i { width: 24px; height: 24px; border-radius: 4px; background: var(--coral); }
+@media (max-width: 900px) { .modos-cam .seg.destinos { max-width: none; } .modos-cam .ultima { position: static; } }
