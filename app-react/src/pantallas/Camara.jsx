@@ -99,9 +99,13 @@ export default function Camara() {
         <Titulo sobre="cámara/." nombre={actual?.cliente || 'Visita'} sub={<>{res} · {modo}{grabando && <span className="tiempo-rec"> ● REC {String(Math.floor(segundos / 60)).padStart(2, '0')}:{String(segundos % 60).padStart(2, '0')}</span>}</>} />
         {/* barra inferior de la cámara: opciones arriba, modos y disparador abajo (como la cámara del teléfono) */}
         <div className="barra-cam">
+          {(fotos.length > 0 || videoUrl) && <div className="tira" aria-label="Fotos de la visita">
+            {fotos.map((f, i) => <button key={i} className={'mini' + (i === 0 ? ' on' : '')} style={{ backgroundImage: `url(${f})` }} onClick={() => { const l = [f, ...fotos.filter((x) => x !== f)]; setFotos(l); actualizar({ foto: f, fotos: l, medidas: null, vano: null }); }} aria-label={`Foto ${i + 1}`} />)}
+            {videoUrl && <button className="mini vid" onClick={compartir} aria-label="Compartir el video">▶<small>{actual?.video?.duracion ?? segundos} s</small></button>}
+          </div>}
           <div className="opc-cam">
             <div className="seg chico" role="group" aria-label="Resolución">{Object.keys(RES).map((r) => <button key={r} aria-pressed={res === r} onClick={() => setRes(r)}>{r}</button>)}</div>
-            <button className={'opc' + (linterna ? ' on' : '')} onClick={alternarLinterna} aria-pressed={linterna} disabled={!caps.torch}>luz</button>
+            <button className={'opc' + (linterna ? ' on' : '')} onClick={alternarLinterna} aria-pressed={linterna} disabled={!caps.torch} title={caps.torch ? 'Linterna' : 'Este equipo no deja controlar la linterna desde el navegador'}>luz</button>
             {caps.zoom ? <label className="zoom-cam">zoom <input type="range" min={caps.zoom.min} max={Math.min(caps.zoom.max, 5)} step="0.1" value={zoom} onChange={(e) => cambiarZoom(+e.target.value)} aria-label="Zoom" /><output>{zoom.toFixed(1)}×</output></label> : <span className="opc" aria-disabled="true">zoom</span>}
           </div>
           <div className="modos-cam">
@@ -109,7 +113,7 @@ export default function Camara() {
             {modo === 'foto'
               ? <button className="disparo" onClick={foto} aria-label="Tomar foto" />
               : <button className={'disparo video' + (grabando ? ' on' : '')} onClick={grabar} aria-label={grabando ? 'Parar video' : 'Grabar video'}><i></i></button>}
-            <div className="ultima" style={{ backgroundImage: fotos[0] ? `url(${fotos[0]})` : undefined }} aria-hidden="true">{!fotos[0] && (videoUrl ? '▶' : '')}</div>
+            <a className="ultima" href="#medir" style={{ backgroundImage: fotos[0] ? `url(${fotos[0]})` : undefined }} aria-label="Medir el vano con la última foto">{!fotos[0] && 'medir'}</a>
           </div>
         </div>
       </div>
