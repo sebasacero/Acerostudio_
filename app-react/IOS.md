@@ -56,6 +56,7 @@ y ▶ en Xcode.
 
 ## Notas técnicas
 
+- Capacitor fijo en **8.5.3** (`package.json`, versión exacta): el paquete de iOS 8.6.1 publicado en GitHub no coincide con su propia suma de verificación y Xcode no lo descarga ("checksum … does not match"). Subir de versión solo cuando eso esté corregido.
 - Configuración: `capacitor.config.json` (id `com.acerostudio.app`). Proyecto Xcode en `ios/App` (Swift Package Manager, iOS 15+).
 - Permisos en `ios/App/App/Info.plist`: cámara, micrófono y guardar en Fotos.
 - `npm run build:ios` compila con rutas relativas a `dist-ios/` y sincroniza; la versión web sigue saliendo a `/app/` con `npm run build`.

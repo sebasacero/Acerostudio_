@@ -16,7 +16,8 @@ export default function Medir() {
   const [manual, setManual] = useState({ ancho: actual?.medidas?.ancho ?? 1, alto: actual?.medidas?.alto ?? 2.1 });
   const img = useRef(null), svg = useRef(null);
   const [caja, setCaja] = useState({ x: 0, y: 0, w: 1, h: 1 }); // rectángulo real de la imagen dentro del lienzo (object-fit: contain)
-  const det = useDetectorVano(actual?.foto);
+  // la IA se prepara si aún no hay medidas o en cuanto se empieza a marcar (no al solo mirar una visita ya medida)
+  const det = useDetectorVano(actual?.foto, !actual?.medidas || pts.length > 0);
   const [buscando, setBuscando] = useState(false);
   const [mascara, setMascara] = useState(null);
 
@@ -33,7 +34,7 @@ export default function Medir() {
     const r = svg.current.getBoundingClientRect(); const u = (e.clientX - r.left - caja.x) / caja.w, v = (e.clientY - r.top - caja.y) / caja.h;
     if (u < 0 || u > 1 || v < 0 || v > 1 || buscando) return;
     // después de la referencia, un toque dentro del vano basta: la IA lo recorta y pone las 4 esquinas
-    if (pts.length === 2 && det.estado === 'lista') {
+    if (pts.length === 2 && det.estado !== 'error') {
       setBuscando(true);
       det.detectar(u, v).then((r) => {
         if (r) { const n = [...pts, ...r.esquinas]; setPts(n); setMascara(r.mascara); terminar(n); }

@@ -53,18 +53,21 @@ export default function Camara() {
   }
   function cerrar() { stream.current?.getTracks().forEach((t) => t.stop()); stream.current = null; }
   useEffect(() => { abrir(); return () => { cerrar(); clearInterval(cronometro.current); }; }, [res]);
+  // con la app en segundo plano (o el teléfono bloqueado) la cámara y el micrófono se apagan; al volver se reabren
+  useEffect(() => {
+    const f = () => { if (document.hidden) { if (rec.current?.state === 'recording') rec.current.stop(); cerrar(); } else if (!stream.current) abrir(); };
+    document.addEventListener('visibilitychange', f); return () => document.removeEventListener('visibilitychange', f);
+  }, []);
 
 
   function foto() {
     const v = video.current; if (!v?.videoWidth) return avisar('La cámara aún no entrega imagen');
-    const c = document.createElement('canvas'); c.width = v.videoWidth; c.height = v.videoHeight; c.getContext('2d').drawImage(v, 0, 0);
-    const jpg = c.toDataURL('image/jpeg', 0.86);
-    // miniatura liviana para guardar en el teléfono (localStorage ≈ 5 MB); la foto completa queda en la visita actual
-    const m = document.createElement('canvas'); const k = Math.min(1, 1600 / c.width); m.width = c.width * k; m.height = c.height * k; m.getContext('2d').drawImage(c, 0, 0, m.width, m.height);
-    const guardada = m.toDataURL('image/jpeg', 0.8);
+    // se reduce directo del video a 1600 px (antes se codificaba además un JPEG completo que nunca se usaba)
+    const k = Math.min(1, 1600 / v.videoWidth); const m = document.createElement('canvas'); m.width = Math.round(v.videoWidth * k); m.height = Math.round(v.videoHeight * k);
+    m.getContext('2d').drawImage(v, 0, 0, m.width, m.height);
+    const guardada = m.toDataURL('image/jpeg', 0.82);
     const lista = [guardada, ...fotos].slice(0, 4); setFotos(lista);
     actualizar({ foto: guardada, fotos: lista, fotoAncho: m.width, fotoAlto: m.height, medidas: null, vano: null });
-    void jpg;
     seguir(destino);
   }
   // lleva la foto al paso elegido: medir el vano o encajar el producto en el espacio

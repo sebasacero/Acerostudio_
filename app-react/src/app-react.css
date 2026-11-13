@@ -253,3 +253,87 @@ h2.cursiva small { font-family: var(--mono); font-style: normal; font-size: 10px
 .confirmar-vano ~ .estado-ia { display: none; }
 .esquina { r: 11; }
 @media (max-width: 900px) { .estado-ia { bottom: 12px; font-size: 12.5px; } .confirmar-vano { bottom: 12px; font-size: 13px; } }
+
+/* ======================================================================
+   Revisión responsive (nov 2026)
+   ====================================================================== */
+
+/* La app nativa de iPhone se dibuja debajo de la barra de estado y de la muesca (contentInset: never):
+   el contenido respeta esas zonas y el fondo de la barra superior las cubre. */
+html, body { background: var(--pizarra-2); }
+.shell { box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
+
+/* menos trabajo de composición: sin desenfoque sobre la foto o el video (en iPhone se recalcula en cada cuadro) */
+.vistas-cam button, .estado-ia { backdrop-filter: none; -webkit-backdrop-filter: none; }
+.estado-ia { background: rgba(11, 13, 20, .86); }
+
+/* visor 3D: las vistas en una sola fila deslizable, no dos filas encima del render */
+.vistas-cam { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+.vistas-cam::-webkit-scrollbar { display: none; }
+.vistas-cam button { flex: none; background: rgba(var(--vidrio-rgb), .85); }
+
+/* ---- teléfono vertical ---- */
+@media (max-width: 900px) {
+  /* Medir, Encajar y Video: la foto queda fija arriba y solo los controles se deslizan debajo,
+     así se ve el resultado mientras se cambian diseño, acabado o medidas */
+  .pantalla.on[data-p="medir"], .pantalla.on[data-p="encajar"], .pantalla.on[data-p="render"] {
+    grid-template-rows: 52px minmax(190px, 46svh) minmax(0, 1fr); height: 100%; min-height: 0; overflow: hidden;
+  }
+  [data-p="medir"] .lienzo, [data-p="encajar"] .lienzo, [data-p="render"] .lienzo { height: auto; min-height: 0; }
+  [data-p="medir"] .ctrl, [data-p="encajar"] .ctrl, [data-p="render"] .ctrl { overflow: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; border-top: 1px solid rgba(var(--tinta-rgb), .1); }
+
+  /* título sobre la foto: compacto, para no tapar el vano */
+  .titulo-lienzo { left: 12px; top: 10px; max-width: calc(100% - 24px); }
+  .titulo-lienzo em { display: none; }
+  .titulo-lienzo h1 { font-size: 20px; margin-top: 0; }
+  .titulo-lienzo p { font-size: 9.5px; margin-top: 3px; letter-spacing: .08em; }
+  [data-p="camara"] .titulo-lienzo h1 { font-size: 20px; }
+
+  /* visitas: portada corta (en la obra lo primero es la lista y el formulario, no la presentación) */
+  [data-p="inicio"] .titulo-disp { font-size: 30px !important; }
+  [data-p="inicio"] .contenido > div:first-child p, [data-p="inicio"] .tres { display: none; }
+  .visita b { font-size: 19px; }
+
+  /* botones y controles con al menos 44 px de alto para el dedo */
+  .seg button, .seg a { padding: 11px 2px; }
+  .tresb button, .dosb button { padding: 12px 6px; }
+  .opciones .boton.chico { padding: 10px 14px; }
+  .muestras button { width: 34px; height: 34px; }
+  .vistas-cam { left: 10px; right: 10px; bottom: 10px; }
+  .vistas-cam button { padding: 9px 10px; }
+  .estado-ia, .confirmar-vano { max-width: calc(100% - 20px); }
+  .estado-ia { white-space: normal; text-align: left; }
+  .toast { bottom: calc(var(--barra) + env(safe-area-inset-bottom, 0px) + 12px); max-width: calc(100% - 32px); }
+}
+
+/* ---- teléfono horizontal: barra de navegación a la izquierda, foto o video a la izquierda y controles a la derecha ---- */
+@media (max-width: 1000px) and (max-height: 520px) and (orientation: landscape) {
+  .shell { grid-template-columns: calc(64px + env(safe-area-inset-left, 0px)) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); padding-left: 0; }
+  .riel { grid-row: 1; grid-column: 1; flex-direction: column; justify-content: flex-start; padding: 6px 0 calc(6px + env(safe-area-inset-bottom, 0px)) env(safe-area-inset-left, 0px); border-top: 0; border-right: 1px solid rgba(var(--tinta-rgb), .1); gap: 2px; overflow-y: auto; }
+  .riel a { flex: none; width: 54px; padding: 5px 0 3px; font-size: 9px; }
+  .riel a svg { width: 19px; height: 19px; }
+  .riel a.crear { flex: none; width: 44px; height: 40px; border-radius: 10px; margin: 2px 0; }
+  .vista { grid-row: 1; grid-column: 2; }
+  .top { height: 44px; }
+  .top .marca img { height: 22px; } .top .marca span { font-size: 15px; }
+  .contenido { padding-top: 12px; }
+
+  .pantalla.on[data-p="medir"], .pantalla.on[data-p="encajar"], .pantalla.on[data-p="render"], .pantalla.on[data-p="propuesta"] {
+    grid-template-columns: minmax(0, 1fr) minmax(250px, 36%); grid-template-rows: 44px minmax(0, 1fr); grid-template-areas: "top top" "lienzo ctrl"; height: 100%; min-height: 0; overflow: hidden;
+  }
+  .pantalla.on[data-p="propuesta"] { grid-template-areas: "top top" "mesa ctrl"; }
+  .pantalla.on[data-p="propuesta"] .mesa { overflow: auto; }
+  [data-p="medir"] .lienzo, [data-p="encajar"] .lienzo, [data-p="render"] .lienzo { height: auto; }
+  .ctrl { overflow: auto; border-left: 1px solid rgba(var(--tinta-rgb), .1); border-top: 0; padding: 10px 14px calc(14px + env(safe-area-inset-bottom, 0px)); }
+
+  /* cámara: el video ocupa todo el alto y el disparador queda a la derecha, como la cámara del iPhone */
+  .pantalla.on[data-p="camara"] { grid-template-rows: 44px minmax(0, 1fr); }
+  [data-p="camara"] .lienzo { flex-direction: row; }
+  [data-p="camara"] .lienzo video { width: auto; height: 100%; flex: 1 1 0; min-width: 0; }
+  [data-p="camara"] .barra-cam { width: 210px; flex: none; align-content: center; overflow-y: auto; padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px)); }
+  [data-p="camara"] .modos-cam .seg.destinos { grid-auto-flow: row; grid-template-columns: 1fr 1fr; }
+  [data-p="camara"] .fila-disparo { grid-template-columns: 1fr auto 1fr; }
+  [data-p="camara"] .pista-disparo { font-size: 8.5px; }
+  [data-p="camara"] .tira .mini { width: 38px; height: 38px; }
+}
+.muestras { flex-wrap: wrap; row-gap: 8px; }

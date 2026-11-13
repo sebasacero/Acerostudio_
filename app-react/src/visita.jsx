@@ -36,7 +36,20 @@ export function AppProvider({ children }) {
   const tt = useRef();
 
   useEffect(() => { document.body.classList.toggle('dia', dia); try { localStorage.setItem('acero-tema', dia ? 'dia' : 'noche'); } catch {} }, [dia]);
-  useEffect(() => { guardar(visitas); }, [visitas]);
+  // Guardar es caro (todas las visitas con sus fotos en base64 → JSON → localStorage): se agrupa en una escritura
+  // cada 700 ms en vez de una por cambio (arrastrar una esquina generaba decenas por segundo y calentaba el teléfono).
+  const pendiente = useRef(null), ultimas = useRef(visitas);
+  useEffect(() => {
+    ultimas.current = visitas;
+    clearTimeout(pendiente.current);
+    pendiente.current = setTimeout(() => { pendiente.current = null; guardar(visitas); }, 700);
+  }, [visitas]);
+  useEffect(() => {
+    const ya = () => { if (pendiente.current) { clearTimeout(pendiente.current); pendiente.current = null; guardar(ultimas.current); } };
+    const alOcultar = () => { if (document.hidden) ya(); };
+    addEventListener('pagehide', ya); document.addEventListener('visibilitychange', alOcultar);
+    return () => { ya(); removeEventListener('pagehide', ya); document.removeEventListener('visibilitychange', alOcultar); };
+  }, []);
 
   const actual = useMemo(() => visitas.find((v) => v.id === actualId) || null, [visitas, actualId]);
   const crear = useCallback((datos) => { const v = nuevaVisita(datos); setVisitas((l) => [v, ...l]); setActualId(v.id); return v; }, []);

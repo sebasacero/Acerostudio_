@@ -1,3 +1,4 @@
+import { memo } from 'react';
 // Dibujo frontal del producto (SVG) para encajarlo en la foto. Unidades: metros → el SVG usa viewBox en cm.
 import { PRODUCTOS, DISENOS, TIPOS } from '../../ornamentacion/js/porton.js';
 export { PRODUCTOS, DISENOS, TIPOS };
@@ -14,15 +15,19 @@ function relleno(diseno, x, y, w, h, c, seed = 3) {
   else if (diseno === 'lamina') { for (let j = y + 6; j < y + h - 4; j += 10) for (let i = x + 6; i < x + w - 4; i += 10) out.push(<path key={i + '-' + j} d={`M${i} ${j - 4} l4 4 l-4 4 l-4 -4z`} fill="none" stroke={c[2]} strokeWidth="1" />); out.push(<rect key="f" x={x} y={y} width={w} height={h} fill={c[1]} opacity=".55" />); }
   else if (diseno === 'tablero') { for (let j = y + 5; j < y + h - 8; j += 22) for (let i = x + 5; i < x + w - 8; i += 22) out.push(<rect key={i + '-' + j} x={i} y={j} width="17" height="17" rx="2" fill={c[1]} stroke={c[2]} strokeWidth="1" />); }
   else { // celosía láser: lámina llena con perforaciones orgánicas
-    out.push(<rect key="f" x={x} y={y} width={w} height={h} fill={c[1]} />);
-    const R = rng(seed); const n = Math.round(w * h / 90);
-    for (let k = 0; k < n; k++) { const r = 1.2 + R() * 2.4, px = x + 4 + R() * (w - 8), py = y + 4 + R() * (h - 8); out.push(<ellipse key={k} cx={px} cy={py} rx={r} ry={r * (0.6 + R() * 0.6)} fill="rgba(0,0,0,.55)" />); }
+    // un mosaico de 36 cm con las perforaciones, repetido con <pattern>: antes eran cientos de elipses sueltas (≈900 en un portón)
+    // que el teléfono redibujaba en cada movimiento de una esquina
+    const R = rng(seed), T = 36, id = `celosia-${seed}-${c[1].slice(1)}`, hoyos = [];
+    for (let k = 0; k < 15; k++) { const r = 1.2 + R() * 2.4; hoyos.push(<ellipse key={k} cx={2 + R() * (T - 4)} cy={2 + R() * (T - 4)} rx={r} ry={r * (0.6 + R() * 0.6)} fill="rgba(0,0,0,.55)" />); }
+    out.push(<pattern key="p" id={id} width={T} height={T} patternUnits="userSpaceOnUse" x={x} y={y}><rect width={T} height={T} fill={c[1]} />{hoyos}</pattern>);
+    out.push(<rect key="f" x={x} y={y} width={w} height={h} fill={`url(#${id})`} />);
   }
   return out;
 }
 
 /* El producto completo: marco + hojas. `ancho`/`alto` en m. */
-export function ProductoSVG({ cfg, apertura = 0, style }) {
+/* memo: no se vuelve a dibujar mientras se arrastran las esquinas (solo cambia la deformación CSS) */
+export const ProductoSVG = memo(function ProductoSVG({ cfg, apertura = 0, style }) {
   const W = Math.round(cfg.ancho * 100), H = Math.round(cfg.alto * 100), c = ACABADOS[cfg.acabado] || ACABADOS.grafito;
   const marco = cfg.producto === 'baranda' ? 4 : 6;
   const hojas = cfg.producto === 'porton' && cfg.tipo === 'batiente' ? 2 : 1;
@@ -44,4 +49,4 @@ export function ProductoSVG({ cfg, apertura = 0, style }) {
       {cfg.producto === 'porton' && cfg.tipo === 'levadizo' && <rect x={marco} y={marco} width={W - marco * 2} height={(H - marco * 2) * apertura} fill="rgba(0,0,0,.35)" />}
     </svg>
   );
-}
+});

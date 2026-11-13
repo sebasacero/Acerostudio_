@@ -14,11 +14,13 @@ export default function Encajar() {
   const [caja, setCaja] = useState({ x: 0, y: 0, w: 1, h: 1 });
   const [apertura, setApertura] = useState(0);
   const arrastre = useRef(null);
-  const det = useDetectorVano(actual?.foto);
+  const det = useDetectorVano(actual?.foto, !actual?.vano); // con el vano ya marcado, la IA no se prepara hasta que se toque la foto
+  const [arrastrado, setArrastrado] = useState(null); // esquinas mientras se arrastra: se guardan en la visita solo al soltar
+  const cuadro = useRef(0);
   const [mascara, setMascara] = useState(null); // recorte propuesto por la IA, mientras se confirma
   const [buscando, setBuscando] = useState(false);
   const cfg = actual?.producto || {};
-  const vano = actual?.vano || [[0.3, 0.3], [0.7, 0.3], [0.7, 0.85], [0.3, 0.85]];
+  const vano = arrastrado || actual?.vano || [[0.3, 0.3], [0.7, 0.3], [0.7, 0.85], [0.3, 0.85]];
 
   useEffect(() => {
     const f = () => { const i = img.current; if (!i?.naturalWidth) return; const r = i.getBoundingClientRect(), k = Math.min(r.width / i.naturalWidth, r.height / i.naturalHeight), w = i.naturalWidth * k, h = i.naturalHeight * k; setCaja({ x: (r.width - w) / 2, y: (r.height - h) / 2, w, h }); };
@@ -30,12 +32,17 @@ export default function Encajar() {
   const BW = 400, BH = 400; // tamaño base del dibujo antes de deformar
   const set = (c) => actualizar({ producto: { ...cfg, ...c } });
   const bajar = (i) => (e) => { arrastre.current = i; e.target.setPointerCapture(e.pointerId); };
+  // un cambio por cuadro de pantalla como mucho, y solo en estado local
   const mover = (e) => {
     if (arrastre.current == null) return;
-    const r = capa.current.getBoundingClientRect(); const u = Math.min(1, Math.max(0, (e.clientX - r.left - caja.x) / caja.w)), v = Math.min(1, Math.max(0, (e.clientY - r.top - caja.y) / caja.h));
-    const n = vano.map((p, i) => (i === arrastre.current ? [u, v] : p)); actualizar({ vano: n });
+    const { clientX, clientY } = e;
+    if (cuadro.current) return; cuadro.current = requestAnimationFrame(() => {
+      cuadro.current = 0; if (arrastre.current == null) return;
+      const r = capa.current.getBoundingClientRect(); const u = Math.min(1, Math.max(0, (clientX - r.left - caja.x) / caja.w)), v = Math.min(1, Math.max(0, (clientY - r.top - caja.y) / caja.h));
+      setArrastrado((a) => (a || vano).map((p, i) => (i === arrastre.current ? [u, v] : p)));
+    });
   };
-  const soltar = () => { arrastre.current = null; };
+  const soltar = () => { if (arrastre.current == null) return; arrastre.current = null; cancelAnimationFrame(cuadro.current); cuadro.current = 0; if (arrastrado) actualizar({ vano: arrastrado }); setArrastrado(null); };
   // tocar la foto (fuera de las esquinas) = la IA busca el vano en ese punto
   async function tocarFoto(e) {
     if (e.target !== e.currentTarget || buscando) return;
@@ -57,7 +64,7 @@ export default function Encajar() {
   return (
     <section className="pantalla on" data-p="encajar" aria-label="Encajar">
       <Top paso="encajar"><a className="boton coral chico" href="#render">Video <span className="flecha-punteada"></span></a></Top>
-      <div className="lienzo" onPointerMove={mover} onPointerUp={soltar}>
+      <div className="lienzo" onPointerMove={mover} onPointerUp={soltar} onPointerCancel={soltar}>
         {!actual?.foto ? <div className="vacio" style={{ border: 0, color: '#fff' }}><b>Sin foto</b><span>Toma la foto del vano para encajar el producto.</span><a className="boton linea chico" href="#camara">Ir a la cámara</a></div>
           : <>
             <img ref={img} className="foto" src={actual.foto} alt="Espacio del cliente" />
@@ -80,7 +87,7 @@ export default function Encajar() {
         <h2 className="cursiva">Diseño <small>acero</small></h2>
         <div className="campo"><span className="lbl">producto</span><div className="seg seg3">{Object.entries(PRODUCTOS).map(([k, p]) => <button key={k} aria-pressed={cfg.producto === k} onClick={() => set({ producto: k, ancho: actual.medidas?.ancho || p.ancho[2], alto: actual.medidas?.alto || p.alto[2] })}>{p.nombre}</button>)}</div></div>
         {cfg.producto === 'porton' && <div className="campo"><span className="lbl">tipo</span><div className="seg">{Object.entries(TIPOS).map(([k, n]) => <button key={k} aria-pressed={cfg.tipo === k} onClick={() => set({ tipo: k })}>{n}</button>)}</div></div>}
-        {cfg.producto !== 'ventana' && <div className="campo"><span className="lbl">diseño de la hoja</span><div className="seg">{Object.entries(DISENOS).map(([k, n]) => <button key={k} aria-pressed={cfg.diseno === k} onClick={() => set({ diseno: k })}>{n}</button>)}</div></div>}
+        {cfg.producto !== 'ventana' && <div className="campo"><span className="lbl">diseño de la hoja</span><div className="seg seg3">{Object.entries(DISENOS).map(([k, n]) => <button key={k} aria-pressed={cfg.diseno === k} onClick={() => set({ diseno: k })}>{n}</button>)}</div></div>}
         <div className="campo"><span className="lbl">acabado</span><div className="muestras">{Object.entries(ACABADOS).map(([k, [n, c]]) => <button key={k} aria-pressed={cfg.acabado === k} onClick={() => set({ acabado: k })} style={{ '--c': c }} title={n} aria-label={n} />)}<span className="tag" style={{ alignSelf: 'center' }}>{ACABADOS[cfg.acabado]?.[0]}</span></div></div>
         <div className="fila2">
           <div className="campo"><label>ancho (m)</label><input type="number" step="0.01" value={cfg.ancho} onChange={(e) => set({ ancho: +e.target.value })} /></div>

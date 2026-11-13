@@ -52,6 +52,8 @@ async function prepararFoto(url, alProgreso) {
     return { m, entradas, embebido, W: lienzo.width, H: lienzo.height };
   })();
   embebidos.set(url, p);
+  // cada embebido pesa varios MB: se guardan solo las 2 fotos más recientes
+  while (embebidos.size > 2) embebidos.delete(embebidos.keys().next().value);
   p.catch(() => embebidos.delete(url));
   return p;
 }
@@ -140,21 +142,29 @@ export function mascaraUrl(mask, W, H) {
   g.putImageData(d, 0, 0); return c.toDataURL();
 }
 
-/* Hook: prepara la IA para la foto actual y expone detectar(u, v). */
-export function useDetectorVano(foto) {
+/* Hook: prepara la IA para la foto y expone detectar(u, v).
+   Con `auto` la prepara apenas hay foto (el primer toque es instantáneo); sin `auto` no gasta batería
+   hasta que el usuario toca la foto (por ejemplo, cuando el vano ya está marcado). */
+export function useDetectorVano(foto, auto = true) {
   const [estado, setEstado] = useState('inactivo'); // inactivo | cargando | lista | error
   const [progreso, setProgreso] = useState(0);
   const [error, setError] = useState('');
   const vivo = useRef(true);
+  const preparar = () => {
+    if (globalThis.__segmentadorPrueba) { setEstado('lista'); return Promise.resolve(); }
+    setEstado((e) => (e === 'lista' ? e : 'cargando')); setError('');
+    const p = prepararFoto(foto, (x) => vivo.current && setProgreso(x));
+    p.then(() => vivo.current && setEstado('lista')).catch((e) => { if (!vivo.current) return; console.warn('detector', e); setEstado('error'); setError(e.message || String(e)); });
+    return p;
+  };
   useEffect(() => {
     vivo.current = true;
-    if (!foto) return;
-    if (globalThis.__segmentadorPrueba) { setEstado('lista'); return; }
-    setEstado('cargando'); setError('');
-    prepararFoto(foto, (p) => vivo.current && setProgreso(p)).then(() => vivo.current && setEstado('lista')).catch((e) => { if (!vivo.current) return; console.warn('detector', e); setEstado('error'); setError(e.message || String(e)); });
+    setEstado('inactivo');
+    if (foto && auto) preparar();
     return () => { vivo.current = false; };
-  }, [foto]);
+  }, [foto, auto]);
   async function detectar(u, v) {
+    if (!globalThis.__segmentadorPrueba) await preparar();
     const r = await segmentar(foto, u, v);
     const q = cuadrilatero(r.mascara, r.W, r.H, u, v);
     if (!q) return null;
