@@ -60,11 +60,22 @@ export default function Camara() {
   }, []);
 
 
-  function foto() {
+  // brillo medio (0..255) de una muestra pequeña: en iPhone el primer cuadro tras despertar la cámara a veces sale negro
+  function brillo(c) {
+    const t = document.createElement('canvas'); t.width = 32; t.height = 24; const g = t.getContext('2d', { willReadFrequently: true }); g.drawImage(c, 0, 0, 32, 24);
+    const d = g.getImageData(0, 0, 32, 24).data; let s = 0; for (let i = 0; i < d.length; i += 4) s += d[i] * 0.3 + d[i + 1] * 0.59 + d[i + 2] * 0.11; return s / (d.length / 4);
+  }
+  async function foto(intento = 0) {
     const v = video.current; if (!v?.videoWidth) return avisar('La cámara aún no entrega imagen');
+    if (v.paused) await v.play().catch(() => {});
     // se reduce directo del video a 1600 px (antes se codificaba además un JPEG completo que nunca se usaba)
     const k = Math.min(1, 1600 / v.videoWidth); const m = document.createElement('canvas'); m.width = Math.round(v.videoWidth * k); m.height = Math.round(v.videoHeight * k);
     m.getContext('2d').drawImage(v, 0, 0, m.width, m.height);
+    if (brillo(m) < 6) {
+      // cuadro negro: se espera un cuadro nuevo de la cámara y se reintenta; si sigue negro, es la luz o el lente tapado
+      if (intento < 3) return new Promise((ok) => setTimeout(ok, 180)).then(() => foto(intento + 1));
+      return avisar('La foto salió negra: revisa que el lente no esté tapado y que haya luz');
+    }
     const guardada = m.toDataURL('image/jpeg', 0.82);
     const lista = [guardada, ...fotos].slice(0, 4); setFotos(lista);
     actualizar({ foto: guardada, fotos: lista, fotoAncho: m.width, fotoAlto: m.height, medidas: null, vano: null });

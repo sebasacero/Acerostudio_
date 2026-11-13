@@ -17,7 +17,7 @@ export default function Medir() {
   const img = useRef(null), svg = useRef(null);
   const [caja, setCaja] = useState({ x: 0, y: 0, w: 1, h: 1 }); // rectángulo real de la imagen dentro del lienzo (object-fit: contain)
   // la IA se prepara si aún no hay medidas o en cuanto se empieza a marcar (no al solo mirar una visita ya medida)
-  const det = useDetectorVano(actual?.foto, !actual?.medidas || pts.length > 0);
+  const det = useDetectorVano(actual?.foto);
   const [buscando, setBuscando] = useState(false);
   const [mascara, setMascara] = useState(null);
 
