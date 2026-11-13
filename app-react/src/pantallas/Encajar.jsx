@@ -44,6 +44,9 @@ export default function Encajar() {
   };
   const soltar = () => { if (arrastre.current == null) return; arrastre.current = null; cancelAnimationFrame(cuadro.current); cuadro.current = 0; if (arrastrado) actualizar({ vano: arrastrado }); setArrastrado(null); };
   // tocar la foto (fuera de las esquinas) = la IA busca el vano en ese punto
+  // el resultado se muestra en la misma píldora donde se vio "Analizando la foto…", unos segundos
+  const [aviso, setAviso] = useState(''); const reloj = useRef(0);
+  const mostrarAviso = (t) => { setAviso(t); clearTimeout(reloj.current); reloj.current = setTimeout(() => setAviso(''), 4000); };
   async function tocarFoto(e) {
     if (e.target !== e.currentTarget || buscando) return;
     const r = capa.current.getBoundingClientRect(); const u = (e.clientX - r.left - caja.x) / caja.w, v = (e.clientY - r.top - caja.y) / caja.h;
@@ -53,9 +56,9 @@ export default function Encajar() {
     setBuscando(true);
     try {
       const res = await det.detectar(u, v);
-      if (!res) { avisar('No encontré un espacio claro ahí: toca más al centro del vano'); return; }
+      if (!res) { mostrarAviso('No encontré un espacio claro ahí: toca más al centro del vano'); return; }
       actualizar({ vano: res.esquinas }); setMascara(res.mascara);
-    } catch (err) { console.warn(err); avisar('No se pudo analizar la foto: arrastra las esquinas'); }
+    } catch (err) { console.warn(err); mostrarAviso('No se pudo analizar la foto: arrastra las esquinas'); }
     finally { setBuscando(false); }
   }
   const sinVano = !actual?.vano && det.estado !== 'error';
@@ -76,7 +79,7 @@ export default function Encajar() {
             </svg></div>
           </>}
         <Titulo sobre="encajar/." nombre={P.nombre} sub={`${m(cfg.ancho)} × ${m(cfg.alto)} · ${DISENOS[cfg.diseno] || ''}`} />
-        {actual?.foto && <EstadoIA det={det} buscando={buscando} pista={sinVano ? `Toca el espacio donde va ${cfg.producto === 'porton' ? 'el' : 'la'} ${P.nombre.toLowerCase()}` : 'Toca otro punto para volver a detectar'} />}
+        {actual?.foto && <EstadoIA det={det} buscando={buscando} pista={aviso || (sinVano ? `Toca el espacio donde va ${cfg.producto === 'porton' ? 'el' : 'la'} ${P.nombre.toLowerCase()}` : 'Toca otro punto para volver a detectar')} />}
         {mascara && !buscando && <div className="confirmar-vano">
           <span>¿Es este el espacio?</span>
           <button className="si" onClick={() => { setMascara(null); avisar('Vano confirmado: ajusta las esquinas si hace falta'); }}>Sí, encajar</button>
