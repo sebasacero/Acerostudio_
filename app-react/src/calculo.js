@@ -5,7 +5,8 @@ import { crearSimulador } from '../../ornamentacion/js/porton.js';
 let sim = null;
 function asegurar() {
   if (sim) return sim;
-  const c = document.createElement('canvas'); c.width = 2; c.height = 2;
+  // lienzo sin WebGL a propósito: el simulador cae a su modo "sin3D" (solo cálculo) y no abre un segundo contexto de GPU
+  const c = document.createElement('canvas'); c.width = 2; c.height = 2; c.getContext = () => null;
   sim = crearSimulador(c, { cfg: { paisaje: false } });
   return sim;
 }

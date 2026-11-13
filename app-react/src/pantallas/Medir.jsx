@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import Top, { Titulo } from '../Top.jsx';
 import { useApp, m } from '../visita.jsx';
 import { REFERENCIAS, hayAR, medirAR, escalaPorReferencia, medidasVano } from '../medicion.js';
+import { useDetectorVano } from '../vision.js';
+import EstadoIA from '../EstadoIA.jsx';
 
 // Medir el vano: AR (WebXR) si el equipo lo permite; si no, sobre la foto con una referencia conocida.
-const PASOS = ['Marca los dos extremos de la referencia', 'Toca la esquina superior izquierda del vano', 'Esquina superior derecha', 'Esquina inferior derecha', 'Esquina inferior izquierda'];
+const PASOS = ['Marca los dos extremos de la referencia', 'Toca dentro del vano (la IA lo recorta) o su esquina superior izquierda', 'Esquina superior derecha', 'Esquina inferior derecha', 'Esquina inferior izquierda'];
 
 export default function Medir() {
   const { actual, actualizar, avisar } = useApp();
@@ -14,6 +16,10 @@ export default function Medir() {
   const [manual, setManual] = useState({ ancho: actual?.medidas?.ancho ?? 1, alto: actual?.medidas?.alto ?? 2.1 });
   const img = useRef(null), svg = useRef(null);
   const [caja, setCaja] = useState({ x: 0, y: 0, w: 1, h: 1 }); // rectángulo real de la imagen dentro del lienzo (object-fit: contain)
+  // la IA se prepara si aún no hay medidas o en cuanto se empieza a marcar (no al solo mirar una visita ya medida)
+  const det = useDetectorVano(actual?.foto, !actual?.medidas || pts.length > 0);
+  const [buscando, setBuscando] = useState(false);
+  const [mascara, setMascara] = useState(null);
 
   useEffect(() => { hayAR().then(setAr); }, []);
   useEffect(() => {
@@ -26,7 +32,16 @@ export default function Medir() {
   const tocar = (e) => {
     if (pts.length >= 6) return;
     const r = svg.current.getBoundingClientRect(); const u = (e.clientX - r.left - caja.x) / caja.w, v = (e.clientY - r.top - caja.y) / caja.h;
-    if (u < 0 || u > 1 || v < 0 || v > 1) return;
+    if (u < 0 || u > 1 || v < 0 || v > 1 || buscando) return;
+    // después de la referencia, un toque dentro del vano basta: la IA lo recorta y pone las 4 esquinas
+    if (pts.length === 2 && det.estado !== 'error') {
+      setBuscando(true);
+      det.detectar(u, v).then((r) => {
+        if (r) { const n = [...pts, ...r.esquinas]; setPts(n); setMascara(r.mascara); terminar(n); }
+        else { setPts([...pts, [u, v]]); avisar('No encontré el vano ahí: sigue marcando las esquinas a mano'); }
+      }).catch(() => { setPts([...pts, [u, v]]); avisar('La IA falló: sigue marcando las esquinas a mano'); }).finally(() => setBuscando(false));
+      return;
+    }
     const n = [...pts, [u, v]]; setPts(n);
     if (n.length === 6) terminar(n);
   };
@@ -54,6 +69,7 @@ export default function Medir() {
       <div className="lienzo">
         {sinFoto ? <div className="vacio" style={{ border: 0, color: '#fff' }}><b>Sin foto</b><span>Toma una foto del vano en la cámara, o escribe las medidas a mano.</span><a className="boton linea chico" href="#camara">Ir a la cámara</a></div>
           : <><img ref={img} className="foto" src={actual.foto} alt="Espacio del cliente" />
+            {mascara && <img className="mascara" src={mascara} alt="" style={{ left: caja.x, top: caja.y, width: caja.w, height: caja.h }} />}
             <div className="capa"><svg ref={svg} onPointerDown={tocar} style={{ cursor: pts.length < 6 ? 'crosshair' : 'default' }}>
               {pts.length >= 2 && <line className="linea-ref" x1={aPx(pts[0])[0]} y1={aPx(pts[0])[1]} x2={aPx(pts[1])[0]} y2={aPx(pts[1])[1]} />}
               {pts.length >= 2 && <text className="cota" x={(aPx(pts[0])[0] + aPx(pts[1])[0]) / 2} y={(aPx(pts[0])[1] + aPx(pts[1])[1]) / 2 - 8} textAnchor="middle">{ref} m</text>}
@@ -61,6 +77,7 @@ export default function Medir() {
               {pts.map((p, i) => <circle key={i} className={'punto' + (i < 2 ? ' ref' : '')} cx={aPx(p)[0]} cy={aPx(p)[1]} r="7" />)}
               {actual.medidas && pts.length === 6 && <><text className="cota" x={(aPx(pts[2])[0] + aPx(pts[3])[0]) / 2} y={aPx(pts[2])[1] - 12} textAnchor="middle">{m(actual.medidas.ancho)}</text><text className="cota" x={aPx(pts[3])[0] + 12} y={(aPx(pts[3])[1] + aPx(pts[4])[1]) / 2}>{m(actual.medidas.alto)}</text></>}
             </svg></div></>}
+        {!sinFoto && pts.length < 6 && <EstadoIA det={det} buscando={buscando} pista={pts.length < 2 ? 'Marca los 2 extremos de la referencia' : 'Toca dentro del vano'} />}
         <Titulo sobre="medir/." nombre="Vano" sub={`${actual?.medidas ? `${m(actual.medidas.ancho)} × ${m(actual.medidas.alto)} · ${actual.medidas.fuente}` : 'sin medidas'} · ${ar ? 'AR disponible' : 'sobre la foto'}`} />
       </div>
       <div className="ctrl">
@@ -74,7 +91,7 @@ export default function Medir() {
         {!sinFoto && <>
           <div className="campo"><label htmlFor="refsel">referencia en la foto</label><select id="refsel" value={ref} onChange={(e) => setRef(+e.target.value)}>{REFERENCIAS.map(([n, v]) => <option key={n} value={v}>{n}</option>)}</select></div>
           <ol className="pasos-med">{PASOS.map((p, i) => <li key={p} className={pts.length >= (i === 0 ? 2 : i + 2) ? 'ok' : i === paso ? 'on' : ''}>{p}</li>)}</ol>
-          <button className="boton linea chico" onClick={() => setPts([])}>Empezar de nuevo</button>
+          <button className="boton linea chico" onClick={() => { setPts([]); setMascara(null); }}>Empezar de nuevo</button>
         </>}
         <div className="campo"><span className="lbl">o a mano (flexómetro)</span>
           <div className="fila2"><input type="number" step="0.01" min="0.3" value={manual.ancho} onChange={(e) => setManual({ ...manual, ancho: +e.target.value })} aria-label="Ancho en metros" /><input type="number" step="0.01" min="0.3" value={manual.alto} onChange={(e) => setManual({ ...manual, alto: +e.target.value })} aria-label="Alto en metros" /></div>

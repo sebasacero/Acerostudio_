@@ -15,7 +15,7 @@ export default function Riel({ ruta }) {
       <a className="logo-mini" href="#inicio" aria-label="AceroStudio, inicio"></a>
       {ITEMS.map(([r, txt, extra]) => <a key={r} href={'#' + r} className={[extra, ruta === r ? 'on' : ''].filter(Boolean).join(' ')}><svg viewBox="0 0 24 24">{I[r]}</svg><span>{txt}</span></a>)}
       <div className="esp"></div>
-      <a href="/ornamentacion/" className="solo-escritorio" title="Simulador completo de ornamentación"><svg viewBox="0 0 24 24"><path d="M4 20V8l8-5 8 5v12zM9 20v-7h6v7" /></svg><span>Taller</span></a>
+      <a href={`${import.meta.env.VITE_SITIO || ""}/ornamentacion/`} className="solo-escritorio" title="Simulador completo de ornamentación"><svg viewBox="0 0 24 24"><path d="M4 20V8l8-5 8 5v12zM9 20v-7h6v7" /></svg><span>Taller</span></a>
       <div className="avatar" title="Tu cuenta">SA</div>
     </nav>
   );
