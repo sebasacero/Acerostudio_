@@ -14,7 +14,7 @@ export default function Encajar() {
   const [caja, setCaja] = useState({ x: 0, y: 0, w: 1, h: 1 });
   const [apertura, setApertura] = useState(0);
   const arrastre = useRef(null);
-  const det = useDetectorVano(actual?.foto, !actual?.vano); // con el vano ya marcado, la IA no se prepara hasta que se toque la foto
+  const det = useDetectorVano(actual?.foto); // la IA solo arranca cuando se toca la foto
   const [arrastrado, setArrastrado] = useState(null); // esquinas mientras se arrastra: se guardan en la visita solo al soltar
   const cuadro = useRef(0);
   const [mascara, setMascara] = useState(null); // recorte propuesto por la IA, mientras se confirma

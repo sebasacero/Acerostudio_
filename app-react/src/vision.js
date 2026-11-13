@@ -9,6 +9,13 @@ const TRANSFORMERS_URL = 'https://cdn.jsdelivr.net/npm/@huggingface/transformers
 const LADO = 768; // la foto se reduce a este lado mayor antes de pasarla al modelo (SAM trabaja a 1024)
 
 let cargando = null; // promesa única del modelo
+// En iPhone/iPad, WebGPU con SAM y el motor wasm con varios hilos agotan la memoria de Safari y la página se cierra (pantalla en blanco):
+// allí se usa wasm de un solo hilo con el modelo cuantizado (q8), que es más lento pero cabe.
+const IOS = typeof navigator !== 'undefined' && (/iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+// Si la página se cerró mientras la IA trabajaba, este aviso queda guardado y la IA no vuelve a arrancar sola en este equipo.
+const MARCA_CIERRE = 'acero-ia-en-curso';
+const leer = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
+const escribir = (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch { /* sin almacenamiento */ } };
 const embebidos = new Map(); // foto (url) -> { entradas, embebido, W, H }
 
 /* Carga perezosa del modelo; `alProgreso(0..1)` informa la descarga. */
@@ -19,11 +26,12 @@ function cargarModelo(alProgreso) {
     const T = await import(/* @vite-ignore */ TRANSFORMERS_URL);
     const { SamModel, AutoProcessor, env } = T;
     env.allowLocalModels = false;
+    if (IOS && env.backends?.onnx?.wasm) env.backends.onnx.wasm.numThreads = 1;
     const archivos = {};
     const progress_callback = (p) => {
       if (p.status === 'progress' && p.total) { archivos[p.file] = [p.loaded, p.total]; const v = Object.values(archivos); alProgreso?.(v.reduce((a, [l]) => a + l, 0) / v.reduce((a, [, t]) => a + t, 0)); }
     };
-    const webgpu = typeof navigator !== 'undefined' && !!navigator.gpu && !!(await navigator.gpu.requestAdapter().catch(() => null));
+    const webgpu = !IOS && typeof navigator !== 'undefined' && !!navigator.gpu && !!(await navigator.gpu.requestAdapter().catch(() => null));
     const opciones = webgpu ? { device: 'webgpu', dtype: 'fp16' } : { device: 'wasm', dtype: 'q8' };
     const [modelo, procesador] = await Promise.all([SamModel.from_pretrained(MODELO, { ...opciones, progress_callback }), AutoProcessor.from_pretrained(MODELO)]);
     return { modelo, procesador, RawImage: T.RawImage, Tensor: T.Tensor, webgpu };
@@ -44,6 +52,7 @@ function imagenReducida(url) {
 async function prepararFoto(url, alProgreso) {
   if (embebidos.has(url)) return embebidos.get(url);
   const p = (async () => {
+    escribir(MARCA_CIERRE, String(Date.now()));
     const m = await cargarModelo(alProgreso);
     const lienzo = await imagenReducida(url);
     const img = m.RawImage.fromCanvas(lienzo);
@@ -51,6 +60,7 @@ async function prepararFoto(url, alProgreso) {
     const embebido = await m.modelo.get_image_embeddings(entradas);
     return { m, entradas, embebido, W: lienzo.width, H: lienzo.height };
   })();
+  p.then(() => escribir(MARCA_CIERRE, null), () => escribir(MARCA_CIERRE, null));
   embebidos.set(url, p);
   // cada embebido pesa varios MB: se guardan solo las 2 fotos más recientes
   while (embebidos.size > 2) embebidos.delete(embebidos.keys().next().value);
@@ -145,10 +155,12 @@ export function mascaraUrl(mask, W, H) {
 /* Hook: prepara la IA para la foto y expone detectar(u, v).
    Con `auto` la prepara apenas hay foto (el primer toque es instantáneo); sin `auto` no gasta batería
    hasta que el usuario toca la foto (por ejemplo, cuando el vano ya está marcado). */
-export function useDetectorVano(foto, auto = true) {
-  const [estado, setEstado] = useState('inactivo'); // inactivo | cargando | lista | error
+// La IA nunca se prepara sola al llegar la foto: solo cuando el usuario toca el vano (antes se precargaba y en iPhone cerraba la página).
+export function useDetectorVano(foto) {
+  const cerroAntes = !!leer(MARCA_CIERRE);
+  const [estado, setEstado] = useState(cerroAntes ? 'error' : 'inactivo'); // inactivo | cargando | lista | error
   const [progreso, setProgreso] = useState(0);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(cerroAntes ? 'cierre' : '');
   const vivo = useRef(true);
   const preparar = () => {
     if (globalThis.__segmentadorPrueba) { setEstado('lista'); return Promise.resolve(); }
@@ -159,10 +171,11 @@ export function useDetectorVano(foto, auto = true) {
   };
   useEffect(() => {
     vivo.current = true;
-    setEstado('inactivo');
-    if (foto && auto) preparar();
+    if (!leer(MARCA_CIERRE)) { setEstado(embebidos.has(foto) ? 'lista' : 'inactivo'); setError(''); }
     return () => { vivo.current = false; };
-  }, [foto, auto]);
+  }, [foto]);
+  // tras un cierre, el usuario puede pedir otro intento a propósito
+  const reintentar = () => { escribir(MARCA_CIERRE, null); setEstado('inactivo'); setError(''); };
   async function detectar(u, v) {
     if (!globalThis.__segmentadorPrueba) await preparar();
     const r = await segmentar(foto, u, v);
@@ -170,5 +183,5 @@ export function useDetectorVano(foto, auto = true) {
     if (!q) return null;
     return { ...q, puntaje: r.puntaje, mascara: mascaraUrl(r.mascara, r.W, r.H) };
   }
-  return { estado, progreso, error, detectar };
+  return { estado, progreso, error, detectar, reintentar };
 }
